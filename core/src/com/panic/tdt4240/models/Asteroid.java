@@ -40,16 +40,26 @@ public class Asteroid{
         return asteroid;
     }
 
-    public boolean addStatus(String key, Object effect){
+    public void addStatus(String key, Object effect){
         statuses.put(key,effect);
     }
 
-    public void setPosition(Vector2 position) {
-        this.position = position;
+    public boolean setPosition(Vector2 position) {
+        if((position.x>=0 && position.x<=1) && (position.y>=0 && position.y<=1)) {
+            this.position = position;
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     public ArrayList<Asteroid> getNeighbours() {
         return neighbours;
+    }
+
+    public boolean isConnected(Asteroid asteroid){
+        return neighbours.contains(asteroid);
     }
 
     public HashMap<String, Object> getStatuses() {

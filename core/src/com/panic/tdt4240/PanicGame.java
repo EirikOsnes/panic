@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.panic.tdt4240.models.XMLParser;
 
 public class PanicGame extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -14,7 +15,6 @@ public class PanicGame extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
-
 	}
 
 	@Override

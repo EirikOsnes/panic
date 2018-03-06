@@ -6,6 +6,7 @@ import com.panic.tdt4240.util.Graph;
 import com.panic.tdt4240.util.Vertex;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by magnus on 05.03.2018.
@@ -24,8 +25,16 @@ public class Map {
         Graph graph = generateVertexAndEdge();
         Dijkstra dijkstra = new Dijkstra(graph);
         for(int i=0;i<asteroids.size();i++) {
-            dijkstra.execute(graph.getVertices().get(i));
-
+            HashMap<Vertex,Integer> tmp = dijkstra.execute(graph.getVertices().get(i));
+            for(int j=0;j<asteroids.size();j++){
+                if(i!=j){
+                    matrix[i][j] = tmp.get(graph.getVertices().get(j));
+                    matrix[j][i] = tmp.get(graph.getVertices().get(j));
+                }
+                else if(i==j){
+                    matrix[i][j] = 0;
+                }
+            }
         }
         return matrix;
     }

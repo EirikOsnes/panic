@@ -1,5 +1,6 @@
 package com.panic.tdt4240.models;
 
+import com.panic.tdt4240.util.Dijkstra;
 import com.panic.tdt4240.util.Edge;
 import com.panic.tdt4240.util.Graph;
 import com.panic.tdt4240.util.Vertex;
@@ -19,7 +20,14 @@ public class Map {
     }
 
     public int[][] generateAdjacencyMatrix(){
-        
+        int[][] matrix = new int[asteroids.size()][asteroids.size()];
+        Graph graph = generateVertexAndEdge();
+        Dijkstra dijkstra = new Dijkstra(graph);
+        for(int i=0;i<asteroids.size();i++) {
+            dijkstra.execute(graph.getVertices().get(i));
+
+        }
+        return matrix;
     }
     private Graph generateVertexAndEdge(){
         ArrayList<Edge> edges = new ArrayList<Edge>();

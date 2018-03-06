@@ -30,10 +30,10 @@ public class Dijkstra {
         this.edges = new ArrayList<Edge>(graph.getEdges());
     }
 
-    public void execute(Vertex source) {
+    public HashMap<Vertex,Integer> execute(Vertex source) {
         settledNodes = new HashSet<Vertex>();
         unSettledNodes = new HashSet<Vertex>();
-        distance = new HashMap<Vertex, Integer>();
+        HashMap<Vertex,Integer> returnMap = new HashMap<Vertex, Integer>();
         predecessors = new HashMap<Vertex, Vertex>();
         distance.put(source, 0);
         unSettledNodes.add(source);
@@ -43,6 +43,8 @@ public class Dijkstra {
             unSettledNodes.remove(node);
             findMinimalDistances(node);
         }
+        distance = returnMap;
+        return returnMap;
     }
 
     private void findMinimalDistances(Vertex node) {

@@ -15,11 +15,21 @@ import java.util.HashMap;
 public class Map {
     private ArrayList<Asteroid> asteroids;
     private int[][] adjacency;
+    ArrayList<Edge> edges;
+    ArrayList<Vertex> vertices;
+
+    public Map(ArrayList<Asteroid> asteroids){
+        this.asteroids = asteroids;
+    }
 
     public void connectAsteroids(Asteroid a1,Asteroid a2){
         a1.connect(a2);
     }
 
+    /**
+     * generates an adjacency matrix based on the asteroids on the map and its connections.
+     * @return The adjacency matrix
+     */
     public int[][] generateAdjacencyMatrix(){
         int[][] matrix = new int[asteroids.size()][asteroids.size()];
         Graph graph = generateVertexAndEdge();
@@ -31,22 +41,28 @@ public class Map {
                     matrix[i][j] = tmp.get(graph.getVertices().get(j));
                     matrix[j][i] = tmp.get(graph.getVertices().get(j));
                 }
-                else if(i==j){
+                else {
                     matrix[i][j] = 0;
                 }
             }
         }
+        adjacency = matrix;
         return matrix;
     }
-    private Graph generateVertexAndEdge(){
-        ArrayList<Edge> edges = new ArrayList<Edge>();
-        ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+
+    /**
+     * translates the given asteroids and its connections into a graph consisting of vertices and edges.
+     * @return The graph representing the asteroids
+     */
+    public Graph generateVertexAndEdge(){
+        edges = new ArrayList<Edge>();
+        vertices = new ArrayList<Vertex>();
         for(int i=0;i<asteroids.size();i++) {
             vertices.add(new Vertex(i));
         }
         for(int i=0;i<asteroids.size();i++){
             Asteroid a1=asteroids.get(i);
-            for(int j=0;j<asteroids.size();j++){
+            for(int j=i;j<asteroids.size();j++){
                 Asteroid a2=asteroids.get(j);
                 if(a1!=a2) {
                     if (a1.isConnected(a2)){
@@ -55,6 +71,13 @@ public class Map {
                 }
             }
         }
+        for(Edge edge:edges) {
+            System.out.println(edge.getSource().toString() + " " + edge.getDestination().toString());
+        }
         return new Graph(vertices, edges);
+    }
+
+    public ArrayList<Asteroid> getAsteroids() {
+        return asteroids;
     }
 }

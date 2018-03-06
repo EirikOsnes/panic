@@ -34,16 +34,31 @@ public class Asteroid{
         position = new Vector2();
     }
 
+    /**
+     * connects two asteroids by adding it to the asteroids' neighbour list.
+     * @param asteroid The asteroid to become this asteroid's neighbour
+     * @return The asteroid given in the input
+     */
     public Asteroid connect(Asteroid asteroid){
         neighbours.add(asteroid);
         asteroid.neighbours.add(this);
         return asteroid;
     }
 
+    /**
+     * Adds a status to the asteroid. The statuses are stored within the status hashmap
+     * @param key The identity of the status
+     * @param effect The definition of the status to be added
+     */
     public void addStatus(String key, Object effect){
         statuses.put(key,effect);
     }
 
+    /**
+     * Defines where the asteroid will be placed on any given map. The position is relative, so it will be scaled between 0 and 1
+     * @param position The position of the asteroid
+     * @return Whether the position is valid or not
+     */
     public boolean setPosition(Vector2 position) {
         if((position.x>=0 && position.x<=1) && (position.y>=0 && position.y<=1)) {
             this.position = position;
@@ -54,10 +69,19 @@ public class Asteroid{
         }
     }
 
+    /**
+     *
+     * @return The neighbours of the asteroid
+     */
     public ArrayList<Asteroid> getNeighbours() {
         return neighbours;
     }
 
+    /**
+     *
+     * @param asteroid The asteroid to check for a connection
+     * @return Whether the asteroids are connected or not
+     */
     public boolean isConnected(Asteroid asteroid){
         return neighbours.contains(asteroid);
     }

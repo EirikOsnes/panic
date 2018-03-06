@@ -90,7 +90,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 
         testCompile 'junit:junit:4.12'
-        testCompile 'org.mockito:mockito-core:1.9.5'
+        testCompile 'org.mockito:mockito-core:2.13.0'
     }
 }
 

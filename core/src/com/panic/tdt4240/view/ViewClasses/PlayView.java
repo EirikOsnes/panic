@@ -27,7 +27,7 @@ public class PlayView extends AbstractView{
         loadMap();
         loadVehicles();
         loadHand(cardNames);
-        return (hv.getCardImgs().size() < ); // simple sanity check
+        return (hv.getCardImgs().size() < 5); // simple sanity check
     }
 
 

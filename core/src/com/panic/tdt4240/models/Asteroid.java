@@ -67,10 +67,12 @@ public class Asteroid{
         }
     }
 
-    public void removeVehicle(Vehicle vehicle){
+    public boolean removeVehicle(Vehicle vehicle){
         if(vehicles.contains(vehicle)){
             vehicles.remove(vehicle);
+            return true;
         }
+        return false;
     }
 
     /**

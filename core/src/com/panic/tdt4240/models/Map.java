@@ -19,11 +19,20 @@ public class Map {
     ArrayList<Vertex> vertices;
     HashMap<String, Vehicle> vehicles;
 
+    /**
+     * creates a Map object containing a set of asteroids
+     * @param asteroids ArrayList of asteroids
+     */
     public Map(ArrayList<Asteroid> asteroids){
         vehicles = new HashMap<>();
         this.asteroids = asteroids;
     }
 
+    /**
+     * creates a connection between two asteroids
+     * @param a1 first asteroid
+     * @param a2 second asteroid
+     */
     public void connectAsteroids(Asteroid a1,Asteroid a2){
         a1.connect(a2);
     }
@@ -34,26 +43,65 @@ public class Map {
         }
     }
 
+    /**
+     * returns all vehicles on an asteroid. returns null if asteroid does not exist or is empty
+     * @param asteroid asteroid to get vehicles from
+     * @return all vehicles present on the asteroid
+     */
     public ArrayList<Vehicle> getVehicleOnAsteroid(Asteroid asteroid){
         if(asteroid!=null){
-            return asteroid.getVehicles();
+            if(!asteroid.getVehicles().isEmpty()) {
+                return asteroid.getVehicles();
+            }
         }
         return null;
     }
 
-    public void addVehicleToAsteroid(Asteroid asteroid, Vehicle vehicle){
+    /**
+     * Adds a vehicle to the designated asteroid
+     * @param asteroid The asteroid to move the vehicle to
+     * @param vehicle The vehicle to be moved
+     */
+    private void addVehicleToAsteroid(Asteroid asteroid, Vehicle vehicle){
         asteroid.addVehicle(vehicle);
     }
 
-    public void removeVehicleFromAsteroid(Asteroid asteroid, Vehicle vehicle){
-        asteroid.removeVehicle(vehicle);
+    /**
+     * Removes a vehicle from the designated asteroid if it is situated on the asteroid
+     * @param asteroid The asteroid the vehicle is on
+     * @param vehicle The vehicle to be removed
+     */
+    private boolean removeVehicleFromAsteroid(Asteroid asteroid, Vehicle vehicle){
+        return asteroid.removeVehicle(vehicle);
+    }
+
+    /**
+     * Moves a vehicle to a new asteroid
+     * @param origin current asteroid of the vehicle
+     * @param target vehicle to be moved to
+     * @param vehicle vehicle to be moved
+     */
+    private void moveVehicle(Asteroid origin, Asteroid target, Vehicle vehicle){
+        if(removeVehicleFromAsteroid(origin,vehicle)) {
+            addVehicleToAsteroid(target, vehicle);
+        }
+    }
+
+    /**
+     * Removes a vehicle from the game
+     * @param vehicle to be removed
+     */
+    public void removeVehicle(Vehicle vehicle){
+        if(vehicles.containsValue(vehicle)){
+            vehicles.remove(vehicle);
+        }
     }
 
     /**
      * generates an adjacency matrix based on the asteroids on the map and its connections.
      * @return The adjacency matrix
      */
-    public int[][] generateAdjacencyMatrix(){
+    public void generateAdjacencyMatrix(){
         int[][] matrix = new int[asteroids.size()][asteroids.size()];
         Graph graph = generateVertexAndEdge();
         Dijkstra dijkstra = new Dijkstra(graph);
@@ -70,7 +118,14 @@ public class Map {
             }
         }
         adjacency = matrix;
-        return matrix;
+    }
+
+    /**
+     *
+     * @return The adjacency matrix of the map
+     */
+    public int[][] getAdjacency() {
+        return adjacency;
     }
 
     /**

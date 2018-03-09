@@ -96,5 +96,8 @@ public class PlayView extends AbstractView{
         return hv.getCardImgs().get(i).getTexture().getWidth();
     }
 
+    public void dispose(){
+        renderer.dispose();
+    }
 
 }

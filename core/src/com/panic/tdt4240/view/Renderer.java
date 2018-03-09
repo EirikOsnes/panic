@@ -47,4 +47,8 @@ public class Renderer {
         sb.draw(img, x, y, width, height);
     }
 
+    public void dispose(){
+        sb.dispose();
+    }
+
 }

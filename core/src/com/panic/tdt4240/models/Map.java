@@ -6,7 +6,6 @@ import com.panic.tdt4240.util.Graph;
 import com.panic.tdt4240.util.Vertex;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by magnus on 05.03.2018.
@@ -35,11 +34,11 @@ public class Map {
         Graph graph = generateVertexAndEdge();
         Dijkstra dijkstra = new Dijkstra(graph);
         for(int i=0;i<asteroids.size();i++) {
-            HashMap<Vertex,Integer> tmp = dijkstra.execute(graph.getVertices().get(i));
-            for(int j=0;j<asteroids.size();j++){
+            dijkstra.execute(graph.getVertices().get(i));
+            for(int j=i;j<asteroids.size();j++){
                 if(i!=j){
-                    matrix[i][j] = tmp.get(graph.getVertices().get(j));
-                    matrix[j][i] = tmp.get(graph.getVertices().get(j));
+                    matrix[i][j] = dijkstra.getDistances().get(graph.getVertices().get(j));
+                    matrix[j][i] = dijkstra.getDistances().get(graph.getVertices().get(j));
                 }
                 else {
                     matrix[i][j] = 0;
@@ -54,7 +53,7 @@ public class Map {
      * translates the given asteroids and its connections into a graph consisting of vertices and edges.
      * @return The graph representing the asteroids
      */
-    public Graph generateVertexAndEdge(){
+    protected Graph generateVertexAndEdge(){
         edges = new ArrayList<Edge>();
         vertices = new ArrayList<Vertex>();
         for(int i=0;i<asteroids.size();i++) {
@@ -67,6 +66,7 @@ public class Map {
                 if(a1!=a2) {
                     if (a1.isConnected(a2)){
                         edges.add(new Edge(vertices.get(i), vertices.get(j),1));
+                        edges.add(new Edge(vertices.get(j),vertices.get(i),1));
                     }
                 }
             }

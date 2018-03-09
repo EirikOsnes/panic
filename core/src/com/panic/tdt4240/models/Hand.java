@@ -1,7 +1,6 @@
 package com.panic.tdt4240.models;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Hermann on 05.03.2018.

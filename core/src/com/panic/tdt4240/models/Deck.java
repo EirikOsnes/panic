@@ -2,7 +2,6 @@ package com.panic.tdt4240.models;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Stack;
 
 /**
@@ -18,13 +17,14 @@ public class Deck {
         this.cardDeck = cardDeck;
         this.usedCards = new Stack<>();
     }
+    //Returns the complete cardDeck
     public Stack<Card> getDeck(){
         Stack<Card> deck = new Stack<>();
         deck.addAll(cardDeck);
         deck.addAll(usedCards);
         return deck;
     }
-
+    //Returns an list containing 'amount' cards
     public ArrayList<Card> drawHand(int amount){
         ArrayList<Card> hand = new ArrayList<>(amount);
 

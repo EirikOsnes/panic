@@ -48,6 +48,4 @@ public class Deck {
         shuffleDeck();
     }
 
-    //Placeholder for the Card class, remove when the class exists
-    private class Card {}
 }

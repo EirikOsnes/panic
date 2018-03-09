@@ -97,6 +97,10 @@ public class Card {
         this.tooltip = tooltip;
     }
 
+    public ArrayList<CardEffect> getCardEffects() {
+        return cardEffects;
+    }
+
     //endregion
 
     public void addCardEffect(String targetStatus, double value, int statusDuration, int splashRange, boolean friendlyFire){

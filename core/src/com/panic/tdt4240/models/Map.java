@@ -37,6 +37,11 @@ public class Map {
         a1.connect(a2);
     }
 
+    /**
+     * adds a vehicle to the vehicle hashmap with the player name as a key
+     * @param name of the player
+     * @param vehicle to be added
+     */
     public void addVehicle(String name, Vehicle vehicle){
         if(!vehicles.containsKey(name)) {
             vehicles.put(name, vehicle);
@@ -62,7 +67,7 @@ public class Map {
      * @param asteroid The asteroid to move the vehicle to
      * @param vehicle The vehicle to be moved
      */
-    private void addVehicleToAsteroid(Asteroid asteroid, Vehicle vehicle){
+    protected void addVehicleToAsteroid(Asteroid asteroid, Vehicle vehicle){
         asteroid.addVehicle(vehicle);
     }
 
@@ -71,9 +76,10 @@ public class Map {
      * @param asteroid The asteroid the vehicle is on
      * @param vehicle The vehicle to be removed
      */
-    private boolean removeVehicleFromAsteroid(Asteroid asteroid, Vehicle vehicle){
+    protected boolean removeVehicleFromAsteroid(Asteroid asteroid, Vehicle vehicle){
         return asteroid.removeVehicle(vehicle);
     }
+
 
     /**
      * Moves a vehicle to a new asteroid
@@ -81,7 +87,7 @@ public class Map {
      * @param target vehicle to be moved to
      * @param vehicle vehicle to be moved
      */
-    private void moveVehicle(Asteroid origin, Asteroid target, Vehicle vehicle){
+    protected void moveVehicle(Asteroid origin, Asteroid target, Vehicle vehicle){
         if(removeVehicleFromAsteroid(origin,vehicle)) {
             addVehicleToAsteroid(target, vehicle);
         }
@@ -89,11 +95,11 @@ public class Map {
 
     /**
      * Removes a vehicle from the game
-     * @param vehicle to be removed
+     * @param name key of the vehicle to be removed
      */
-    public void removeVehicle(Vehicle vehicle){
-        if(vehicles.containsValue(vehicle)){
-            vehicles.remove(vehicle);
+    public void removeVehicle(String name){
+        if(vehicles.containsKey(name)){
+            vehicles.remove(name);
         }
     }
 

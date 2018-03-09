@@ -99,19 +99,21 @@ public class Card {
 
     //endregion
 
-    public void addCardEffect(String targetStatus, int statusDuration, int splashRange, boolean friendlyFire){
-        cardEffects.add(new CardEffect(targetStatus, statusDuration, splashRange, friendlyFire));
+    public void addCardEffect(String targetStatus, double value, int statusDuration, int splashRange, boolean friendlyFire){
+        cardEffects.add(new CardEffect(targetStatus, value, statusDuration, splashRange, friendlyFire));
     }
 
     private class CardEffect {
 
         String targetStatus;
+        double value;
         int statusDuration;
         int splashRange;
         boolean friendlyFire;
 
-        CardEffect(String targetStatus, int statusDuration, int splashRange, boolean friendlyFire) {
+        CardEffect(String targetStatus, double value,int statusDuration, int splashRange, boolean friendlyFire) {
             this.targetStatus = targetStatus;
+            this.value = value;
             this.statusDuration = statusDuration;
             this.splashRange = splashRange;
             this.friendlyFire = friendlyFire;

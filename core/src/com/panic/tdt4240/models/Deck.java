@@ -16,14 +16,17 @@ public class Deck {
 
     public Deck(Stack<Card> cardDeck) {
         this.cardDeck = cardDeck;
-        this.usedCards = new Stack<Card>();
+        this.usedCards = new Stack<>();
     }
-    public Stack<Card> seeDeck(){
-        return cardDeck;
+    public Stack<Card> getDeck(){
+        Stack<Card> deck = new Stack<>();
+        deck.addAll(cardDeck);
+        deck.addAll(usedCards);
+        return deck;
     }
 
-    public List<Card> drawHand(int amount){
-        List<Card> hand = new ArrayList<Card>(amount);
+    public ArrayList<Card> drawHand(int amount){
+        ArrayList<Card> hand = new ArrayList<>(amount);
 
         for (int i = 0; i < amount; i++) {
             //Checks if the card deck is empty, merges in usedCards if it is

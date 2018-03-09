@@ -28,6 +28,7 @@ public class Card {
         cardEffects = new ArrayList<>();
     }
 
+    //region Getters/Setters
     public String getId() {
         return id;
     }
@@ -96,22 +97,9 @@ public class Card {
         this.tooltip = tooltip;
     }
 
-    public void addCardEffect(String targetStatus, int statusDuration, int splashRange, boolean friendlyFire){
-        cardEffects.add(new CardEffect(targetStatus, statusDuration, splashRange, friendlyFire));
-    }
+    //endregion
 
-    private class CardEffect {
-
-        String targetStatus;
-        int statusDuration;
-        int splashRange;
-        boolean friendlyFire;
-
-        CardEffect(String targetStatus, int statusDuration, int splashRange, boolean friendlyFire) {
-            this.targetStatus = targetStatus;
-            this.statusDuration = statusDuration;
-            this.splashRange = splashRange;
-            this.friendlyFire = friendlyFire;
-        }
+    public void addCardEffect(String targetStatus, double value, int statusDuration, int splashRange, boolean friendlyFire){
+        cardEffects.add(new CardEffect(targetStatus, value, statusDuration, splashRange, friendlyFire));
     }
 }

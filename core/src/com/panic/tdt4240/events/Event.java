@@ -52,4 +52,31 @@ class Event {
         return targetID;
     }
 
+    void setT(Type t) {
+        this.t = t;
+    }
+
+    void setInstigatorID(int instigatorID) {
+        this.instigatorID = instigatorID;
+    }
+
+    void setTargetID(int targetID) {
+        this.targetID = targetID;
+    }
+
+    void setStatus(String status) {
+        this.status = status;
+    }
+
+    void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    void setEffectValue(double effectValue) {
+        this.effectValue = effectValue;
+    }
+
+    void setFrendlyFire(boolean frendlyFire) {
+        this.frendlyFire = frendlyFire;
+    }
 }

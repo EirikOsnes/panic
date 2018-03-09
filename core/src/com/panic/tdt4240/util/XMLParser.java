@@ -107,6 +107,7 @@ public class XMLParser {
                 if (node.getNodeType() == Node.ELEMENT_NODE){
                     Element element = (Element) node;
                     Asteroid myAsteroid = new Asteroid(null);
+                    //TODO: Sprite should be separated
                     String id = element.getAttribute("id");
                     myAsteroid.setId(id);
                     myAsteroid.setPosition(new Vector2(
@@ -140,6 +141,12 @@ public class XMLParser {
         return null;
     }
 
+
+    /**
+     * A method to create Vehicle objects from an xml.
+     * @param path The path to the file containing the vehicle types.
+     * @return Returns an ArrayList of possible vehicles.
+     */
     public ArrayList<Vehicle> parseVehicles(String path){
         ArrayList<Vehicle> result = new ArrayList<>();
 
@@ -156,13 +163,23 @@ public class XMLParser {
 
                 if (node.getNodeType() == Node.ELEMENT_NODE){
                     Vehicle myVehicle = new Vehicle();
-
+                    Element element = (Element) node;
+                    NodeList statusNodeList = element.getElementsByTagName("status");
+                    for (int j = 0; j < statusNodeList.getLength(); j++) {
+                        Node statusNode = statusNodeList.item(j);
+                        if (statusNode.getNodeType() == Node.ELEMENT_NODE){
+                            Element statusElement = (Element) statusNode;
+                            myVehicle.addStatus(statusElement.getAttribute("name"), Float.parseFloat(statusElement.getAttribute("base")));
+                        }
+                    }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+
+        return result;
     }
 
 }

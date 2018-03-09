@@ -65,6 +65,7 @@ public class XMLParser {
                             Element effectElement = (Element) effectNode;
                             myCard.addCardEffect(
                                     effectElement.getElementsByTagName("target_status").item(0).getTextContent(),
+                                    Double.parseDouble(effectElement.getElementsByTagName("value").item(0).getTextContent()),
                                     Integer.parseInt(effectElement.getElementsByTagName("status_duration").item(0).getTextContent()),
                                     Integer.parseInt(effectElement.getElementsByTagName("splash_range").item(0).getTextContent()),
                                     Boolean.parseBoolean(effectElement.getElementsByTagName("friendly_fire").item(0).getTextContent())

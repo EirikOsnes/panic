@@ -6,6 +6,7 @@ import com.panic.tdt4240.util.Graph;
 import com.panic.tdt4240.util.Vertex;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by magnus on 05.03.2018.
@@ -16,13 +17,36 @@ public class Map {
     private int[][] adjacency;
     ArrayList<Edge> edges;
     ArrayList<Vertex> vertices;
+    HashMap<String, Vehicle> vehicles;
 
     public Map(ArrayList<Asteroid> asteroids){
+        vehicles = new HashMap<>();
         this.asteroids = asteroids;
     }
 
     public void connectAsteroids(Asteroid a1,Asteroid a2){
         a1.connect(a2);
+    }
+
+    public void addVehicle(String name, Vehicle vehicle){
+        if(!vehicles.containsKey(name)) {
+            vehicles.put(name, vehicle);
+        }
+    }
+
+    public ArrayList<Vehicle> getVehicleOnAsteroid(Asteroid asteroid){
+        if(asteroid!=null){
+            return asteroid.getVehicles();
+        }
+        return null;
+    }
+
+    public void addVehicleToAsteroid(Asteroid asteroid, Vehicle vehicle){
+        asteroid.addVehicle(vehicle);
+    }
+
+    public void removeVehicleFromAsteroid(Asteroid asteroid, Vehicle vehicle){
+        asteroid.removeVehicle(vehicle);
     }
 
     /**

@@ -11,6 +11,7 @@ import java.util.HashMap;
  */
 
 public class Asteroid{
+    private String id;
     private HashMap<String,Object> statuses;
     private Sprite sprite;
     private ArrayList<Asteroid> neighbours;
@@ -96,5 +97,13 @@ public class Asteroid{
 
     public Vector2 getPosition() {
         return position;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

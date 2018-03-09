@@ -1,4 +1,9 @@
-package com.panic.tdt4240.models;
+package com.panic.tdt4240.util;
+
+import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.models.Asteroid;
+import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.Map;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -9,17 +14,23 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 /**
- * Created by Eirik on 05-Mar-18.
+ * A class containing methods to parse XML files into java Objects.
  */
 
 public class XMLParser {
 
+    /**
+     * Create ALL cards in an XML file, and return these in an ArrayList.
+     * @param path The path to the XML file.
+     * @return Returns an ArrayList of Cards.
+     */
     public ArrayList<Card> parseCards(String path){
 
         ArrayList<Card> result = new ArrayList<>();
@@ -72,4 +83,60 @@ public class XMLParser {
         return result;
 
     }
+
+    /**
+     * Create a Map from an XML file, by passing in the path to this file. The Map will already be set up with neighbourhood matrix.
+     * @param path The path to the XML file to use.
+     * @return Returns an instatiated Map, with neighbourhood matrix finalized.
+     */
+    public Map parseMap(String path){
+
+        try {
+            File inputFile = new File(path);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            NodeList asteroidNodeList = doc.getElementsByTagName("asteroid");
+            HashMap<String,Asteroid> asteroidHashMap = new HashMap<>();
+
+            for (int i = 0; i < asteroidNodeList.getLength(); i++) {
+                Node node = asteroidNodeList.item(i);
+
+                if (node.getNodeType() == Node.ELEMENT_NODE){
+                    Element element = (Element) node;
+                    Asteroid myAsteroid = new Asteroid(null);
+                    String id = element.getAttribute("id");
+                    myAsteroid.setId(id);
+                    myAsteroid.setPosition(new Vector2(
+                            Float.parseFloat(element.getElementsByTagName("posX").item(0).getTextContent()),
+                            Float.parseFloat(element.getElementsByTagName("posY").item(0).getTextContent())
+                    ));
+                    asteroidHashMap.put(id, myAsteroid);
+                }
+            }
+
+            NodeList connectionNodeList = doc.getElementsByTagName("connection");
+            for (int i = 0; i < connectionNodeList.getLength(); i++) {
+                Node node = connectionNodeList.item(i);
+
+                if(node.getNodeType() == Node.ELEMENT_NODE){
+                    Element element = (Element) node;
+                    asteroidHashMap.get(element.getElementsByTagName("vertexID").item(0).getTextContent()).connect(
+                            asteroidHashMap.get(element.getElementsByTagName("vertexID").item(1).getTextContent())
+                    );
+                }
+            }
+
+            Map result = new Map(new ArrayList<>(asteroidHashMap.values()));
+            result.generateAdjacencyMatrix();
+            return result;
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }

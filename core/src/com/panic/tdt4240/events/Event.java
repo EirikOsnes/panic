@@ -1,8 +1,9 @@
 package com.panic.tdt4240.events;
 
 /**
- * Created by Choffa for testJava on 25-Feb-18.
- * On permission can be used outside testJava.
+ * This is a class that represents the Events in the game panic
+ * project for TDT4240
+ * Created by Choffa
  */
 
 class Event {
@@ -12,16 +13,16 @@ class Event {
     public enum Type {ATTACK, DESTROYED, MOVE}
 
     private Type t;
-    private int instigatorID, targetID;
+    private String instigatorID, targetID;
     private String status;
     private int duration;
     private double effectValue;
     private boolean friendlyFire;
 
-    public Event(Type t, int targetID, int instigatorID) {
+    public Event(Type t, String targetID, String instigatorID) {
         this.t = t;
-        this.instigatorID = instigatorID;
         this.targetID = targetID;
+        this.instigatorID = instigatorID;
     }
 
     public String getStatus() {
@@ -44,11 +45,11 @@ class Event {
         return t;
     }
 
-    public int getInstigatorID() {
+    public String getInstigatorID() {
         return instigatorID;
     }
 
-    public int getTargetID() {
+    public String getTargetID() {
         return targetID;
     }
 

@@ -19,7 +19,7 @@ public class EventFactory {
      * @param InstigatorID  The ID of the instigator of the event
      * @return An ArrayList of the Events created from the Card
      */
-    public static ArrayList<Event> createEvent(Card c, int TargetID, int InstigatorID) {
+    public static ArrayList<Event> createEvent(Card c, String TargetID, String InstigatorID) {
         ArrayList<Event> eList = new ArrayList<>();
 
         for (CardEffect ce : c.getCardEffects()) {

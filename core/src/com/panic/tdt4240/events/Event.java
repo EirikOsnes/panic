@@ -16,7 +16,7 @@ class Event {
     private String status;
     private int duration;
     private double effectValue;
-    private boolean frendlyFire;
+    private boolean friendlyFire;
 
     public Event(Type t, int targetID, int instigatorID) {
         this.t = t;
@@ -36,8 +36,8 @@ class Event {
         return effectValue;
     }
 
-    public boolean isFrendlyFire() {
-        return frendlyFire;
+    public boolean isFriendlyFire() {
+        return friendlyFire;
     }
 
     public Type getT() {
@@ -52,18 +52,6 @@ class Event {
         return targetID;
     }
 
-    void setT(Type t) {
-        this.t = t;
-    }
-
-    void setInstigatorID(int instigatorID) {
-        this.instigatorID = instigatorID;
-    }
-
-    void setTargetID(int targetID) {
-        this.targetID = targetID;
-    }
-
     void setStatus(String status) {
         this.status = status;
     }
@@ -76,7 +64,7 @@ class Event {
         this.effectValue = effectValue;
     }
 
-    void setFrendlyFire(boolean frendlyFire) {
-        this.frendlyFire = frendlyFire;
+    void setFriendlyFire(boolean friendlyFire) {
+        this.friendlyFire = friendlyFire;
     }
 }

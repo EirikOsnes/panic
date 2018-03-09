@@ -1,6 +1,6 @@
 package com.panic.tdt4240.models;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Hermann on 05.03.2018.
@@ -8,14 +8,14 @@ import java.util.List;
 
 public class Hand {
 
-    private List<Card> cardHand;
+    private ArrayList<Card> cardHand;
 
     public Hand(){
     }
-    public void setCardHand(List<Card> cardHand){
+    public void setCardHand(ArrayList<Card> cardHand){
         this.cardHand = cardHand;
     }
-    public List<Card> getHand(){
+    public ArrayList<Card> getHand(){
         return cardHand;
     }
 

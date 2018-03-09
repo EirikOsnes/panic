@@ -1,8 +1,9 @@
 package com.panic.tdt4240.events;
 
 /**
- * Created by Choffa for testJava on 25-Feb-18.
- * On permission can be used outside testJava.
+ * This is a class that represents the Events in the game panic
+ * project for TDT4240
+ * Created by Choffa
  */
 
 class Event {
@@ -12,28 +13,63 @@ class Event {
     public enum Type {ATTACK, DESTROYED, MOVE}
 
     private Type t;
-    private int instigatorID, targetID;
-    private double damage = 0.0;
+    private String instigatorID, targetID;
+    private String status;
+    private int duration;
+    private double effectValue;
+    private boolean friendlyFire;
 
-    public Event(Type t, int instigatorID, int targetID) {
+    public Event(Type t, String targetID, String instigatorID) {
         this.t = t;
-        this.instigatorID = instigatorID;
         this.targetID = targetID;
+        this.instigatorID = instigatorID;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public double getEffectValue() {
+        return effectValue;
+    }
+
+    public boolean isFriendlyFire() {
+        return friendlyFire;
     }
 
     public Type getT() {
         return t;
     }
 
-    public int getInstigatorID() {
+    public String getInstigatorID() {
         return instigatorID;
     }
 
-    public int getTargetID() {
+    public String getTargetID() {
         return targetID;
     }
 
-    public double getDamage() {
-        return damage;
+    void setStatus(String status) {
+        this.status = status;
+    }
+
+    void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    void setEffectValue(double effectValue) {
+        this.effectValue = effectValue;
+    }
+
+    void setFriendlyFire(boolean friendlyFire) {
+        this.friendlyFire = friendlyFire;
+    }
+
+    void setT(Type t) {
+        this.t = t;
     }
 }

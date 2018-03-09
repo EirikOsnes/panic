@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class EventFactory {
 
     /**
-     * A factory that creates a list of events connected to the givev card
+     * A factory that creates a list of events connected to the given card
      * @param c             The card to make the events for
      * @param TargetID      The ID of the target of the event
      * @param InstigatorID  The ID of the instigator of the event

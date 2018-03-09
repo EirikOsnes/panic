@@ -18,7 +18,7 @@ class Event {
     private double effectValue;
     private boolean frendlyFire;
 
-    public Event(Type t, int instigatorID, int targetID) {
+    public Event(Type t, int targetID, int instigatorID) {
         this.t = t;
         this.instigatorID = instigatorID;
         this.targetID = targetID;

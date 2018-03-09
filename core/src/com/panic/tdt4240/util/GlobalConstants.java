@@ -10,7 +10,8 @@ public class GlobalConstants {
     public static final int BASE_DRAW_CARDS = 5;
     //Base number of cards played each round
     public static final int BASE_PLAY_CARDS = 3;
-
+    //Max number of players for a map, might not be needed
+    public static final int MAX_PLAYERS = 4;
 
 
 }

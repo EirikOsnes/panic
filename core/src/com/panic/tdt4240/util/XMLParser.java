@@ -21,11 +21,16 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 /**
- * Created by Eirik on 05-Mar-18.
+ * A class containing methods to parse XML files into java Objects.
  */
 
 public class XMLParser {
 
+    /**
+     * Create ALL cards in an XML file, and return these in an ArrayList.
+     * @param path The path to the XML file.
+     * @return Returns an ArrayList of Cards.
+     */
     public ArrayList<Card> parseCards(String path){
 
         ArrayList<Card> result = new ArrayList<>();
@@ -79,6 +84,11 @@ public class XMLParser {
 
     }
 
+    /**
+     * Create a Map from an XML file, by passing in the path to this file. The Map will already be set up with neighbourhood matrix.
+     * @param path The path to the XML file to use.
+     * @return Returns an instatiated Map, with neighbourhood matrix finalized.
+     */
     public Map parseMap(String path){
 
         try {
@@ -118,14 +128,13 @@ public class XMLParser {
                 }
             }
 
-            Map result = new Map(new ArrayList<Asteroid>(asteroidHashMap.values()));
+            Map result = new Map(new ArrayList<>(asteroidHashMap.values()));
             result.generateAdjacencyMatrix();
             return result;
 
         } catch (Exception e){
             e.printStackTrace();
         }
-
 
         return null;
     }

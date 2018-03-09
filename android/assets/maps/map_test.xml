@@ -17,6 +17,10 @@
             <posX>0.4</posX>
             <posY>0.4</posY>
         </asteroid>
+        <asteroid id = "A-005">
+            <posX>0.5</posX>
+            <posY>0.8</posY>
+        </asteroid>
     </asteroids>
     <connections>
         <connection>

@@ -58,14 +58,14 @@ public class TestMap {
         edges = graph.getEdges();
         vertices = graph.getVertices();
 
-        assertEquals(edges.size(),5);
+        assertEquals(edges.size(),10);
         assertEquals(vertices.size(),5);
 
         assertEquals(edges.get(0).getSource(), vertices.get(0));
         assertEquals(edges.get(0).getDestination(), vertices.get(1));
 
-        assertEquals(edges.get(1).getSource(), vertices.get(0));
-        assertEquals(edges.get(1).getDestination(), vertices.get(3));
+        assertEquals(edges.get(1).getSource(), vertices.get(1));
+        assertEquals(edges.get(1).getDestination(), vertices.get(0));
     }
 
     @Test

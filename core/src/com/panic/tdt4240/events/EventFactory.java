@@ -17,7 +17,7 @@ public class EventFactory {
      * @param c             The card to make the events for
      * @param TargetID      The ID of the target of the event
      * @param InstigatorID  The ID of the instigator of the event
-     * @return
+     * @return An ArrayList of the Events created from the Card
      */
     public static ArrayList<Event> createEvent(Card c, int TargetID, int InstigatorID) {
         ArrayList<Event> eList = new ArrayList<>();

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cards>
+    <card id = "MOVE">
+        <name>Move over there!</name>
+        <priority>5</priority>
+        <type_id>MOVEMENT</type_id>
+        <target_type>ASTEROID</target_type>
+        <allowed_targets>ALL</allowed_targets>
+        <min_range>1</min_range>
+        <max_range>1</max_range>
+        <tooltip>This here is what you see when you read this card!</tooltip>
+        <card_effect>
+            <target_status>position</target_status>
+            <status_duration>-1</status_duration>
+            <splash_range>0</splash_range>
+            <friendly_fire>false</friendly_fire>
+        </card_effect>
+    </card>
+</cards>

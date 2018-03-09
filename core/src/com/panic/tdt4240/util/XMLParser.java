@@ -1,4 +1,6 @@
-package com.panic.tdt4240.models;
+package com.panic.tdt4240.util;
+
+import com.panic.tdt4240.models.Card;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

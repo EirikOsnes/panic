@@ -5,7 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.panic.tdt4240.models.XMLParser;
+import com.panic.tdt4240.models.Map;
+import com.panic.tdt4240.util.XMLParser;
 
 public class PanicGame extends ApplicationAdapter {
 	SpriteBatch batch;

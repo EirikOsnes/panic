@@ -13,12 +13,31 @@ class Event {
 
     private Type t;
     private int instigatorID, targetID;
-    private double damage = 0.0;
+    private String status;
+    private int duration;
+    private double effectValue;
+    private boolean frendlyFire;
 
     public Event(Type t, int instigatorID, int targetID) {
         this.t = t;
         this.instigatorID = instigatorID;
         this.targetID = targetID;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public double getEffectValue() {
+        return effectValue;
+    }
+
+    public boolean isFrendlyFire() {
+        return frendlyFire;
     }
 
     public Type getT() {
@@ -33,7 +52,4 @@ class Event {
         return targetID;
     }
 
-    public double getDamage() {
-        return damage;
-    }
 }

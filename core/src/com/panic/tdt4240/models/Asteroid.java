@@ -98,4 +98,12 @@ public class Asteroid{
     public Vector2 getPosition() {
         return position;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

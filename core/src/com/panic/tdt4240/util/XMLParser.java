@@ -1,5 +1,7 @@
 package com.panic.tdt4240.util;
 
+import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Map;
 
@@ -12,6 +14,7 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -78,9 +81,50 @@ public class XMLParser {
 
     public Map parseMap(String path){
 
+        try {
+            File inputFile = new File(path);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            NodeList asteroidNodeList = doc.getElementsByTagName("asteroid");
+            HashMap<String,Asteroid> asteroidHashMap = new HashMap<>();
 
+            for (int i = 0; i < asteroidNodeList.getLength(); i++) {
+                Node node = asteroidNodeList.item(i);
 
+                if (node.getNodeType() == Node.ELEMENT_NODE){
+                    Element element = (Element) node;
+                    Asteroid myAsteroid = new Asteroid(null);
+                    String id = element.getAttribute("id");
+                    myAsteroid.setId(id);
+                    myAsteroid.setPosition(new Vector2(
+                            Float.parseFloat(element.getElementsByTagName("posX").item(0).getTextContent()),
+                            Float.parseFloat(element.getElementsByTagName("posY").item(0).getTextContent())
+                    ));
+                    asteroidHashMap.put(id, myAsteroid);
+                }
+            }
 
+            NodeList connectionNodeList = doc.getElementsByTagName("connection");
+            for (int i = 0; i < connectionNodeList.getLength(); i++) {
+                Node node = connectionNodeList.item(i);
+
+                if(node.getNodeType() == Node.ELEMENT_NODE){
+                    Element element = (Element) node;
+                    asteroidHashMap.get(element.getElementsByTagName("vertexID").item(0).getTextContent()).connect(
+                            asteroidHashMap.get(element.getElementsByTagName("vertexID").item(1).getTextContent())
+                    );
+                }
+            }
+
+            Map result = new Map(new ArrayList<Asteroid>(asteroidHashMap.values()));
+            result.generateAdjacencyMatrix();
+            return result;
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
 
         return null;

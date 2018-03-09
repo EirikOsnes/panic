@@ -19,12 +19,33 @@
         </asteroid>
     </asteroids>
     <connections>
-        <connection>A-001:A-002</connection>
-        <connection>A-001:A-003</connection>
-        <connection>A-002:A-003</connection>
-        <connection>A-002:A-004</connection>
-        <connection>A-003:A-004</connection>
-        <connection>A-003:A-005</connection>
-        <connection>A-004:A-005</connection>
+        <connection>
+            <vertexID>A-001</vertexID>
+            <vertexID>A-002</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-001</vertexID>
+            <vertexID>A-003</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-002</vertexID>
+            <vertexID>A-003</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-002</vertexID>
+            <vertexID>A-004</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-003</vertexID>
+            <vertexID>A-004</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-003</vertexID>
+            <vertexID>A-005</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-004</vertexID>
+            <vertexID>A-005</vertexID>
+        </connection>
     </connections>
 </map>

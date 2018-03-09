@@ -15,8 +15,6 @@ import java.util.HashMap;
 public class Map {
     private ArrayList<Asteroid> asteroids;
     private int[][] adjacency;
-    ArrayList<Edge> edges;
-    ArrayList<Vertex> vertices;
     HashMap<String, Vehicle> vehicles;
 
     /**
@@ -53,7 +51,7 @@ public class Map {
      * @param asteroid asteroid to get vehicles from
      * @return all vehicles present on the asteroid
      */
-    public ArrayList<Vehicle> getVehicleOnAsteroid(Asteroid asteroid){
+    public ArrayList<Vehicle> getVehiclesOnAsteroid(Asteroid asteroid){
         if(asteroid!=null){
             if(!asteroid.getVehicles().isEmpty()) {
                 return asteroid.getVehicles();
@@ -105,7 +103,6 @@ public class Map {
 
     /**
      * generates an adjacency matrix based on the asteroids on the map and its connections.
-     * @return The adjacency matrix
      */
     public void generateAdjacencyMatrix(){
         int[][] matrix = new int[asteroids.size()][asteroids.size()];
@@ -139,8 +136,8 @@ public class Map {
      * @return The graph representing the asteroids
      */
     protected Graph generateVertexAndEdge(){
-        edges = new ArrayList<Edge>();
-        vertices = new ArrayList<Vertex>();
+        ArrayList<Edge> edges = new ArrayList<>();
+        ArrayList<Vertex> vertices = new ArrayList<>();
         for(int i=0;i<asteroids.size();i++) {
             vertices.add(new Vertex(i));
         }

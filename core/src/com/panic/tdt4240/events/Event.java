@@ -68,4 +68,8 @@ class Event {
     void setFriendlyFire(boolean friendlyFire) {
         this.friendlyFire = friendlyFire;
     }
+
+    void setT(Type t) {
+        this.t = t;
+    }
 }

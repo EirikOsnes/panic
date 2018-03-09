@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -21,20 +20,24 @@ public class Dijkstra {
     private final List<Edge> edges;
     private Set<Vertex> settledNodes;
     private Set<Vertex> unSettledNodes;
-    private Map<Vertex, Vertex> predecessors;
-    private Map<Vertex, Integer> distance;
+    private HashMap<Vertex, Vertex> predecessors;
+    private HashMap<Vertex, Integer> distance;
 
     public Dijkstra(Graph graph) {
         // create a copy of the array so that we can operate on this array
         this.nodes = new ArrayList<Vertex>(graph.getVertices());
         this.edges = new ArrayList<Edge>(graph.getEdges());
-    }
-
-    public HashMap<Vertex,Integer> execute(Vertex source) {
+        distance = new HashMap<Vertex, Integer>();
         settledNodes = new HashSet<Vertex>();
         unSettledNodes = new HashSet<Vertex>();
-        HashMap<Vertex,Integer> returnMap = new HashMap<Vertex, Integer>();
         predecessors = new HashMap<Vertex, Vertex>();
+    }
+
+    public void execute(Vertex source) {
+        settledNodes.clear();
+        unSettledNodes.clear();
+        distance.clear();
+        predecessors.clear();
         distance.put(source, 0);
         unSettledNodes.add(source);
         while (unSettledNodes.size() > 0) {
@@ -43,8 +46,6 @@ public class Dijkstra {
             unSettledNodes.remove(node);
             findMinimalDistances(node);
         }
-        distance = returnMap;
-        return returnMap;
     }
 
     private void findMinimalDistances(Vertex node) {
@@ -69,6 +70,9 @@ public class Dijkstra {
             }
         }
         throw new RuntimeException("Should not happen");
+    }
+    public HashMap<Vertex, Integer> getDistances(){
+        return distance;
     }
 
     private List<Vertex> getNeighbors(Vertex node) {
@@ -130,4 +134,7 @@ public class Dijkstra {
         return path;
     }
 
+    public List<Vertex> getNodes() {
+        return nodes;
+    }
 }

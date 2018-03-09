@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<vehicles>
+    <vehicle type = "EDDISON">
+        <max_health>100</max_health>
+    </vehicle>
+</vehicles>

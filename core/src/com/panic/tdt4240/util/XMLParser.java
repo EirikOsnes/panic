@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Map;
+import com.panic.tdt4240.models.Vehicle;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -137,6 +138,31 @@ public class XMLParser {
         }
 
         return null;
+    }
+
+    public ArrayList<Vehicle> parseVehicles(String path){
+        ArrayList<Vehicle> result = new ArrayList<>();
+
+        try {
+            File inputFile = new File(path);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("vehicle");
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+
+                if (node.getNodeType() == Node.ELEMENT_NODE){
+                    Vehicle myVehicle = new Vehicle();
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

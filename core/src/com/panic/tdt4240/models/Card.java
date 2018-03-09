@@ -28,6 +28,7 @@ public class Card {
         cardEffects = new ArrayList<>();
     }
 
+    //region Getters/Setters
     public String getId() {
         return id;
     }
@@ -95,6 +96,8 @@ public class Card {
     public void setTooltip(String tooltip) {
         this.tooltip = tooltip;
     }
+
+    //endregion
 
     public void addCardEffect(String targetStatus, int statusDuration, int splashRange, boolean friendlyFire){
         cardEffects.add(new CardEffect(targetStatus, statusDuration, splashRange, friendlyFire));

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<map>
+    <asteroids>
+        <asteroid id = "A-001">
+            <posX>0.1</posX>
+            <posY>0.1</posY>
+        </asteroid>
+        <asteroid id = "A-002">
+            <posX>0.2</posX>
+            <posY>0.2</posY>
+        </asteroid>
+        <asteroid id = "A-003">
+            <posX>0.3</posX>
+            <posY>0.3</posY>
+        </asteroid>
+        <asteroid id = "A-004">
+            <posX>0.4</posX>
+            <posY>0.4</posY>
+        </asteroid>
+    </asteroids>
+    <connections>
+        <connection>A-001:A-002</connection>
+        <connection>A-001:A-003</connection>
+        <connection>A-002:A-003</connection>
+        <connection>A-002:A-004</connection>
+        <connection>A-003:A-004</connection>
+        <connection>A-003:A-005</connection>
+        <connection>A-004:A-005</connection>
+    </connections>
+</map>

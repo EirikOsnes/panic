@@ -1,6 +1,7 @@
 package com.panic.tdt4240.util;
 
 import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.Map;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -74,4 +75,15 @@ public class XMLParser {
         return result;
 
     }
+
+    public Map parseMap(String path){
+
+
+
+
+
+
+        return null;
+    }
+
 }

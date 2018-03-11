@@ -169,7 +169,7 @@ public class XMLParser {
                         Node statusNode = statusNodeList.item(j);
                         if (statusNode.getNodeType() == Node.ELEMENT_NODE){
                             Element statusElement = (Element) statusNode;
-                            myVehicle.addStatus(statusElement.getAttribute("name"), Float.parseFloat(statusElement.getAttribute("base")));
+                            myVehicle.getStatusHandler().addStatus(statusElement.getAttribute("name"), Float.parseFloat(statusElement.getAttribute("base")));
                         }
                     }
                 }

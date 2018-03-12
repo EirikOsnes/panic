@@ -24,7 +24,7 @@ public class PanicGame extends ApplicationAdapter {
 		gsm = new GameStateManager();
 		WIDTH = Gdx.graphics.getWidth();
 		HEIGHT = Gdx.graphics.getHeight();
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		gsm.push(new MenuState(gsm));
 
 	}

@@ -13,6 +13,7 @@ public class StatusHandler {
 
 
     private HashMap<String, Status> statuses;
+    //TODO: Potential for bugs from different orderings in the HashMap?
     private Object parent;
     public enum TIMING_TYPE{TURN_START, CARD_PLAYED ,TURN_END}
 
@@ -24,6 +25,15 @@ public class StatusHandler {
     public StatusHandler(Object parent){
         this.parent = parent;
         statuses = new HashMap<>();
+        setupBaseStatuses();
+    }
+
+    void setupBaseStatuses(){
+        addStatus("health");
+        addStatus("damage_modifier");
+        addStatus("defence_modifier");
+        addStatus("movement_modifier");
+        addStatus("max_damage");
     }
 
     /**
@@ -48,6 +58,15 @@ public class StatusHandler {
      */
     public void addStatus(String name, float baseValue){
         statuses.put(name, new Status(baseValue));
+    }
+
+    /**
+     * Should ONLY be used when initiating an object from XML file - or if you wish to override an existing status (as it will be wiped).
+     * ONLY use if you know what you are doing.
+     * @param name The name of the status
+     */
+    public void addStatus(String name){
+        addStatus(name, StatusConstants.STATUS_VALUES.valueOf(name).getBaseValue());
     }
 
     /**
@@ -116,6 +135,11 @@ public class StatusHandler {
         return result;
     }
 
+
+    /**
+     * Run the effect code related to the status with name statusName
+     * @param statusName The name of the status whose effect should run.
+     */
     void parseEffects(String statusName){
         String[] effectArray = StatusConstants.STATUS_VALUES.valueOf(statusName).getEffect();
 
@@ -128,10 +152,10 @@ public class StatusHandler {
 
         switch (effectArray[1]){
             case "ADD":
-                addStatusAddition(effectArray[0],value,Integer.parseInt(effectArray[3]));
+                addStatusAddition(effectArray[0],value*Float.parseFloat(effectArray[4]),Integer.parseInt(effectArray[3]));
                 break;
             case "MULT":
-                addStatusMultiplier(effectArray[0], value, Integer.parseInt(effectArray[3]));
+                addStatusMultiplier(effectArray[0], value*Float.parseFloat(effectArray[4]), Integer.parseInt(effectArray[3]));
                 break;
             case "SET":
                 //TODO: For now, we can only set to 0
@@ -140,7 +164,11 @@ public class StatusHandler {
         }
     }
 
-    void runEffects(TIMING_TYPE timing){
+    /**
+     * Runs all effects currently handled bt this StatusHandler. Only the effects corresponding to the timing will run.
+     * @param timing The timing for when this is run (TURN_START, CARD_PLAYED, TURN_END)
+     */
+    public void runEffects(TIMING_TYPE timing){
         for (String key: statuses.keySet()) {
             if(!statuses.get(key).playedThisTurn){
 
@@ -161,10 +189,12 @@ public class StatusHandler {
                         if (effectTiming.equalsIgnoreCase("INSTANT")){
                             parseEffects(key);
                         }
+                        break;
                     case TURN_END:
                         if (effectTiming.equalsIgnoreCase("TURN_END") || effectTiming.equalsIgnoreCase("INSTANT")){
                             parseEffects(key);
                         }
+                        break;
                 }
 
             }

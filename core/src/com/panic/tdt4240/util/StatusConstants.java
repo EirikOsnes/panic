@@ -13,7 +13,10 @@ public class StatusConstants {
         defence_modifier(1),
         movement_modifier(1),
         max_damage(1000),
-        poison(0, new String[]{"health","ADD","RESULTANT","0"}, "TURN_END");
+
+
+        poison(0, new String[]{"health","ADD","RESULTANT","0", "-1"}, "TURN_END"),
+        invulnerable(0,new String[]{"max_damage", "SET", "0", "1", "1"}, "INSTANT");
 
         private float baseValue;
         private String[] effect;
@@ -25,7 +28,7 @@ public class StatusConstants {
 
         /**
          * Alternate setter for status values, where effect is also defined as an array of Strings.
-         * Effect is on the format {TARGET_STATUS, ADD/MULT/SET, VALUE (a float value or RESULTANT), DURATION}
+         * Effect is on the format {TARGET_STATUS, ADD/MULT/SET, VALUE (a float value or RESULTANT), DURATION, MULTIPLIER_FOR_VALUE}
          * Timing is INSTANT/TURN_START/TURN_END
          * @param baseValue The base value for this status
          * @param effect The string of tags to define the effect.

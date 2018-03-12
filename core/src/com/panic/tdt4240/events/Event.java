@@ -6,7 +6,7 @@ package com.panic.tdt4240.events;
  * Created by Choffa
  */
 
-class Event {
+public class Event {
     /**
      * An enum that defines the type of event that occurred
      */
@@ -19,7 +19,7 @@ class Event {
     private double effectValue;
     private boolean friendlyFire;
 
-    public Event(Type t, String targetID, String instigatorID) {
+    Event(Type t, String targetID, String instigatorID) {
         this.t = t;
         this.targetID = targetID;
         this.instigatorID = instigatorID;

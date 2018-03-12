@@ -1,5 +1,8 @@
 package com.panic.tdt4240.models;
 
+
+import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventListener;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
@@ -10,7 +13,9 @@ import java.util.HashMap;
  * Created by Eirik on 05-Mar-18.
  */
 
-public class Asteroid{
+
+public class Asteroid implements EventListener{
+  
     private String id;
     private HashMap<String,Object> statuses;
     private Sprite sprite;
@@ -115,5 +120,12 @@ public class Asteroid{
 
     public void setId(String id) {
         this.id = id;
+    }
+  
+    @Override
+    public void handleEvent(Event e) {
+        if (e.getT() == Event.Type.ATTACK) {
+            //TODO: Handle attack event
+        }
     }
 }

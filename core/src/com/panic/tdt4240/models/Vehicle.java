@@ -1,12 +1,8 @@
 package com.panic.tdt4240.models;
 
-
 import com.panic.tdt4240.events.Event;
 import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.util.StatusHandler;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 
 /**
  * The Object for the Vehicle units.
@@ -32,10 +28,8 @@ public class Vehicle implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
-        if (e.getT() == Event.Type.MOVE) {
-            //TODO: Handle move event
-        } else if (e.getT() == Event.Type.ATTACK) {
-            //TODO: Handle attack event
+        if (e.getT() == Event.Type.ATTACK) {
+            this.statusHandler.addStatusAddition(e.getStatus(), e.getEffectValue(), e.getDuration());
         }
     }
 }

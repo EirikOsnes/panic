@@ -18,7 +18,7 @@ public class Event {
     private String instigatorID, targetID;
     private String status;
     private int duration;
-    private double effectValue;
+    private float effectValue;
     private boolean friendlyFire;
 
     Event(Type t, String targetID, String instigatorID) {
@@ -35,7 +35,7 @@ public class Event {
         return duration;
     }
 
-    public double getEffectValue() {
+    public float getEffectValue() {
         return effectValue;
     }
 
@@ -63,7 +63,7 @@ public class Event {
         this.duration = duration;
     }
 
-    void setEffectValue(double effectValue) {
+    void setEffectValue(float effectValue) {
         this.effectValue = effectValue;
     }
 

@@ -121,7 +121,7 @@ public class StatusHandler {
     /**
      * A class to handle the modifier logic for status effects.
      */
-    private class Status{
+    class Status{
         float baseValue;
         ArrayList<float[]> tickMultipliers;
         ArrayList<float[]> tickAdditions;

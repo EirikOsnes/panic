@@ -1,6 +1,8 @@
 package com.panic.tdt4240.models;
 
+import com.panic.tdt4240.events.Event;
 import com.panic.tdt4240.util.GlobalConstants;
+import com.panic.tdt4240.events.EventListener;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -9,7 +11,7 @@ import java.util.Stack;
  * Created by Hermann on 09.03.2018.
  */
 
-public class Player {
+public class Player implements EventListener {
 
     private Deck deck;
     private Hand hand;
@@ -38,4 +40,10 @@ public class Player {
         return vehicle;
     }
 
+    @Override
+    public void handleEvent(Event e) {
+        if (e.getT() == Event.Type.DESTROYED) {
+            //TODO: handle destroy event
+        }
+    }
 }

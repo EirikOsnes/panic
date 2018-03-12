@@ -6,6 +6,7 @@ import com.panic.tdt4240.util.Graph;
 import com.panic.tdt4240.util.Vertex;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by magnus on 05.03.2018.
@@ -14,22 +15,96 @@ import java.util.ArrayList;
 public class Map {
     private ArrayList<Asteroid> asteroids;
     private int[][] adjacency;
-    ArrayList<Edge> edges;
-    ArrayList<Vertex> vertices;
+    HashMap<String, Vehicle> vehicles;
 
+    /**
+     * creates a Map object containing a set of asteroids
+     * @param asteroids ArrayList of asteroids
+     */
     public Map(ArrayList<Asteroid> asteroids){
+        vehicles = new HashMap<>();
         this.asteroids = asteroids;
     }
 
+    /**
+     * creates a connection between two asteroids
+     * @param a1 first asteroid
+     * @param a2 second asteroid
+     */
     public void connectAsteroids(Asteroid a1,Asteroid a2){
         a1.connect(a2);
     }
 
     /**
-     * generates an adjacency matrix based on the asteroids on the map and its connections.
-     * @return The adjacency matrix
+     * adds a vehicle to the vehicle hashmap with the player name as a key
+     * @param name of the player
+     * @param vehicle to be added
      */
-    public int[][] generateAdjacencyMatrix(){
+    public void addVehicle(String name, Vehicle vehicle){
+        if(!vehicles.containsKey(name)) {
+            vehicles.put(name, vehicle);
+        }
+    }
+
+    /**
+     * returns all vehicles on an asteroid. returns null if asteroid does not exist or is empty
+     * @param asteroid asteroid to get vehicles from
+     * @return all vehicles present on the asteroid
+     */
+    public ArrayList<Vehicle> getVehiclesOnAsteroid(Asteroid asteroid){
+        if(asteroid!=null){
+            if(!asteroid.getVehicles().isEmpty()) {
+                return asteroid.getVehicles();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Adds a vehicle to the designated asteroid
+     * @param asteroid The asteroid to move the vehicle to
+     * @param vehicle The vehicle to be moved
+     */
+    protected void addVehicleToAsteroid(Asteroid asteroid, Vehicle vehicle){
+        asteroid.addVehicle(vehicle);
+    }
+
+    /**
+     * Removes a vehicle from the designated asteroid if it is situated on the asteroid
+     * @param asteroid The asteroid the vehicle is on
+     * @param vehicle The vehicle to be removed
+     */
+    protected boolean removeVehicleFromAsteroid(Asteroid asteroid, Vehicle vehicle){
+        return asteroid.removeVehicle(vehicle);
+    }
+
+
+    /**
+     * Moves a vehicle to a new asteroid
+     * @param origin current asteroid of the vehicle
+     * @param target vehicle to be moved to
+     * @param vehicle vehicle to be moved
+     */
+    protected void moveVehicle(Asteroid origin, Asteroid target, Vehicle vehicle){
+        if(removeVehicleFromAsteroid(origin,vehicle)) {
+            addVehicleToAsteroid(target, vehicle);
+        }
+    }
+
+    /**
+     * Removes a vehicle from the game
+     * @param name key of the vehicle to be removed
+     */
+    public void removeVehicle(String name){
+        if(vehicles.containsKey(name)){
+            vehicles.remove(name);
+        }
+    }
+
+    /**
+     * generates an adjacency matrix based on the asteroids on the map and its connections.
+     */
+    public void generateAdjacencyMatrix(){
         int[][] matrix = new int[asteroids.size()][asteroids.size()];
         Graph graph = generateVertexAndEdge();
         Dijkstra dijkstra = new Dijkstra(graph);
@@ -46,7 +121,14 @@ public class Map {
             }
         }
         adjacency = matrix;
-        return matrix;
+    }
+
+    /**
+     *
+     * @return The adjacency matrix of the map
+     */
+    public int[][] getAdjacency() {
+        return adjacency;
     }
 
     /**
@@ -54,8 +136,8 @@ public class Map {
      * @return The graph representing the asteroids
      */
     protected Graph generateVertexAndEdge(){
-        edges = new ArrayList<Edge>();
-        vertices = new ArrayList<Vertex>();
+        ArrayList<Edge> edges = new ArrayList<>();
+        ArrayList<Vertex> vertices = new ArrayList<>();
         for(int i=0;i<asteroids.size();i++) {
             vertices.add(new Vertex(i));
         }

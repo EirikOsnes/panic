@@ -11,6 +11,7 @@
         <tooltip>This here is what you see when you read this card!</tooltip>
         <card_effect>
             <target_status>position</target_status>
+            <value>1.0</value>
             <status_duration>-1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>false</friendly_fire>

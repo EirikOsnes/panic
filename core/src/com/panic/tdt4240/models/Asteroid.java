@@ -11,27 +11,20 @@ import java.util.HashMap;
  */
 
 public class Asteroid{
+    private String id;
     private HashMap<String,Object> statuses;
     private Sprite sprite;
     private ArrayList<Asteroid> neighbours;
     private Vector2 position;
+    private ArrayList<Vehicle> vehicles;
 
-    public Asteroid(Sprite sprite,ArrayList<Asteroid> neighbours){
-        this.sprite=sprite;
-        if(neighbours!=null){
-            this.neighbours=neighbours;
-        }
-        else{
-            this.neighbours=new ArrayList<Asteroid>();
-        }
-        statuses = new HashMap<String, Object>();
-        position = new Vector2();
-    }
+
     public Asteroid(Sprite sprite){
         this.sprite = sprite;
         neighbours = new ArrayList<Asteroid>();
         statuses = new HashMap<String, Object>();
         position = new Vector2();
+        vehicles = new ArrayList<>();
     }
 
     /**
@@ -69,6 +62,20 @@ public class Asteroid{
         }
     }
 
+    public void addVehicle(Vehicle vehicle){
+        if(!vehicles.contains(vehicle)) {
+            vehicles.add(vehicle);
+        }
+    }
+
+    public boolean removeVehicle(Vehicle vehicle){
+        if(vehicles.contains(vehicle)){
+            vehicles.remove(vehicle);
+            return true;
+        }
+        return false;
+    }
+
     /**
      *
      * @return The neighbours of the asteroid
@@ -96,5 +103,17 @@ public class Asteroid{
 
     public Vector2 getPosition() {
         return position;
+    }
+
+    public ArrayList<Vehicle> getVehicles() {
+        return vehicles;
+    }
+    
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

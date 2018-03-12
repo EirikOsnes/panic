@@ -7,10 +7,12 @@ package com.panic.tdt4240.events;
  */
 
 public class Event {
+
+
     /**
      * An enum that defines the type of event that occurred
      */
-    public enum Type {ATTACK, DESTROYED, MOVE}
+    public enum Type {ATTACK, DESTROYED, MOVE};
 
     private Type t;
     private String instigatorID, targetID;
@@ -71,5 +73,14 @@ public class Event {
 
     void setT(Type t) {
         this.t = t;
+    }
+
+    public Event cloneEvent(String targetID) {
+        Event e = new Event(this.t, targetID, this.instigatorID);
+        e.setStatus(this.status);
+        e.setFriendlyFire(this.friendlyFire);
+        e.setEffectValue(this.effectValue);
+        e.setDuration(this.duration);
+        return e;
     }
 }

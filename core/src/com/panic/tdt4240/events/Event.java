@@ -19,7 +19,7 @@ class Event {
     private double effectValue;
     private boolean friendlyFire;
 
-    public Event(Type t, String targetID, String instigatorID) {
+    Event(Type t, String targetID, String instigatorID) {
         this.t = t;
         this.targetID = targetID;
         this.instigatorID = instigatorID;

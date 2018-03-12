@@ -28,8 +28,8 @@ public class Vehicle implements EventListener {
     public void handleEvent(Event e) {
         if (e.getT() == Event.Type.MOVE) {
             //TODO: Handle move event
-        }
-        else if (e.getT() == Event.Type.ATTACK) {
+        } else if (e.getT() == Event.Type.ATTACK) {
             //TODO: Handle attack event
         }
+    }
 }

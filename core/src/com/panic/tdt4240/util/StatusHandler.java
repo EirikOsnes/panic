@@ -1,5 +1,7 @@
 package com.panic.tdt4240.util;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,6 +14,7 @@ public class StatusHandler {
 
     private HashMap<String, Status> statuses;
     private Object parent;
+    public enum TIMING_TYPE{TURN_START, CARD_PLAYED ,TURN_END}
 
 
     /**
@@ -57,11 +60,12 @@ public class StatusHandler {
     public float addStatusMultiplier(String statusName, float multiplier, int duration){
         if (!statuses.containsKey(statusName)){
             try {
-                throw new Exception("This status (" + statusName+ ") is not yet initiated, and no known base value is known");
+                float baseValue = StatusConstants.STATUS_VALUES.valueOf(statusName).getBaseValue();
+                addStatus(statusName, baseValue);
             } catch (Exception e) {
+                Gdx.app.error("ADD_STATUS", "This status (" + statusName+ ") is not yet initiated, and no known base value is known", e);
                 e.printStackTrace();
             }
-            //TODO: A list over base values? Some other way of handling it?
         }
         if(duration<=0){
             statuses.get(statusName).addPermanentMultiplier(multiplier);
@@ -80,13 +84,16 @@ public class StatusHandler {
      * @return Returns the resultant for this status.
      */
     public float addStatusAddition(String statusName, float change, int duration) {
+
+
         if (!statuses.containsKey(statusName)){
             try {
-                throw new Exception("This status (" + statusName+ ") is not yet initiated, and no known base value is known");
+                float baseValue = StatusConstants.STATUS_VALUES.valueOf(statusName).getBaseValue();
+                addStatus(statusName, baseValue);
             } catch (Exception e) {
+                Gdx.app.error("ADD_STATUS", "This status (" + statusName+ ") is not yet initiated, and no known base value is known", e);
                 e.printStackTrace();
             }
-            //TODO: A list over base values? Some other way of handling it?
         }
         if(duration<=0){
             statuses.get(statusName).addPermanentAddition(change);
@@ -109,11 +116,67 @@ public class StatusHandler {
         return result;
     }
 
+    void parseEffects(String statusName){
+        String[] effectArray = StatusConstants.STATUS_VALUES.valueOf(statusName).getEffect();
+
+        float value;
+        if(effectArray[2].equalsIgnoreCase("RESULTANT")){
+            value = statuses.get(statusName).getResultant();
+        }else {
+            value = Float.parseFloat(effectArray[2]);
+        }
+
+        switch (effectArray[1]){
+            case "ADD":
+                addStatusAddition(effectArray[0],value,Integer.parseInt(effectArray[3]));
+                break;
+            case "MULT":
+                addStatusMultiplier(effectArray[0], value, Integer.parseInt(effectArray[3]));
+                break;
+            case "SET":
+                //TODO: For now, we can only set to 0
+                addStatusMultiplier(effectArray[0], - statuses.get(statusName).getTotalMultipliers(), Integer.parseInt(effectArray[3]));
+                break;
+        }
+    }
+
+    void runEffects(TIMING_TYPE timing){
+        for (String key: statuses.keySet()) {
+            if(!statuses.get(key).playedThisTurn){
+
+                //This status has is a base status or a lookup status
+                if (StatusConstants.STATUS_VALUES.valueOf(key).getEffect() == null)
+                    continue;
+
+
+                String effectTiming = StatusConstants.STATUS_VALUES.valueOf(key).getTiming();
+                switch (timing) {
+                    case TURN_START:
+                        if(effectTiming.equalsIgnoreCase("TURN_START") || effectTiming.equalsIgnoreCase("INSTANT")){
+                            parseEffects(key);
+                            //TODO: There WILL be a bug here, with statuses with no value will be "played" here, thus not allowing them to be added later this turn.
+                        }
+                        break;
+                    case CARD_PLAYED:
+                        if (effectTiming.equalsIgnoreCase("INSTANT")){
+                            parseEffects(key);
+                        }
+                    case TURN_END:
+                        if (effectTiming.equalsIgnoreCase("TURN_END") || effectTiming.equalsIgnoreCase("INSTANT")){
+                            parseEffects(key);
+                        }
+                }
+
+            }
+        }
+    }
+
     /**
      * Updates all ticking modifiers assosiated with this StatusHandler. Call on turn end.
      */
     public void nextTurn(){
         for (Status status : statuses.values()) {
+
             status.nextTurn();
         }
     }
@@ -127,6 +190,7 @@ public class StatusHandler {
         ArrayList<float[]> tickAdditions;
         float multipliers = 1;
         float additions = 0;
+        boolean playedThisTurn = false;
 
         /**
          * Ititiate the Status with a base value
@@ -136,6 +200,14 @@ public class StatusHandler {
             this.baseValue = baseValue;
             tickAdditions = new ArrayList<>();
             tickMultipliers = new ArrayList<>();
+        }
+
+        public boolean isPlayedThisTurn() {
+            return playedThisTurn;
+        }
+
+        public void play() {
+            this.playedThisTurn = true;
         }
 
         /**
@@ -248,6 +320,8 @@ public class StatusHandler {
                     tickAdditions.remove(i);
                 }
             }
+
+            playedThisTurn = false;
 
         }
 

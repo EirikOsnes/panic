@@ -137,8 +137,10 @@ public class Asteroid implements EventListener{
 
         else if (e.getT() == Event.Type.ATTACK && e.getTargetID().equals(this.id)) {
             for (String vid : vehicleIDs) {
-                Event newEvent = e.cloneEvent(vid);
-                EventBus.getInstance().postEvent(newEvent);
+                if (e.isFriendlyFire() || !vid.equals(e.getInstigatorID())) {
+                    Event newEvent = e.cloneEvent(vid);
+                    EventBus.getInstance().postEvent(newEvent);
+                }
             }
         }
     }

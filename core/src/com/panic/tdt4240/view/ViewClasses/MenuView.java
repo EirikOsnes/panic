@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.panic.tdt4240.states.GameStateManager;
 import com.panic.tdt4240.states.MenuState;
 import com.panic.tdt4240.view.Renderer;
 
@@ -50,7 +49,21 @@ public class MenuView extends AbstractView {
         createGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput(createGameBtn);
+                state.handleInput(1);
+            }
+        });
+
+        joinGameBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                state.handleInput(2);
+            }
+        });
+
+        settingsBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                state.handleInput(3);
             }
         });
 

@@ -6,27 +6,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * Created by magnus on 12.03.2018.
  */
 
-public class MenuState extends State {
-    
+public class SettingsState extends State {
 
-
-    public MenuState(GameStateManager gsm){
+    public SettingsState(GameStateManager gsm){
         super(gsm);
     }
 
     @Override
     public void handleInput(Object o) {
-        if(o==1){
-            gsm.push(new CreateGameState(gsm));
-        }
-        else if(o==2){
-            gsm.push(new GameListState(gsm));
-        }
-        else if(o==3){
-            gsm.push(new SettingsState(gsm));
-        }
-    }
 
+    }
 
     @Override
     public void update(float dt) {

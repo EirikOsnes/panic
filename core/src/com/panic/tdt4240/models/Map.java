@@ -51,7 +51,7 @@ public class Map {
      * @param asteroid asteroid to get vehicles from
      * @return all vehicles present on the asteroid
      */
-    public ArrayList<Vehicle> getVehiclesOnAsteroid(Asteroid asteroid){
+    public ArrayList<String> getVehiclesOnAsteroid(Asteroid asteroid){
         if(asteroid!=null){
             if(!asteroid.getVehicles().isEmpty()) {
                 return asteroid.getVehicles();
@@ -66,7 +66,7 @@ public class Map {
      * @param vehicle The vehicle to be moved
      */
     protected void addVehicleToAsteroid(Asteroid asteroid, Vehicle vehicle){
-        asteroid.addVehicle(vehicle);
+        asteroid.addVehicle(vehicle.getVehicleID());
     }
 
     /**
@@ -75,7 +75,7 @@ public class Map {
      * @param vehicle The vehicle to be removed
      */
     protected boolean removeVehicleFromAsteroid(Asteroid asteroid, Vehicle vehicle){
-        return asteroid.removeVehicle(vehicle);
+        return asteroid.removeVehicle(vehicle.getVehicleID());
     }
 
 

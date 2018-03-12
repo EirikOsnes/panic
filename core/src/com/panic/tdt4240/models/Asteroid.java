@@ -3,6 +3,7 @@ package com.panic.tdt4240.models;
 
 import com.panic.tdt4240.events.Event;
 import com.panic.tdt4240.events.EventListener;
+import com.panic.tdt4240.events.EventBus;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
@@ -21,15 +22,16 @@ public class Asteroid implements EventListener{
     private Sprite sprite;
     private ArrayList<Asteroid> neighbours;
     private Vector2 position;
-    private ArrayList<Vehicle> vehicles;
+    private ArrayList<String> vehicleIDs;
 
 
-    public Asteroid(Sprite sprite){
+    public Asteroid(Sprite sprite) {
+        EventBus.getInstance().addListener(this);
         this.sprite = sprite;
-        neighbours = new ArrayList<Asteroid>();
-        statuses = new HashMap<String, Object>();
+        neighbours = new ArrayList<>();
+        statuses = new HashMap<>();
         position = new Vector2();
-        vehicles = new ArrayList<>();
+        vehicleIDs = new ArrayList<>();
     }
 
     /**
@@ -67,15 +69,15 @@ public class Asteroid implements EventListener{
         }
     }
 
-    public void addVehicle(Vehicle vehicle){
-        if(!vehicles.contains(vehicle)) {
-            vehicles.add(vehicle);
+    public void addVehicle(String vehicleID){
+        if(!vehicleIDs.contains(vehicleID)) {
+            vehicleIDs.add(vehicleID);
         }
     }
 
-    public boolean removeVehicle(Vehicle vehicle){
-        if(vehicles.contains(vehicle)){
-            vehicles.remove(vehicle);
+    public boolean removeVehicle(String vehicleID){
+        if(vehicleIDs.contains(vehicleID)){
+            vehicleIDs.remove(vehicleID);
             return true;
         }
         return false;
@@ -110,8 +112,8 @@ public class Asteroid implements EventListener{
         return position;
     }
 
-    public ArrayList<Vehicle> getVehicles() {
-        return vehicles;
+    public ArrayList<String> getVehicles() {
+        return vehicleIDs;
     }
     
     public String getId() {
@@ -124,8 +126,22 @@ public class Asteroid implements EventListener{
   
     @Override
     public void handleEvent(Event e) {
-        if (e.getT() == Event.Type.ATTACK) {
-            //TODO: Handle attack event
+        if (e.getT() == Event.Type.MOVE) {
+            if (e.getTargetID().equals(this.id)) {
+                this.addVehicle(e.getInstigatorID());
+            }
+            else if (this.vehicleIDs.contains(e.getInstigatorID())) {
+                this.removeVehicle(e.getInstigatorID());
+            }
+        }
+
+        else if (e.getT() == Event.Type.ATTACK && e.getTargetID().equals(this.id)) {
+            for (String vid : vehicleIDs) {
+                if (e.isFriendlyFire() || !vid.equals(e.getInstigatorID())) {
+                    Event newEvent = e.cloneEvent(vid);
+                    EventBus.getInstance().postEvent(newEvent);
+                }
+            }
         }
     }
 }

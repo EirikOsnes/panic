@@ -49,7 +49,7 @@ public class MenuView extends AbstractView {
 
         createGameBtn = new TextButton("Create new",textButtonStyle);
         joinGameBtn = new TextButton("Join",textButtonStyle);
-        settingsBtn = new TextButton("Settings",textButtonStyle);
+        settingsBtn = new TextButton("SettingsView",textButtonStyle);
 
         table.add(createGameBtn).width(150).height(50).pad(20);
         table.row();

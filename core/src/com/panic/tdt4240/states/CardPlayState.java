@@ -14,6 +14,9 @@ public class CardPlayState extends State {
     private PlayCardView playView;
     public Player player;
     public Map map;
+    private boolean gameFinished;
+    private int playerCount;
+    private int playersAlive;
 
     protected CardPlayState(GameStateManager gsm) {
         super(gsm);
@@ -23,12 +26,20 @@ public class CardPlayState extends State {
 
     @Override
     public void handleInput(Object o) {
+        if (o == 0) { // play cards
 
+        }
+        if (o == 1){ // animation
+
+        }
     }
 
     @Override
     public void update(float dt) {
-
+        // TODO: pass appropriate data to gameresults (which then passes to view)
+        // e.g. winner=null, if all players left the lobby.
+        if (playerCount < 2) gsm.push(new GameResultsState(gsm));
+        if (playersAlive==1) gsm.push(new GameResultsState(gsm));
     }
 
     @Override

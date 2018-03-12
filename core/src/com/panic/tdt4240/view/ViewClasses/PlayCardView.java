@@ -59,7 +59,7 @@ public class PlayCardView extends AbstractView{
 
         createGameBtn = new TextButton("Create new",textButtonStyle);
         joinGameBtn = new TextButton("Join",textButtonStyle);
-        settingsBtn = new TextButton("Settings",textButtonStyle);
+        settingsBtn = new TextButton("SettingsView",textButtonStyle);
 
         createGameBtn.addListener(new ChangeListener() {
             @Override

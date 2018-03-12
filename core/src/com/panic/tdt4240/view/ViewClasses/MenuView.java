@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.panic.tdt4240.states.MenuState;
@@ -28,10 +29,14 @@ public class MenuView extends AbstractView {
     private Skin skin;
     private BitmapFont font;
     private TextButton.TextButtonStyle textButtonStyle;
+    private Table table;
 
     public MenuView(MenuState menuState) {
         super(menuState);
         stage = new Stage();
+        table = new Table();
+        table.center();
+        table.setFillParent(true);
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         skin = new Skin();
@@ -45,6 +50,12 @@ public class MenuView extends AbstractView {
         createGameBtn = new TextButton("Create new",textButtonStyle);
         joinGameBtn = new TextButton("Join",textButtonStyle);
         settingsBtn = new TextButton("Settings",textButtonStyle);
+
+        table.add(createGameBtn).width(150).height(50).pad(20);
+        table.row();
+        table.add(joinGameBtn).width(150).height(50).pad(20);
+        table.row();
+        table.add(settingsBtn).width(150).height(50).pad(20);
 
         createGameBtn.addListener(new ChangeListener() {
             @Override
@@ -68,9 +79,7 @@ public class MenuView extends AbstractView {
         });
 
 
-        stage.addActor(createGameBtn);
-        stage.addActor(joinGameBtn);
-        stage.addActor(settingsBtn);
+        stage.addActor(table);
 
         renderer = Renderer.getInstance();
     }

@@ -13,16 +13,17 @@ import java.nio.file.Path;
  * Created by victor on 09.03.2018.
  */
 
-public class CardTexture {
+public class CardDrawable {
 
-//    private Texture img;
-    private Texture img;
+    private Drawable img;
+    private float width;
+    private float height;
 
-    public CardTexture(Card c){
+    public CardDrawable(Card c){
         if (!loadImg(c)) throw new RuntimeException("Card texture loading failed." +
                 "\n Check parameters or assets.");
     }
-    public CardTexture(String cardName){
+    public CardDrawable(String cardName){
         if (!loadImg(cardName)) throw new RuntimeException("Card texture loading failed." +
                 "\n Check parameters or assets.");
     }
@@ -32,13 +33,24 @@ public class CardTexture {
     }
 /**/
 
-    public Texture getTexture(){
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public Drawable getDrawable(){
         return img;
     }
 
     private boolean loadImg(String cardName){
         try{
-            img = new Texture(cardName + ".png");
+            Texture texture = new Texture(cardName + ".xml");
+            width = texture.getWidth();
+            height = texture.getHeight();
+            img = new TextureRegionDrawable(new TextureRegion(texture));
             return true;
         }
         catch (Exception e){
@@ -48,7 +60,10 @@ public class CardTexture {
 
     private boolean loadImg(Card c){
         try{
-            img = new Texture(c.getName() + ".png");
+            Texture texture = new Texture(c.getName() + ".xml");
+            width = texture.getWidth();
+            height = texture.getHeight();
+            img = new TextureRegionDrawable(new TextureRegion(texture));
             return true;
         }
         catch (Exception e){
@@ -56,12 +71,12 @@ public class CardTexture {
         }
     }
 
-/*    public static CardTexture valueOf(String cardName){
-        return new CardTexture(cardName);
+/*    public static CardDrawable valueOf(String cardName){
+        return new CardDrawable(cardName);
     }
 
-    public static CardTexture valueOf(Card c){
-        return new CardTexture(c);
+    public static CardDrawable valueOf(Card c){
+        return new CardDrawable(c);
     }
     /**/
 

@@ -18,10 +18,12 @@ public class CardPlayState extends State {
     private int playerCount;
     private int playersAlive;
 
-    protected CardPlayState(GameStateManager gsm) {
+    public CardPlayState(GameStateManager gsm, Player player/*, Map map*/) {
         super(gsm);
+        this.player = player;
+        player.playCards();
+        //this.map = map;
         playView = new PlayCardView(this);
-        //TODO Add player instance, + map
     }
 
     @Override
@@ -44,7 +46,7 @@ public class CardPlayState extends State {
 
     @Override
     public void render(SpriteBatch sb) {
-
+        playView.render(sb);
 
     }
 

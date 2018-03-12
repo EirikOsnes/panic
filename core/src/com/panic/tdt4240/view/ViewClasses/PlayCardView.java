@@ -1,6 +1,17 @@
 package com.panic.tdt4240.view.ViewClasses;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.Hand;
+import com.panic.tdt4240.states.CardPlayState;
+import com.panic.tdt4240.states.State;
+import com.panic.tdt4240.view.TextureClasses.CardTexture;
 import com.panic.tdt4240.view.TextureClasses.HandTexture;
 import com.panic.tdt4240.view.Renderer;
 
@@ -10,15 +21,55 @@ import java.util.ArrayList;
  * Created by victor on 05.03.2018.
  */
 
-public class PlayView extends AbstractView{
+public class PlayCardView extends AbstractView{
 
     Renderer renderer;
     private boolean PlayState = false; // animation state when cards are to
     private HandTexture hv;
+    private ArrayList<Card> hand;
 
-    public PlayView(){
-        super();
+    private Stage stage;
+    private ImageTextButton button;
+    Skin skin;
+    TextureAtlas buttonAtlas;
+    ImageTextButton.ImageTextButtonStyle buttonStyle;
+
+    public PlayCardView(CardPlayState state){
+        super(state);
         renderer = Renderer.getInstance();
+
+        hand = state.player.getHand();
+        stage = new Stage();
+
+        for (int i = 0; i < hand.size(); i++) {
+            Gdx.input.setInputProcessor(stage);
+            skin = new Skin();
+            buttonAtlas = new TextureAtlas(Gdx.files.internal("buttons/buttons.pack"));
+            skin.addRegions(buttonAtlas);
+
+
+
+        }
+        /*
+        textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = font;
+        textButtonStyle.up = skin.getDrawable("up-button");
+        textButtonStyle.down = skin.getDrawable("down-button");
+        textButtonStyle.checked = skin.getDrawable("checked-button");
+
+        createGameBtn = new TextButton("Create new",textButtonStyle);
+        joinGameBtn = new TextButton("Join",textButtonStyle);
+        settingsBtn = new TextButton("Settings",textButtonStyle);
+
+        createGameBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                state.handleInput(createGameBtn);
+            }
+        });
+         */
+
+
     }
 
     // TODO:
@@ -27,6 +78,7 @@ public class PlayView extends AbstractView{
         loadMap();
         loadVehicles();
         loadHand(cardNames);
+
         return (hv.getCardImgs().size() < 5); // simple sanity check
     }
 
@@ -39,6 +91,7 @@ public class PlayView extends AbstractView{
             renderHand();
         }
     }
+
 
     private void renderBackground(){
 

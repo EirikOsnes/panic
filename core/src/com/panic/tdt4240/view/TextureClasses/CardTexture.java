@@ -2,6 +2,9 @@ package com.panic.tdt4240.view.TextureClasses;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.models.Card;
 
 import java.nio.file.Path;
@@ -12,6 +15,7 @@ import java.nio.file.Path;
 
 public class CardTexture {
 
+//    private Texture img;
     private Texture img;
 
     public CardTexture(Card c){

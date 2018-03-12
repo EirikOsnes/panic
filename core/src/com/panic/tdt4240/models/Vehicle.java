@@ -14,16 +14,22 @@ import java.util.HashMap;
 public class Vehicle implements EventListener {
 
     private StatusHandler statusHandler;
+    private String vehicleID;
 
     public Vehicle(){
         statusHandler = new StatusHandler(this);
+        //TODO: Add vehicleID
     }
 
     public StatusHandler getStatusHandler() {
         return statusHandler;
 
     }
-  
+
+    public String getVehicleID() {
+        return vehicleID;
+    }
+
     @Override
     public void handleEvent(Event e) {
         if (e.getT() == Event.Type.MOVE) {

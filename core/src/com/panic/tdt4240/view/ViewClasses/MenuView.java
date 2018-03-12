@@ -24,9 +24,9 @@ public class MenuView extends AbstractView {
     private Button createGameBtn;
     private Button joinGameBtn;
     private Button settingsBtn;
-    TextureAtlas buttonAtlas;
-    Skin skin;
-    BitmapFont font;
+    private TextureAtlas buttonAtlas;
+    private Skin skin;
+    private BitmapFont font;
     private TextButton.TextButtonStyle textButtonStyle;
 
     public MenuView(MenuState menuState) {
@@ -35,13 +35,12 @@ public class MenuView extends AbstractView {
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         skin = new Skin();
-        buttonAtlas = new TextureAtlas(Gdx.files.internal("buttons/buttons.pack"));
+        buttonAtlas = new TextureAtlas("card_textures/buttons.pack");
         skin.addRegions(buttonAtlas);
         textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.font = font;
-        textButtonStyle.up = skin.getDrawable("up-button");
-        textButtonStyle.down = skin.getDrawable("down-button");
-        textButtonStyle.checked = skin.getDrawable("checked-button");
+        textButtonStyle.up = skin.getDrawable("button-up");
+        textButtonStyle.down = skin.getDrawable("button-down");
 
         createGameBtn = new TextButton("Create new",textButtonStyle);
         joinGameBtn = new TextButton("Join",textButtonStyle);

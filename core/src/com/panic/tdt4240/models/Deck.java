@@ -18,11 +18,17 @@ public class Deck {
         this.usedCards = new Stack<>();
     }
     //Returns the complete cardDeck
-    public Stack<Card> getDeck(){
+    public Stack<Card> getFullDeck(){
         Stack<Card> deck = new Stack<>();
         deck.addAll(cardDeck);
         deck.addAll(usedCards);
         return deck;
+    }
+    public Stack<Card> getCardDeck(){
+        return cardDeck;
+    }
+    public Stack<Card> getUsedCards(){
+        return usedCards;
     }
     //Returns an list containing 'amount' cards
     public ArrayList<Card> drawHand(int amount){

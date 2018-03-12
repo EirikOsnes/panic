@@ -24,7 +24,7 @@ public class Player {
     }
     //Returns the full deck
     public ArrayList<Card> getCardDeck(){
-        return new ArrayList<>(deck.getDeck());
+        return new ArrayList<>(deck.getFullDeck());
     }
     public ArrayList<Card> getHand(){
         return hand.getHand();

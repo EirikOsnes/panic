@@ -24,6 +24,20 @@ public class StatusHandler {
     }
 
     /**
+     * Gets the total resultant for the given status.
+     * @param statusName The name of the status.
+     * @return The total resultant as a function of baseValue and modifiers. Returns 0 if the status is uninitiated.
+     */
+    public float getStatusResultant(String statusName){
+
+        if (!statuses.containsKey(statusName)){
+            return 0;
+        }
+
+        return statuses.get(statusName).getResultant();
+    }
+
+    /**
      * Should ONLY be used when initiating an object from XML file - or if you wish to override an existing status (as it will be wiped).
      * ONLY use if you know what you are doing.
      * @param name The name of the status
@@ -83,6 +97,10 @@ public class StatusHandler {
         return statuses.get(statusName).getResultant();
     }
 
+    /**
+     * Gets all statuses and their resulting Float resultants.
+     * @return Returns all statuses and their resulting Float resultants.
+     */
     public HashMap<String,Float> getAllResultants(){
         HashMap<String,Float> result = new HashMap<>();
         for (String key : statuses.keySet()) {
@@ -91,12 +109,18 @@ public class StatusHandler {
         return result;
     }
 
+    /**
+     * Updates all ticking modifiers assosiated with this StatusHandler. Call on turn end.
+     */
     public void nextTurn(){
         for (Status status : statuses.values()) {
             status.nextTurn();
         }
     }
 
+    /**
+     * A class to handle the modifier logic for status effects.
+     */
     private class Status{
         float baseValue;
         ArrayList<float[]> tickMultipliers;
@@ -104,17 +128,31 @@ public class StatusHandler {
         float multipliers = 1;
         float additions = 0;
 
+        /**
+         * Ititiate the Status with a base value
+         * @param baseValue the base value for this status.
+         */
         Status(float baseValue){
             this.baseValue = baseValue;
             tickAdditions = new ArrayList<>();
             tickMultipliers = new ArrayList<>();
         }
 
+        /**
+         * Change the base value for this status by an amount.
+         * @param change The amount to change the base value with - NOT the new base value.
+         * @return returns the new base value.
+         */
         float changeBase(float change){
             baseValue+=change;
             return baseValue;
         }
 
+        /**
+         * Adds a new permanent multiplier additively.
+         * @param multiplier The change to the multiplier.
+         * @return Returns the new (permanent) multiplier.
+         */
         float addPermanentMultiplier(float multiplier){
             if(multipliers+multiplier<=0){
                 //TODO: How should this be handled? Error? Make the base value 0? Make the mulitplier 0.01 (1%)? Because what about health?
@@ -125,19 +163,38 @@ public class StatusHandler {
 
         }
 
+        /**
+         * Adds a new permanent addition.
+         * @param change The change to the additions.
+         * @return Returns the new (permanent) additions.
+         */
         float addPermanentAddition(float change){
             additions+=change;
             return additions;
         }
 
+        /**
+         * Adds a new ticking multiplier - aka after the duration has passed, the multiplier will be removed.
+         * @param duration The duration of effect.
+         * @param multiplier The multiplier to additively add.
+         */
         void addTickingMultiplier(int duration, float multiplier){
             tickMultipliers.add(new float[]{duration,multiplier});
         }
 
+        /**
+         * Adds a new ticking addition - aka after the duration has passed, the addition will be removed.
+         * @param duration The duration of effect.
+         * @param change The addition to add.
+         */
         void addTickingAddition(int duration, float change){
             tickAdditions.add(new float[]{duration, change});
         }
 
+        /**
+         * Gets the current total multipliers.
+         * @return Returns the current total multipliers.
+         */
         float getTotalMultipliers(){
             float result = multipliers;
             for (float[] tickMult : tickMultipliers) {
@@ -148,6 +205,10 @@ public class StatusHandler {
             return result;
         }
 
+        /**
+         * Gets the current total additions.
+         * @return Returns the current total additions.
+         */
         float getTotalAdditions(){
             float result = additions;
             for (float[] tickAdd : tickAdditions) {
@@ -158,6 +219,10 @@ public class StatusHandler {
             return result;
         }
 
+        /**
+         * Get the total resultant as a function: (baseValue + totalAdditions)*totalMultipliers
+         * @return Returns the total resultant for this turn.
+         */
         float getResultant(){
             float result = baseValue;
             result+=getTotalAdditions();
@@ -165,6 +230,9 @@ public class StatusHandler {
             return result;
         }
 
+        /**
+         * Update all ticking modifiers by 1 step.
+         */
         void nextTurn(){
 
             for (int i = tickMultipliers.size()-1; i >= 0; i--) {

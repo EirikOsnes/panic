@@ -11,8 +11,8 @@ public class PanicGame extends ApplicationAdapter {
 
 	public static final String TITLE = "DON'T PANIC";
 
-	public static int WIDTH;
-	public static int HEIGHT;
+	public static final int WIDTH = 400;
+	public static final int HEIGHT = 800;
 
 	SpriteBatch batch;
 	GameStateManager gsm;
@@ -22,8 +22,6 @@ public class PanicGame extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 		gsm = new GameStateManager();
-		WIDTH = Gdx.graphics.getWidth();
-		HEIGHT = Gdx.graphics.getHeight();
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		gsm.push(new MenuState(gsm));
 

@@ -2,6 +2,7 @@ package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -49,7 +50,7 @@ public class MenuView extends AbstractView {
         createGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput(1);
+                state.handleInput( 1);
             }
         });
 
@@ -76,7 +77,8 @@ public class MenuView extends AbstractView {
     }
 
     // TODO: legge inn input
-    public void render() {
+    public void render(SpriteBatch sb) {
+        sb.setProjectionMatrix(cam.combined);
         stage.draw();
     }
 

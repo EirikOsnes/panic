@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Created by victor on 09.03.2018.
  */
 
-public class HandTexture extends AbstractView {
+public class HandTexture {
 
     private ArrayList<CardTexture> cardImgs;
 

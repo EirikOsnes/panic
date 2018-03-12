@@ -16,8 +16,10 @@ public class Player implements EventListener {
     private Deck deck;
     private Hand hand;
     private Vehicle vehicle;
+    private boolean alive = true;
     //Any draw cards modifiers
     private int MODIFIED_AMOUNT_CARDS = 0;
+
 
     public Player(Stack<Card> cards){
         deck = new Deck(cards);
@@ -42,8 +44,8 @@ public class Player implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
-        if (e.getT() == Event.Type.DESTROYED) {
-            //TODO: handle destroy event
+        if (e.getT() == Event.Type.DESTROYED && e.getInstigatorID().equals(vehicle.getVehicleID())) {
+            alive = false;
         }
     }
 }

@@ -41,13 +41,13 @@ public class EventFactory {
         return e;
     }
 
-    public static Event createDestoryEvent(String targetID, String instigatorID) {
+    public static Event createDestroyedEvent(String targetID, String instigatorID) {
         EventFactory.checkIDs(targetID, instigatorID);
         Event e = new Event(Event.Type.DESTROYED, targetID, instigatorID);
         return e;
     }
 
-    private static void checkIDs(String ID1, String ID2) {
+    static void checkIDs(String ID1, String ID2) {
         if (!ID1.matches("[A-Z]-\\d\\d\\d") || !ID2.matches("[A-Z]-\\d\\d\\d")) {
             throw new IllegalArgumentException("ID should be on format L-DDD where L is a capital letter and D is any digit");
         }

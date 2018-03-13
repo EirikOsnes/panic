@@ -1,0 +1,19 @@
+language: android
+
+android:
+  components:
+    - tools
+    - platform-tools
+    - tools
+    - build-tools-27.0.3
+
+notifications:
+  - email: false
+
+branches:
+  only:
+    - master
+    - dev
+
+script:
+  - ./gradlew build test

@@ -2,5 +2,9 @@
 <vehicles>
     <vehicle type = "EDDISON">
         <status name="health" base="100" />
+        <status name="damage_modifier" base="1" />
+        <status name="defence_modifier" base ="1" />
+        <status name="movement_modifier" base = "1"/>
+        <status name="max_damage" base = "1000"/>
     </vehicle>
 </vehicles>

@@ -14,6 +14,7 @@ public class StatusHandler {
 
     private HashMap<String, Status> statuses;
     //TODO: Potential for bugs from different orderings in the HashMap?
+    private ArrayList<String> baseStats;
     private Object parent;
     public enum TIMING_TYPE{TURN_START, CARD_PLAYED ,TURN_END}
 
@@ -25,15 +26,20 @@ public class StatusHandler {
     public StatusHandler(Object parent){
         this.parent = parent;
         statuses = new HashMap<>();
+        baseStats = new ArrayList<>();
         setupBaseStatuses();
     }
 
     void setupBaseStatuses(){
-        addStatus("health");
-        addStatus("damage_modifier");
-        addStatus("defence_modifier");
-        addStatus("movement_modifier");
-        addStatus("max_damage");
+        baseStats.add("health");
+        baseStats.add("damage_modifier");
+        baseStats.add("defence_modifier");
+        baseStats.add("movement_modifier");
+        baseStats.add("max_damage");
+
+        for (String stat : baseStats) {
+            addStatus(stat);
+        }
     }
 
     /**
@@ -51,13 +57,41 @@ public class StatusHandler {
     }
 
     /**
+     * Returns a HashMap of all the base stats.
+     * @return Returns a HashMap of all the base stats.
+     */
+    public HashMap<String, Float> getBaseStats(){
+        HashMap<String, Float> result = new HashMap<>();
+        for (String key : baseStats) {
+            result.put(key,getStatusResultant(key));
+        }
+        return result;
+    }
+
+    /**
+     * Get the damage_modifier base stat - use whenever initiating an attack.
+     * @return Returns the damage_modifier base stat.
+     */
+    public float getDamageModifier(){
+        return getStatusResultant("damage_modifier");
+    }
+
+    /**
+     * Get the movement_modifier base stat, already rounded to an integer - use whenever initiating a move with this as instigator.
+     * @return Returns the damage modifier base stat.
+     */
+    public int getMovementModifier(){
+        return Math.round(getStatusResultant("movement_modifier"));
+    }
+
+    /**
      * Should ONLY be used when initiating an object from XML file - or if you wish to override an existing status (as it will be wiped).
      * ONLY use if you know what you are doing.
      * @param name The name of the status
      * @param baseValue The base value of the status.
      */
     public void addStatus(String name, float baseValue){
-        statuses.put(name, new Status(baseValue));
+        statuses.put(name, new Status(name,baseValue));
     }
 
     /**
@@ -74,25 +108,31 @@ public class StatusHandler {
      * @param statusName The name of the status
      * @param multiplier The multiplier to be added. Gets ADDED to the current multiplier.
      * @param duration The duration for this multiplier - any value <= 0 is permanent changes.
-     * @return Returns the resultant for this status.
+     * @return Returns the resultant for this status, or -1234 if it failed.
      */
     public float addStatusMultiplier(String statusName, float multiplier, int duration){
-        if (!statuses.containsKey(statusName)){
+
             try {
-                float baseValue = StatusConstants.STATUS_VALUES.valueOf(statusName).getBaseValue();
-                addStatus(statusName, baseValue);
+                if (!statuses.containsKey(statusName)) {
+                    float baseValue = StatusConstants.STATUS_VALUES.valueOf(statusName).getBaseValue();
+                    addStatus(statusName, baseValue);
+                }
+
+                if(duration<=0){
+                    statuses.get(statusName).addPermanentMultiplier(multiplier);
+                }else{
+                    statuses.get(statusName).addTickingMultiplier(duration,multiplier);
+                }
+                return statuses.get(statusName).getResultant();
             } catch (Exception e) {
                 Gdx.app.error("ADD_STATUS", "This status (" + statusName+ ") is not yet initiated, and no known base value is known", e);
                 e.printStackTrace();
             }
-        }
-        if(duration<=0){
-            statuses.get(statusName).addPermanentMultiplier(multiplier);
-        }else{
-            statuses.get(statusName).addTickingMultiplier(duration,multiplier);
-        }
 
-        return statuses.get(statusName).getResultant();
+
+        //If non-successful - returns -1234
+        return -1234;
+
     }
 
     /**
@@ -100,27 +140,33 @@ public class StatusHandler {
      * @param statusName The name of the status.
      * @param change The addition to be added.
      * @param duration The duration for this addition - any value <= 0 is permanent changes.
-     * @return Returns the resultant for this status.
+     * @return Returns the resultant for this status, or -1234 if it failed.
      */
     public float addStatusAddition(String statusName, float change, int duration) {
 
 
-        if (!statuses.containsKey(statusName)){
-            try {
+
+        try {
+            if (!statuses.containsKey(statusName)) {
                 float baseValue = StatusConstants.STATUS_VALUES.valueOf(statusName).getBaseValue();
                 addStatus(statusName, baseValue);
-            } catch (Exception e) {
-                Gdx.app.error("ADD_STATUS", "This status (" + statusName+ ") is not yet initiated, and no known base value is known", e);
-                e.printStackTrace();
             }
-        }
-        if(duration<=0){
-            statuses.get(statusName).addPermanentAddition(change);
-        }else{
-            statuses.get(statusName).addTickingAddition(duration,change);
+
+            if(duration<=0){
+                statuses.get(statusName).addPermanentAddition(change);
+            }else{
+                statuses.get(statusName).addTickingAddition(duration,change);
+            }
+
+            return statuses.get(statusName).getResultant();
+
+        } catch (Exception e) {
+            Gdx.app.error("ADD_STATUS", "This status (" + statusName+ ") is not yet initiated, and no known base value is known", e);
+            e.printStackTrace();
         }
 
-        return statuses.get(statusName).getResultant();
+        //If non-successful, return -1234
+        return -1234;
     }
 
     /**
@@ -150,17 +196,21 @@ public class StatusHandler {
             value = Float.parseFloat(effectArray[2]);
         }
 
-        switch (effectArray[1]){
-            case "ADD":
-                addStatusAddition(effectArray[0],value*Float.parseFloat(effectArray[4]),Integer.parseInt(effectArray[3]));
-                break;
-            case "MULT":
-                addStatusMultiplier(effectArray[0], value*Float.parseFloat(effectArray[4]), Integer.parseInt(effectArray[3]));
-                break;
-            case "SET":
-                //TODO: For now, we can only set to 0
-                addStatusMultiplier(effectArray[0], - statuses.get(statusName).getTotalMultipliers(), Integer.parseInt(effectArray[3]));
-                break;
+        if (!statuses.get(statusName).isPlayedThisTurn()) {
+            switch (effectArray[1]) {
+                case "ADD":
+                    addStatusAddition(effectArray[0], value * Float.parseFloat(effectArray[4]), Integer.parseInt(effectArray[3]));
+                    break;
+                case "MULT":
+                    addStatusMultiplier(effectArray[0], value * Float.parseFloat(effectArray[4]), Integer.parseInt(effectArray[3]));
+                    break;
+                case "SET":
+                    //TODO: For now, we can only set to 0
+                    addStatusMultiplier(effectArray[0], -statuses.get(statusName).getTotalMultipliers(), Integer.parseInt(effectArray[3]));
+                    break;
+            }
+
+            statuses.get(statusName).play();
         }
     }
 
@@ -215,6 +265,8 @@ public class StatusHandler {
      * A class to handle the modifier logic for status effects.
      */
     class Status{
+
+        String name;
         float baseValue;
         ArrayList<float[]> tickMultipliers;
         ArrayList<float[]> tickAdditions;
@@ -226,7 +278,8 @@ public class StatusHandler {
          * Ititiate the Status with a base value
          * @param baseValue the base value for this status.
          */
-        Status(float baseValue){
+        Status(String name, float baseValue){
+            this.name = name;
             this.baseValue = baseValue;
             tickAdditions = new ArrayList<>();
             tickMultipliers = new ArrayList<>();
@@ -271,7 +324,12 @@ public class StatusHandler {
          * @return Returns the new (permanent) additions.
          */
         float addPermanentAddition(float change){
-            additions+=change;
+            float value = change;
+
+            if(baseStats.contains(name))
+                value = checkAddForBaseStat(change);
+
+            additions+=value;
             return additions;
         }
 
@@ -290,7 +348,28 @@ public class StatusHandler {
          * @param change The addition to add.
          */
         void addTickingAddition(int duration, float change){
-            tickAdditions.add(new float[]{duration, change});
+            float value = change;
+            if(baseStats.contains(name))
+                value = checkAddForBaseStat(change);
+
+            tickAdditions.add(new float[]{duration, value});
+        }
+
+        /**
+         * Method to handle additions that relate to base stats. (Primarily health)
+         * @param change The change the effect gives.
+         * @return The modified value
+         */
+        float checkAddForBaseStat(float change){
+            float value = change;
+            float posMin = change/Math.abs(change);
+            if(name.equalsIgnoreCase("health")){
+                value = change/getStatusResultant("defence_modifier");
+                value = Math.min(Math.abs(value),getStatusResultant("max_damage"));
+                value*=posMin;
+            }
+
+            return value;
         }
 
         /**

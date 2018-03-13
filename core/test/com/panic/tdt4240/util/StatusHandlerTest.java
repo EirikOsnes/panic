@@ -65,22 +65,37 @@ public class StatusHandlerTest {
 
         statusHandler = new StatusHandler(null);
 
-        statusHandler.addStatusAddition("poison", 5, 2);
+        statusHandler.addStatusAddition("poison", 5, 3);
         assertEquals(100,statusHandler.getStatusResultant("health"),0.01);
         statusHandler.runEffects(StatusHandler.TIMING_TYPE.CARD_PLAYED);
         assertEquals(100,statusHandler.getStatusResultant("health"),0.01);
         statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
         assertEquals(95,statusHandler.getStatusResultant("health"),0.01);
 
+        //Check the playedThisTurn flag
+        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
+        assertEquals(95,statusHandler.getStatusResultant("health"),0.01);
+
+        statusHandler.nextTurn();
+
+        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
+        assertEquals(90,statusHandler.getStatusResultant("health"),0.01);
+
         statusHandler.nextTurn();
 
         statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_START);
-        assertEquals(95,statusHandler.getStatusResultant("health"),0.01);
+        assertEquals(90,statusHandler.getStatusResultant("health"),0.01);
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
         statusHandler.addStatusAddition("invulnerable", 1, 2);
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
         statusHandler.runEffects(StatusHandler.TIMING_TYPE.CARD_PLAYED);
         assertEquals(0,statusHandler.getStatusResultant("max_damage"),0.01);
+
+        //Check poison when invulnerable - no damage should be dealt.
+        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
+        assertEquals(0,statusHandler.getStatusResultant("max_damage"),0.01);
+        assertEquals(90,statusHandler.getStatusResultant("health"),0.01);
+
         statusHandler.nextTurn();
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
         statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_START);
@@ -105,6 +120,45 @@ public class StatusHandlerTest {
         assertEquals(140, statusHandler.getStatusResultant("health"),0.01);
 
         assertEquals(0,statusHandler.getStatusResultant("not_a_status"),0.01);
+    }
+
+    @Test
+    public void getDamageModifier() throws Exception {
+        assertEquals(1,statusHandler.getDamageModifier(),0.01);
+        statusHandler.addStatusAddition("damage_modifier", -0.3f, 1);
+        assertEquals(0.7,statusHandler.getDamageModifier(),0.01);
+    }
+
+    @Test
+    public void getMovementModifier() throws Exception {
+        assertEquals(1,statusHandler.getMovementModifier());
+        statusHandler.addStatusAddition("movement_modifier", 0.5f, 1);
+        assertEquals(2,statusHandler.getMovementModifier());
+        statusHandler.nextTurn();
+        assertEquals(1,statusHandler.getMovementModifier());
+    }
+
+    @Test
+    public void getBaseStats() throws Exception {
+        HashMap<String, Float> checkMap = new HashMap<>();
+        checkMap.put("health", StatusConstants.STATUS_VALUES.valueOf("health").getBaseValue());
+        checkMap.put("damage_modifier", StatusConstants.STATUS_VALUES.valueOf("damage_modifier").getBaseValue());
+        checkMap.put("defence_modifier", StatusConstants.STATUS_VALUES.valueOf("defence_modifier").getBaseValue());
+        checkMap.put("movement_modifier", StatusConstants.STATUS_VALUES.valueOf("movement_modifier").getBaseValue());
+        checkMap.put("max_damage", StatusConstants.STATUS_VALUES.valueOf("max_damage").getBaseValue());
+
+        assertEquals(checkMap,statusHandler.getBaseStats());
+
+        statusHandler.addStatus("test_status", 100);
+
+        assertEquals(checkMap,statusHandler.getBaseStats());
+
+        statusHandler.addStatusAddition("health", -50, 1);
+
+        checkMap.put("health", 50f);
+
+        assertEquals(checkMap,statusHandler.getBaseStats());
+
     }
 
     @Test
@@ -135,7 +189,6 @@ public class StatusHandlerTest {
 
         statusHandler.addStatusMultiplier("invulnerable", (float) 0.1, 10);
         assertEquals(0, statusHandler.getStatusResultant("invulnerable"), 0.01);
-
     }
 
     @Test

@@ -12,7 +12,7 @@ public class Event {
     /**
      * An enum that defines the type of event that occurred
      */
-    public enum Type {ATTACK, DESTROYED, MOVE};
+    public enum Type {ATTACK, DESTROYED, MOVE}
 
     private Type t;
     private String instigatorID, targetID;

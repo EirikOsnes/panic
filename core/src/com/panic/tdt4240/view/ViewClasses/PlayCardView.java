@@ -60,7 +60,7 @@ public class PlayCardView extends AbstractView{
         for (int i = 0; i < hand.size(); i++) {
             selectedCard.add(i, false);
             buttonStyle.imageUp = skin.getDrawable("button-up");
-            buttonStyle.imageDown = skin.getDrawable("button-down");
+            //buttonStyle.imageDown = skin.getDrawable("button-down");
 
             ImageTextButton button = new ImageTextButton("", buttonStyle);
             cardButtons.add(i, button);
@@ -82,25 +82,6 @@ public class PlayCardView extends AbstractView{
             });
             table.add(cardButtons.get(index)).width(SCREEN_WIDTH/hand.size());
         }
-
-        /*
-        textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = font;
-        textButtonStyle.up = skin.getDrawable("up-button");
-        textButtonStyle.down = skin.getDrawable("down-button");
-        textButtonStyle.checked = skin.getDrawable("checked-button");
-
-        createGameBtn = new TextButton("Create new",textButtonStyle);
-        joinGameBtn = new TextButton("Join",textButtonStyle);
-        settingsBtn = new TextButton("SettingsView",textButtonStyle);
-
-        createGameBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput(createGameBtn);
-            }
-        });
-         */
 
         stage.addActor(table);
     }

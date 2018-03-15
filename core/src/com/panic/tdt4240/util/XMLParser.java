@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Map;
+import com.panic.tdt4240.models.Vehicle;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -65,7 +66,7 @@ public class XMLParser {
                             Element effectElement = (Element) effectNode;
                             myCard.addCardEffect(
                                     effectElement.getElementsByTagName("target_status").item(0).getTextContent(),
-                                    Double.parseDouble(effectElement.getElementsByTagName("value").item(0).getTextContent()),
+                                    Float.parseFloat(effectElement.getElementsByTagName("value").item(0).getTextContent()),
                                     Integer.parseInt(effectElement.getElementsByTagName("status_duration").item(0).getTextContent()),
                                     Integer.parseInt(effectElement.getElementsByTagName("splash_range").item(0).getTextContent()),
                                     Boolean.parseBoolean(effectElement.getElementsByTagName("friendly_fire").item(0).getTextContent())
@@ -107,6 +108,7 @@ public class XMLParser {
                 if (node.getNodeType() == Node.ELEMENT_NODE){
                     Element element = (Element) node;
                     Asteroid myAsteroid = new Asteroid(null);
+                    //TODO: Sprite should be separated
                     String id = element.getAttribute("id");
                     myAsteroid.setId(id);
                     myAsteroid.setPosition(new Vector2(
@@ -138,6 +140,47 @@ public class XMLParser {
         }
 
         return null;
+    }
+
+
+    /**
+     * A method to create Vehicle objects from an xml.
+     * @param path The path to the file containing the vehicle types.
+     * @return Returns an ArrayList of possible vehicles.
+     */
+    public ArrayList<Vehicle> parseVehicles(String path){
+        ArrayList<Vehicle> result = new ArrayList<>();
+
+        try {
+            File inputFile = new File(path);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("vehicle");
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+
+                if (node.getNodeType() == Node.ELEMENT_NODE){
+                    Vehicle myVehicle = new Vehicle();
+                    Element element = (Element) node;
+                    NodeList statusNodeList = element.getElementsByTagName("status");
+                    for (int j = 0; j < statusNodeList.getLength(); j++) {
+                        Node statusNode = statusNodeList.item(j);
+                        if (statusNode.getNodeType() == Node.ELEMENT_NODE){
+                            Element statusElement = (Element) statusNode;
+                            myVehicle.getStatusHandler().addStatus(statusElement.getAttribute("name"), Float.parseFloat(statusElement.getAttribute("base")));
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return result;
     }
 
 }

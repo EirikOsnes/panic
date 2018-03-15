@@ -7,11 +7,11 @@ import java.util.ArrayList;
  * On permission can be used outside testJava.
  */
 
-class EventBus {
+public class EventBus {
 
     private static final EventBus instance = new EventBus();
 
-    static EventBus getInstance() {
+    public static EventBus getInstance() {
         return instance;
     }
 

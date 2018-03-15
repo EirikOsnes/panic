@@ -103,7 +103,7 @@ public class Card {
 
     //endregion
 
-    public void addCardEffect(String targetStatus, double value, int statusDuration, int splashRange, boolean friendlyFire){
+    public void addCardEffect(String targetStatus, float value, int statusDuration, int splashRange, boolean friendlyFire){
         cardEffects.add(new CardEffect(targetStatus, value, statusDuration, splashRange, friendlyFire));
     }
 }

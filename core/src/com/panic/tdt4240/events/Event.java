@@ -6,7 +6,9 @@ package com.panic.tdt4240.events;
  * Created by Choffa
  */
 
-class Event {
+public class Event {
+
+
     /**
      * An enum that defines the type of event that occurred
      */
@@ -16,10 +18,10 @@ class Event {
     private String instigatorID, targetID;
     private String status;
     private int duration;
-    private double effectValue;
+    private float effectValue;
     private boolean friendlyFire;
 
-    public Event(Type t, String targetID, String instigatorID) {
+    Event(Type t, String targetID, String instigatorID) {
         this.t = t;
         this.targetID = targetID;
         this.instigatorID = instigatorID;
@@ -33,7 +35,7 @@ class Event {
         return duration;
     }
 
-    public double getEffectValue() {
+    public float getEffectValue() {
         return effectValue;
     }
 
@@ -61,7 +63,7 @@ class Event {
         this.duration = duration;
     }
 
-    void setEffectValue(double effectValue) {
+    void setEffectValue(float effectValue) {
         this.effectValue = effectValue;
     }
 
@@ -71,5 +73,14 @@ class Event {
 
     void setT(Type t) {
         this.t = t;
+    }
+
+    public Event cloneEvent(String targetID) {
+        Event e = new Event(this.t, targetID, this.instigatorID);
+        e.setStatus(this.status);
+        e.setFriendlyFire(this.friendlyFire);
+        e.setEffectValue(this.effectValue);
+        e.setDuration(this.duration);
+        return e;
     }
 }

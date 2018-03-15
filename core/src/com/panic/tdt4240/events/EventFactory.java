@@ -15,15 +15,17 @@ public class EventFactory {
     /**
      * A factory that creates a list of events connected to the given card
      * @param c             The card to make the events for
-     * @param TargetID      The ID of the target of the event
-     * @param InstigatorID  The ID of the instigator of the event
+     * @param targetID      The ID of the target of the event
+     * @param instigatorID  The ID of the instigator of the event
      * @return An ArrayList of the Events created from the Card
      */
-    public static ArrayList<Event> createEvent(Card c, String TargetID, String InstigatorID) {
+    public static ArrayList<Event> createEventFromCard(Card c, String targetID, String instigatorID) {
+        EventFactory.checkIDs(targetID, instigatorID);
+
         ArrayList<Event> eList = new ArrayList<>();
 
         for (CardEffect ce : c.getCardEffects()) {
-            Event e = new Event(Event.Type.ATTACK, TargetID, InstigatorID);
+            Event e = new Event(Event.Type.ATTACK, targetID, instigatorID);
             e.setDuration(ce.getStatusDuration());
             e.setEffectValue(ce.getValue());
             e.setFriendlyFire(ce.isFriendlyFire());
@@ -31,5 +33,23 @@ public class EventFactory {
             eList.add(e);
         }
         return eList;
+    }
+
+    public static Event createMoveEvent(String targetID, String instigatorID) {
+        EventFactory.checkIDs(targetID, instigatorID);
+        Event e = new Event(Event.Type.MOVE, targetID, instigatorID);
+        return e;
+    }
+
+    public static Event createDestroyedEvent(String targetID, String instigatorID) {
+        EventFactory.checkIDs(targetID, instigatorID);
+        Event e = new Event(Event.Type.DESTROYED, targetID, instigatorID);
+        return e;
+    }
+
+    static void checkIDs(String ID1, String ID2) {
+        if (!ID1.matches("[A-Z]-\\d\\d\\d") || !ID2.matches("[A-Z]-\\d\\d\\d")) {
+            throw new IllegalArgumentException("ID should be on format L-DDD where L is a capital letter and D is any digit");
+        }
     }
 }

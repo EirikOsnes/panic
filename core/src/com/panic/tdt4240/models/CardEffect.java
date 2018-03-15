@@ -7,12 +7,12 @@ package com.panic.tdt4240.models;
 public class CardEffect {
 
     private String targetStatus;
-    private double value;
+    private float value;
     private int statusDuration;
     private int splashRange;
     private boolean friendlyFire;
 
-    CardEffect(String targetStatus, double value,int statusDuration, int splashRange, boolean friendlyFire) {
+    CardEffect(String targetStatus, float value,int statusDuration, int splashRange, boolean friendlyFire) {
         this.targetStatus = targetStatus;
         this.value = value;
         this.statusDuration = statusDuration;
@@ -24,7 +24,7 @@ public class CardEffect {
         return targetStatus;
     }
 
-    public double getValue() {
+    public float getValue() {
         return value;
     }
 

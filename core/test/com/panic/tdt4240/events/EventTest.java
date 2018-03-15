@@ -14,7 +14,7 @@ public class EventTest {
     private Event event;
     private static final String TARGETID = "TARGET", INSTIGATORID = "INSTIGATOR", STATUS = "STATUS";
     private static final int DURATION = 10;
-    private static final double VALUE = 9.9999;
+    private static final float VALUE = 9.9999f;
 
 
     @Before

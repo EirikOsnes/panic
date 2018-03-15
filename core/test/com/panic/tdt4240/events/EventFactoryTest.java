@@ -21,7 +21,7 @@ public class EventFactoryTest {
     private Card c;
     private CardEffect ce;
     private static final int DURATION = 972;
-    private static final double VALUE = 3.14159265;
+    private static final float VALUE = 3.14159265f;
     private static final boolean FRIENDLY = false;
     private static final String STATUS = "STATUSSTRING", TARGET = "T-129", INSTIGATOR = "I-456";
 

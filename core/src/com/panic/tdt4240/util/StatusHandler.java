@@ -226,13 +226,16 @@ public class StatusHandler {
                 if (StatusConstants.STATUS_VALUES.valueOf(key).getEffect() == null)
                     continue;
 
+                //This status has no resultant - ignore it.
+                //TODO: Will this have to be fixed?
+                if(statuses.get(key).getResultant()<=0)
+                    continue;
 
                 String effectTiming = StatusConstants.STATUS_VALUES.valueOf(key).getTiming();
                 switch (timing) {
                     case TURN_START:
                         if(effectTiming.equalsIgnoreCase("TURN_START") || effectTiming.equalsIgnoreCase("INSTANT")){
                             parseEffects(key);
-                            //TODO: There WILL be a bug here, with statuses with no value will be "played" here, thus not allowing them to be added later this turn.
                         }
                         break;
                     case CARD_PLAYED:

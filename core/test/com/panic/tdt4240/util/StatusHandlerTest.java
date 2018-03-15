@@ -103,8 +103,7 @@ public class StatusHandlerTest {
         statusHandler.nextTurn();
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
         statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_START);
-        //assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
-        //FIXME: This last one fails due to the bug of persisting statuses - known bug.
+        assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
     }
 
     @Test

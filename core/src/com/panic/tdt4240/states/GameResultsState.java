@@ -20,14 +20,14 @@ public class GameResultsState extends State {
 
     @Override
     public void handleInput(Object o) {
-        if (o==0) { // back to lobby
+        if (o== (Integer) 0) { // back to lobby
             gsm.pop(); // to CardPlayState
             gsm.pop(); // to GameLobbyState
             if (originalNumOfPlayers != numOfPlayers) {
             // TODO: some players left the lobby... should the lobby simply be updated, or replaced?
             }
         }
-    else if (o==-1){ // back to main menu. Pop some states, set new meu state.
+    else if (o== (Integer) 1){ // back to main menu. Pop some states, set new meu state.
         }
     }
 

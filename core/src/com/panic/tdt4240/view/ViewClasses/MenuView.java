@@ -1,9 +1,11 @@
 package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -12,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.MenuState;
 import com.panic.tdt4240.view.Renderer;
@@ -30,28 +33,32 @@ public class MenuView extends AbstractView {
     private TextureAtlas buttonAtlas;
     private Skin skin;
     private BitmapFont font;
-    private TextButton.TextButtonStyle textButtonStyle;
+    private TextButton.TextButtonStyle createButtonStyle;
+    private TextButton.TextButtonStyle joinButtonStyle;
+    private TextButton.TextButtonStyle settingsButtonStyle;
     private Table table;
+    private Texture background;
 
     public MenuView(MenuState menuState) {
         super(menuState);
+        background = new Texture("misc/background.png");
         cam.setToOrtho(false,PanicGame.WIDTH,PanicGame.HEIGHT);
         stage = new Stage();
         table = new Table();
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        buttonAtlas = new TextureAtlas("card_textures/buttons.pack");
         skin.addRegions(buttonAtlas);
 
-        textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = font;
-        textButtonStyle.up = skin.getDrawable("button-up");
-        textButtonStyle.down = skin.getDrawable("button-down");
+        createButtonStyle = new TextButton.TextButtonStyle();
+        joinButtonStyle = new TextButton.TextButtonStyle();
+        settingsButtonStyle = new TextButton.TextButtonStyle();
+        createButtonStyle.font = font;
 
-        createGameBtn = new TextButton("Create new game",textButtonStyle);
-        joinGameBtn = new TextButton("Join",textButtonStyle);
-        settingsBtn = new TextButton("SettingsView",textButtonStyle);
+        joinButtonStyle.font = font;
+
+        settingsButtonStyle.font = font;
+
 
         Label label = new Label(PanicGame.TITLE,skin);
 
@@ -64,6 +71,8 @@ public class MenuView extends AbstractView {
         table.add(joinGameBtn).width(200).height(50).pad(20);
         table.row();
         table.add(settingsBtn).width(200).height(50).pad(20);
+        table.background(new TextureRegionDrawable(new TextureRegion(background)));
+        table.pack();
 
         createGameBtn.addListener(new ChangeListener() {
             @Override
@@ -95,7 +104,10 @@ public class MenuView extends AbstractView {
     // TODO: legge inn input
     public void render(SpriteBatch sb) {
         sb.setProjectionMatrix(cam.combined);
+        sb.begin();
+        sb.draw(background,0,0,PanicGame.WIDTH,PanicGame.HEIGHT);
         stage.draw();
+        sb.end();
     }
 
 

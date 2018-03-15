@@ -18,7 +18,7 @@ public class SettingsState extends State {
 
     @Override
     public void handleInput(Object o) {
-        if (o==-1) exit();
+        if (o== (Integer) 1) exit();
     }
 
     public void exit(){

@@ -18,7 +18,7 @@ public class CardPlayState extends State {
     private int playerCount;
     private int playersAlive;
 
-    public CardPlayState(GameStateManager gsm, Player player/*, Map map*/) {
+    public CardPlayState(GameStateManager gsm/*, Player player, Map map*/) {
         super(gsm);
         this.player = player;
         player.playCards();
@@ -28,10 +28,10 @@ public class CardPlayState extends State {
 
     @Override
     public void handleInput(Object o) {
-        if (o == 0) { // play cards
+        if (o == (Integer) 0) { // play cards
 
         }
-        if (o == 1){ // animation
+        if (o == (Integer) 1){ // animation
 
         }
     }

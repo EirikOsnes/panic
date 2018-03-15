@@ -2,7 +2,6 @@ package com.panic.tdt4240.view.TextureClasses;
 
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Hand;
-import com.panic.tdt4240.view.ViewClasses.AbstractView;
 
 import java.util.ArrayList;
 
@@ -10,9 +9,9 @@ import java.util.ArrayList;
  * Created by victor on 09.03.2018.
  */
 
-public class HandTexture extends AbstractView {
+public class HandTexture {
 
-    private ArrayList<CardTexture> cardImgs;
+    private ArrayList<CardDrawable> cardImgs;
 
     public HandTexture(){
         cardImgs = new ArrayList<>();
@@ -21,7 +20,7 @@ public class HandTexture extends AbstractView {
     public HandTexture(Hand h){
         cardImgs = new ArrayList<>();
         for (Card c : h.getHand()){
-            cardImgs.add(new CardTexture(c));
+            cardImgs.add(new CardDrawable(c));
         }
     }
 
@@ -29,14 +28,14 @@ public class HandTexture extends AbstractView {
     // If anybody feels lazy just slap the card in, although this
     // will be slower than using the card names.
     public void addCard(Card c){
-        cardImgs.add(new CardTexture(c));
+        cardImgs.add(new CardDrawable(c));
     }
 
     public void addCard(String cardName){
-        cardImgs.add(new CardTexture(cardName));
+        cardImgs.add(new CardDrawable(cardName));
     }
 
-    public ArrayList<CardTexture> getCardImgs(){
+    public ArrayList<CardDrawable> getCardImgs(){
         return cardImgs;
     }
 

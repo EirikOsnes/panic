@@ -28,6 +28,9 @@ public class Player implements EventListener {
         vehicle = new Vehicle();
         EventBus.getInstance().addListener(this);
     }
+    public int getAmountDrawnCards(){
+        return MODIFIED_AMOUNT_CARDS + GlobalConstants.BASE_DRAW_CARDS;
+    }
     //Returns the full deck
     public ArrayList<Card> getCardDeck(){
         return new ArrayList<>(deck.getFullDeck());

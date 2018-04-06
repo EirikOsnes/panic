@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<map>
+    <asteroids>
+        <asteroid id = "A-001">
+            <posX>0.122</posX>
+            <posY>0.310</posY>
+        </asteroid>
+        <asteroid id = "A-002">
+            <posX>0.456</posX>
+            <posY>0.076</posY>
+        </asteroid>
+        <asteroid id = "A-003">
+            <posX>0.778</posX>
+            <posY>0.262</posY>
+        </asteroid>
+        <asteroid id = "A-004">
+            <posX>0.344</posX>
+            <posY>0.595</posY>
+        </asteroid>
+        <asteroid id = "A-005">
+            <posX>0.750</posX>
+            <posY>0.561</posY>
+        </asteroid>
+        <asteroid id = "A-006">
+            <posX>0.167</posX>
+            <posY>0.867</posY>
+        </asteroid>
+        <asteroid id = "A-007">
+            <posX>0.750</posX>
+            <posY>0.857</posY>
+        </asteroid>
+    </asteroids>
+    <connections>
+        <connection>
+            <vertexID>A-001</vertexID>
+            <vertexID>A-002</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-001</vertexID>
+            <vertexID>A-004</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-002</vertexID>
+            <vertexID>A-003</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-002</vertexID>
+            <vertexID>A-004</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-003</vertexID>
+            <vertexID>A-005</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-004</vertexID>
+            <vertexID>A-005</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-004</vertexID>
+            <vertexID>A-006</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-005</vertexID>
+            <vertexID>A-007</vertexID>
+        </connection>
+        <connection>
+            <vertexID>A-006</vertexID>
+            <vertexID>A-007</vertexID>
+        </connection>
+    </connections>
+</map>

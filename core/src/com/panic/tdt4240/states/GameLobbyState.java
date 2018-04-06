@@ -22,7 +22,7 @@ public class GameLobbyState extends State {
         gsm.pop(); gsm.pop(); gsm.pop();
 
         // needs additional parameters?
-        gsm.push(new CardPlayState(gsm));
+        //gsm.push(new PlayCardState(gsm));
     }
 
     @Override

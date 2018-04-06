@@ -19,7 +19,7 @@ button-down
   index: -1
 button-gone
   rotate: false
-  xy: 420, 2
+  xy: 450, 2
   size: 1, 1
   orig: 450, 2
   offset: 0, 0

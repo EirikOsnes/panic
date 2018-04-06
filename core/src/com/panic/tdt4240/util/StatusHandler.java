@@ -17,7 +17,7 @@ public class StatusHandler {
     private TreeMap<String, Status> statuses;
     private ArrayList<String> baseStats;
     private Object parent;
-    public enum TIMING_TYPE{TURN_START, CARD_PLAYED ,TURN_END}
+    public enum TimingType{TURN_START, CARD_PLAYED ,TURN_END}
 
 
     /**
@@ -222,7 +222,7 @@ public class StatusHandler {
      * Runs all effects currently handled bt this StatusHandler. Only the effects corresponding to the timing will run.
      * @param timing The timing for when this is run (TURN_START, CARD_PLAYED, TURN_END)
      */
-    public void runEffects(TIMING_TYPE timing){
+    public void runEffects(TimingType timing){
         for (String key: statuses.keySet()) {
             if(!statuses.get(key).playedThisTurn){
 
@@ -256,7 +256,7 @@ public class StatusHandler {
 
             }
         }
-        if(timing == TIMING_TYPE.TURN_END){
+        if(timing == TimingType.TURN_END){
             nextTurn();
         }
     }

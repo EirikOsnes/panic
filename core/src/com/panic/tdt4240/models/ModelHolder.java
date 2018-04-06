@@ -38,10 +38,10 @@ public class ModelHolder {
         return map;
     }
 
-    public Vehicle getVehicleById(String id) {
+    public Vehicle getVehicleByName(String name) {
         for (int i = 0; i < vehicles.size(); i++) {
             Vehicle v = vehicles.get(i);
-            if (v.getVehicleID().equalsIgnoreCase(id)) {
+            if (v.getVehicleID().equalsIgnoreCase(name)) {
                 return v;
             }
         }

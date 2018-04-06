@@ -20,7 +20,7 @@ public class EventFactory {
      * @return An ArrayList of the Events created from the Card
      */
     public static ArrayList<Event> createEventFromCard(Card c, String targetID, String instigatorID) {
-        EventFactory.checkIDs(targetID, instigatorID);
+        //EventFactory.checkIDs(targetID, instigatorID);
 
         ArrayList<Event> eList = new ArrayList<>();
 
@@ -36,13 +36,13 @@ public class EventFactory {
     }
 
     public static Event createMoveEvent(String targetID, String instigatorID) {
-        EventFactory.checkIDs(targetID, instigatorID);
+        // EventFactory.checkIDs(targetID, instigatorID);
         Event e = new Event(Event.Type.MOVE, targetID, instigatorID);
         return e;
     }
 
     public static Event createDestroyedEvent(String targetID, String instigatorID) {
-        EventFactory.checkIDs(targetID, instigatorID);
+        // EventFactory.checkIDs(targetID, instigatorID);
         Event e = new Event(Event.Type.DESTROYED, targetID, instigatorID);
         return e;
     }

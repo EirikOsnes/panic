@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * A class to hold all statuses and the logic on them.
@@ -13,8 +14,7 @@ import java.util.HashMap;
 public class StatusHandler {
 
 
-    private HashMap<String, Status> statuses;
-    //TODO: Potential for bugs from different orderings in the HashMap?
+    private TreeMap<String, Status> statuses;
     private ArrayList<String> baseStats;
     private Object parent;
     public enum TIMING_TYPE{TURN_START, CARD_PLAYED ,TURN_END}
@@ -26,18 +26,21 @@ public class StatusHandler {
      */
     public StatusHandler(Object parent){
         this.parent = parent;
-        statuses = new HashMap<>();
         baseStats = new ArrayList<>();
         setupBaseStatuses();
+        statuses = new TreeMap<>(new statusComparator());
+        initializeBaseStatuses();
     }
 
-    void setupBaseStatuses(){
+    private void setupBaseStatuses(){
         baseStats.add("health");
         baseStats.add("damage_modifier");
         baseStats.add("defence_modifier");
         baseStats.add("movement_modifier");
         baseStats.add("max_damage");
+    }
 
+    private void initializeBaseStatuses(){
         for (String stat : baseStats) {
             addStatus(stat);
         }

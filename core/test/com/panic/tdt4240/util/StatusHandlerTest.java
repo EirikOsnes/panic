@@ -92,14 +92,14 @@ public class StatusHandlerTest {
         assertEquals(0,statusHandler.getStatusResultant("max_damage"),0.01);
 
         //Check poison when invulnerable - no damage should be dealt.
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
+        statusHandler.runEffects(StatusHandler.TimingType.TURN_END);
         //assertEquals(0,statusHandler.getStatusResultant("max_damage"),0.01);
         //assertEquals(90,statusHandler.getStatusResultant("health"),0.01);
 
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
         statusHandler.runEffects(StatusHandler.TimingType.TURN_START);
         assertEquals(0,statusHandler.getStatusResultant("max_damage"),0.01);
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
+        statusHandler.runEffects(StatusHandler.TimingType.TURN_END);
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
         statusHandler.runEffects(StatusHandler.TimingType.TURN_START);
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
@@ -132,7 +132,7 @@ public class StatusHandlerTest {
         assertEquals(1,statusHandler.getMovementModifier());
         statusHandler.addStatusAddition("movement_modifier", 0.5f, 1);
         assertEquals(2,statusHandler.getMovementModifier());
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
+        statusHandler.runEffects(StatusHandler.TimingType.TURN_END);
         assertEquals(1,statusHandler.getMovementModifier());
     }
 

@@ -257,7 +257,7 @@ public class StatusHandler {
 
             }
         }
-        if(timing == TIMING_TYPE.TURN_END){
+        if(timing == TimingType.TURN_END){
             nextTurn();
         }
     }

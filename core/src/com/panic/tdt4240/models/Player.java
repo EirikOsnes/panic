@@ -25,7 +25,7 @@ public class Player implements EventListener {
     public Player(Stack<Card> cards){
         deck = new Deck(cards);
         hand = new Hand();
-        vehicle = new Vehicle();
+        //vehicle = new Vehicle();
         EventBus.getInstance().addListener(this);
     }
     public int getAmountDrawnCards(){

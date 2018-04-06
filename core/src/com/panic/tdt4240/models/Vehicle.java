@@ -12,11 +12,12 @@ public class Vehicle implements EventListener {
 
     private StatusHandler statusHandler;
     private String vehicleID;
+    private String vehicleType;
 
-    public Vehicle(){
+    public Vehicle(String type){
         statusHandler = new StatusHandler(this);
         EventBus.getInstance().addListener(this);
-        //TODO: Add vehicleID
+        vehicleType = type;
     }
 
     public StatusHandler getStatusHandler() {
@@ -24,13 +25,33 @@ public class Vehicle implements EventListener {
 
     }
 
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
     public String getVehicleID() {
         return vehicleID;
     }
 
+    public Vehicle cloneVehicleWithId(String id) {
+        Vehicle v = new Vehicle(this.vehicleType);
+
+        for (String s : statusHandler.getAllResultants().keySet()) {
+            v.statusHandler.addStatus(s, statusHandler.getStatusResultant(s));
+        }
+
+        v.vehicleID = id;
+        return v;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehicle with id: " + vehicleID + "\n" + statusHandler.toString();
+    }
+
     @Override
     public void handleEvent(Event e) {
-        if (e.getT() == Event.Type.ATTACK) {
+        if (e.getT() == Event.Type.ATTACK && e.getTargetID() == this.vehicleID) {
             this.statusHandler.addStatusAddition(e.getStatus(), e.getEffectValue(), e.getDuration());
         }
     }

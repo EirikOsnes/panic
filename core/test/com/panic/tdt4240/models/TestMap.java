@@ -128,7 +128,7 @@ public class TestMap {
         assertEquals((Integer) map.getAdjacency()[2][4], (Integer) 2);
 
         assertEquals((Integer) map.getAdjacency()[3][0], (Integer) 1);
-        assertEquals((Integer) map.getAdjacency()[3][1],(Integer) 2);
+        assertEquals((Integer) map.getAdjacency()[3][1], (Integer) 2);
         assertEquals((Integer) map.getAdjacency()[3][2], (Integer) 1);
         assertEquals((Integer) map.getAdjacency()[3][3], (Integer) 0);
         assertEquals((Integer) map.getAdjacency()[3][4], (Integer) 1);
@@ -136,7 +136,7 @@ public class TestMap {
 
     @Test
     public void shouldAddAndRemoveVehicle(){
-        Vehicle vehicle = new Vehicle();
+        Vehicle vehicle = new Vehicle("EDDISON");
         map.vehicles.put("test", vehicle);
         assertNotNull(map.vehicles);
         map.removeVehicle("test");

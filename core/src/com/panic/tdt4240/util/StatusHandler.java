@@ -16,7 +16,7 @@ public class StatusHandler {
     //TODO: Potential for bugs from different orderings in the HashMap?
     private ArrayList<String> baseStats;
     private Object parent;
-    public enum TIMING_TYPE{TURN_START, CARD_PLAYED ,TURN_END}
+    public enum TimingType {TURN_START, CARD_PLAYED ,TURN_END}
 
 
     /**
@@ -100,7 +100,7 @@ public class StatusHandler {
      * @param name The name of the status
      */
     public void addStatus(String name){
-        addStatus(name, StatusConstants.STATUS_VALUES.valueOf(name).getBaseValue());
+        addStatus(name, StatusConstants.StatusValues.valueOf(name).getBaseValue());
     }
 
     /**
@@ -114,7 +114,7 @@ public class StatusHandler {
 
             try {
                 if (!statuses.containsKey(statusName)) {
-                    float baseValue = StatusConstants.STATUS_VALUES.valueOf(statusName).getBaseValue();
+                    float baseValue = StatusConstants.StatusValues.valueOf(statusName).getBaseValue();
                     addStatus(statusName, baseValue);
                 }
 
@@ -148,7 +148,7 @@ public class StatusHandler {
 
         try {
             if (!statuses.containsKey(statusName)) {
-                float baseValue = StatusConstants.STATUS_VALUES.valueOf(statusName).getBaseValue();
+                float baseValue = StatusConstants.StatusValues.valueOf(statusName).getBaseValue();
                 addStatus(statusName, baseValue);
             }
 
@@ -187,7 +187,7 @@ public class StatusHandler {
      * @param statusName The name of the status whose effect should run.
      */
     void parseEffects(String statusName){
-        String[] effectArray = StatusConstants.STATUS_VALUES.valueOf(statusName).getEffect();
+        String[] effectArray = StatusConstants.StatusValues.valueOf(statusName).getEffect();
 
         float value;
         if(effectArray[2].equalsIgnoreCase("RESULTANT")){
@@ -218,12 +218,12 @@ public class StatusHandler {
      * Runs all effects currently handled bt this StatusHandler. Only the effects corresponding to the timing will run.
      * @param timing The timing for when this is run (TURN_START, CARD_PLAYED, TURN_END)
      */
-    public void runEffects(TIMING_TYPE timing){
+    public void runEffects(TimingType timing){
         for (String key: statuses.keySet()) {
             if(!statuses.get(key).playedThisTurn){
 
                 //This status has is a base status or a lookup status
-                if (StatusConstants.STATUS_VALUES.valueOf(key).getEffect() == null)
+                if (StatusConstants.StatusValues.valueOf(key).getEffect() == null)
                     continue;
 
                 //This status has no resultant - ignore it.
@@ -231,7 +231,7 @@ public class StatusHandler {
                 if(statuses.get(key).getResultant()<=0)
                     continue;
 
-                String effectTiming = StatusConstants.STATUS_VALUES.valueOf(key).getTiming();
+                String effectTiming = StatusConstants.StatusValues.valueOf(key).getTiming();
                 switch (timing) {
                     case TURN_START:
                         if(effectTiming.equalsIgnoreCase("TURN_START") || effectTiming.equalsIgnoreCase("INSTANT")){

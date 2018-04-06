@@ -8,9 +8,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -23,6 +24,7 @@ import com.panic.tdt4240.view.Renderer;
 
 import java.util.ArrayList;
 
+
 /**
  * Created by victor on 05.03.2018.
  */
@@ -32,12 +34,13 @@ public class PlayCardView extends AbstractView{
     Renderer renderer;
     private HandTexture hv;
     private ArrayList<Card> hand;
-    private ArrayList<ImageTextButton> cardButtons;
+    private ArrayList<TextButton> cardButtons;
     private Stage stage;
     private Table table;
     private ArrayList<Boolean> selectedCard;
     private Texture background;
     private int playedCards;
+    private TextField cardInfo;
 
     public PlayCardView(final PlayCardState state){
         super(state);
@@ -51,23 +54,23 @@ public class PlayCardView extends AbstractView{
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         table = new Table();
-        //TODO fiks posisjoneringen, sentreres ved venstre side når center() brukes
         table.setWidth(SCREEN_WIDTH);
         table.left().bottom();
         BitmapFont font = new BitmapFont();
-        Skin skin = new Skin();
+        final Skin skin = new Skin();
         TextureAtlas buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
         skin.addRegions(buttonAtlas);
 
-        ImageTextButton.ImageTextButtonStyle buttonStyle = new ImageTextButton.ImageTextButtonStyle();
-        buttonStyle.font = font;
-
         for (int i = 0; i < hand.size(); i++) {
-            selectedCard.add(i, false);
-            buttonStyle.imageUp = skin.getDrawable("button-up");
-            buttonStyle.imageDown = skin.getDrawable("button-down");
+            final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+            buttonStyle.font = font;
 
-            ImageTextButton button = new ImageTextButton("", buttonStyle);
+            selectedCard.add(i, false);
+
+            buttonStyle.up = skin.getDrawable("button-up");
+            buttonStyle.down = skin.getDrawable("button-down");
+
+            final TextButton button = new TextButton("", buttonStyle);
             cardButtons.add(i, button);
 
             final int index = i;
@@ -76,21 +79,30 @@ public class PlayCardView extends AbstractView{
                 public void changed(ChangeEvent event, Actor actor) {
                     if(playedCards < GlobalConstants.BASE_PLAY_CARDS){
                         if(!selectedCard.get(index)){
+                            buttonStyle.up = skin.getDrawable("button-gone");
+                            button.setStyle(buttonStyle);
                             cardButtons.get(index).getLabel().setText(hand.get(index).getTooltip());
                             state.handleInput(cardButtons.get(index));
                             selectedCard.set(index, true);
                             playedCards++;
+                            cardInfo.setText(hand.get(index).getTooltip());
                         }
                         else{
+                            buttonStyle.up = skin.getDrawable("button-up");
+                            button.setStyle(buttonStyle);
                             cardButtons.get(index).getLabel().setText("");
                             selectedCard.set(index, false);
                             playedCards--;
+                            cardInfo.setText("");
                         }
                     }
                     else if(selectedCard.get(index)){
+                        buttonStyle.up = skin.getDrawable("button-up");
+                        button.setStyle(buttonStyle);
                         cardButtons.get(index).getLabel().setText("");
                         selectedCard.set(index, false);
                         playedCards--;
+                        cardInfo.setText("");
                     }
                 }
             });
@@ -98,8 +110,16 @@ public class PlayCardView extends AbstractView{
         }
         table.background(new TextureRegionDrawable(new TextureRegion(background)));
         table.pack();
-
         stage.addActor(table);
+
+        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+        textFieldStyle.font = font;
+        cardInfo = new TextField("", textFieldStyle);
+        cardInfo.setWidth(SCREEN_WIDTH/4);
+        cardInfo.setHeight(SCREEN_HEIGHT/10);
+        cardInfo.setPosition(SCREEN_WIDTH/2, table.getHeight()*2);
+        stage.addActor(cardInfo);
+
     }
 
 

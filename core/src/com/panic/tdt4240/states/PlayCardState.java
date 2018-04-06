@@ -1,6 +1,7 @@
 package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
@@ -9,7 +10,7 @@ import com.panic.tdt4240.view.ViewClasses.PlayCardView;
  * Created by Hermann on 12.03.2018.
  */
 
-public class CardPlayState extends State {
+public class PlayCardState extends State {
 
     private PlayCardView playView;
     public Player player;
@@ -18,17 +19,18 @@ public class CardPlayState extends State {
     private int playerCount;
     private int playersAlive;
 
-    public CardPlayState(GameStateManager gsm/*, Player player, Map map*/) {
+    public PlayCardState(GameStateManager gsm, Player player/*, Map map*/) {
         super(gsm);
-        //this.player = player;
-        player.playCards();
+        this.player = player;
         //this.map = map;
         playView = new PlayCardView(this);
+        playerCount = 2;
+        playersAlive = 2;
     }
 
     @Override
     public void handleInput(Object o) {
-        if (o.equals(0)) { // play cards
+        if (o instanceof Card) { // play cards
 
         }
         if (o.equals(1)){ // animation

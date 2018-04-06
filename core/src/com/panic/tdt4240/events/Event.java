@@ -17,6 +17,7 @@ public class Event {
     public enum Type {ATTACK, DESTROYED, MOVE, TIMING}
 
     private Type t;
+    private StatusHandler.TimingType tt;
     private String instigatorID, targetID;
     private String status;
     private int duration;
@@ -75,6 +76,14 @@ public class Event {
 
     void setT(Type t) {
         this.t = t;
+    }
+
+    void setTiming(StatusHandler.TimingType tt) {
+        this.tt = tt;
+    }
+
+    public StatusHandler.TimingType getTiming() {
+        return tt;
     }
 
     public Event cloneEvent(String targetID) {

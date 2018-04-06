@@ -173,8 +173,10 @@ public class XMLParser {
                             myVehicle.getStatusHandler().addStatus(statusElement.getAttribute("name"), Float.parseFloat(statusElement.getAttribute("base")));
                         }
                     }
+                    result.add(myVehicle);
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

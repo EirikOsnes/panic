@@ -41,7 +41,7 @@ public class ModelHolder {
     public Vehicle getVehicleByName(String name) {
         for (int i = 0; i < vehicles.size(); i++) {
             Vehicle v = vehicles.get(i);
-            if (v.getVehicleID().equalsIgnoreCase(name)) {
+            if (v.getVehicleType().equalsIgnoreCase(name)) {
                 return v;
             }
         }
@@ -58,9 +58,10 @@ public class ModelHolder {
             XMLParser parser = new XMLParser();
 
             // TODO: Change to actual path
-            cards = parser.parseCards("cards/card_test.xml");
-            //maps = parser.parseMap("maps/map_test.xml");
-            vehicles = parser.parseVehicles("vehicles/vehicle_test.xml");
+            String base = "android/assets/";
+            cards = parser.parseCards(base + "cards/card_test.xml");
+            map = parser.parseMap(base + "maps/map_test.xml");
+            vehicles = parser.parseVehicles(base + "vehicles/vehicle_test.xml");
         }
         return mh;
     }

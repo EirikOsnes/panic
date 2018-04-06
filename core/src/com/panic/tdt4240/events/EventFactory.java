@@ -2,6 +2,7 @@ package com.panic.tdt4240.events;
 
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.CardEffect;
+import com.panic.tdt4240.util.StatusHandler;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,7 @@ public class EventFactory {
      * @param targetID      The ID of the target of the event
      * @param instigatorID  The ID of the instigator of the event
      */
-    public static void createEventFromCard(Card c, String targetID, String instigatorID) {
+    public static void postEventsFromCard(Card c, String targetID, String instigatorID) {
         //EventFactory.checkIDs(targetID, instigatorID);
 
         for (CardEffect ce : c.getCardEffects()) {
@@ -29,6 +30,9 @@ public class EventFactory {
             e.setStatus(ce.getTargetStatus());
             EventBus.getInstance().postEvent(e);
         }
+        Event e = new Event(Event.Type.TIMING, targetID, instigatorID);
+        e.setTiming(StatusHandler.TimingType.CARD_PLAYED);
+        EventBus.getInstance().postEvent(e);
     }
 
     public static Event createMoveEvent(String targetID, String instigatorID) {
@@ -47,5 +51,17 @@ public class EventFactory {
         if (!ID1.matches("[A-Z]-\\d\\d\\d") || !ID2.matches("[A-Z]-\\d\\d\\d")) {
             throw new IllegalArgumentException("ID should be on format L-DDD where L is a capital letter and D is any digit");
         }
+    }
+
+    public static void postNewTurnEvent() {
+        Event e = new Event(Event.Type.TIMING, "", "");
+        e.setTiming(StatusHandler.TimingType.TURN_START);
+        EventBus.getInstance().postEvent(e);
+    }
+
+    public static void postEndTurnEvent() {
+        Event e = new Event(Event.Type.TIMING, "", "");
+        e.setTiming(StatusHandler.TimingType.TURN_END);
+        EventBus.getInstance().postEvent(e);
     }
 }

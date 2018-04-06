@@ -12,6 +12,11 @@ public class Vehicle implements EventListener {
 
     private StatusHandler statusHandler;
     private String vehicleID;
+
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
     private String vehicleType;
 
     public Vehicle(String type){
@@ -30,19 +35,24 @@ public class Vehicle implements EventListener {
     }
 
     public Vehicle cloneVehicleWithId(String id) {
-        Vehicle v = new Vehicle();
+        Vehicle v = new Vehicle(this.vehicleType);
 
         for (String s : statusHandler.getAllResultants().keySet()) {
             v.statusHandler.addStatus(s, statusHandler.getStatusResultant(s));
         }
 
-        vehicleID = id;
+        v.vehicleID = id;
         return v;
     }
 
     @Override
+    public String toString() {
+        return "Vehicle with id: " + vehicleID + "\n" + statusHandler.toString();
+    }
+
+    @Override
     public void handleEvent(Event e) {
-        if (e.getT() == Event.Type.ATTACK) {
+        if (e.getT() == Event.Type.ATTACK && e.getTargetID() == this.vehicleID) {
             this.statusHandler.addStatusAddition(e.getStatus(), e.getEffectValue(), e.getDuration());
         }
     }

@@ -6,13 +6,9 @@ package com.panic.tdt4240.util;
 
 public class StatusConstants {
 
-<<<<<<< HEAD
     //TODO: Add a CHECK status type? As is check if a status exists>0?
 
-    public enum STATUS_VALUES {
-=======
     public enum StatusValues {
->>>>>>> 2d521bc78627d0bb3246ddab9915d6a57685e1cb
 
         health(100),
         damage_modifier(1),

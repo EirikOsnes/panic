@@ -25,7 +25,7 @@
         <target_type>ASTEROID</target_type>
         <allowed_targets>ALL</allowed_targets>
         <min_range>0</min_range>
-        <max_range>1</max_range>
+        <max_range>5</max_range>
         <tooltip>Pew pew! PEW!</tooltip>
         <card_effect>
             <target_status>health</target_status>

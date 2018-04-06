@@ -3,6 +3,7 @@ package com.panic.tdt4240.util;
 import com.badlogic.gdx.Gdx;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 /**
@@ -437,5 +438,30 @@ public class StatusHandler {
 
         }
 
+    }
+
+    class statusComparator implements Comparator<String> {
+
+
+        ArrayList<String> priority = new ArrayList<>();
+
+        statusComparator(){
+            //Currently baseStats will go first - is this wanted?
+            priority.addAll(baseStats);
+        }
+
+        @Override
+        public int compare(String s, String t1) {
+
+            if(baseStats.contains(s)&&baseStats.contains(t1)){
+                return baseStats.indexOf(s)-baseStats.indexOf(t1);
+            }else if(baseStats.contains(s)){
+                return -1;
+            }else if(baseStats.contains(t1)){
+                return 1;
+            }else{
+                return s.compareToIgnoreCase(t1);
+            }
+        }
     }
 }

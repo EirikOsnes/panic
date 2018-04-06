@@ -1,5 +1,7 @@
 package com.panic.tdt4240.events;
 
+import com.panic.tdt4240.util.StatusHandler;
+
 /**
  * This is a class that represents the Events in the game panic
  * project for TDT4240
@@ -12,7 +14,7 @@ public class Event {
     /**
      * An enum that defines the type of event that occurred
      */
-    public enum Type {ATTACK, DESTROYED, MOVE}
+    public enum Type {ATTACK, DESTROYED, MOVE, TIMING}
 
     private Type t;
     private String instigatorID, targetID;

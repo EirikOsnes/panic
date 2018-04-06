@@ -43,13 +43,13 @@ public class MenuView extends AbstractView {
         super(menuState);
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,PanicGame.WIDTH,PanicGame.HEIGHT);
+
         stage = new Stage();
         table = new Table();
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
         buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
-        skin.addRegions(buttonAtlas);
+        skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
 
         createButtonStyle = new TextButton.TextButtonStyle();
         joinButtonStyle = new TextButton.TextButtonStyle();

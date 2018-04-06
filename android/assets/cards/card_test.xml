@@ -48,7 +48,7 @@
         <card_effect>
             <target_status>poison</target_status>
             <value>10</value>
-            <status_duration>2</status_duration>
+            <status_duration>3</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>false</friendly_fire>
         </card_effect>

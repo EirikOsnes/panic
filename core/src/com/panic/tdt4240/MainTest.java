@@ -29,8 +29,9 @@ final class MainTest {
         myMap.addVehicle("RED", myVehicle);
         myMap.getAsteroids().get(0).addVehicle(myVehicle.getVehicleID());
         myMap.addVehicle("GREEN", myInstigator);
-        myMap.getAsteroids().get(1).addVehicle(myInstigator.getVehicleID());
+        myMap.getAsteroids().get(0).addVehicle(myInstigator.getVehicleID());
 
+        System.out.println("-----BEGINNING-----");
         System.out.println(myVehicle.toString());
         System.out.println(myInstigator.toString());
 
@@ -38,11 +39,63 @@ final class MainTest {
         ModelHolder.getInstance().getCardById("PEW").playCard(myMap.getAsteroids().get(0).getId(), myInstigator.getVehicleID());
         myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.CARD_PLAYED);
         myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.CARD_PLAYED);
+
         myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_END);
         myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_END);
-        //EventFactory.postEndTurnEvent();
 
+        System.out.println("-----PLAYED PEW-----");
+        System.out.println(myVehicle.toString());
+        System.out.println(myInstigator.toString());
 
+        myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_START);
+        myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_START);
+
+        ModelHolder.getInstance().getCardById("POISON").playCard(myVehicle.getVehicleID(), myInstigator.getVehicleID());
+        myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.CARD_PLAYED);
+        myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.CARD_PLAYED);
+
+        myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_END);
+        myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_END);
+
+        System.out.println("-----PLAYED POISON-----");
+        System.out.println(myVehicle.toString());
+        System.out.println(myInstigator.toString());
+
+        myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_START);
+        myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_START);
+
+        ModelHolder.getInstance().getCardById("MOVE").playCard(myMap.getAsteroids().get(2).getId(), myVehicle.getVehicleID());
+        myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.CARD_PLAYED);
+        myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.CARD_PLAYED);
+
+        myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_END);
+        myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_END);
+
+        System.out.println("-----PLAYED MOVE-----");
+        System.out.println(myVehicle.toString());
+        System.out.println(myInstigator.toString());
+
+        myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_START);
+        myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_START);
+
+        ModelHolder.getInstance().getCardById("PEW").playCard(myMap.getAsteroids().get(0).getId(), myInstigator.getVehicleID());
+        myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.CARD_PLAYED);
+        myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.CARD_PLAYED);
+
+        myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_END);
+        myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_END);
+
+        System.out.println("-----PLAYED PEW AGAIN-----");
+        System.out.println(myVehicle.toString());
+        System.out.println(myInstigator.toString());
+
+        myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_START);
+        myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_START);
+
+        myVehicle.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_END);
+        myInstigator.getStatusHandler().runEffects(StatusHandler.TimingType.TURN_END);
+
+        System.out.println("-----ANOTHER ROUND-----");
         System.out.println(myVehicle.toString());
         System.out.println(myInstigator.toString());
     }

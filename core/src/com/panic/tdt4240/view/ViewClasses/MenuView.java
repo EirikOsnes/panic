@@ -48,7 +48,7 @@ public class MenuView extends AbstractView {
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         skin = new Skin(Gdx.files.internal("uiskin.json"));
-        buttonAtlas = new TextureAtlas("start_menu_buttons/buttons.pack");
+        buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
         skin.addRegions(buttonAtlas);
 
         createButtonStyle = new TextButton.TextButtonStyle();

@@ -5,6 +5,8 @@ import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
+import java.util.ArrayList;
+
 /**
  * Created by Hermann on 12.03.2018.
  */
@@ -17,6 +19,7 @@ public class CardPlayState extends State {
     private boolean gameFinished;
     private int playerCount;
     private int playersAlive;
+    private ArrayList<Player> deadPlayers;
 
     public CardPlayState(GameStateManager gsm/*, Player player, Map map*/) {
         super(gsm);
@@ -24,6 +27,7 @@ public class CardPlayState extends State {
         player.playCards();
         //this.map = map;
         playView = new PlayCardView(this);
+        deadPlayers = new ArrayList<>(playerCount);
     }
 
     @Override
@@ -40,8 +44,8 @@ public class CardPlayState extends State {
     public void update(float dt) {
         // TODO: pass appropriate data to gameresults (which then passes to view)
         // e.g. winner=null, if all players left the lobby.
-        if (playerCount < 2) gsm.push(new GameResultsState(gsm));
-        if (playersAlive==1) gsm.push(new GameResultsState(gsm));
+        if (playerCount < 2) gsm.push(new GameResultsState(gsm, deadPlayers));
+        if (playersAlive==1) gsm.push(new GameResultsState(gsm, deadPlayers));
     }
 
     @Override

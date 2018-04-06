@@ -53,6 +53,7 @@ public class MenuView extends AbstractView {
 
         createButtonStyle = new TextButton.TextButtonStyle();
         joinButtonStyle = new TextButton.TextButtonStyle();
+
         settingsButtonStyle = new TextButton.TextButtonStyle();
         createButtonStyle.font = font;
         createButtonStyle.up = skin.getDrawable("button-up");
@@ -112,12 +113,17 @@ public class MenuView extends AbstractView {
     }
 
     // TODO: legge inn input
-    public void render(SpriteBatch sb) {
-        sb.setProjectionMatrix(cam.combined);
-        sb.begin();
-        sb.draw(background,0,0,PanicGame.WIDTH,PanicGame.HEIGHT);
+    public void render() {
+        renderer.sb.setProjectionMatrix(cam.combined);
+        renderer.sb.begin();
+        renderer.sb.draw(background,0,0,PanicGame.WIDTH,PanicGame.HEIGHT);
         stage.draw();
-        sb.end();
+        renderer.sb.end();
+    }
+
+    public void dispose(){
+        renderer.dispose();
+        font.dispose();
     }
 
 

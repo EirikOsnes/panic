@@ -256,6 +256,9 @@ public class StatusHandler {
 
             }
         }
+        if(timing == TIMING_TYPE.TURN_END){
+            nextTurn();
+        }
     }
 
     /**

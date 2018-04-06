@@ -67,42 +67,42 @@ public class StatusHandlerTest {
 
         statusHandler.addStatusAddition("poison", 5, 3);
         assertEquals(100,statusHandler.getStatusResultant("health"),0.01);
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.CARD_PLAYED);
+        statusHandler.runEffects(StatusHandler.TimingType.CARD_PLAYED);
         assertEquals(100,statusHandler.getStatusResultant("health"),0.01);
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
+        statusHandler.runEffects(StatusHandler.TimingType.TURN_END);
         assertEquals(95,statusHandler.getStatusResultant("health"),0.01);
 /*
         //Check the playedThisTurn flag
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
+        statusHandler.runEffects(StatusHandler.TimingType.TURN_END);
         assertEquals(95,statusHandler.getStatusResultant("health"),0.01);
 */
        // statusHandler.nextTurn();
 
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
+        statusHandler.runEffects(StatusHandler.TimingType.TURN_END);
         assertEquals(90,statusHandler.getStatusResultant("health"),0.01);
 
        // statusHandler.nextTurn();
 
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_START);
+        statusHandler.runEffects(StatusHandler.TimingType.TURN_START);
         assertEquals(90,statusHandler.getStatusResultant("health"),0.01);
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
         statusHandler.addStatusAddition("invulnerable", 1, 2);
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.CARD_PLAYED);
+        statusHandler.runEffects(StatusHandler.TimingType.CARD_PLAYED);
         assertEquals(0,statusHandler.getStatusResultant("max_damage"),0.01);
 
         //Check poison when invulnerable - no damage should be dealt.
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
+        statusHandler.runEffects(StatusHandler.TimingType.TURN_END);
         //assertEquals(0,statusHandler.getStatusResultant("max_damage"),0.01);
         //assertEquals(90,statusHandler.getStatusResultant("health"),0.01);
 
 
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_START);
+        statusHandler.runEffects(StatusHandler.TimingType.TURN_START);
         assertEquals(0,statusHandler.getStatusResultant("max_damage"),0.01);
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
+        statusHandler.runEffects(StatusHandler.TimingType.TURN_END);
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_START);
+        statusHandler.runEffects(StatusHandler.TimingType.TURN_START);
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
     }
 
@@ -133,7 +133,7 @@ public class StatusHandlerTest {
         assertEquals(1,statusHandler.getMovementModifier());
         statusHandler.addStatusAddition("movement_modifier", 0.5f, 1);
         assertEquals(2,statusHandler.getMovementModifier());
-        statusHandler.runEffects(StatusHandler.TIMING_TYPE.TURN_END);
+        statusHandler.runEffects(StatusHandler.TimingType.TURN_END);
         assertEquals(1,statusHandler.getMovementModifier());
     }
 

@@ -13,16 +13,13 @@ import java.util.ArrayList;
 public class EventFactory {
 
     /**
-     * A factory that creates a list of events connected to the given card
+     * A factory that post events connected to the given card
      * @param c             The card to make the events for
      * @param targetID      The ID of the target of the event
      * @param instigatorID  The ID of the instigator of the event
-     * @return An ArrayList of the Events created from the Card
      */
-    public static ArrayList<Event> createEventFromCard(Card c, String targetID, String instigatorID) {
+    public static void createEventFromCard(Card c, String targetID, String instigatorID) {
         //EventFactory.checkIDs(targetID, instigatorID);
-
-        ArrayList<Event> eList = new ArrayList<>();
 
         for (CardEffect ce : c.getCardEffects()) {
             Event e = new Event(Event.Type.ATTACK, targetID, instigatorID);
@@ -30,9 +27,8 @@ public class EventFactory {
             e.setEffectValue(ce.getValue());
             e.setFriendlyFire(ce.isFriendlyFire());
             e.setStatus(ce.getTargetStatus());
-            eList.add(e);
+            EventBus.getInstance().postEvent(e);
         }
-        return eList;
     }
 
     public static Event createMoveEvent(String targetID, String instigatorID) {

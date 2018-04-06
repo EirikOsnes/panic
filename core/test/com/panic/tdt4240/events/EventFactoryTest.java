@@ -30,7 +30,7 @@ public class EventFactoryTest {
         return;
     }
 
-    @Test
+/*    @Test
     public void testCreateEventFromCard() {
         c = mock(Card.class);
         ce = mock(CardEffect.class);
@@ -52,7 +52,7 @@ public class EventFactoryTest {
             assertEquals(FRIENDLY, e.isFriendlyFire());
             assertEquals(STATUS, e.getStatus());
         }
-    }
+    }*/
 
     @Test
     public void testCreateMoveEvent() {

@@ -12,11 +12,6 @@ public class Vehicle implements EventListener {
 
     private StatusHandler statusHandler;
     private String vehicleID;
-
-    public String getVehicleType() {
-        return vehicleType;
-    }
-
     private String vehicleType;
 
     public Vehicle(String type){
@@ -28,6 +23,10 @@ public class Vehicle implements EventListener {
     public StatusHandler getStatusHandler() {
         return statusHandler;
 
+    }
+
+    public String getVehicleType() {
+        return vehicleType;
     }
 
     public String getVehicleID() {

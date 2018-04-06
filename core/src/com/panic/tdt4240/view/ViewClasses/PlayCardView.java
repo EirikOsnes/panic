@@ -1,6 +1,7 @@
 package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -33,95 +35,78 @@ public class PlayCardView extends AbstractView{
 
     Renderer renderer;
     private HandTexture hv;
-    private ArrayList<Card> hand;
-    private ArrayList<TextButton> cardButtons;
+    public ArrayList<TextButton> cardButtons;
+    private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Stage stage;
     private Table table;
-    private ArrayList<Boolean> selectedCard;
     private Texture background;
-    private int playedCards;
-    private TextField cardInfo;
+    public TextArea cardInfo;
+    private int amountCards;
+    private Skin skin;
 
     public PlayCardView(final PlayCardState state){
         super(state);
         renderer = Renderer.getInstance();
         background = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
-
-        hand = state.player.playCards();
-        cardButtons = new ArrayList<>(hand.size());
-        selectedCard = new ArrayList<>(hand.size());
+        amountCards = state.player.getHand().size();
+        cardButtons = new ArrayList<>(amountCards);
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         table = new Table();
         table.setWidth(SCREEN_WIDTH);
         table.left().bottom();
         BitmapFont font = new BitmapFont();
-        final Skin skin = new Skin();
+        skin = new Skin();
         TextureAtlas buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
         skin.addRegions(buttonAtlas);
+        buttonStyles = new ArrayList<>();
 
-        for (int i = 0; i < hand.size(); i++) {
-            final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        for (int i = 0; i < amountCards; i++) {
+            TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
             buttonStyle.font = font;
-
-            selectedCard.add(i, false);
 
             buttonStyle.up = skin.getDrawable("button-up");
             buttonStyle.down = skin.getDrawable("button-down");
 
-            final TextButton button = new TextButton("", buttonStyle);
+            buttonStyles.add(buttonStyle);
+
+            TextButton button = new TextButton("", buttonStyle);
             cardButtons.add(i, button);
 
             final int index = i;
             cardButtons.get(index).addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    if(playedCards < GlobalConstants.BASE_PLAY_CARDS){
-                        if(!selectedCard.get(index)){
-                            buttonStyle.up = skin.getDrawable("button-gone");
-                            button.setStyle(buttonStyle);
-                            cardButtons.get(index).getLabel().setText(hand.get(index).getTooltip());
-                            state.handleInput(cardButtons.get(index));
-                            selectedCard.set(index, true);
-                            playedCards++;
-                            cardInfo.setText(hand.get(index).getTooltip());
-                        }
-                        else{
-                            buttonStyle.up = skin.getDrawable("button-up");
-                            button.setStyle(buttonStyle);
-                            cardButtons.get(index).getLabel().setText("");
-                            selectedCard.set(index, false);
-                            playedCards--;
-                            cardInfo.setText("");
-                        }
-                    }
-                    else if(selectedCard.get(index)){
-                        buttonStyle.up = skin.getDrawable("button-up");
-                        button.setStyle(buttonStyle);
-                        cardButtons.get(index).getLabel().setText("");
-                        selectedCard.set(index, false);
-                        playedCards--;
-                        cardInfo.setText("");
-                    }
+                    state.handleInput(index);
                 }
             });
-            table.add(cardButtons.get(index)).width(SCREEN_WIDTH/hand.size());
+            table.add(cardButtons.get(index)).width(SCREEN_WIDTH/amountCards);
         }
         table.background(new TextureRegionDrawable(new TextureRegion(background)));
         table.pack();
         stage.addActor(table);
 
-        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.font = font;
-        cardInfo = new TextField("", textFieldStyle);
+        TextField.TextFieldStyle style = new TextField.TextFieldStyle();
+        style.fontColor = Color.WHITE;
+        style.font = new BitmapFont();
+        cardInfo = new TextArea("",style);
+
+        cardInfo.setPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/10);
         cardInfo.setWidth(SCREEN_WIDTH/4);
-        cardInfo.setHeight(SCREEN_HEIGHT/10);
-        cardInfo.setPosition(SCREEN_WIDTH/2, table.getHeight()*2);
+        cardInfo.setHeight(SCREEN_HEIGHT/8);
         stage.addActor(cardInfo);
 
     }
-
+    public void clickedButton(Integer button, boolean checked){
+        if(checked){
+            buttonStyles.get(button).up = skin.getDrawable("button-gone");
+        }
+        else{
+            buttonStyles.get(button).up = skin.getDrawable("button-up");
+        }
+        cardButtons.get(button).setStyle(buttonStyles.get(button));
+    }
 
     public void render(SpriteBatch sb){
         sb.setProjectionMatrix(cam.combined);
@@ -202,6 +187,8 @@ public class PlayCardView extends AbstractView{
     }
 
     public void dispose(){
+        stage.dispose();
+        background.dispose();
         renderer.dispose();
     }
 

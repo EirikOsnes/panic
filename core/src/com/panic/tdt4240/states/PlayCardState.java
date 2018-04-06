@@ -2,13 +2,14 @@ package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.Hand;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
+import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.ArrayList;
-
-import sun.misc.Queue;
 
 /**
  * Created by Hermann on 12.03.2018.
@@ -18,34 +19,56 @@ public class PlayCardState extends State {
 
     private PlayCardView playView;
     public Player player;
-    public Map map;
+    private Map map;
     private boolean gameFinished;
     private int playerCount;
     private int playersAlive;
     private ArrayList<Card> cardArrayList;
+    private int playedCards;
+    private ArrayList<Card> hand;
+    private ArrayList<Boolean> selectedCard;
 
     public PlayCardState(GameStateManager gsm, Player player/*, Map map*/) {
         super(gsm);
         this.player = player;
         //this.map = map;
         cardArrayList = new ArrayList<>();
-        playView = new PlayCardView(this);
         playerCount = 2;
         playersAlive = 2;
+
+        hand = player.playCards();
+        selectedCard = new ArrayList<>(hand.size());
+        for (int i = 0; i < hand.size(); i++) {
+            selectedCard.add(i, false);
+        }
+        playView = new PlayCardView(this);
     }
 
     @Override
     public void handleInput(Object o) {
-        if (o instanceof Card) { // play cards
-            if(cardArrayList.contains(o)){
-                cardArrayList.remove(o);
+        Integer cardIndex = (Integer) o;
+        if(playedCards < GlobalConstants.BASE_PLAY_CARDS){
+            if(!cardArrayList.contains(hand.get(cardIndex))){
+                cardArrayList.add(hand.get(cardIndex));
+                selectedCard.set(cardIndex, true);
+                playView.cardInfo.setText(hand.get(cardIndex).getTooltip());
+                playView.clickedButton(cardIndex, true);
+                playedCards++;
             }
             else{
-                cardArrayList.add((Card) o);
+                cardArrayList.remove(hand.get(cardIndex));
+                selectedCard.set(cardIndex, false);
+                playView.cardInfo.setText("");
+                playView.clickedButton(cardIndex, false);
+                playedCards--;
             }
         }
-        if (o.equals(1)){ // animation
-
+        else if(cardArrayList.contains(hand.get(cardIndex))){
+            cardArrayList.remove(hand.get(cardIndex));
+            selectedCard.set(cardIndex, false);
+            playView.cardInfo.setText("");
+            playView.clickedButton(cardIndex, false);
+            playedCards--;
         }
     }
 

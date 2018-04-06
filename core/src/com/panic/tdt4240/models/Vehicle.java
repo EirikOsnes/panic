@@ -12,11 +12,12 @@ public class Vehicle implements EventListener {
 
     private StatusHandler statusHandler;
     private String vehicleID;
+    private String vehicleType;
 
-    public Vehicle(){
+    public Vehicle(String type){
         statusHandler = new StatusHandler(this);
         EventBus.getInstance().addListener(this);
-        //TODO: Add vehicleID
+        vehicleType = type;
     }
 
     public StatusHandler getStatusHandler() {

@@ -163,8 +163,8 @@ public class XMLParser {
                 Node node = nodeList.item(i);
 
                 if (node.getNodeType() == Node.ELEMENT_NODE){
-                    Vehicle myVehicle = new Vehicle();
                     Element element = (Element) node;
+                    Vehicle myVehicle = new Vehicle(element.getAttribute("type"));
                     NodeList statusNodeList = element.getElementsByTagName("status");
                     for (int j = 0; j < statusNodeList.getLength(); j++) {
                         Node statusNode = statusNodeList.item(j);

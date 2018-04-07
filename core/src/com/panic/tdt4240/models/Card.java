@@ -1,6 +1,7 @@
 package com.panic.tdt4240.models;
 
 import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventBus;
 import com.panic.tdt4240.events.EventFactory;
 
 import java.util.ArrayList;
@@ -111,6 +112,12 @@ public class Card {
     }
 
     public void playCard(String targetID, String instigatorID) {
-        EventFactory.postEventsFromCard(this, targetID, instigatorID);
+        if (cardType == CardType.MOVEMENT) {
+            Event e = EventFactory.createMoveEvent(targetID, instigatorID);
+            EventBus.getInstance().postEvent(e);
+        }
+        else if (cardType == CardType.ATTACK) {
+            EventFactory.postEventsFromCard(this, targetID, instigatorID);
+        }
     }
 }

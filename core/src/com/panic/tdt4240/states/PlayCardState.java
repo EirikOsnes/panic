@@ -119,13 +119,13 @@ public class PlayCardState extends State {
     public void update(float dt) {
         // TODO: pass appropriate data to gameresults (which then passes to view)
         // e.g. winner=null, if all players left the lobby.
-        if (playerCount < 2) gsm.push(new GameResultsState(gsm));
-        if (playersAlive==1) gsm.push(new GameResultsState(gsm));
+        //if (playerCount < 2) gsm.push(new GameResultsState(gsm));
+        //if (playersAlive==1) gsm.push(new GameResultsState(gsm));
     }
 
     @Override
-    public void render(SpriteBatch sb) {
-        playView.render(sb);
+    public void render() {
+        playView.render();
 
     }
 

@@ -68,10 +68,11 @@ public class GameResultsView extends AbstractView {
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
 
-        // different styling for results and buttons
+        // different styling for results and buttons. ranking buttons
+        // don't need different looks when pressed
         rankingStyle.font = font;
         rankingStyle.up = skin.getDrawable("button-up");
-        rankingStyle.down = skin.getDrawable("button-down");
+        rankingStyle.down = skin.getDrawable("button-up");
 
         buttonStyle.font = font;
         buttonStyle.up = skin.getDrawable("button-up");
@@ -93,7 +94,7 @@ public class GameResultsView extends AbstractView {
         table.center();
         for (int i = 0; i < textButtons.size(); i++){
             table.row();
-            table.add(textButtons.get(i)).width(300).height(50).pad(20);
+            table.add(textButtons.get(i)).width(300).height(40).pad(20);
         }
 
         exitToLobbyButton = new TextButton("Exit to lobby", buttonStyle);
@@ -121,8 +122,8 @@ public class GameResultsView extends AbstractView {
         renderer.sb.begin();
         renderer.sb.draw(bg, 0, 0, PanicGame.WIDTH, PanicGame.HEIGHT);
         stage.draw();
-        font.draw(renderer.sb, "HA! The worst of you don't deserve \n " +
-                "mentioning, because you SUCK.",
+        font.draw(renderer.sb, "Ha! The worst of you don't deserve \n " +
+                "mentioning because YOU SUCK.",
                 PanicGame.HEIGHT/2, PanicGame.WIDTH/2);
         renderer.sb.end();
     }

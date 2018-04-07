@@ -127,11 +127,11 @@ public class Asteroid implements EventListener{
     @Override
     public void handleEvent(Event e) {
         if (e.getT() == Event.Type.MOVE) {
+            if (this.vehicleIDs.contains(e.getInstigatorID())) {
+                this.removeVehicle(e.getInstigatorID());
+            }
             if (e.getTargetID().equals(this.id)) {
                 this.addVehicle(e.getInstigatorID());
-            }
-            else if (this.vehicleIDs.contains(e.getInstigatorID())) {
-                this.removeVehicle(e.getInstigatorID());
             }
         }
 

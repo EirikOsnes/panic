@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -17,7 +18,7 @@ public class StatusHandler {
     private TreeMap<String, Status> statuses;
     private ArrayList<String> baseStats;
     private Object parent;
-    public enum TimingType{TURN_START, CARD_PLAYED ,TURN_END}
+    public enum TimingType {TURN_START, CARD_PLAYED ,TURN_END}
 
 
     /**
@@ -119,7 +120,7 @@ public class StatusHandler {
      * @param name The name of the status
      */
     public void addStatus(String name){
-        addStatus(name, StatusConstants.STATUS_VALUES.valueOf(name).getBaseValue());
+        addStatus(name, StatusConstants.StatusValues.valueOf(name).getBaseValue());
     }
 
     /**
@@ -133,7 +134,7 @@ public class StatusHandler {
 
             try {
                 if (!statuses.containsKey(statusName)) {
-                    float baseValue = StatusConstants.STATUS_VALUES.valueOf(statusName).getBaseValue();
+                    float baseValue = StatusConstants.StatusValues.valueOf(statusName).getBaseValue();
                     addStatus(statusName, baseValue);
                 }
 
@@ -167,7 +168,7 @@ public class StatusHandler {
 
         try {
             if (!statuses.containsKey(statusName)) {
-                float baseValue = StatusConstants.STATUS_VALUES.valueOf(statusName).getBaseValue();
+                float baseValue = StatusConstants.StatusValues.valueOf(statusName).getBaseValue();
                 addStatus(statusName, baseValue);
             }
 
@@ -218,7 +219,7 @@ public class StatusHandler {
      * @param statusName The name of the status whose effect should run.
      */
     void parseEffects(String statusName){
-        String[] effectArray = StatusConstants.STATUS_VALUES.valueOf(statusName).getEffect();
+        String[] effectArray = StatusConstants.StatusValues.valueOf(statusName).getEffect();
 
 
 
@@ -259,7 +260,7 @@ public class StatusHandler {
             if(!statuses.get(key).playedThisTurn){
 
                 //This status has is a base status or a lookup status
-                if (StatusConstants.STATUS_VALUES.valueOf(key).getEffect() == null)
+                if (StatusConstants.StatusValues.valueOf(key).getEffect() == null)
                     continue;
 
                 //This status has no resultant - ignore it.
@@ -267,7 +268,7 @@ public class StatusHandler {
                 if(statuses.get(key).getResultant()<=0)
                     continue;
 
-                String effectTiming = StatusConstants.STATUS_VALUES.valueOf(key).getTiming();
+                String effectTiming = StatusConstants.StatusValues.valueOf(key).getTiming();
                 switch (timing) {
                     case TURN_START:
                         if(effectTiming.equalsIgnoreCase("TURN_START") || effectTiming.equalsIgnoreCase("INSTANT")){
@@ -301,6 +302,18 @@ public class StatusHandler {
 
             status.nextTurn();
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Status> entry : statuses.entrySet()) {
+            String key = entry.getKey();
+            float value = entry.getValue().getResultant();
+
+            sb.append("name:" + key + " - value:" + value + "\n");
+        }
+        return sb.toString();
     }
 
     /**

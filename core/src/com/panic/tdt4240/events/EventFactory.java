@@ -2,6 +2,7 @@ package com.panic.tdt4240.events;
 
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.CardEffect;
+import com.panic.tdt4240.util.StatusHandler;
 
 import java.util.ArrayList;
 
@@ -13,16 +14,13 @@ import java.util.ArrayList;
 public class EventFactory {
 
     /**
-     * A factory that creates a list of events connected to the given card
+     * A factory that post events connected to the given card
      * @param c             The card to make the events for
      * @param targetID      The ID of the target of the event
      * @param instigatorID  The ID of the instigator of the event
-     * @return An ArrayList of the Events created from the Card
      */
-    public static ArrayList<Event> createEventFromCard(Card c, String targetID, String instigatorID) {
-        EventFactory.checkIDs(targetID, instigatorID);
-
-        ArrayList<Event> eList = new ArrayList<>();
+    public static void postEventsFromCard(Card c, String targetID, String instigatorID) {
+        //EventFactory.checkIDs(targetID, instigatorID);
 
         for (CardEffect ce : c.getCardEffects()) {
             Event e = new Event(Event.Type.ATTACK, targetID, instigatorID);
@@ -32,19 +30,22 @@ public class EventFactory {
             e.setStatus(ce.getTargetStatus());
             e.setRequirementName(ce.getRequirementName());
             e.setRequirementVal(ce.getRequirementVal());
-            eList.add(e);
+            EventBus.getInstance().postEvent(e);
+
         }
-        return eList;
+        Event e = new Event(Event.Type.TIMING, targetID, instigatorID);
+        e.setTiming(StatusHandler.TimingType.CARD_PLAYED);
+        EventBus.getInstance().postEvent(e);
     }
 
     public static Event createMoveEvent(String targetID, String instigatorID) {
-        EventFactory.checkIDs(targetID, instigatorID);
+        // EventFactory.checkIDs(targetID, instigatorID);
         Event e = new Event(Event.Type.MOVE, targetID, instigatorID);
         return e;
     }
 
     public static Event createDestroyedEvent(String targetID, String instigatorID) {
-        EventFactory.checkIDs(targetID, instigatorID);
+        // EventFactory.checkIDs(targetID, instigatorID);
         Event e = new Event(Event.Type.DESTROYED, targetID, instigatorID);
         return e;
     }
@@ -53,5 +54,17 @@ public class EventFactory {
         if (!ID1.matches("[A-Z]-\\d\\d\\d") || !ID2.matches("[A-Z]-\\d\\d\\d")) {
             throw new IllegalArgumentException("ID should be on format L-DDD where L is a capital letter and D is any digit");
         }
+    }
+
+    public static void postNewTurnEvent() {
+        Event e = new Event(Event.Type.TIMING, "", "");
+        e.setTiming(StatusHandler.TimingType.TURN_START);
+        EventBus.getInstance().postEvent(e);
+    }
+
+    public static void postEndTurnEvent() {
+        Event e = new Event(Event.Type.TIMING, "", "");
+        e.setTiming(StatusHandler.TimingType.TURN_END);
+        EventBus.getInstance().postEvent(e);
     }
 }

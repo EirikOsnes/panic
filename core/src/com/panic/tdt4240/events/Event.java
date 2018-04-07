@@ -1,5 +1,7 @@
 package com.panic.tdt4240.events;
 
+import com.panic.tdt4240.util.StatusHandler;
+
 /**
  * This is a class that represents the Events in the game panic
  * project for TDT4240
@@ -12,9 +14,10 @@ public class Event {
     /**
      * An enum that defines the type of event that occurred
      */
-    public enum Type {ATTACK, DESTROYED, MOVE}
+    public enum Type {ATTACK, DESTROYED, MOVE, TIMING}
 
     private Type t;
+    private StatusHandler.TimingType tt;
     private String instigatorID, targetID;
     private String status;
     private int duration;
@@ -91,6 +94,15 @@ public class Event {
 
     void setRequirementVal(float requirementVal) {
         this.requirementVal = requirementVal;
+    }
+      
+    void setTiming(StatusHandler.TimingType tt) {
+        this.tt = tt;
+    }
+
+    public StatusHandler.TimingType getTiming() {
+        return tt;
+
     }
 
     public Event cloneEvent(String targetID) {

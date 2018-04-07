@@ -27,11 +27,11 @@ public class StatusHandlerTest {
     public void setupBaseStatuses() throws Exception {
         statusHandler = new StatusHandler(null);
         HashMap<String, Float> checkMap = new HashMap<>();
-        checkMap.put("health", StatusConstants.STATUS_VALUES.valueOf("health").getBaseValue());
-        checkMap.put("damage_modifier", StatusConstants.STATUS_VALUES.valueOf("damage_modifier").getBaseValue());
-        checkMap.put("defence_modifier", StatusConstants.STATUS_VALUES.valueOf("defence_modifier").getBaseValue());
-        checkMap.put("movement_modifier", StatusConstants.STATUS_VALUES.valueOf("movement_modifier").getBaseValue());
-        checkMap.put("max_damage", StatusConstants.STATUS_VALUES.valueOf("max_damage").getBaseValue());
+        checkMap.put("health", StatusConstants.StatusValues.valueOf("health").getBaseValue());
+        checkMap.put("damage_modifier", StatusConstants.StatusValues.valueOf("damage_modifier").getBaseValue());
+        checkMap.put("defence_modifier", StatusConstants.StatusValues.valueOf("defence_modifier").getBaseValue());
+        checkMap.put("movement_modifier", StatusConstants.StatusValues.valueOf("movement_modifier").getBaseValue());
+        checkMap.put("max_damage", StatusConstants.StatusValues.valueOf("max_damage").getBaseValue());
 
         assertEquals(checkMap, statusHandler.getAllResultants());
     }
@@ -39,7 +39,7 @@ public class StatusHandlerTest {
     @Test
     public void addStatusWithoutBaseValue() throws Exception {
         statusHandler.addStatus("poison");
-        assertTrue(statusHandler.getStatusResultant("poison") == StatusConstants.STATUS_VALUES.valueOf("poison").getBaseValue());
+        assertTrue(statusHandler.getStatusResultant("poison") == StatusConstants.StatusValues.valueOf("poison").getBaseValue());
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -96,7 +96,6 @@ public class StatusHandlerTest {
         //assertEquals(0,statusHandler.getStatusResultant("max_damage"),0.01);
         //assertEquals(90,statusHandler.getStatusResultant("health"),0.01);
 
-
         assertEquals(1000,statusHandler.getStatusResultant("max_damage"),0.01);
         statusHandler.runEffects(StatusHandler.TimingType.TURN_START);
         assertEquals(0,statusHandler.getStatusResultant("max_damage"),0.01);
@@ -140,11 +139,11 @@ public class StatusHandlerTest {
     @Test
     public void getBaseStats() throws Exception {
         HashMap<String, Float> checkMap = new HashMap<>();
-        checkMap.put("health", StatusConstants.STATUS_VALUES.valueOf("health").getBaseValue());
-        checkMap.put("damage_modifier", StatusConstants.STATUS_VALUES.valueOf("damage_modifier").getBaseValue());
-        checkMap.put("defence_modifier", StatusConstants.STATUS_VALUES.valueOf("defence_modifier").getBaseValue());
-        checkMap.put("movement_modifier", StatusConstants.STATUS_VALUES.valueOf("movement_modifier").getBaseValue());
-        checkMap.put("max_damage", StatusConstants.STATUS_VALUES.valueOf("max_damage").getBaseValue());
+        checkMap.put("health", StatusConstants.StatusValues.valueOf("health").getBaseValue());
+        checkMap.put("damage_modifier", StatusConstants.StatusValues.valueOf("damage_modifier").getBaseValue());
+        checkMap.put("defence_modifier", StatusConstants.StatusValues.valueOf("defence_modifier").getBaseValue());
+        checkMap.put("movement_modifier", StatusConstants.StatusValues.valueOf("movement_modifier").getBaseValue());
+        checkMap.put("max_damage", StatusConstants.StatusValues.valueOf("max_damage").getBaseValue());
 
         assertEquals(checkMap,statusHandler.getBaseStats());
 

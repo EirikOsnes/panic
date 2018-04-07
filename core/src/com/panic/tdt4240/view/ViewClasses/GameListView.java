@@ -12,4 +12,10 @@ public class GameListView extends AbstractView {
         super(state);
 
     }
+
+    public void render(){
+
+    }
+
 }
+

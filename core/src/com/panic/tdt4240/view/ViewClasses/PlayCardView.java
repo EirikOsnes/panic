@@ -87,8 +87,8 @@ public class PlayCardView extends AbstractView{
     }
 
 
-    public void render(SpriteBatch sb){
-        sb.setProjectionMatrix(cam.combined);
+    public void render(){
+        renderer.sb.setProjectionMatrix(cam.combined);
         stage.draw();
         /*
         renderBackground();

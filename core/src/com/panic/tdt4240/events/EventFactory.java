@@ -13,8 +13,11 @@ import java.util.ArrayList;
 
 public class EventFactory {
 
+    static EventBus eb = EventBus.getInstance();
+
     /**
-     * A factory that post events connected to the given card
+     * A factory that post events connected to the given card. This also creates and posts the
+     * card played timing event so it is unnecessary to post this separately
      * @param c             The card to make the events for
      * @param targetID      The ID of the target of the event
      * @param instigatorID  The ID of the instigator of the event
@@ -28,40 +31,72 @@ public class EventFactory {
             e.setEffectValue(ce.getValue());
             e.setFriendlyFire(ce.isFriendlyFire());
             e.setStatus(ce.getTargetStatus());
-            EventBus.getInstance().postEvent(e);
+            eb.postEvent(e);
         }
         Event e = new Event(Event.Type.TIMING, targetID, instigatorID);
         e.setTiming(StatusHandler.TimingType.CARD_PLAYED);
-        EventBus.getInstance().postEvent(e);
+        eb.postEvent(e);
     }
 
-    public static Event createMoveEvent(String targetID, String instigatorID) {
-        // EventFactory.checkIDs(targetID, instigatorID);
+    /**
+     * A factory that creates and posts move events, this should be called each time
+     * a vehicle wants to move from one asteroid to another. Or if you want to move another
+     * vehicle
+     * @param targetID          The ID of the asteroid the vehicle should be moved to
+     * @param instigatorID      The ID of the vehicle to be moved
+     */
+    public static void postMoveEvent(String targetID, String instigatorID) {
+        EventFactory.checkIDs(targetID, instigatorID);
         Event e = new Event(Event.Type.MOVE, targetID, instigatorID);
-        return e;
+        eb.postEvent(e);
     }
 
-    public static Event createDestroyedEvent(String targetID, String instigatorID) {
-        // EventFactory.checkIDs(targetID, instigatorID);
+    /**
+     * A factory that creates and posts destroyed events, this indicates that a vehicle
+     * or an asteroid has been destroyed
+     * @param targetID          The ID of the object destroyed
+     * @param instigatorID      The ID of the destroyer if applicable
+     */
+    public static void postDestroyedEvent(String targetID, String instigatorID) {
+        EventFactory.checkIDs(targetID, instigatorID);
         Event e = new Event(Event.Type.DESTROYED, targetID, instigatorID);
-        return e;
+        eb.postEvent(e);
     }
 
-    static void checkIDs(String ID1, String ID2) {
+    private static void checkIDs(String ID1, String ID2) {
         if (!ID1.matches("[A-Z]-\\d\\d\\d") || !ID2.matches("[A-Z]-\\d\\d\\d")) {
             throw new IllegalArgumentException("ID should be on format L-DDD where L is a capital letter and D is any digit");
         }
     }
 
+    /**
+     * A factory that creates and posts a turn start timing event that should be done at the
+     * start of each turn
+     */
     public static void postNewTurnEvent() {
         Event e = new Event(Event.Type.TIMING, "", "");
         e.setTiming(StatusHandler.TimingType.TURN_START);
-        EventBus.getInstance().postEvent(e);
+        eb.postEvent(e);
     }
 
+    /**
+     * A factory that creates and posts a turn end timing event that should be done at the end
+     * of each turn
+     */
     public static void postEndTurnEvent() {
         Event e = new Event(Event.Type.TIMING, "", "");
         e.setTiming(StatusHandler.TimingType.TURN_END);
-        EventBus.getInstance().postEvent(e);
+        eb.postEvent(e);
+    }
+
+    /**
+     * Clones and posts a new event with a new target, used when deferring events from
+     * an asteroid to a vehicle
+     * @param e             The event to clone
+     * @param targetID      The ID of the new target
+     */
+    public static void postClonedEvent(Event e, String targetID) {
+        Event clone = e.cloneEvent(targetID);
+        eb.postEvent(clone);
     }
 }

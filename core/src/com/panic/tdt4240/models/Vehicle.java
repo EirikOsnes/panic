@@ -54,5 +54,8 @@ public class Vehicle implements EventListener {
         if (e.getT() == Event.Type.ATTACK && e.getTargetID() == this.vehicleID) {
             this.statusHandler.addStatusAddition(e.getStatus(), e.getEffectValue(), e.getDuration());
         }
+        if (e.getT() == Event.Type.TIMING) {
+            this.statusHandler.runEffects(e.getTiming());
+        }
     }
 }

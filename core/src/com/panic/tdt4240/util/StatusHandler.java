@@ -88,6 +88,21 @@ public class StatusHandler {
         return Math.round(getStatusResultant("movement_modifier"));
     }
 
+
+    /**
+     * Checks if the given requirements are met for this StatusHandler
+     * @param requirementName The name of the status required
+     * @param requirementVal The minimum value required
+     * @return Returns true if the requirements are met, false otherwise
+     */
+    public boolean isRequirementsMet(String requirementName, float requirementVal){
+        if(getStatusResultant(requirementName)>=requirementVal || requirementName.equalsIgnoreCase("none")){
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Should ONLY be used when initiating an object from XML file - or if you wish to override an existing status (as it will be wiped).
      * ONLY use if you know what you are doing.

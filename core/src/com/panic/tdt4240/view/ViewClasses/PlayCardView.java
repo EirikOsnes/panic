@@ -18,9 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
-import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.states.PlayCardState;
-import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.view.TextureClasses.HandTexture;
 import com.panic.tdt4240.view.Renderer;
 
@@ -43,12 +41,13 @@ public class PlayCardView extends AbstractView{
     public TextArea cardInfo;
     private int amountCards;
     private Skin skin;
+    public boolean selectTarget = false;
 
     public PlayCardView(final PlayCardState state){
         super(state);
         renderer = Renderer.getInstance();
         background = new Texture("misc/background.png");
-        cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
+        //cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         amountCards = state.player.getHand().size();
         cardButtons = new ArrayList<>(amountCards);
         stage = new Stage();
@@ -62,6 +61,7 @@ public class PlayCardView extends AbstractView{
         skin.addRegions(buttonAtlas);
         buttonStyles = new ArrayList<>();
 
+        //Create a button for each card
         for (int i = 0; i < amountCards; i++) {
             TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
             buttonStyle.font = font;
@@ -125,7 +125,7 @@ public class PlayCardView extends AbstractView{
         loadVehicles();
         loadHand(cardNames);
 
-        return (hv.getCardImgs().size() < 5); // simple sanity check
+        return (hv.getCardImgs().size() < ((PlayCardState) state).player.getAmountDrawnCards() ); // simple sanity check
     }
 /*
     private void renderHand(SpriteBatch sb){

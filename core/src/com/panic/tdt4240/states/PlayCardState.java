@@ -2,12 +2,10 @@ package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.panic.tdt4240.models.Card;
-import com.panic.tdt4240.models.Hand;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.ArrayList;
 
@@ -23,16 +21,22 @@ public class PlayCardState extends State {
     private boolean gameFinished;
     private int playerCount;
     private int playersAlive;
+    //Order of cards that are played
     private ArrayList<Card> cardArrayList;
+    //Targets for each card
+    private ArrayList<Integer> targets;
     private int playedCards;
     private ArrayList<Card> hand;
     private ArrayList<Boolean> selectedCard;
+    private Integer justClicked = -1;
 
     public PlayCardState(GameStateManager gsm, Player player/*, Map map*/) {
         super(gsm);
         this.player = player;
         //this.map = map;
         cardArrayList = new ArrayList<>();
+        targets = new ArrayList<>();
+
         playerCount = 2;
         playersAlive = 2;
 
@@ -43,32 +47,53 @@ public class PlayCardState extends State {
         }
         playView = new PlayCardView(this);
     }
-
+//TODO Bare mulig å velge nytt kort etter å ha brukt kortet, eller avbrutt, ie trykket på kortet en gang til
     @Override
     public void handleInput(Object o) {
         Integer cardIndex = (Integer) o;
-        if(playedCards < GlobalConstants.BASE_PLAY_CARDS){
-            if(!cardArrayList.contains(hand.get(cardIndex))){
+        //Checks if the user wants to deselect an already selected card
+        if(selectedCard.get(cardIndex)) {
+            //Removes the card and its target from arrays
+            int index = cardArrayList.indexOf(hand.get(cardIndex));
+            cardArrayList.remove(index);
+            //If the card is still selected, ie target is about to be selected
+            if(justClicked.equals(cardIndex)){
+                justClicked = -1;
+            }
+            else{
+                targets.remove(index);
+            }
+            selectedCard.set(cardIndex, false);
+
+            //Sets the tooltip text to the most recently pressed card, or to an empty string
+            if(cardArrayList.size() > 0) {
+                playView.cardInfo.setText(cardArrayList.get(cardArrayList.size()-1).getTooltip());
+            }
+            else{
+                playView.cardInfo.setText("");
+            }
+            playView.clickedButton(cardIndex, false);
+            playedCards--;
+        }
+        //Checks if the max amount of cards already have been played
+        else if(playedCards < player.getAmountPlayedCards()) {
+            if(justClicked == -1){
+                justClicked = cardIndex;
                 cardArrayList.add(hand.get(cardIndex));
                 selectedCard.set(cardIndex, true);
                 playView.cardInfo.setText(hand.get(cardIndex).getTooltip());
                 playView.clickedButton(cardIndex, true);
                 playedCards++;
-            }
-            else{
-                cardArrayList.remove(hand.get(cardIndex));
-                selectedCard.set(cardIndex, false);
-                playView.cardInfo.setText("");
-                playView.clickedButton(cardIndex, false);
-                playedCards--;
+                playView.selectTarget = true;
             }
         }
-        else if(cardArrayList.contains(hand.get(cardIndex))){
-            cardArrayList.remove(hand.get(cardIndex));
-            selectedCard.set(cardIndex, false);
-            playView.cardInfo.setText("");
-            playView.clickedButton(cardIndex, false);
-            playedCards--;
+    }
+
+    public void selectTarget(Integer i){
+        if(justClicked > -1){
+            targets.add(i);
+            justClicked = -1;
+            playView.selectTarget = false;
         }
     }
 

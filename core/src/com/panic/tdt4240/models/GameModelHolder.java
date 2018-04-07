@@ -60,6 +60,15 @@ public class GameModelHolder {
         return player;
     }
 
+    public String locateVehicle(String vehicleID){
+        for (Asteroid asteroid : asteroids) {
+            if(asteroid.getVehicles().contains(vehicleID)){
+                return asteroid.getId();
+            }
+        }
+        return null;
+    }
+
     public void reset(){
         gmh = new GameModelHolder();
     }

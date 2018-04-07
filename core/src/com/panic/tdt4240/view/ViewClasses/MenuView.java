@@ -109,7 +109,7 @@ public class MenuView extends AbstractView {
     }
 
     // TODO: legge inn input
-    public void render() {
+    public void render(SpriteBatch sb) {
         renderer.sb.setProjectionMatrix(cam.combined);
         renderer.sb.begin();
         renderer.sb.draw(background,0,0,PanicGame.WIDTH,PanicGame.HEIGHT);

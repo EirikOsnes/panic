@@ -189,6 +189,18 @@ public class StatusHandler {
     }
 
     /**
+     * Clear all modifications from the given Status - returns it to its base value
+     * @param statusName The name of the Status.
+     */
+    public void clearStatus(String statusName){
+
+        Status status = statuses.get(statusName);
+        if(status != null){
+            status.clearAll();
+        }
+    }
+
+    /**
      * Gets all statuses and their resulting Float resultants.
      * @return Returns all statuses and their resulting Float resultants.
      */
@@ -208,6 +220,8 @@ public class StatusHandler {
     void parseEffects(String statusName){
         String[] effectArray = StatusConstants.STATUS_VALUES.valueOf(statusName).getEffect();
 
+
+
         float value;
         if(effectArray[2].equalsIgnoreCase("RESULTANT")){
             value = statuses.get(statusName).getResultant();
@@ -226,6 +240,9 @@ public class StatusHandler {
                 case "SET":
                     //TODO: For now, we can only set to 0
                     addStatusMultiplier(effectArray[0], -statuses.get(statusName).getTotalMultipliers(), Integer.parseInt(effectArray[3]));
+                    break;
+                case "CLEAR":
+                    clearStatus(effectArray[0]);
                     break;
             }
 
@@ -457,6 +474,16 @@ public class StatusHandler {
 
             playedThisTurn = false;
 
+        }
+
+        /**
+         * Reset all changes
+         */
+        void clearAll(){
+            tickAdditions = new ArrayList<>();
+            tickMultipliers = new ArrayList<>();
+            multipliers = 1;
+            additions = 0;
         }
 
     }

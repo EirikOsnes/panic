@@ -8,7 +8,7 @@ import java.util.HashMap;
 import static org.junit.Assert.*;
 
 /**
- * Created by Eirik on 12-Mar-18.
+ * Tests for the StatusHandler class
  */
 public class StatusHandlerTest {
 
@@ -213,6 +213,32 @@ public class StatusHandlerTest {
         assertEquals(100f,statusHandler.getAllResultants().get("health"),0.01);
         assertEquals(1f,statusHandler.getAllResultants().get("damage_modifier"),0.01);
         assertEquals(0f,statusHandler.getAllResultants().get("invulnerable"),0.01);
+    }
+
+    @Test
+    public void clearStatus() throws Exception{
+        assertEquals(0,statusHandler.getStatusResultant("poison"), 0.01);
+        assertEquals(0,statusHandler.getStatusResultant("invulnerable"), 0.01);
+
+        statusHandler.addStatusAddition("poison", 5, 2);
+        statusHandler.addStatusAddition("poison", 5, -1);
+        statusHandler.addStatusMultiplier("poison", -0.25f, 2);
+        statusHandler.addStatusMultiplier("poison", -0.25f, -1);
+
+        statusHandler.addStatusAddition("invulnerable", 5, 2);
+        statusHandler.addStatusAddition("invulnerable", 5, -1);
+        statusHandler.addStatusMultiplier("invulnerable", -0.25f, 2);
+        statusHandler.addStatusMultiplier("invulnerable", -0.25f, -1);
+
+        assertEquals(5, statusHandler.getStatusResultant("poison"), 0.01);
+        assertEquals(5, statusHandler.getStatusResultant("invulnerable"), 0.01);
+
+        statusHandler.addStatusAddition("antidote", 1, 1);
+        statusHandler.runEffects(StatusHandler.TimingType.CARD_PLAYED);
+
+        assertEquals(0, statusHandler.getStatusResultant("poison"), 0.01);
+        assertEquals(5, statusHandler.getStatusResultant("invulnerable"), 0.01);
+
     }
 
     @Test

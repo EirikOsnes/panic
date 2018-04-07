@@ -19,7 +19,7 @@ public class GameModelHolder {
         this.asteroids = new ArrayList<>();
     }
 
-    public GameModelHolder getInstance(){
+    public static GameModelHolder getInstance(){
         if(gmh == null){
             gmh = new GameModelHolder();
         }

@@ -8,14 +8,16 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by Eirik on 05-Mar-18.
  */
 
 
-public class Asteroid implements EventListener{
+public class Asteroid implements EventListener, Comparable<Asteroid>{
   
     private String id;
     private HashMap<String,Object> statuses;
@@ -141,7 +143,25 @@ public class Asteroid implements EventListener{
                     Event newEvent = e.cloneEvent(vid);
                     EventBus.getInstance().postEvent(newEvent);
                 }
+                if (e.isSplashDamage()) {
+                    Map map = GameModelHolder.getInstance().getMap();
+                    map.generateAdjacencyMatrix();
+                    int[][] adjacency = map.getAdjacency();
+                    int index = Integer.parseInt(id.substring(3)) - 1;
+                    int[] neighbours = adjacency[index];
+                    for (int i = 0; i < neighbours.length; i++) {
+                        String nid = String.format(Locale.US, "A-%03d", i);
+                        if (!id.equalsIgnoreCase(nid) && e.getSplashRange() <= neighbours[i]) {
+                            e.cloneEvent(nid);
+                        }
+                    }
+                }
             }
         }
+    }
+
+    @Override
+    public int compareTo(Asteroid asteroid) {
+        return this.id.compareTo(asteroid.id);
     }
 }

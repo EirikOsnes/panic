@@ -19,12 +19,10 @@ public class Event {
     private Type t;
     private StatusHandler.TimingType tt;
     private String instigatorID, targetID;
-    private String status;
-    private int duration;
-    private float effectValue;
-    private boolean friendlyFire;
-    private String requirementName;
-    private float requirementVal;
+    private String status, requirementName;
+    private int duration, splashRange;
+    private float effectValue, requirementVal;
+    private boolean friendlyFire, splashDamage;
 
     Event(Type t, String targetID, String instigatorID) {
         this.t = t;
@@ -66,6 +64,22 @@ public class Event {
 
     public float getRequirementVal() {
         return requirementVal;
+    }
+
+    public int getSplashRange() {
+        return splashRange;
+    }
+
+    public boolean isSplashDamage() {
+        return splashDamage;
+    }
+
+    void setSplashDamage(boolean splashDamage) {
+        this.splashDamage = splashDamage;
+    }
+
+    void setSplashRange(int splashRange) {
+        this.splashRange = splashRange;
     }
 
     void setStatus(String status) {
@@ -113,6 +127,8 @@ public class Event {
         e.setDuration(this.duration);
         e.setRequirementName(this.requirementName);
         e.setRequirementVal(this.requirementVal);
+        e.setSplashDamage(false);
+        e.setSplashRange(0);
         return e;
     }
 }

@@ -27,15 +27,11 @@ public class MenuView extends AbstractView {
 
     private Renderer renderer;
     private Stage stage;
-    private Button createGameBtn;
-    private Button joinGameBtn;
-    private Button settingsBtn;
+    private Button createGameBtn, joinGameBtn, settingsBtn;
     private TextureAtlas buttonAtlas;
     private Skin skin;
     private BitmapFont font;
-    private TextButton.TextButtonStyle createButtonStyle;
-    private TextButton.TextButtonStyle joinButtonStyle;
-    private TextButton.TextButtonStyle settingsButtonStyle;
+    private TextButton.TextButtonStyle createButtonStyle, joinButtonStyle, settingsButtonStyle;
     private Table table;
     private Texture background;
 

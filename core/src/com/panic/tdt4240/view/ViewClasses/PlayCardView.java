@@ -1,26 +1,29 @@
 package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.panic.tdt4240.models.Card;
-import com.panic.tdt4240.states.CardPlayState;
-import com.panic.tdt4240.view.TextureClasses.CardDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.panic.tdt4240.PanicGame;
+import com.panic.tdt4240.states.PlayCardState;
 import com.panic.tdt4240.view.TextureClasses.HandTexture;
 import com.panic.tdt4240.view.Renderer;
 
 import java.util.ArrayList;
+
 
 /**
  * Created by victor on 05.03.2018.
@@ -30,62 +33,90 @@ public class PlayCardView extends AbstractView{
 
     Renderer renderer;
     private HandTexture hv;
-    private ArrayList<Card> hand;
-    private ArrayList<ImageTextButton> cardButtons;
+    public ArrayList<TextButton> cardButtons;
+    private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Stage stage;
     private Table table;
-    private ArrayList<Boolean> selectedCard;
+    private Texture background;
+    public TextArea cardInfo;
+    private int amountCards;
+    private Skin skin;
+    public boolean selectTarget = false;
 
-    public PlayCardView(final CardPlayState state){
+    public PlayCardView(final PlayCardState state){
         super(state);
         renderer = Renderer.getInstance();
-
-        hand = state.player.getHand();
-        cardButtons = new ArrayList<>(hand.size());
-        selectedCard = new ArrayList<>(hand.size());
+        background = new Texture("misc/background.png");
+        //cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
+        amountCards = state.player.getHand().size();
+        cardButtons = new ArrayList<>(amountCards);
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        Table table = new Table();
-        //TODO fiks posisjoneringen, sentreres ved venstre side når center() brukes
+        table = new Table();
         table.setWidth(SCREEN_WIDTH);
-        table.left().bottom().pad(10);
+        table.left().bottom();
         BitmapFont font = new BitmapFont();
-        Skin skin = new Skin();
-        TextureAtlas buttonAtlas = new TextureAtlas("card_textures/buttons.pack");
+        skin = new Skin();
+        TextureAtlas buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
         skin.addRegions(buttonAtlas);
+        buttonStyles = new ArrayList<>();
 
-        ImageTextButton.ImageTextButtonStyle buttonStyle = new ImageTextButton.ImageTextButtonStyle();
-        buttonStyle.font = font;
+        //Create a button for each card
+        for (int i = 0; i < amountCards; i++) {
+            TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+            buttonStyle.font = font;
+            //Images the button has in the normal up-position, and when it is pressed down
+            buttonStyle.up = skin.getDrawable("button-up");
+            buttonStyle.down = skin.getDrawable("button-down");
 
-        for (int i = 0; i < hand.size(); i++) {
-            selectedCard.add(i, false);
-            buttonStyle.imageUp = skin.getDrawable("button-up");
-            //buttonStyle.imageDown = skin.getDrawable("button-down");
+            buttonStyles.add(buttonStyle);
 
-            ImageTextButton button = new ImageTextButton("", buttonStyle);
+            TextButton button = new TextButton("", buttonStyle);
             cardButtons.add(i, button);
 
             final int index = i;
             cardButtons.get(index).addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    if(!selectedCard.get(index)){
-                        cardButtons.get(index).getLabel().setText(hand.get(index).getTooltip());
-                        state.handleInput(cardButtons.get(index));
-                        selectedCard.set(index, true);
-                    }
-                    else{
-                        cardButtons.get(index).getLabel().setText("");
-                        selectedCard.set(index, false);
-                    }
+                    state.handleInput(index);
                 }
             });
-            table.add(cardButtons.get(index)).width(SCREEN_WIDTH/hand.size());
+            table.add(cardButtons.get(index)).width(SCREEN_WIDTH/amountCards);
         }
-
+        table.background(new TextureRegionDrawable(new TextureRegion(background)));
+        table.pack();
         stage.addActor(table);
+
+        TextField.TextFieldStyle style = new TextField.TextFieldStyle();
+        style.fontColor = Color.WHITE;
+        style.font = new BitmapFont();
+        cardInfo = new TextArea("",style);
+
+        cardInfo.setPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/10);
+        cardInfo.setWidth(SCREEN_WIDTH/4);
+        cardInfo.setHeight(SCREEN_HEIGHT/8);
+        stage.addActor(cardInfo);
+
     }
 
+    /**
+     * Method to change visuals of the buttons depending on if they're pressed down or not
+     * @param button ID of the button/card that has been pressed
+     * @param checked Whether the button is pressed down or unpressed
+     *      if it is pressed down:
+     *                set the up-image to the card-pressed image
+     *      else:
+     *                set the up-image to the normal card-up image
+     */
+    public void clickedButton(Integer button, boolean checked){
+        if(checked){
+            buttonStyles.get(button).up = skin.getDrawable("button-gone");
+        }
+        else{
+            buttonStyles.get(button).up = skin.getDrawable("button-up");
+        }
+        cardButtons.get(button).setStyle(buttonStyles.get(button));
+    }
 
     public void render(){
         renderer.sb.setProjectionMatrix(cam.combined);
@@ -104,7 +135,7 @@ public class PlayCardView extends AbstractView{
         loadVehicles();
         loadHand(cardNames);
 
-        return (hv.getCardImgs().size() < 5); // simple sanity check
+        return (hv.getCardImgs().size() < ((PlayCardState) state).player.getAmountDrawnCards() ); // simple sanity check
     }
 /*
     private void renderHand(SpriteBatch sb){
@@ -166,6 +197,8 @@ public class PlayCardView extends AbstractView{
     }
 
     public void dispose(){
+        stage.dispose();
+        background.dispose();
         renderer.dispose();
     }
 

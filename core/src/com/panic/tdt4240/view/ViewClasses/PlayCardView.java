@@ -18,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
+import com.panic.tdt4240.models.Asteroid;
+import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.states.PlayCardState;
 import com.panic.tdt4240.view.TextureClasses.HandTexture;
 import com.panic.tdt4240.view.Renderer;
@@ -33,7 +35,7 @@ public class PlayCardView extends AbstractView{
 
     Renderer renderer;
     private HandTexture hv;
-    public ArrayList<TextButton> cardButtons;
+    private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Stage stage;
     private Table table;
@@ -42,9 +44,13 @@ public class PlayCardView extends AbstractView{
     private int amountCards;
     private Skin skin;
     public boolean selectTarget = false;
+    private Map map;
 
+    //TODO Render the map, add clicklisteners on each asteroid and vehicle
     public PlayCardView(final PlayCardState state){
         super(state);
+        map = state.map;
+        setUpMap();
         renderer = Renderer.getInstance();
         background = new Texture("misc/background.png");
         //cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
@@ -85,6 +91,8 @@ public class PlayCardView extends AbstractView{
         }
         table.background(new TextureRegionDrawable(new TextureRegion(background)));
         table.pack();
+
+
         stage.addActor(table);
 
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
@@ -97,6 +105,19 @@ public class PlayCardView extends AbstractView{
         cardInfo.setHeight(SCREEN_HEIGHT/8);
         stage.addActor(cardInfo);
 
+    }
+
+    /**
+     * Method for setting up the map with listeners on each asteroid and vehicle
+     */
+    //TODO Lagre alle asteroider, vehicles i stage, legge til listeners ol
+    private void setUpMap(){
+        ArrayList<Asteroid> asteroids = map.getAsteroids();
+        for (int i = 0; i < asteroids.size(); i++) {
+            Actor asteroid = new Actor();
+            asteroid.setOrigin(asteroids.get(i).getPosition().x, asteroids.get(i).getPosition().y);
+            stage.addActor(asteroid);
+        }
     }
 
     /**

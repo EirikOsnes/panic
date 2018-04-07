@@ -69,7 +69,11 @@ public class XMLParser {
                                     Float.parseFloat(effectElement.getElementsByTagName("value").item(0).getTextContent()),
                                     Integer.parseInt(effectElement.getElementsByTagName("status_duration").item(0).getTextContent()),
                                     Integer.parseInt(effectElement.getElementsByTagName("splash_range").item(0).getTextContent()),
-                                    Boolean.parseBoolean(effectElement.getElementsByTagName("friendly_fire").item(0).getTextContent())
+                                    Boolean.parseBoolean(effectElement.getElementsByTagName("friendly_fire").item(0).getTextContent()),
+                                    (effectElement.getElementsByTagName("requirement_name").getLength()>0)
+                                            ? effectElement.getElementsByTagName("requirement_name").item(0).getTextContent() : "none",
+                                    (effectElement.getElementsByTagName("requirement_name").getLength()>0)
+                                            ? Integer.parseInt(effectElement.getElementsByTagName("requirement_name").item(0).getTextContent()) : 0
                             );
                         }
                     }

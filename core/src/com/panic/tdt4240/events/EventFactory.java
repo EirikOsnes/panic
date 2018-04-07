@@ -28,7 +28,10 @@ public class EventFactory {
             e.setEffectValue(ce.getValue());
             e.setFriendlyFire(ce.isFriendlyFire());
             e.setStatus(ce.getTargetStatus());
+            e.setRequirementName(ce.getRequirementName());
+            e.setRequirementVal(ce.getRequirementVal());
             EventBus.getInstance().postEvent(e);
+
         }
         Event e = new Event(Event.Type.TIMING, targetID, instigatorID);
         e.setTiming(StatusHandler.TimingType.CARD_PLAYED);

@@ -111,6 +111,10 @@ public class Card {
         cardEffects.add(new CardEffect(targetStatus, value, statusDuration, splashRange, friendlyFire));
     }
 
+    public void addCardEffect(String targetStatus, float value, int statusDuration, int splashRange, boolean friendlyFire, String requirementName, float requirementValue){
+        cardEffects.add(new CardEffect(targetStatus, value, statusDuration, splashRange, friendlyFire, requirementName, requirementValue));
+    }
+
     public void playCard(String targetID, String instigatorID) {
         if (cardType == CardType.MOVEMENT) {
             Event e = EventFactory.createMoveEvent(targetID, instigatorID);

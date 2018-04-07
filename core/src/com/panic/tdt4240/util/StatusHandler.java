@@ -89,6 +89,21 @@ public class StatusHandler {
         return Math.round(getStatusResultant("movement_modifier"));
     }
 
+
+    /**
+     * Checks if the given requirements are met for this StatusHandler
+     * @param requirementName The name of the status required
+     * @param requirementVal The minimum value required
+     * @return Returns true if the requirements are met, false otherwise
+     */
+    public boolean isRequirementsMet(String requirementName, float requirementVal){
+        if(getStatusResultant(requirementName)>=requirementVal || requirementName.equalsIgnoreCase("none")){
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Should ONLY be used when initiating an object from XML file - or if you wish to override an existing status (as it will be wiped).
      * ONLY use if you know what you are doing.
@@ -175,6 +190,18 @@ public class StatusHandler {
     }
 
     /**
+     * Clear all modifications from the given Status - returns it to its base value
+     * @param statusName The name of the Status.
+     */
+    public void clearStatus(String statusName){
+
+        Status status = statuses.get(statusName);
+        if(status != null){
+            status.clearAll();
+        }
+    }
+
+    /**
      * Gets all statuses and their resulting Float resultants.
      * @return Returns all statuses and their resulting Float resultants.
      */
@@ -194,6 +221,8 @@ public class StatusHandler {
     void parseEffects(String statusName){
         String[] effectArray = StatusConstants.StatusValues.valueOf(statusName).getEffect();
 
+
+
         float value;
         if(effectArray[2].equalsIgnoreCase("RESULTANT")){
             value = statuses.get(statusName).getResultant();
@@ -212,6 +241,9 @@ public class StatusHandler {
                 case "SET":
                     //TODO: For now, we can only set to 0
                     addStatusMultiplier(effectArray[0], -statuses.get(statusName).getTotalMultipliers(), Integer.parseInt(effectArray[3]));
+                    break;
+                case "CLEAR":
+                    clearStatus(effectArray[0]);
                     break;
             }
 
@@ -455,6 +487,16 @@ public class StatusHandler {
 
             playedThisTurn = false;
 
+        }
+
+        /**
+         * Reset all changes
+         */
+        void clearAll(){
+            tickAdditions = new ArrayList<>();
+            tickMultipliers = new ArrayList<>();
+            multipliers = 1;
+            additions = 0;
         }
 
     }

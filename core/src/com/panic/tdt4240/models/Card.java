@@ -106,4 +106,8 @@ public class Card {
     public void addCardEffect(String targetStatus, float value, int statusDuration, int splashRange, boolean friendlyFire){
         cardEffects.add(new CardEffect(targetStatus, value, statusDuration, splashRange, friendlyFire));
     }
+
+    public void addCardEffect(String targetStatus, float value, int statusDuration, int splashRange, boolean friendlyFire, String requirementName, float requirementValue){
+        cardEffects.add(new CardEffect(targetStatus, value, statusDuration, splashRange, friendlyFire, requirementName, requirementValue));
+    }
 }

@@ -12,6 +12,8 @@
         <card_effect>
             <target_status>position</target_status>
             <value>1.0</value>
+            <requirement_name>none</requirement_name>
+            <requirement_value>0</requirement_value>
             <status_duration>-1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>false</friendly_fire>

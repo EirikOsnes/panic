@@ -1,5 +1,9 @@
 package com.panic.tdt4240.models;
 
+import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventBus;
+import com.panic.tdt4240.events.EventFactory;
+
 import java.util.ArrayList;
 
 /**
@@ -105,5 +109,15 @@ public class Card {
 
     public void addCardEffect(String targetStatus, float value, int statusDuration, int splashRange, boolean friendlyFire){
         cardEffects.add(new CardEffect(targetStatus, value, statusDuration, splashRange, friendlyFire));
+    }
+
+    public void playCard(String targetID, String instigatorID) {
+        if (cardType == CardType.MOVEMENT) {
+            Event e = EventFactory.createMoveEvent(targetID, instigatorID);
+            EventBus.getInstance().postEvent(e);
+        }
+        else if (cardType == CardType.ATTACK) {
+            EventFactory.postEventsFromCard(this, targetID, instigatorID);
+        }
     }
 }

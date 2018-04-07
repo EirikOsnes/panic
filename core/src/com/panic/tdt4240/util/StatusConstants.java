@@ -6,7 +6,9 @@ package com.panic.tdt4240.util;
 
 public class StatusConstants {
 
-    public enum STATUS_VALUES {
+    //TODO: Add a CHECK status type? As is check if a status exists>0?
+
+    public enum StatusValues {
 
         health(100),
         damage_modifier(1),
@@ -22,7 +24,7 @@ public class StatusConstants {
         private String[] effect;
         private String timing;
 
-        STATUS_VALUES(float baseValue){
+        StatusValues(float baseValue){
             this.baseValue = baseValue;
         }
 
@@ -34,7 +36,7 @@ public class StatusConstants {
          * @param effect The string of tags to define the effect.
          * @param timing When the effect will play out
          */
-        STATUS_VALUES(float baseValue, String[] effect, String timing){
+        StatusValues(float baseValue, String[] effect, String timing){
             this.baseValue = baseValue;
             this.effect = effect;
             this.timing = timing;

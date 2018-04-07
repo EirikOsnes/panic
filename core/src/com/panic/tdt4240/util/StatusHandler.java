@@ -3,7 +3,10 @@ package com.panic.tdt4240.util;
 import com.badlogic.gdx.Gdx;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A class to hold all statuses and the logic on them.
@@ -12,11 +15,10 @@ import java.util.HashMap;
 public class StatusHandler {
 
 
-    private HashMap<String, Status> statuses;
-    //TODO: Potential for bugs from different orderings in the HashMap?
+    private TreeMap<String, Status> statuses;
     private ArrayList<String> baseStats;
     private Object parent;
-    public enum TIMING_TYPE{TURN_START, CARD_PLAYED ,TURN_END}
+    public enum TimingType {TURN_START, CARD_PLAYED ,TURN_END}
 
 
     /**
@@ -25,18 +27,21 @@ public class StatusHandler {
      */
     public StatusHandler(Object parent){
         this.parent = parent;
-        statuses = new HashMap<>();
         baseStats = new ArrayList<>();
         setupBaseStatuses();
+        statuses = new TreeMap<>(new statusComparator());
+        initializeBaseStatuses();
     }
 
-    void setupBaseStatuses(){
+    private void setupBaseStatuses(){
         baseStats.add("health");
         baseStats.add("damage_modifier");
         baseStats.add("defence_modifier");
         baseStats.add("movement_modifier");
         baseStats.add("max_damage");
+    }
 
+    private void initializeBaseStatuses(){
         for (String stat : baseStats) {
             addStatus(stat);
         }
@@ -100,7 +105,7 @@ public class StatusHandler {
      * @param name The name of the status
      */
     public void addStatus(String name){
-        addStatus(name, StatusConstants.STATUS_VALUES.valueOf(name).getBaseValue());
+        addStatus(name, StatusConstants.StatusValues.valueOf(name).getBaseValue());
     }
 
     /**
@@ -114,7 +119,7 @@ public class StatusHandler {
 
             try {
                 if (!statuses.containsKey(statusName)) {
-                    float baseValue = StatusConstants.STATUS_VALUES.valueOf(statusName).getBaseValue();
+                    float baseValue = StatusConstants.StatusValues.valueOf(statusName).getBaseValue();
                     addStatus(statusName, baseValue);
                 }
 
@@ -148,7 +153,7 @@ public class StatusHandler {
 
         try {
             if (!statuses.containsKey(statusName)) {
-                float baseValue = StatusConstants.STATUS_VALUES.valueOf(statusName).getBaseValue();
+                float baseValue = StatusConstants.StatusValues.valueOf(statusName).getBaseValue();
                 addStatus(statusName, baseValue);
             }
 
@@ -187,7 +192,7 @@ public class StatusHandler {
      * @param statusName The name of the status whose effect should run.
      */
     void parseEffects(String statusName){
-        String[] effectArray = StatusConstants.STATUS_VALUES.valueOf(statusName).getEffect();
+        String[] effectArray = StatusConstants.StatusValues.valueOf(statusName).getEffect();
 
         float value;
         if(effectArray[2].equalsIgnoreCase("RESULTANT")){
@@ -218,12 +223,12 @@ public class StatusHandler {
      * Runs all effects currently handled bt this StatusHandler. Only the effects corresponding to the timing will run.
      * @param timing The timing for when this is run (TURN_START, CARD_PLAYED, TURN_END)
      */
-    public void runEffects(TIMING_TYPE timing){
+    public void runEffects(TimingType timing){
         for (String key: statuses.keySet()) {
             if(!statuses.get(key).playedThisTurn){
 
                 //This status has is a base status or a lookup status
-                if (StatusConstants.STATUS_VALUES.valueOf(key).getEffect() == null)
+                if (StatusConstants.StatusValues.valueOf(key).getEffect() == null)
                     continue;
 
                 //This status has no resultant - ignore it.
@@ -231,7 +236,7 @@ public class StatusHandler {
                 if(statuses.get(key).getResultant()<=0)
                     continue;
 
-                String effectTiming = StatusConstants.STATUS_VALUES.valueOf(key).getTiming();
+                String effectTiming = StatusConstants.StatusValues.valueOf(key).getTiming();
                 switch (timing) {
                     case TURN_START:
                         if(effectTiming.equalsIgnoreCase("TURN_START") || effectTiming.equalsIgnoreCase("INSTANT")){
@@ -252,6 +257,9 @@ public class StatusHandler {
 
             }
         }
+        if(timing == TimingType.TURN_END){
+            nextTurn();
+        }
     }
 
     /**
@@ -262,6 +270,18 @@ public class StatusHandler {
 
             status.nextTurn();
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Status> entry : statuses.entrySet()) {
+            String key = entry.getKey();
+            float value = entry.getValue().getResultant();
+
+            sb.append("name:" + key + " - value:" + value + "\n");
+        }
+        return sb.toString();
     }
 
     /**
@@ -437,5 +457,30 @@ public class StatusHandler {
 
         }
 
+    }
+
+    class statusComparator implements Comparator<String> {
+
+
+        ArrayList<String> priority = new ArrayList<>();
+
+        statusComparator(){
+            //Currently baseStats will go first - is this wanted?
+            priority.addAll(baseStats);
+        }
+
+        @Override
+        public int compare(String s, String t1) {
+
+            if(baseStats.contains(s)&&baseStats.contains(t1)){
+                return baseStats.indexOf(s)-baseStats.indexOf(t1);
+            }else if(baseStats.contains(s)){
+                return -1;
+            }else if(baseStats.contains(t1)){
+                return 1;
+            }else{
+                return s.compareToIgnoreCase(t1);
+            }
+        }
     }
 }

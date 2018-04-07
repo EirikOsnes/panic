@@ -30,6 +30,8 @@ public class EventFactory {
             e.setEffectValue(ce.getValue());
             e.setFriendlyFire(ce.isFriendlyFire());
             e.setStatus(ce.getTargetStatus());
+            e.setRequirementName(ce.getRequirementName());
+            e.setRequirementVal(ce.getRequirementVal());
             eList.add(e);
         }
         return eList;

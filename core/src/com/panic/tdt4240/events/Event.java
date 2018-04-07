@@ -20,6 +20,8 @@ public class Event {
     private int duration;
     private float effectValue;
     private boolean friendlyFire;
+    private String requirementName;
+    private float requirementVal;
 
     Event(Type t, String targetID, String instigatorID) {
         this.t = t;
@@ -55,6 +57,14 @@ public class Event {
         return targetID;
     }
 
+    public String getRequirementName() {
+        return requirementName;
+    }
+
+    public float getRequirementVal() {
+        return requirementVal;
+    }
+
     void setStatus(String status) {
         this.status = status;
     }
@@ -75,12 +85,22 @@ public class Event {
         this.t = t;
     }
 
+    void setRequirementName(String requirementName) {
+        this.requirementName = requirementName;
+    }
+
+    void setRequirementVal(float requirementVal) {
+        this.requirementVal = requirementVal;
+    }
+
     public Event cloneEvent(String targetID) {
         Event e = new Event(this.t, targetID, this.instigatorID);
         e.setStatus(this.status);
         e.setFriendlyFire(this.friendlyFire);
         e.setEffectValue(this.effectValue);
         e.setDuration(this.duration);
+        e.setRequirementName(this.requirementName);
+        e.setRequirementVal(this.requirementVal);
         return e;
     }
 }

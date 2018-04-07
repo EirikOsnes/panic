@@ -25,9 +25,11 @@ public class PlayCardState extends State {
     private ArrayList<Card> cardArrayList;
     //Targets for each card
     private ArrayList<Integer> targets;
+    //Number of cards we have played up to this point
     private int playedCards;
     private ArrayList<Card> hand;
     private ArrayList<Boolean> selectedCard;
+    //ID of the button we clicked most recently
     private Integer justClicked = -1;
 
     public PlayCardState(GameStateManager gsm, Player player/*, Map map*/) {
@@ -47,7 +49,16 @@ public class PlayCardState extends State {
         }
         playView = new PlayCardView(this);
     }
-//TODO Bare mulig å velge nytt kort etter å ha brukt kortet, eller avbrutt, ie trykket på kortet en gang til
+
+    /**
+     * Method to handle input from the PlayCardView
+     * @param o Integer id of the card that has been clicked
+     *      if the card already has been selected:
+     *          it is deselected and its effect is reverted
+     *      else if less than the max number of cards has been selected:
+     *          if we should select a target for another card(justClicked != -1), nothing is done
+     *          else we set the clicked card to the active card, and wait for its target to be selected
+     */
     @Override
     public void handleInput(Object o) {
         Integer cardIndex = (Integer) o;
@@ -89,6 +100,13 @@ public class PlayCardState extends State {
         }
     }
 
+    /**
+     * Saves the target of a card, if a target is waiting to be selected
+     * @param i ID of target that has been clicked
+     *      if we have selected a card:
+     *          add the target as the target of the most recently selected card
+     *          reset the justClicked index, allowing us to select a new card and target
+     */
     public void selectTarget(Integer i){
         if(justClicked > -1){
             targets.add(i);

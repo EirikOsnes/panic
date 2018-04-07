@@ -65,7 +65,7 @@ public class PlayCardView extends AbstractView{
         for (int i = 0; i < amountCards; i++) {
             TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
             buttonStyle.font = font;
-
+            //Images the button has in the normal up-position, and when it is pressed down
             buttonStyle.up = skin.getDrawable("button-up");
             buttonStyle.down = skin.getDrawable("button-down");
 
@@ -98,6 +98,16 @@ public class PlayCardView extends AbstractView{
         stage.addActor(cardInfo);
 
     }
+
+    /**
+     * Method to change visuals of the buttons depending on if they're pressed down or not
+     * @param button ID of the button/card that has been pressed
+     * @param checked Whether the button is pressed down or unpressed
+     *      if it is pressed down:
+     *                set the up-image to the card-pressed image
+     *      else:
+     *                set the up-image to the normal card-up image
+     */
     public void clickedButton(Integer button, boolean checked){
         if(checked){
             buttonStyles.get(button).up = skin.getDrawable("button-gone");

@@ -49,8 +49,8 @@ public class CardPlayState extends State {
     }
 
     @Override
-    public void render(SpriteBatch sb) {
-        playView.render(sb);
+    public void render() {
+        playView.render();
 
     }
 

@@ -27,7 +27,7 @@ public class CreateGameState extends State {
     }
 
     @Override
-    public void render(SpriteBatch sb) {
+    public void render() {
 
     }
 

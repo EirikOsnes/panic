@@ -22,7 +22,6 @@ import com.panic.tdt4240.models.Hand;
 
 public class Renderer {
 
-    private boolean PlayState;
     public SpriteBatch sb;
     OrthographicCamera cam;
 

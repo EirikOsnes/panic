@@ -23,4 +23,6 @@ public abstract class AbstractView {
         //Insert whatever should be used by multiple subclasses
     }
 
+    public abstract void render();
+
 }

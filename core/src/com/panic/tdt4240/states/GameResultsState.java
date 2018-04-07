@@ -45,7 +45,7 @@ public class GameResultsState extends State {
     }
 
     @Override
-    public void render(SpriteBatch sb) {
+    public void render() {
 
     }
 

@@ -12,4 +12,7 @@ public class GameLobbyView extends AbstractView {
     }
 
 
+    public void render(){
+
+    }
 }

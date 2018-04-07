@@ -10,4 +10,8 @@ public class CreateGameView extends AbstractView {
     public CreateGameView(State state) {
         super(state);
     }
+
+    public void render(){
+
+    }
 }

@@ -13,13 +13,15 @@ public class GameModelHolder {
     private ArrayList<Vehicle> vehicles;
     private ArrayList<Asteroid> asteroids;
     private Map map;
+    private Player player;
 
     GameModelHolder(){
         this.vehicles = new ArrayList<>();
         this.asteroids = new ArrayList<>();
+        this.map = null;
     }
 
-    public GameModelHolder getInstance(){
+    public static GameModelHolder getInstance(){
         if(gmh == null){
             gmh = new GameModelHolder();
         }
@@ -48,5 +50,17 @@ public class GameModelHolder {
 
     public Map getMap() {
         return map;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void reset(){
+        gmh = new GameModelHolder();
     }
 }

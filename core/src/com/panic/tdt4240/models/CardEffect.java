@@ -11,6 +11,8 @@ public class CardEffect {
     private int statusDuration;
     private int splashRange;
     private boolean friendlyFire;
+    private String requirementName = "none";
+    private float requirementVal = 0;
 
     CardEffect(String targetStatus, float value,int statusDuration, int splashRange, boolean friendlyFire) {
         this.targetStatus = targetStatus;
@@ -18,6 +20,12 @@ public class CardEffect {
         this.statusDuration = statusDuration;
         this.splashRange = splashRange;
         this.friendlyFire = friendlyFire;
+    }
+
+    CardEffect(String targetStatus, float value,int statusDuration, int splashRange, boolean friendlyFire, String requirementName, float requirementVal) {
+        new CardEffect(targetStatus,value,statusDuration,splashRange,friendlyFire);
+        this.requirementName = requirementName;
+        this.requirementVal = requirementVal;
     }
 
     public String getTargetStatus() {
@@ -38,5 +46,13 @@ public class CardEffect {
 
     public boolean isFriendlyFire() {
         return friendlyFire;
+    }
+
+    public String getRequirementName() {
+        return requirementName;
+    }
+
+    public float getRequirementVal() {
+        return requirementVal;
     }
 }

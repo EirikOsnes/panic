@@ -69,7 +69,11 @@ public class XMLParser {
                                     Float.parseFloat(effectElement.getElementsByTagName("value").item(0).getTextContent()),
                                     Integer.parseInt(effectElement.getElementsByTagName("status_duration").item(0).getTextContent()),
                                     Integer.parseInt(effectElement.getElementsByTagName("splash_range").item(0).getTextContent()),
-                                    Boolean.parseBoolean(effectElement.getElementsByTagName("friendly_fire").item(0).getTextContent())
+                                    Boolean.parseBoolean(effectElement.getElementsByTagName("friendly_fire").item(0).getTextContent()),
+                                    (effectElement.getElementsByTagName("requirement_name").getLength()>0)
+                                            ? effectElement.getElementsByTagName("requirement_name").item(0).getTextContent() : "none",
+                                    (effectElement.getElementsByTagName("requirement_name").getLength()>0)
+                                            ? Integer.parseInt(effectElement.getElementsByTagName("requirement_name").item(0).getTextContent()) : 0
                             );
                         }
                     }
@@ -163,8 +167,8 @@ public class XMLParser {
                 Node node = nodeList.item(i);
 
                 if (node.getNodeType() == Node.ELEMENT_NODE){
-                    Vehicle myVehicle = new Vehicle();
                     Element element = (Element) node;
+                    Vehicle myVehicle = new Vehicle(element.getAttribute("type"));
                     NodeList statusNodeList = element.getElementsByTagName("status");
                     for (int j = 0; j < statusNodeList.getLength(); j++) {
                         Node statusNode = statusNodeList.item(j);
@@ -173,8 +177,10 @@ public class XMLParser {
                             myVehicle.getStatusHandler().addStatus(statusElement.getAttribute("name"), Float.parseFloat(statusElement.getAttribute("base")));
                         }
                     }
+                    result.add(myVehicle);
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

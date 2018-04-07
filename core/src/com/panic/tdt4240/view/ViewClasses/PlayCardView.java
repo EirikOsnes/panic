@@ -118,8 +118,8 @@ public class PlayCardView extends AbstractView{
         cardButtons.get(button).setStyle(buttonStyles.get(button));
     }
 
-    public void render(SpriteBatch sb){
-        sb.setProjectionMatrix(cam.combined);
+    public void render(){
+        renderer.sb.setProjectionMatrix(cam.combined);
         stage.draw();
         /*
         renderBackground();

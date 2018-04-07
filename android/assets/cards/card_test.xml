@@ -12,9 +12,48 @@
         <card_effect>
             <target_status>position</target_status>
             <value>1.0</value>
+            <requirement_name>none</requirement_name>
+            <requirement_value>0</requirement_value>
             <status_duration>-1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>false</friendly_fire>
         </card_effect>
     </card>
+
+    <card id = "PEW">
+        <name>PEW PEW!</name>
+        <priority>3</priority>
+        <type_id>ATTACK</type_id>
+        <target_type>ASTEROID</target_type>
+        <allowed_targets>ALL</allowed_targets>
+        <min_range>0</min_range>
+        <max_range>5</max_range>
+        <tooltip>Pew pew! PEW!</tooltip>
+        <card_effect>
+            <target_status>health</target_status>
+            <value>-25</value>
+            <status_duration>-1</status_duration>
+            <splash_range>0</splash_range>
+            <friendly_fire>true</friendly_fire>
+        </card_effect>
+    </card>
+
+    <card id = "POISON">
+        <name>Space Goo</name>
+        <priority>1</priority>
+        <type_id>ATTACK</type_id>
+        <target_type>VEHICLE</target_type>
+        <allowed_targets>ALL</allowed_targets>
+        <min_range>0</min_range>
+        <max_range>1</max_range>
+        <tooltip>Cover your enemies in deadly SPACE GOO!!!</tooltip>
+        <card_effect>
+            <target_status>poison</target_status>
+            <value>10</value>
+            <status_duration>3</status_duration>
+            <splash_range>0</splash_range>
+            <friendly_fire>false</friendly_fire>
+        </card_effect>
+    </card>
+
 </cards>

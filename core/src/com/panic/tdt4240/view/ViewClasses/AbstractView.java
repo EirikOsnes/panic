@@ -7,10 +7,6 @@ import com.panic.tdt4240.states.State;
 /**
  * Created by victor on 05.03.2018.
  *
- *
- *
- *
- *
  * Add generic, useful helper functions here to avoid redundant code.
  *
  */

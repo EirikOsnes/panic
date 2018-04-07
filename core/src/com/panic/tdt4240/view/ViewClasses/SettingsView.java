@@ -16,5 +16,9 @@ public class SettingsView extends AbstractView {
         super(state);
     }
 
+    public void render(){
+
+    }
+
 
 }

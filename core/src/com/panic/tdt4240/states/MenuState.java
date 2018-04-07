@@ -38,8 +38,8 @@ public class MenuState extends State {
     }
 
     @Override
-    public void render(SpriteBatch sb) {
-        menuView.render(sb);
+    public void render() {
+        menuView.render();
     }
 
     @Override

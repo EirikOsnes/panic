@@ -42,7 +42,7 @@ public class SettingsState extends State {
     }
 
     @Override
-    public void render(SpriteBatch sb) {
+    public void render() {
 
     }
 

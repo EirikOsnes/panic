@@ -7,17 +7,27 @@ import java.util.ArrayList;
 /**
  * Created by Choffa for panic on 06-Apr-18.
  * On permission can be used outside panic.
+ * This class loads and holds all the models defined in xml
+ * and should be initialised on startup
  */
 public class ModelHolder {
 
-    private static ModelHolder mh;
+    private static ModelHolder mh = new ModelHolder();
 
-    private static ArrayList<Card> cards;
-    private static ArrayList<Vehicle> vehicles;
-    // private static List<Map> maps;
-    private static Map map;
+    private ArrayList<Card> cards;
+    private ArrayList<Vehicle> vehicles;
+    // private List<Map> maps;
+    private Map map;
 
-    private ModelHolder(){}
+    private ModelHolder() {
+        XMLParser parser = new XMLParser();
+
+        // TODO: Change to actual path
+        String base = "android/assets/";
+        cards = parser.parseCards(base + "cards/card_test.xml");
+        map = parser.parseMap(base + "maps/map_test.xml");
+        vehicles = parser.parseVehicles(base + "vehicles/vehicle_test.xml");
+    }
 
     public Card getCardById(String id) {
         for (int i = 0; i < cards.size(); i++) {
@@ -53,16 +63,6 @@ public class ModelHolder {
     }
 
     public static ModelHolder getInstance() {
-        if (mh == null) {
-            mh = new ModelHolder();
-            XMLParser parser = new XMLParser();
-
-            // TODO: Change to actual path
-            String base = "android/assets/";
-            cards = parser.parseCards(base + "cards/card_test.xml");
-            map = parser.parseMap(base + "maps/map_test.xml");
-            vehicles = parser.parseVehicles(base + "vehicles/vehicle_test.xml");
-        }
         return mh;
     }
 }

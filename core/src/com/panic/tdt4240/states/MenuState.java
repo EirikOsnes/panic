@@ -70,6 +70,8 @@ public class MenuState extends State {
         for (int i = 0; i < 10; i++) {
             Card card = new Card(i + "");
             card.setTooltip("Card nr:" + i + "\nSomething else............\nabcdefghijklmnopqrstuvwxyz");
+            card.setTargetType(Card.TargetType.ASTEROID);
+            card.setAllowedTarget(Card.AllowedTarget.ALL);
             cards.push(card);
         }
         Player player = new Player(cards);

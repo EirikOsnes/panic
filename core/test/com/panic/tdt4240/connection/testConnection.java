@@ -37,7 +37,7 @@ public class testConnection {
         assertEquals("ENDTURN",testArray.get(2).get(2));
         assertEquals("44444",testArray.get(3).get(4));
     }
-
+/*
     @Test
     public void shouldCreateCardString(){
         String[] m1 = new String[3];
@@ -63,4 +63,5 @@ public class testConnection {
         String result = connection.createCardString(testArray);
         assertEquals("MOVE&s1&t1&5//PEW&s2&t2&3//POISON&s3&t3&1//", result);
     }
+ */
 }

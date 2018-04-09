@@ -38,7 +38,7 @@ public class TestMap {
         asteroids.add(new Asteroid(null));
         asteroids.add(new Asteroid(null));
         asteroids.add(new Asteroid(null));
-        map = new Map(asteroids);
+        map = new Map(asteroids, "TestMap");
         map.connectAsteroids(map.getAsteroids().get(0),map.getAsteroids().get(1));
         map.connectAsteroids(map.getAsteroids().get(0),map.getAsteroids().get(3));
         map.connectAsteroids(map.getAsteroids().get(1),map.getAsteroids().get(2));

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Map;
+import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
 
 import org.w3c.dom.Document;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -53,6 +55,7 @@ public class XMLParser {
                     Element element = (Element) node;
                     Card myCard = new Card(element.getAttribute("id"));
                     myCard.setName(element.getElementsByTagName("name").item(0).getTextContent());
+                    myCard.setPriority(Integer.parseInt(element.getElementsByTagName("priority").item(0).getTextContent()));
                     myCard.setCardType(Card.CardType.valueOf(element.getElementsByTagName("type_id").item(0).getTextContent()));
                     myCard.setTargetType(Card.TargetType.valueOf(element.getElementsByTagName("target_type").item(0).getTextContent()));
                     myCard.setAllowedTarget(Card.AllowedTarget.valueOf(element.getElementsByTagName("allowed_targets").item(0).getTextContent()));
@@ -111,7 +114,6 @@ public class XMLParser {
             for (int j = 0; j < mapList.getLength(); j++) {
 
                 Node mapNode = mapList.item(j);
-
                 if(mapNode.getNodeType() == Node.ELEMENT_NODE) {
 
                     Element mapElement = (Element) mapNode;
@@ -193,6 +195,49 @@ public class XMLParser {
                         }
                     }
                     result.add(myVehicle);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return result;
+    }
+
+    /**
+     * parse the Stack of cards related to the given vehicle type. The stack will be empty if no such deck is defined.
+     * @param path The path to the decks
+     * @param vehicleType The vehicle type
+     * @return Returns a Stack<Card> that is related to the given vehicle (will add all cards from all decks at this point)
+     */
+    public Stack<Card> parseCardStack(String path, String vehicleType){
+        Stack<Card> result = new Stack<>();
+
+        try {
+            File inputFile = new File(path);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("deck");
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+
+                if (node.getNodeType() == Node.ELEMENT_NODE){
+                    Element element = (Element) node;
+                    if(element.getAttribute("vehicle_type").equalsIgnoreCase(vehicleType)) {
+                        NodeList cardsNodeList = element.getElementsByTagName("card");
+                        for (int j = 0; j < cardsNodeList.getLength(); j++) {
+                            Node cardNode = cardsNodeList.item(j);
+                            if(cardNode.getNodeType() == Node.ELEMENT_NODE){
+                                Element cardElement = (Element) cardNode;
+                                result.push(ModelHolder.getInstance().getCardById(cardElement.getTextContent()));
+                            }
+                        }
+                    }
                 }
             }
 

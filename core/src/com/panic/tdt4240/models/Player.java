@@ -19,7 +19,9 @@ public class Player implements EventListener {
     private Vehicle vehicle;
     private boolean alive = true;
     //Any draw cards modifiers
-    private int MODIFIED_AMOUNT_CARDS = 0;
+    private int MODIFIED_DRAWN_CARDS = 0;
+    //Any play cards modifiers
+    private int MODIFIED_PLAYED_CARDS = 0;
 
 
     public Player(Stack<Card> cards){
@@ -29,7 +31,10 @@ public class Player implements EventListener {
         EventBus.getInstance().addListener(this);
     }
     public int getAmountDrawnCards(){
-        return MODIFIED_AMOUNT_CARDS + GlobalConstants.BASE_DRAW_CARDS;
+        return MODIFIED_DRAWN_CARDS + GlobalConstants.BASE_DRAW_CARDS;
+    }
+    public int getAmountPlayedCards(){
+        return MODIFIED_PLAYED_CARDS + GlobalConstants.BASE_PLAY_CARDS;
     }
     //Returns the full deck
     public ArrayList<Card> getCardDeck(){
@@ -40,7 +45,7 @@ public class Player implements EventListener {
     }
     //Returns the hand
     public ArrayList<Card> playCards(){
-        hand.setCardHand(deck.drawHand(GlobalConstants.BASE_DRAW_CARDS + MODIFIED_AMOUNT_CARDS));
+        hand.setCardHand(deck.drawHand(GlobalConstants.BASE_DRAW_CARDS + MODIFIED_DRAWN_CARDS));
         return hand.getHand();
     }
     public Vehicle getVehicle(){

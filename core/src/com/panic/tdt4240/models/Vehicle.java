@@ -51,8 +51,11 @@ public class Vehicle implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
+
         if (e.getT() == Event.Type.ATTACK && e.getTargetID() == this.vehicleID) {
-            this.statusHandler.addStatusAddition(e.getStatus(), e.getEffectValue(), e.getDuration());
+            if(this.statusHandler.isRequirementsMet(e.getRequirementName(),e.getRequirementVal())) {
+                this.statusHandler.addStatusAddition(e.getStatus(), e.getEffectValue(), e.getDuration());
+            }
         }
         if (e.getT() == Event.Type.TIMING) {
             this.statusHandler.runEffects(e.getTiming());

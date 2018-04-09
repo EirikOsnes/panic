@@ -27,15 +27,11 @@ public class MenuView extends AbstractView {
 
     private Renderer renderer;
     private Stage stage;
-    private Button createGameBtn;
-    private Button joinGameBtn;
-    private Button settingsBtn;
+    private Button createGameBtn, joinGameBtn, settingsBtn;
     private TextureAtlas buttonAtlas;
     private Skin skin;
     private BitmapFont font;
-    private TextButton.TextButtonStyle createButtonStyle;
-    private TextButton.TextButtonStyle joinButtonStyle;
-    private TextButton.TextButtonStyle settingsButtonStyle;
+    private TextButton.TextButtonStyle createButtonStyle, joinButtonStyle, settingsButtonStyle;
     private Table table;
     private Texture background;
 
@@ -43,16 +39,17 @@ public class MenuView extends AbstractView {
         super(menuState);
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,PanicGame.WIDTH,PanicGame.HEIGHT);
+
         stage = new Stage();
         table = new Table();
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
-        buttonAtlas = new TextureAtlas("start_menu_buttons/buttons.pack");
-        skin.addRegions(buttonAtlas);
+        buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
+        skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
 
         createButtonStyle = new TextButton.TextButtonStyle();
         joinButtonStyle = new TextButton.TextButtonStyle();
+
         settingsButtonStyle = new TextButton.TextButtonStyle();
         createButtonStyle.font = font;
         createButtonStyle.up = skin.getDrawable("button-up");
@@ -112,12 +109,17 @@ public class MenuView extends AbstractView {
     }
 
     // TODO: legge inn input
-    public void render(SpriteBatch sb) {
-        sb.setProjectionMatrix(cam.combined);
-        sb.begin();
-        sb.draw(background,0,0,PanicGame.WIDTH,PanicGame.HEIGHT);
+    public void render() {
+        renderer.sb.setProjectionMatrix(cam.combined);
+        renderer.sb.begin();
+        renderer.sb.draw(background,0,0,PanicGame.WIDTH,PanicGame.HEIGHT);
         stage.draw();
-        sb.end();
+        renderer.sb.end();
+    }
+
+    public void dispose(){
+        renderer.dispose();
+        font.dispose();
     }
 
 

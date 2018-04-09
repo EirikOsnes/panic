@@ -31,6 +31,8 @@ public class EventFactory {
             e.setEffectValue(ce.getValue());
             e.setFriendlyFire(ce.isFriendlyFire());
             e.setStatus(ce.getTargetStatus());
+            e.setRequirementName(ce.getRequirementName());
+            e.setRequirementVal(ce.getRequirementVal());
             eb.postEvent(e);
         }
         Event e = new Event(Event.Type.TIMING, targetID, instigatorID);

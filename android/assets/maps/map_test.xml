@@ -1,55 +1,57 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<map>
-    <asteroids>
-        <asteroid id = "A-001">
-            <posX>0.1</posX>
-            <posY>0.1</posY>
-        </asteroid>
-        <asteroid id = "A-002">
-            <posX>0.2</posX>
-            <posY>0.2</posY>
-        </asteroid>
-        <asteroid id = "A-003">
-            <posX>0.3</posX>
-            <posY>0.3</posY>
-        </asteroid>
-        <asteroid id = "A-004">
-            <posX>0.4</posX>
-            <posY>0.4</posY>
-        </asteroid>
-        <asteroid id = "A-005">
-            <posX>0.5</posX>
-            <posY>0.8</posY>
-        </asteroid>
-    </asteroids>
-    <connections>
-        <connection>
-            <vertexID>A-001</vertexID>
-            <vertexID>A-002</vertexID>
-        </connection>
-        <connection>
-            <vertexID>A-001</vertexID>
-            <vertexID>A-003</vertexID>
-        </connection>
-        <connection>
-            <vertexID>A-002</vertexID>
-            <vertexID>A-003</vertexID>
-        </connection>
-        <connection>
-            <vertexID>A-002</vertexID>
-            <vertexID>A-004</vertexID>
-        </connection>
-        <connection>
-            <vertexID>A-003</vertexID>
-            <vertexID>A-004</vertexID>
-        </connection>
-        <connection>
-            <vertexID>A-003</vertexID>
-            <vertexID>A-005</vertexID>
-        </connection>
-        <connection>
-            <vertexID>A-004</vertexID>
-            <vertexID>A-005</vertexID>
-        </connection>
-    </connections>
-</map>
+<maps>
+    <map id = "TEST">
+        <asteroids>
+            <asteroid id = "A-001">
+                <posX>0.1</posX>
+                <posY>0.1</posY>
+            </asteroid>
+            <asteroid id = "A-002">
+                <posX>0.2</posX>
+                <posY>0.2</posY>
+            </asteroid>
+            <asteroid id = "A-003">
+                <posX>0.3</posX>
+                <posY>0.3</posY>
+            </asteroid>
+            <asteroid id = "A-004">
+                <posX>0.4</posX>
+                <posY>0.4</posY>
+            </asteroid>
+            <asteroid id = "A-005">
+                <posX>0.5</posX>
+                <posY>0.8</posY>
+            </asteroid>
+        </asteroids>
+        <connections>
+            <connection>
+                <vertexID>A-001</vertexID>
+                <vertexID>A-002</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-001</vertexID>
+                <vertexID>A-003</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-002</vertexID>
+                <vertexID>A-003</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-002</vertexID>
+                <vertexID>A-004</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-003</vertexID>
+                <vertexID>A-004</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-003</vertexID>
+                <vertexID>A-005</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-004</vertexID>
+                <vertexID>A-005</vertexID>
+            </connection>
+        </connections>
+    </map>
+</maps>

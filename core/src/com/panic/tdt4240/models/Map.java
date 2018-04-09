@@ -16,14 +16,16 @@ public class Map {
     private ArrayList<Asteroid> asteroids;
     private int[][] adjacency;
     HashMap<String, Vehicle> vehicles;
+    String Id;
 
     /**
      * creates a Map object containing a set of asteroids
      * @param asteroids ArrayList of asteroids
      */
-    public Map(ArrayList<Asteroid> asteroids){
+    public Map(ArrayList<Asteroid> asteroids, String Id){
         vehicles = new HashMap<>();
         this.asteroids = asteroids;
+        this.Id = Id;
     }
 
     /**

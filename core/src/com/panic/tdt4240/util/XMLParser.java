@@ -115,7 +115,7 @@ public class XMLParser {
                 if(mapNode.getNodeType() == Node.ELEMENT_NODE) {
 
                     Element mapElement = (Element) mapNode;
-
+                    String id = mapElement.getAttribute("id");
                     NodeList asteroidNodeList = mapElement.getElementsByTagName("asteroid");
                     HashMap<String, Asteroid> asteroidHashMap = new HashMap<>();
 
@@ -126,13 +126,13 @@ public class XMLParser {
                             Element element = (Element) node;
                             Asteroid myAsteroid = new Asteroid(null);
                             //TODO: Sprite should be separated
-                            String id = element.getAttribute("id");
-                            myAsteroid.setId(id);
+                            String AsteroidId = element.getAttribute("id");
+                            myAsteroid.setId(AsteroidId);
                             myAsteroid.setPosition(new Vector2(
                                     Float.parseFloat(element.getElementsByTagName("posX").item(0).getTextContent()),
                                     Float.parseFloat(element.getElementsByTagName("posY").item(0).getTextContent())
                             ));
-                            asteroidHashMap.put(id, myAsteroid);
+                            asteroidHashMap.put(AsteroidId, myAsteroid);
                         }
                     }
 
@@ -148,7 +148,7 @@ public class XMLParser {
                         }
                     }
 
-                    Map resultMap = new Map(new ArrayList<>(asteroidHashMap.values()));
+                    Map resultMap = new Map(new ArrayList<>(asteroidHashMap.values()),id);
                     resultMap.generateAdjacencyMatrix();
                     result.add(resultMap);
                 }

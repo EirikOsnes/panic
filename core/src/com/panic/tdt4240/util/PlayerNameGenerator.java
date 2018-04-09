@@ -1,27 +1,29 @@
 package com.panic.tdt4240.util;
 
+import com.badlogic.gdx.math.MathUtils;
+
 /**
  * Created by victor on 07.04.2018.
  */
 
 public class PlayerNameGenerator {
 
-    public static String getName(){
+    private static final String[] names =
+            {"Yellow Submarine", "Black Knight", "Evil Doctor",
+                    "Generic green alien", "Babel Fish", "Peak performance alpha male",
+                    "Pink Unicorn", "A bowl of petunias", "Teapot in space",
+                    "Doctor who?", "Generic name", "Generated name",
+                    "I'm so meta, even this acronym", "Raging neighbour",
+                    "Defamatory Outrage", "Notoriously Thick-headed", "People",
+                    "Assaulting Neighbours", "Interstellar Comets",
+                    "A... thing", "Oh hi Mark", "It", "Newton's Flaming Laser Sword",
+                    "Rubber Ducky", "win32", ""};
 
-        // add names here at your leisure
-        String[] names = {"Yellow Submarine", "Black Knight",
-                "Evil Doctor", "Generic green alien", "Babel Fish",
-                "Pink Unicorn", "A bowl of petunias", "Teapot in space",
-                "Doctor who?", "Generic name", "Generated name",
-                "I'm so meta, even this acronym", "Raging neighbour",
-        "Defamatory Outrage", "Notoriously Thick-headed", "People",
-        "Assaulting Neighbours", "Interstellar Comets",
-        "A... thing", "Oh hi Mark"};
-        int choice = (int) (Math.random() * names.length);
+    public static int getCount(){return names.length; }
 
+    public static String getName(int i){
 
-
-        return names[choice];
+        return names[i % names.length];
     }
 
 

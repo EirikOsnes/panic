@@ -1,9 +1,11 @@
 package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.states.GameResultsState;
@@ -27,11 +29,11 @@ import java.util.ArrayList;
 public class GameResultsView extends AbstractView {
 
     private Renderer renderer;
-    private ArrayList<TextButton> textButtons;
+    private ArrayList<TextButton> textBtns;
     private Stage stage;
     private Skin skin;
-    TextButton.TextButtonStyle buttonStyle, rankingStyle;
-    private TextureAtlas buttonAtlas;
+    TextButton.TextButtonStyle btnStyle, rankingStyle;
+    private TextureAtlas btnAtlas;
     private Texture bg;
     private Table table;
     private BitmapFont font;
@@ -43,30 +45,30 @@ public class GameResultsView extends AbstractView {
         Gdx.gl.glClearColor(0,0,0,0);
 
         bg = new Texture("misc/background.png");
-        textButtons = new ArrayList<>(deadPlayers.size());
+        textBtns = new ArrayList<>(deadPlayers.size());
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
         table = new Table();
         table.setWidth(SCREEN_WIDTH/2);
         table.center();
-        buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
+        btnAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
 
         skin = new Skin();
-//        skin = new Skin(Gdx.files.internal("skins/uiskin.json"), buttonAtlas);
+//        skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
 
-        skin.addRegions(buttonAtlas);
+        skin.addRegions(btnAtlas);
         font = new BitmapFont();
-        buttonStyle = new TextButton.TextButtonStyle();
+        btnStyle = new TextButton.TextButtonStyle();
         rankingStyle = new TextButton.TextButtonStyle();
 
         /* TODO: maybe make a special button for the winner?
         fancy schmancy visuals... needs another style for this. /**/
 
 /*        TextButton button = new TextButton("1.  "
-                + deadPlayers.get(deadPlayers.size()-1), buttonStyle);
-        textButtons.add(button);
-        table.add(textButtons.get(0)).width(SCREEN_WIDTH);
+                + deadPlayers.get(deadPlayers.size()-1), btnStyle);
+        textBtns.add(button);
+        table.add(textBtns.get(0)).width(SCREEN_WIDTH);
  /**/
 
         // different styling for results and buttons. ranking buttons
@@ -75,20 +77,20 @@ public class GameResultsView extends AbstractView {
         rankingStyle.up = skin.getDrawable("button-up");
         rankingStyle.down = skin.getDrawable("button-down");
 
-        buttonStyle.font = font;
-        buttonStyle.up = skin.getDrawable("button-up");
-        buttonStyle.down = skin.getDrawable("button-down");
+        btnStyle.font = font;
+        btnStyle.up = skin.getDrawable("button-up");
+        btnStyle.down = skin.getDrawable("button-down");
 
 
         for (int i = 0; i < Math.floor(deadPlayers.size()/2); i++){
             TextButton button = new TextButton(""
                     + (i+1) + ". Player " +
                     (i+1), rankingStyle);
-            textButtons.add(button);
+            textBtns.add(button);
         }
 
-        exitToLobbyBtn = new TextButton("Exit to lobby", buttonStyle);
-        exitToMainMenuBtn = new TextButton("Exit to main menu", buttonStyle);
+        exitToLobbyBtn = new TextButton("Exit to lobby", btnStyle);
+        exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
 
         exitToLobbyBtn.addListener(new ChangeListener() {
             @Override
@@ -109,13 +111,14 @@ public class GameResultsView extends AbstractView {
 
         table.setFillParent(true);
         table.center();
-        for (int i = 0; i < textButtons.size(); i++){
+        for (int i = 0; i < textBtns.size(); i++){
             table.row().center();
-            table.add(textButtons.get(i)).width(300).height(40).pad(20).width(PanicGame.WIDTH);
+            table.add(textBtns.get(i)).width(300).height(40).pad(20).width(PanicGame.WIDTH);
         }
         table.row().center().padTop(50);
         table.add(exitToLobbyBtn); table.row().center().padTop(20);
         table.add(exitToMainMenuBtn);
+        table.background(new TextureRegionDrawable(new TextureRegion(bg)));
 
         stage.addActor(table);
 

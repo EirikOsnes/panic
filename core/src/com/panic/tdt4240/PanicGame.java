@@ -7,9 +7,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.panic.tdt4240.states.GameStateManager;
 import com.panic.tdt4240.states.MenuState;
 
+import java.awt.Color;
+
 public class PanicGame extends ApplicationAdapter {
 
 	public static final String TITLE = "DON'T PANIC";
+	public static final String FULL_TITLE = "Defamatory Outrage of Notoriously Thick-headed \n" +
+			"People Assaulting Neighbours on Interstellar Comets";
 
 	public static final int WIDTH = 400;
 	public static final int HEIGHT = 800;
@@ -20,7 +24,7 @@ public class PanicGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		gsm = new GameStateManager();
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0,0,0,0);
 		gsm.push(new MenuState(gsm));
 
 	}

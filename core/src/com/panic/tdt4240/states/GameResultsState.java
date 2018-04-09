@@ -26,27 +26,29 @@ public class GameResultsState extends State {
 
     @Override
     public void handleInput(Object o) {
-        int x = Gdx.input.getX(); int y = Gdx.input.getY();
-        // need some way to find out if the appropriate buttons have been pressed.
-        if (o== (Integer) 0) { // back to lobby
+        if (o == (Integer) 0) { // go back to lobby
             gsm.pop(); // to CardPlayState
             gsm.pop(); // to GameLobbyState
             if (originalNumOfPlayers != numOfPlayers) {
-            // TODO: some players left the lobby... should the lobby simply be updated, or replaced?
+                // TODO : some players left the lobby. Update/replace lobby?
+            }
+            else {
+                gsm.pop(); // to GameLobbyState
             }
         }
-    else if (o== (Integer) 1){ // back to main menu. Pop some states, set new meu state.
+    else if (o== (Integer) 1){ // back to main menu. Reset entirely.
+            gsm.reset();
         }
     }
 
     @Override
     public void update(float dt) {
-
+        // nothing to do here, really.
     }
 
     @Override
     public void render() {
-
+        view.render();
     }
 
     @Override

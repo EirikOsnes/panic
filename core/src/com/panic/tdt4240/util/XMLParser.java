@@ -91,11 +91,13 @@ public class XMLParser {
     }
 
     /**
-     * Create a Map from an XML file, by passing in the path to this file. The Map will already be set up with neighbourhood matrix.
+     * Create an array of Maps from an XML file, by passing in the path to this file. The Maps will already be set up with neighbourhood matrix.
      * @param path The path to the XML file to use.
-     * @return Returns an instatiated Map, with neighbourhood matrix finalized.
+     * @return Returns an instantiated Map, with neighbourhood matrix finalized.
      */
-    public Map parseMap(String path){
+    public ArrayList<Map> parseMaps(String path){
+
+        ArrayList<Map> result = new ArrayList<>();
 
         try {
             File inputFile = new File(path);
@@ -103,47 +105,60 @@ public class XMLParser {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(inputFile);
             doc.getDocumentElement().normalize();
-            NodeList asteroidNodeList = doc.getElementsByTagName("asteroid");
-            HashMap<String,Asteroid> asteroidHashMap = new HashMap<>();
 
-            for (int i = 0; i < asteroidNodeList.getLength(); i++) {
-                Node node = asteroidNodeList.item(i);
+            NodeList mapList = doc.getElementsByTagName("map");
 
-                if (node.getNodeType() == Node.ELEMENT_NODE){
-                    Element element = (Element) node;
-                    Asteroid myAsteroid = new Asteroid(null);
-                    //TODO: Sprite should be separated
-                    String id = element.getAttribute("id");
-                    myAsteroid.setId(id);
-                    myAsteroid.setPosition(new Vector2(
-                            Float.parseFloat(element.getElementsByTagName("posX").item(0).getTextContent()),
-                            Float.parseFloat(element.getElementsByTagName("posY").item(0).getTextContent())
-                    ));
-                    asteroidHashMap.put(id, myAsteroid);
+            for (int j = 0; j < mapList.getLength(); j++) {
+
+                Node mapNode = mapList.item(j);
+
+                if(mapNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                    Element mapElement = (Element) mapNode;
+
+                    NodeList asteroidNodeList = mapElement.getElementsByTagName("asteroid");
+                    HashMap<String, Asteroid> asteroidHashMap = new HashMap<>();
+
+                    for (int i = 0; i < asteroidNodeList.getLength(); i++) {
+                        Node node = asteroidNodeList.item(i);
+
+                        if (node.getNodeType() == Node.ELEMENT_NODE) {
+                            Element element = (Element) node;
+                            Asteroid myAsteroid = new Asteroid(null);
+                            //TODO: Sprite should be separated
+                            String id = element.getAttribute("id");
+                            myAsteroid.setId(id);
+                            myAsteroid.setPosition(new Vector2(
+                                    Float.parseFloat(element.getElementsByTagName("posX").item(0).getTextContent()),
+                                    Float.parseFloat(element.getElementsByTagName("posY").item(0).getTextContent())
+                            ));
+                            asteroidHashMap.put(id, myAsteroid);
+                        }
+                    }
+
+                    NodeList connectionNodeList = mapElement.getElementsByTagName("connection");
+                    for (int i = 0; i < connectionNodeList.getLength(); i++) {
+                        Node node = connectionNodeList.item(i);
+
+                        if (node.getNodeType() == Node.ELEMENT_NODE) {
+                            Element element = (Element) node;
+                            asteroidHashMap.get(element.getElementsByTagName("vertexID").item(0).getTextContent()).connect(
+                                    asteroidHashMap.get(element.getElementsByTagName("vertexID").item(1).getTextContent())
+                            );
+                        }
+                    }
+
+                    Map resultMap = new Map(new ArrayList<>(asteroidHashMap.values()));
+                    resultMap.generateAdjacencyMatrix();
+                    result.add(resultMap);
                 }
             }
-
-            NodeList connectionNodeList = doc.getElementsByTagName("Connection");
-            for (int i = 0; i < connectionNodeList.getLength(); i++) {
-                Node node = connectionNodeList.item(i);
-
-                if(node.getNodeType() == Node.ELEMENT_NODE){
-                    Element element = (Element) node;
-                    asteroidHashMap.get(element.getElementsByTagName("vertexID").item(0).getTextContent()).connect(
-                            asteroidHashMap.get(element.getElementsByTagName("vertexID").item(1).getTextContent())
-                    );
-                }
-            }
-
-            Map result = new Map(new ArrayList<>(asteroidHashMap.values()));
-            result.generateAdjacencyMatrix();
-            return result;
 
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        return null;
+        return result;
     }
 
 

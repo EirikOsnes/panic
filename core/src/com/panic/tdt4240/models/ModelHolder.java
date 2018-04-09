@@ -14,8 +14,7 @@ public class ModelHolder {
 
     private static ArrayList<Card> cards;
     private static ArrayList<Vehicle> vehicles;
-    // private static List<Map> maps;
-    private static Map map;
+    private static ArrayList<Map> maps;
 
     private ModelHolder(){}
 
@@ -33,9 +32,8 @@ public class ModelHolder {
         return cards;
     }
 
-    //TODO: Update this to have a list of maps!
-    public Map getMap() {
-        return map;
+    public ArrayList<Map> getMaps() {
+        return maps;
     }
 
     public Vehicle getVehicleByName(String name) {
@@ -60,7 +58,7 @@ public class ModelHolder {
             // TODO: Change to actual path
             String base = "android/assets/";
             cards = parser.parseCards(base + "cards/card_test.xml");
-            map = parser.parseMap(base + "maps/map_test.xml");
+            maps = parser.parseMaps(base + "maps/map_test.xml");
             vehicles = parser.parseVehicles(base + "vehicles/vehicle_test.xml");
         }
         return mh;

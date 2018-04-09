@@ -147,11 +147,11 @@ public class Asteroid implements EventListener, Comparable<Asteroid>{
                     Map map = GameModelHolder.getInstance().getMap();
                     map.generateAdjacencyMatrix();
                     int[][] adjacency = map.getAdjacency();
-                    int index = Integer.parseInt(id.substring(3)) - 1;
+                    int index = Integer.parseInt(id.substring(2)) - 1;
                     int[] neighbours = adjacency[index];
                     for (int i = 0; i < neighbours.length; i++) {
-                        String nid = String.format(Locale.US, "A-%03d", i);
-                        if (!id.equalsIgnoreCase(nid) && e.getSplashRange() <= neighbours[i]) {
+                        String nid = map.getAsteroids().get(i).id;
+                        if (!id.equalsIgnoreCase(nid) && e.getSplashRange() >= neighbours[i]) {
                             e.cloneEvent(nid);
                         }
                     }

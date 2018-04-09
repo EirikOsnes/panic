@@ -3,7 +3,6 @@ package com.panic.tdt4240.view.ViewClasses;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -31,15 +30,16 @@ public class MenuView extends AbstractView {
     private TextureAtlas buttonAtlas;
     private Skin skin;
     private BitmapFont font;
-    private TextButton.TextButtonStyle createButtonStyle, joinButtonStyle, settingsButtonStyle;
+    private TextButton.TextButtonStyle ButtonStyle;
     private Table table;
     private Texture background;
+    private TextureAtlas carAtlas;
 
     public MenuView(MenuState menuState) {
         super(menuState);
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,PanicGame.WIDTH,PanicGame.HEIGHT);
-
+        carAtlas = new TextureAtlas("cars/cars.atlas");
         stage = new Stage();
         table = new Table();
         Gdx.input.setInputProcessor(stage);
@@ -47,25 +47,15 @@ public class MenuView extends AbstractView {
         buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
 
-        createButtonStyle = new TextButton.TextButtonStyle();
-        joinButtonStyle = new TextButton.TextButtonStyle();
+        ButtonStyle = new TextButton.TextButtonStyle();
 
-        settingsButtonStyle = new TextButton.TextButtonStyle();
-        createButtonStyle.font = font;
-        createButtonStyle.up = skin.getDrawable("button-up");
-        createButtonStyle.down = skin.getDrawable("button-down");
+        ButtonStyle.font = font;
+        ButtonStyle.up = skin.getDrawable("button-up");
+        ButtonStyle.down = skin.getDrawable("button-down");
 
-        joinButtonStyle.font = font;
-        joinButtonStyle.up = skin.getDrawable("button-up");
-        joinButtonStyle.down = skin.getDrawable("button-down");
-
-        settingsButtonStyle.font = font;
-        settingsButtonStyle.up = skin.getDrawable("button-up");
-        settingsButtonStyle.down = skin.getDrawable("button-down");
-
-        createGameBtn = new TextButton("Create New Game", createButtonStyle);
-        joinGameBtn = new TextButton("Join Game", joinButtonStyle);
-        settingsBtn = new TextButton("Settings", settingsButtonStyle);
+        createGameBtn = new TextButton("Create New Game", ButtonStyle);
+        joinGameBtn = new TextButton("Join Game", ButtonStyle);
+        settingsBtn = new TextButton("Settings", ButtonStyle);
 
         Label label = new Label(PanicGame.TITLE,skin);
 

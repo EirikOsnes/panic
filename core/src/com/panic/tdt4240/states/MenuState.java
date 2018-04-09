@@ -2,7 +2,9 @@ package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
+import com.panic.tdt4240.util.XMLParser;
 import com.panic.tdt4240.view.ViewClasses.MenuView;
 
 import java.util.Stack;
@@ -31,7 +33,7 @@ public class MenuState extends State {
         } else if (o == (Integer) 3) {
             gsm.push(new SettingsState(gsm));
         }
-
+    /*
     //For testing the PlayCardState class
         startPlayCard();
     }
@@ -43,7 +45,9 @@ public class MenuState extends State {
             cards.push(card);
         }
         Player player = new Player(cards);
-        gsm.set(new PlayCardState(gsm, player));
+        XMLParser parser = new XMLParser();
+        Map map = parser.parseMap("maps/map1.xml");
+        gsm.set(new PlayCardState(gsm, player, map)); */
     }
 
     @Override

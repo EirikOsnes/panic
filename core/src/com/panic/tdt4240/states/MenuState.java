@@ -33,7 +33,7 @@ public class MenuState extends State {
         } else if (o == (Integer) 3) {
             gsm.push(new SettingsState(gsm));
         }
-    /**/
+    /*
     //For testing the PlayCardState class
         startPlayCard();
     }
@@ -47,7 +47,7 @@ public class MenuState extends State {
         Player player = new Player(cards);
         XMLParser parser = new XMLParser();
         Map map = parser.parseMap("maps/map1.xml");
-        gsm.set(new PlayCardState(gsm, player, map)); /**/
+        gsm.set(new PlayCardState(gsm, player, map)); */
     }
 
     @Override

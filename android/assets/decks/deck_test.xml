@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<decks>
+    <deck vehicle_type = "EDDISON">
+        <cards>
+            <card>MOVE</card>
+            <card>MOVE</card>
+            <card>MOVE</card>
+            <card>PEW</card>
+            <card>PEW</card>
+            <card>PEW</card>
+            <card>PEW</card>
+            <card>PEW</card>
+            <card>POISON</card>
+            <card>POISON</card>
+            <card>POISON</card>
+            <card>POISON</card>
+            <card>POISON</card>
+        </cards>
+    </deck>
+</decks>

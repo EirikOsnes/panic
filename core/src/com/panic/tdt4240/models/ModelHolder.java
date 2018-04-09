@@ -3,6 +3,7 @@ package com.panic.tdt4240.models;
 import com.panic.tdt4240.util.XMLParser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Choffa for panic on 06-Apr-18.
@@ -13,29 +14,22 @@ public class ModelHolder {
     private static ModelHolder mh;
 
     private static ArrayList<Card> cards;
+    private static HashMap<String, Card> cardMap;
     private static ArrayList<Vehicle> vehicles;
-    // private static List<Map> maps;
-    private static Map map;
+    private static ArrayList<Map> maps;
 
     private ModelHolder(){}
 
     public Card getCardById(String id) {
-        for (int i = 0; i < cards.size(); i++) {
-            Card c = cards.get(i);
-            if (c.getId().equalsIgnoreCase(id)) {
-                return c;
-            }
-        }
-        return null;
+        return cardMap.get(id);
     }
 
     public ArrayList<Card> getAllCards() {
         return cards;
     }
 
-    //TODO: Update this to have a list of maps!
-    public Map getMap() {
-        return map;
+    public ArrayList<Map> getMaps() {
+        return maps;
     }
 
     public Vehicle getVehicleByName(String name) {
@@ -56,11 +50,15 @@ public class ModelHolder {
         if (mh == null) {
             mh = new ModelHolder();
             XMLParser parser = new XMLParser();
+            cardMap = new HashMap<>();
 
             // TODO: Change to actual path
             String base = "android/assets/";
             cards = parser.parseCards(base + "cards/card_test.xml");
-            map = parser.parseMap(base + "maps/map_test.xml");
+            for (Card card : cards) {
+                cardMap.put(card.getId(),card);
+            }
+            maps = parser.parseMaps(base + "maps/map_test.xml");
             vehicles = parser.parseVehicles(base + "vehicles/vehicle_test.xml");
         }
         return mh;

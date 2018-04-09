@@ -15,6 +15,7 @@ public class RunEffectsState extends State {
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
         gi = GameInstance.getInstance();
+        runTurnEffects();
     }
 
     /**

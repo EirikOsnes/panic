@@ -55,7 +55,7 @@ public class LoadGameState extends State {
      * Checks to see if the client is reconnecting - i.e. there is a history of cards played, and plays these if that is the case.
      */
     private void checkForHistory() {
-        ArrayList<ArrayList<String[]>> log = new ArrayList<>(); //TODO: Get this from the server when syntax has been fixed.
+        ArrayList<ArrayList<String[]>> log = connection.getTurns();
 
         if(log!=null){
             for (ArrayList<String[]> turn : log) {

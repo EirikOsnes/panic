@@ -123,7 +123,7 @@ public class XMLParser {
                 }
             }
 
-            NodeList connectionNodeList = doc.getElementsByTagName("connection");
+            NodeList connectionNodeList = doc.getElementsByTagName("Connection");
             for (int i = 0; i < connectionNodeList.getLength(); i++) {
                 Node node = connectionNodeList.item(i);
 

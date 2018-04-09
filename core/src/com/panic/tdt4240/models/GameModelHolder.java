@@ -30,13 +30,15 @@ public class GameModelHolder {
 
     public void setMap(Map map) {
         this.map = map;
+
+        setAsteroids(map.getAsteroids());
     }
 
     public void addVehicle(Vehicle vehicle){
         vehicles.add(vehicle);
     }
 
-    public void setAsteroids(ArrayList<Asteroid> asteroids) {
+    private void setAsteroids(ArrayList<Asteroid> asteroids) {
         this.asteroids = asteroids;
     }
 
@@ -71,5 +73,9 @@ public class GameModelHolder {
 
     public void reset(){
         gmh = new GameModelHolder();
+    }
+
+    public void setVehicles(ArrayList<Vehicle> vehicles) {
+        this.vehicles = vehicles;
     }
 }

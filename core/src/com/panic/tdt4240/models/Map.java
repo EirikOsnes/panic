@@ -27,7 +27,7 @@ public class Map {
     }
 
     /**
-     * creates a connection between two asteroids
+     * creates a Connection between two asteroids
      * @param a1 first asteroid
      * @param a2 second asteroid
      */

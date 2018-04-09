@@ -22,7 +22,7 @@ final class MainTest {
         mh = ModelHolder.getInstance();
         Vehicle myVehicle = mh.getVehicleByName("EDDISON").cloneVehicleWithId("V-001");
         Vehicle myInstigator = mh.getVehicleByName("EDDISON").cloneVehicleWithId("V-002");
-        Map myMap = mh.getMap();
+        Map myMap = mh.getMaps().get(0);
         Stack<Card> cardStack = new Stack<>();
         cardStack.addAll(mh.getAllCards());
         Player myPlayer = new Player(cardStack);

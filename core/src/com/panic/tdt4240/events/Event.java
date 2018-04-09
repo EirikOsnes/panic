@@ -62,6 +62,7 @@ public class Event {
 
     public StatusHandler.TimingType getTiming() {
         return tt;
+    }
 
     public String getRequirementName() {
         return requirementName;

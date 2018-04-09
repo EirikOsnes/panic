@@ -94,7 +94,7 @@ public class Asteroid implements EventListener{
 
     /**
      *
-     * @param asteroid The asteroid to check for a connection
+     * @param asteroid The asteroid to check for a Connection
      * @return Whether the asteroids are connected or not
      */
     public boolean isConnected(Asteroid asteroid){

@@ -59,4 +59,8 @@ public class Player implements EventListener {
             EventBus.getInstance().removeListener(this);
         }
     }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
 }

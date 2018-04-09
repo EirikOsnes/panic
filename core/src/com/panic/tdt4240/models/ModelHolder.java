@@ -3,6 +3,7 @@ package com.panic.tdt4240.models;
 import com.panic.tdt4240.util.XMLParser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Choffa for panic on 06-Apr-18.
@@ -14,10 +15,10 @@ public class ModelHolder {
 
     private static ModelHolder mh = new ModelHolder();
 
-    private ArrayList<Card> cards;
-    private ArrayList<Vehicle> vehicles;
-    // private List<Map> maps;
-    private Map map;
+    private static ArrayList<Card> cards;
+    private static HashMap<String, Card> cardMap;
+    private static ArrayList<Vehicle> vehicles;
+    private static ArrayList<Map> maps;
 
     private ModelHolder() {
         XMLParser parser = new XMLParser();
@@ -30,22 +31,15 @@ public class ModelHolder {
     }
 
     public Card getCardById(String id) {
-        for (int i = 0; i < cards.size(); i++) {
-            Card c = cards.get(i);
-            if (c.getId().equalsIgnoreCase(id)) {
-                return c;
-            }
-        }
-        return null;
+        return cardMap.get(id);
     }
 
     public ArrayList<Card> getAllCards() {
         return cards;
     }
 
-    //TODO: Update this to have a list of maps!
-    public Map getMap() {
-        return map;
+    public ArrayList<Map> getMaps() {
+        return maps;
     }
 
     public Vehicle getVehicleByName(String name) {

@@ -104,11 +104,6 @@ public class Event {
         this.tt = tt;
     }
 
-    public StatusHandler.TimingType getTiming() {
-        return tt;
-
-    }
-
     /**
      * Clones the event giving it a new target. Used when defering events from
      * asteroids to vehicles

@@ -28,7 +28,7 @@ public class CreateGameState extends State {
 
     @Override
     public void render() {
-
+        view.render();
     }
 
     @Override

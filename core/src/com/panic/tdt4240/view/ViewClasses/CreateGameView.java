@@ -9,9 +9,16 @@ import com.panic.tdt4240.states.State;
 public class CreateGameView extends AbstractView {
     public CreateGameView(State state) {
         super(state);
+
+        // TODO: fetch ID from server, be added to list of lobbies.
+
+        // TODO: display list of settings, previews... etc.
+
+
     }
 
     public void render(){
+
 
     }
 }

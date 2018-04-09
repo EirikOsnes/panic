@@ -9,7 +9,7 @@ import com.panic.tdt4240.view.ViewClasses.SettingsView;
 
 public class SettingsState extends State {
 
-    SettingsView view;
+    private SettingsView view;
 
     public SettingsState(GameStateManager gsm){
         super(gsm);
@@ -32,6 +32,7 @@ public class SettingsState extends State {
         catch (Exception e){
             // popup with error message?
 
+            /* e.printStackTrace(); /**/
             return false;
         }
     }
@@ -43,7 +44,7 @@ public class SettingsState extends State {
 
     @Override
     public void render() {
-
+        view.render();
     }
 
     @Override

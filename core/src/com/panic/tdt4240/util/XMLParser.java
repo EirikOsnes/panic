@@ -10,16 +10,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * A class containing methods to parse XML files into java Objects.
@@ -72,8 +69,8 @@ public class XMLParser {
                                     Boolean.parseBoolean(effectElement.getElementsByTagName("friendly_fire").item(0).getTextContent()),
                                     (effectElement.getElementsByTagName("requirement_name").getLength()>0)
                                             ? effectElement.getElementsByTagName("requirement_name").item(0).getTextContent() : "none",
-                                    (effectElement.getElementsByTagName("requirement_name").getLength()>0)
-                                            ? Integer.parseInt(effectElement.getElementsByTagName("requirement_name").item(0).getTextContent()) : 0
+                                    (effectElement.getElementsByTagName("requirement_value").getLength()>0)
+                                            ? Integer.parseInt(effectElement.getElementsByTagName("requirement_value").item(0).getTextContent()) : 0
                             );
                         }
                     }
@@ -123,7 +120,7 @@ public class XMLParser {
                 }
             }
 
-            NodeList connectionNodeList = doc.getElementsByTagName("Connection");
+            NodeList connectionNodeList = doc.getElementsByTagName("connection");
             for (int i = 0; i < connectionNodeList.getLength(); i++) {
                 Node node = connectionNodeList.item(i);
 

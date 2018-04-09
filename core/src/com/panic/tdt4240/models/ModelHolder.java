@@ -32,6 +32,16 @@ public class ModelHolder {
         return maps;
     }
 
+    public Map getMapById(String id){
+        for (Map m : maps) {
+            if(m.getId().equalsIgnoreCase(id)){
+                return m;
+            }
+        }
+
+        return null;
+    }
+
     public Vehicle getVehicleByName(String name) {
         for (int i = 0; i < vehicles.size(); i++) {
             Vehicle v = vehicles.get(i);

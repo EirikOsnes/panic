@@ -27,7 +27,7 @@ final class MainTest {
         Vehicle myVehicle = mh.getVehicleByName("EDDISON").cloneVehicleWithId("V-001");
         Vehicle myInstigator = mh.getVehicleByName("EDDISON").cloneVehicleWithId("V-002");
         Map myMap = mh.getMaps().get(0);
-        Stack<Card> cardStack = parser.parseCardStack("android/assets/decks/deck_test.xml", "EDDISON");
+        Stack<Card> cardStack = parser.parseCardStack("EDDISON");
         //cardStack.addAll(mh.getAllCards());
         Player myPlayer = new Player(cardStack);
         myMap.addVehicle("RED", myVehicle);

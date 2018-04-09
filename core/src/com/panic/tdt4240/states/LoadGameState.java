@@ -43,7 +43,7 @@ public class LoadGameState extends State {
         }
         gi.setVehicles(vehicles);
         XMLParser parser = new XMLParser();
-        Stack<Card> myCards = parser.parseCardStack("android/assets/decks/deck_test", myVehicle.getVehicleType());
+        Stack<Card> myCards = parser.parseCardStack(myVehicle.getVehicleType());
         gi.setPlayer(new Player(myCards));
         gi.getPlayer().setVehicle(myVehicle);
         String mapID = connection.getMapID();

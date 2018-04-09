@@ -1,6 +1,5 @@
 package com.panic.tdt4240.states;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.panic.tdt4240.view.Renderer;
 
 import java.util.Stack;
@@ -14,7 +13,7 @@ public class GameStateManager {
     private Renderer renderer;
 
     public GameStateManager(){
-        states = new Stack<State>();
+        states = new Stack<>();
         renderer = Renderer.getInstance();
     }
 
@@ -38,6 +37,16 @@ public class GameStateManager {
 
     public void render(){
         states.peek().render();
+    }
+
+    public void clear(){
+        for (State s : states) s.dispose();
+        states = new Stack<>();
+    }
+
+    public void reset(){
+        clear();
+        states.push(new MenuState(this));
     }
 
 }

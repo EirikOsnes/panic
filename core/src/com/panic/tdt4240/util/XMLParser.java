@@ -4,22 +4,21 @@ import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Map;
+import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * A class containing methods to parse XML files into java Objects.
@@ -53,6 +52,7 @@ public class XMLParser {
                     Element element = (Element) node;
                     Card myCard = new Card(element.getAttribute("id"));
                     myCard.setName(element.getElementsByTagName("name").item(0).getTextContent());
+                    myCard.setPriority(Integer.parseInt(element.getElementsByTagName("priority").item(0).getTextContent()));
                     myCard.setCardType(Card.CardType.valueOf(element.getElementsByTagName("type_id").item(0).getTextContent()));
                     myCard.setTargetType(Card.TargetType.valueOf(element.getElementsByTagName("target_type").item(0).getTextContent()));
                     myCard.setAllowedTarget(Card.AllowedTarget.valueOf(element.getElementsByTagName("allowed_targets").item(0).getTextContent()));
@@ -72,8 +72,8 @@ public class XMLParser {
                                     Boolean.parseBoolean(effectElement.getElementsByTagName("friendly_fire").item(0).getTextContent()),
                                     (effectElement.getElementsByTagName("requirement_name").getLength()>0)
                                             ? effectElement.getElementsByTagName("requirement_name").item(0).getTextContent() : "none",
-                                    (effectElement.getElementsByTagName("requirement_name").getLength()>0)
-                                            ? Integer.parseInt(effectElement.getElementsByTagName("requirement_name").item(0).getTextContent()) : 0
+                                    (effectElement.getElementsByTagName("requirement_value").getLength()>0)
+                                            ? Integer.parseInt(effectElement.getElementsByTagName("requirement_value").item(0).getTextContent()) : 0
                             );
                         }
                     }
@@ -91,11 +91,13 @@ public class XMLParser {
     }
 
     /**
-     * Create a Map from an XML file, by passing in the path to this file. The Map will already be set up with neighbourhood matrix.
+     * Create an array of Maps from an XML file, by passing in the path to this file. The Maps will already be set up with neighbourhood matrix.
      * @param path The path to the XML file to use.
-     * @return Returns an instatiated Map, with neighbourhood matrix finalized.
+     * @return Returns an instantiated Map, with neighbourhood matrix finalized.
      */
-    public Map parseMap(String path){
+    public ArrayList<Map> parseMaps(String path){
+
+        ArrayList<Map> result = new ArrayList<>();
 
         try {
             File inputFile = new File(path);
@@ -103,47 +105,59 @@ public class XMLParser {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(inputFile);
             doc.getDocumentElement().normalize();
-            NodeList asteroidNodeList = doc.getElementsByTagName("asteroid");
-            HashMap<String,Asteroid> asteroidHashMap = new HashMap<>();
 
-            for (int i = 0; i < asteroidNodeList.getLength(); i++) {
-                Node node = asteroidNodeList.item(i);
+            NodeList mapList = doc.getElementsByTagName("map");
 
-                if (node.getNodeType() == Node.ELEMENT_NODE){
-                    Element element = (Element) node;
-                    Asteroid myAsteroid = new Asteroid(null);
-                    //TODO: Sprite should be separated
-                    String id = element.getAttribute("id");
-                    myAsteroid.setId(id);
-                    myAsteroid.setPosition(new Vector2(
-                            Float.parseFloat(element.getElementsByTagName("posX").item(0).getTextContent()),
-                            Float.parseFloat(element.getElementsByTagName("posY").item(0).getTextContent())
-                    ));
-                    asteroidHashMap.put(id, myAsteroid);
-                }
-            }
+            for (int j = 0; j < mapList.getLength(); j++) {
 
-            NodeList connectionNodeList = doc.getElementsByTagName("connection");
+                Node mapNode = mapList.item(j);
+                if(mapNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                    Element mapElement = (Element) mapNode;
+                    String id = mapElement.getAttribute("id");
+                    NodeList asteroidNodeList = mapElement.getElementsByTagName("asteroid");
+                    HashMap<String, Asteroid> asteroidHashMap = new HashMap<>();
+
+                    for (int i = 0; i < asteroidNodeList.getLength(); i++) {
+                        Node node = asteroidNodeList.item(i);
+
+                        if (node.getNodeType() == Node.ELEMENT_NODE) {
+                            Element element = (Element) node;
+                            Asteroid myAsteroid = new Asteroid(null);
+                            //TODO: Sprite should be separated
+                            String AsteroidId = element.getAttribute("id");
+                            myAsteroid.setId(AsteroidId);
+                            myAsteroid.setPosition(new Vector2(
+                                    Float.parseFloat(element.getElementsByTagName("posX").item(0).getTextContent()),
+                                    Float.parseFloat(element.getElementsByTagName("posY").item(0).getTextContent())
+                            ));
+                            asteroidHashMap.put(AsteroidId, myAsteroid);
+                        }
+                    }
+
+            NodeList connectionNodeList = mapElement.getElementsByTagName("connection");
             for (int i = 0; i < connectionNodeList.getLength(); i++) {
                 Node node = connectionNodeList.item(i);
 
-                if(node.getNodeType() == Node.ELEMENT_NODE){
-                    Element element = (Element) node;
-                    asteroidHashMap.get(element.getElementsByTagName("vertexID").item(0).getTextContent()).connect(
-                            asteroidHashMap.get(element.getElementsByTagName("vertexID").item(1).getTextContent())
-                    );
+                        if (node.getNodeType() == Node.ELEMENT_NODE) {
+                            Element element = (Element) node;
+                            asteroidHashMap.get(element.getElementsByTagName("vertexID").item(0).getTextContent()).connect(
+                                    asteroidHashMap.get(element.getElementsByTagName("vertexID").item(1).getTextContent())
+                            );
+                        }
+                    }
+
+                    Map resultMap = new Map(new ArrayList<>(asteroidHashMap.values()),id);
+                    resultMap.generateAdjacencyMatrix();
+                    result.add(resultMap);
                 }
             }
-
-            Map result = new Map(new ArrayList<>(asteroidHashMap.values()));
-            result.generateAdjacencyMatrix();
-            return result;
 
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        return null;
+        return result;
     }
 
 
@@ -178,6 +192,49 @@ public class XMLParser {
                         }
                     }
                     result.add(myVehicle);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return result;
+    }
+
+    /**
+     * parse the Stack of cards related to the given vehicle type. The stack will be empty if no such deck is defined.
+     * @param path The path to the decks
+     * @param vehicleType The vehicle type
+     * @return Returns a Stack<Card> that is related to the given vehicle (will add all cards from all decks at this point)
+     */
+    public Stack<Card> parseCardStack(String path, String vehicleType){
+        Stack<Card> result = new Stack<>();
+
+        try {
+            File inputFile = new File(path);
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            NodeList nodeList = doc.getElementsByTagName("deck");
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+
+                if (node.getNodeType() == Node.ELEMENT_NODE){
+                    Element element = (Element) node;
+                    if(element.getAttribute("vehicle_type").equalsIgnoreCase(vehicleType)) {
+                        NodeList cardsNodeList = element.getElementsByTagName("card");
+                        for (int j = 0; j < cardsNodeList.getLength(); j++) {
+                            Node cardNode = cardsNodeList.item(j);
+                            if(cardNode.getNodeType() == Node.ELEMENT_NODE){
+                                Element cardElement = (Element) cardNode;
+                                result.push(ModelHolder.getInstance().getCardById(cardElement.getTextContent()));
+                            }
+                        }
+                    }
                 }
             }
 

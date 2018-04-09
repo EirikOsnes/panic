@@ -48,17 +48,16 @@ public class MenuView extends AbstractView {
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
 
         createButtonStyle = new TextButton.TextButtonStyle();
-        joinButtonStyle = new TextButton.TextButtonStyle();
-
-        settingsButtonStyle = new TextButton.TextButtonStyle();
         createButtonStyle.font = font;
         createButtonStyle.up = skin.getDrawable("button-up");
         createButtonStyle.down = skin.getDrawable("button-down");
 
+        joinButtonStyle = new TextButton.TextButtonStyle();
         joinButtonStyle.font = font;
         joinButtonStyle.up = skin.getDrawable("button-up");
         joinButtonStyle.down = skin.getDrawable("button-down");
 
+        settingsButtonStyle = new TextButton.TextButtonStyle();
         settingsButtonStyle.font = font;
         settingsButtonStyle.up = skin.getDrawable("button-up");
         settingsButtonStyle.down = skin.getDrawable("button-down");
@@ -67,10 +66,12 @@ public class MenuView extends AbstractView {
         joinGameBtn = new TextButton("Join Game", joinButtonStyle);
         settingsBtn = new TextButton("Settings", settingsButtonStyle);
 
-        Label label = new Label(PanicGame.TITLE,skin);
+        Label title = new Label(PanicGame.TITLE,skin);
+        Label fullTitle = new Label(PanicGame.FULL_TITLE,skin);
 
         table.setFillParent(true);
-        table.add(label).top().padBottom(60);
+        table.add(title).top().padBottom(10);
+        table.row().center(); table.add(fullTitle);
         table.center();
         table.row();
         table.add(createGameBtn).width(200).height(50).pad(20);
@@ -101,8 +102,6 @@ public class MenuView extends AbstractView {
                 state.handleInput(3);
             }
         });
-
-
         stage.addActor(table);
 
         renderer = Renderer.getInstance();

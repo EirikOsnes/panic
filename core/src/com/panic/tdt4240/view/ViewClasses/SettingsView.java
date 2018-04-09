@@ -5,7 +5,9 @@ import com.panic.tdt4240.states.State;
 
 /**
  * Created by victor on 12.03.2018.
+ *
  */
+
 
 public class SettingsView extends AbstractView {
 
@@ -17,7 +19,9 @@ public class SettingsView extends AbstractView {
     }
 
     public void render(){
+    }
 
+    public void dispose(){
     }
 
 

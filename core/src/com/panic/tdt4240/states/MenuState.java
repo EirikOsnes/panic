@@ -74,7 +74,7 @@ public class MenuState extends State {
         }
         Player player = new Player(cards);
         XMLParser parser = new XMLParser();
-        Map map = parser.parseMaps("maps/maps.xml").get(0);
+        Map map = parser.parseMaps().get(0);
         gsm.set(new PlayCardState(gsm, player, map)); 
     }
 

@@ -137,4 +137,22 @@
         </card_effect>
     </card>
 
+    <card id = "GLUE">
+        <name>Glue shot</name>
+        <priority>4</priority>
+        <type_id>STATUS</type_id>
+        <target_type>ASTEROID</target_type>
+        <allowed_targets>ALL</allowed_targets>
+        <min_range>0</min_range>
+        <max_range>1</max_range>
+        <tooltip>Fire a tube of glue on an asteroid, making all vehicles currently on it unable to move for the rest of the turn.</tooltip>
+        <card_effect>
+            <target_status>glue</target_status>
+            <value>1</value>
+            <status_duration>1</status_duration>
+            <splash_range>0</splash_range>
+            <friendly_fire>true</friendly_fire>
+        </card_effect>
+    </card>
+
 </cards>

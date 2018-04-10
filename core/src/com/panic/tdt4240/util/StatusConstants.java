@@ -23,7 +23,8 @@ public class StatusConstants {
         /* Effect statuses */
         poison(0, new String[]{"health","ADD","RESULTANT","0", "-1"}, "TURN_END"),
         invulnerable(0,new String[]{"max_damage", "SET", "0", "1", "1"}, "INSTANT"),
-        antidote(0, new String[]{"poison", "CLEAR", "0", "0", "0"}, "INSTANT");
+        antidote(0, new String[]{"poison", "CLEAR", "0", "0", "0"}, "INSTANT"),
+        glue(0, new String[]{"movement_modifier", "SET", "0", "1", "0"}, "INSTANT");
 
         private float baseValue;
         private String[] effect;

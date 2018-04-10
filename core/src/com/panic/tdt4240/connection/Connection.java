@@ -1,5 +1,7 @@
 package com.panic.tdt4240.connection;
 
+import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
 
 import java.util.ArrayList;
@@ -20,9 +22,10 @@ public class Connection {
 
     /**
      * A method call to get all the Vehicles for this game. Should be instatiated copies, with ID.
+     *
      * @return Returns all the Vehicles for this game.
      */
-    public ArrayList<Vehicle> getAllVehicles(){
+    public ArrayList<Vehicle> getAllVehicles() {
         ArrayList<Vehicle> result = null;
 
         return result;
@@ -30,6 +33,7 @@ public class Connection {
 
     /**
      * Get the ID of the current players vehicle.
+     *
      * @return returns the ID.
      */
     public String getMyVehicle() {
@@ -39,9 +43,64 @@ public class Connection {
 
     /**
      * Get the map ID for this game
+     *
      * @return Returns the map ID.
      */
     public String getMapID() {
         return null;
     }
+
+    /**
+     * reads the history of the game. If the game has no history, the method returns null. The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
+     * with "ENDTURN//".
+     *
+     * @param turns The turns String
+     * @return An arrayList containing ArrayLists of CardIDs, SenderIDs, TargetIDs and Seeds
+     */
+    public ArrayList<ArrayList<String[]>> readTurns(String turns){
+        if (turns.equals("")) {
+            return null;
+        }
+
+        String[] data = turns.split("//");
+        ArrayList<ArrayList<String[]>> result = new ArrayList<>();
+        ArrayList<String[]> currentTurn = new ArrayList<>();
+        for (String string : data){
+            if(string.equals("ENDTURN")){
+                result.add(currentTurn);
+                currentTurn = new ArrayList<>();
+            } else {
+                String[] elements = string.split("&");
+                if (elements.length != 4) {
+                    throw new IllegalArgumentException("String is not formatted correctly");
+                }
+                currentTurn.add(new String[]{elements[0],elements[2],elements[1],elements[3]});
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
+     * Generates a String to be sent to server containing cardID, senderID, targetID and priority. The String will be formatted such that the Server can process it.
+     * @param moves An arrayList of the moves to be executed
+     * @return The formatted string
+     */
+    public String createCardString(ArrayList<String[]> moves) {
+        String returnString = "";
+        ModelHolder mh = ModelHolder.getInstance();
+        for (String[] move : moves) {
+            Card card = mh.getCardById(move[0]);
+            String priority = Integer.toString(card.getPriority());
+            returnString = returnString + move[0] + "&" + move[2] + "&" + move[1] + "&" + priority + "//";
+        }
+        return returnString;
+    }
+
+    //TODO
+    public ArrayList<ArrayList<String[]>> getTurns() {
+        return null;
+    }
 }
+

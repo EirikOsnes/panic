@@ -11,23 +11,23 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * A class containing methods to parse XML files into java Objects.
  */
 
 public class XMLParser {
+
+
+    String base = "android/assets/";
 
     /**
      * Create ALL cards in an XML file, and return these in an ArrayList.
@@ -75,8 +75,8 @@ public class XMLParser {
                                     Boolean.parseBoolean(effectElement.getElementsByTagName("friendly_fire").item(0).getTextContent()),
                                     (effectElement.getElementsByTagName("requirement_name").getLength()>0)
                                             ? effectElement.getElementsByTagName("requirement_name").item(0).getTextContent() : "none",
-                                    (effectElement.getElementsByTagName("requirement_name").getLength()>0)
-                                            ? Integer.parseInt(effectElement.getElementsByTagName("requirement_name").item(0).getTextContent()) : 0
+                                    (effectElement.getElementsByTagName("requirement_value").getLength()>0)
+                                            ? Integer.parseInt(effectElement.getElementsByTagName("requirement_value").item(0).getTextContent()) : 0
                             );
                         }
                     }
@@ -94,9 +94,17 @@ public class XMLParser {
     }
 
     /**
+     * Create ALL cards in an XML file, and return these in an ArrayList.
+     * @return Returns an ArrayList of Cards.
+     */
+    public ArrayList<Card> parseCards(){
+        return parseCards(base+"cards/card_test.xml");
+    }
+
+    /**
      * Create an array of Maps from an XML file, by passing in the path to this file. The Maps will already be set up with neighbourhood matrix.
      * @param path The path to the XML file to use.
-     * @return Returns an instantiated Map, with neighbourhood matrix finalized.
+     * @return Returns an ArrayList of instantiated Maps, with neighbourhood matrix finalized.
      */
     public ArrayList<Map> parseMaps(String path){
 
@@ -138,9 +146,9 @@ public class XMLParser {
                         }
                     }
 
-                    NodeList connectionNodeList = mapElement.getElementsByTagName("connection");
-                    for (int i = 0; i < connectionNodeList.getLength(); i++) {
-                        Node node = connectionNodeList.item(i);
+            NodeList connectionNodeList = mapElement.getElementsByTagName("connection");
+            for (int i = 0; i < connectionNodeList.getLength(); i++) {
+                Node node = connectionNodeList.item(i);
 
                         if (node.getNodeType() == Node.ELEMENT_NODE) {
                             Element element = (Element) node;
@@ -161,6 +169,14 @@ public class XMLParser {
         }
 
         return result;
+    }
+
+    /**
+     * Create an array of Maps from an XML file, by passing in the path to this file. The Maps will already be set up with neighbourhood matrix.
+     * @return Returns an ArrayList of instantiated Maps, with neighbourhood matrix finalized.
+     */
+    public ArrayList<Map> parseMaps() {
+        return parseMaps(base+"maps/maps.xml");
     }
 
 
@@ -207,6 +223,14 @@ public class XMLParser {
     }
 
     /**
+     * A method to create Vehicle objects from an xml.
+     * @return Returns an ArrayList of possible vehicles.
+     */
+    public ArrayList<Vehicle> parseVehicles(){
+        return parseVehicles(base+"vehicles/vehicle_test.xml");
+    }
+
+    /**
      * parse the Stack of cards related to the given vehicle type. The stack will be empty if no such deck is defined.
      * @param path The path to the decks
      * @param vehicleType The vehicle type
@@ -247,6 +271,15 @@ public class XMLParser {
 
 
         return result;
+    }
+
+    /**
+     * parse the Stack of cards related to the given vehicle type. The stack will be empty if no such deck is defined.
+     * @param vehicleType The vehicle type
+     * @return Returns a Stack<Card> that is related to the given vehicle (will add all cards from all decks at this point)
+     */
+    public Stack<Card> parseCardStack(String vehicleType){
+        return parseCardStack(base+"decks/deck_test.xml",vehicleType);
     }
 
 }

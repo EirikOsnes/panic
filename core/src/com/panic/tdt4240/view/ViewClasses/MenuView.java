@@ -33,13 +33,11 @@ public class MenuView extends AbstractView {
     private TextButton.TextButtonStyle ButtonStyle;
     private Table table;
     private Texture background;
-    private TextureAtlas carAtlas;
 
     public MenuView(MenuState menuState) {
         super(menuState);
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,PanicGame.WIDTH,PanicGame.HEIGHT);
-        carAtlas = new TextureAtlas("cars/cars.atlas");
         stage = new Stage();
         table = new Table();
         Gdx.input.setInputProcessor(stage);

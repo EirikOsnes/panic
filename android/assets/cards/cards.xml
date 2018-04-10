@@ -8,7 +8,7 @@
         <allowed_targets>ALL</allowed_targets>
         <min_range>0</min_range>
         <max_range>1</max_range>
-        <tooltip>Fire a missile dealing 20 damage to all vehicles on the target asteroid. Max range id 1.</tooltip>
+        <tooltip>Fire a missile dealing 20 damage to all vehicles on the target asteroid. Max range is 1.</tooltip>
         <card_effect>
             <target_status>health</target_status>
             <value>-15</value>
@@ -34,7 +34,43 @@
             <value>1</value>
             <status_duration>-1</status_duration>
             <splash_range>0</splash_range>
-            <friendly_fire>false</friendly_fire>
+            <friendly_fire>true</friendly_fire>
+        </card_effect>
+    </card>
+
+    <card id = "SHIELD">
+        <name>Shields up!</name>
+        <priority>8</priority>
+        <type_id>DEFENSE</type_id>
+        <target_type>VEHICLE</target_type>
+        <allowed_targets>PLAYER</allowed_targets>
+        <min_range>0</min_range>
+        <max_range>0</max_range>
+        <tooltip>Increase your defence by 50% for the rest of the turn</tooltip>
+        <card_effect>
+            <target_status>defence_modifier</target_status>
+            <value>0.5</value>
+            <status_duration>1</status_duration>
+            <splash_range>0</splash_range>
+            <friendly_fire>true</friendly_fire>
+        </card_effect>
+    </card>
+
+    <card id = "HYPER">
+        <name>Engage Hyperdrive</name>
+        <priority>8</priority>
+        <type_id>STATUS</type_id>
+        <target_type>VEHICLE</target_type>
+        <allowed_targets>PLAYER</allowed_targets>
+        <min_range>0</min_range>
+        <max_range>0</max_range>
+        <tooltip>Increase movement_modifier by 1 for the rest of the turn</tooltip>
+        <card_effect>
+            <target_status>movement_modifier</target_status>
+            <value>1</value>
+            <status_duration>1</status_duration>
+            <splash_range>0</splash_range>
+            <friendly_fire>true</friendly_fire>
         </card_effect>
     </card>
 

@@ -32,6 +32,16 @@ public class ModelHolder {
         return maps;
     }
 
+    public Map getMapById(String id){
+        for (Map m : maps) {
+            if(m.getId().equalsIgnoreCase(id)){
+                return m;
+            }
+        }
+
+        return null;
+    }
+
     public Vehicle getVehicleByName(String name) {
         for (int i = 0; i < vehicles.size(); i++) {
             Vehicle v = vehicles.get(i);
@@ -54,12 +64,12 @@ public class ModelHolder {
 
             // TODO: Change to actual path
             String base = "android/assets/";
-            cards = parser.parseCards(base + "cards/card_test.xml");
+            cards = parser.parseCards();
             for (Card card : cards) {
                 cardMap.put(card.getId(),card);
             }
-            maps = parser.parseMaps(base + "maps/map_test.xml");
-            vehicles = parser.parseVehicles(base + "vehicles/vehicle_test.xml");
+            maps = parser.parseMaps();
+            vehicles = parser.parseVehicles();
         }
         return mh;
     }

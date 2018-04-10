@@ -9,14 +9,18 @@ public class StatusConstants {
     //TODO: Add a CHECK status type? As is check if a status exists>0?
 
     public enum StatusValues {
-
+        /* Base values*/
         health(100),
         damage_modifier(1),
         defence_modifier(1),
         movement_modifier(1),
         max_damage(1000),
 
+        /* Flag values */
 
+        laser_pointer(0),
+
+        /* Effect statuses */
         poison(0, new String[]{"health","ADD","RESULTANT","0", "-1"}, "TURN_END"),
         invulnerable(0,new String[]{"max_damage", "SET", "0", "1", "1"}, "INSTANT"),
         antidote(0, new String[]{"poison", "CLEAR", "0", "0", "0"}, "INSTANT");

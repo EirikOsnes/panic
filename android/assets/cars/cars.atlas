@@ -1,0 +1,33 @@
+
+cars.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+red_car
+    rotate: false
+    xy: 1,1
+    size: 220, 442
+    orig: 220, 442
+    offset: 0,0
+    index: -1
+green_car
+    rotate: false
+    xy: 390, 1
+    size: 220, 442
+    orig: 220, 442
+    offset: 0,0
+    index: -1
+yellow_car
+    rotate: false
+    xy: 780, 1
+    size: 220, 442
+    orig: 220, 442
+    offset: 0,0
+    index: -1
+blue_car
+    rotate: false
+    xy: 1170, 1
+    size: 220, 442
+    orig: 220, 442
+    offset: 0,0
+    index: -1

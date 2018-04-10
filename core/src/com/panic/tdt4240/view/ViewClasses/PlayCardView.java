@@ -34,7 +34,6 @@ import java.util.ArrayList;
 public class PlayCardView extends AbstractView{
 
     Renderer renderer;
-    private HandTexture hv;
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Stage stage;
@@ -77,8 +76,8 @@ public class PlayCardView extends AbstractView{
             TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
             buttonStyle.font = font;
             //Images the button has in the normal up-position, and when it is pressed down
-            buttonStyle.up = skin.getDrawable("movement");
-            buttonStyle.down = skin.getDrawable("movement");
+            buttonStyle.up = skin.getDrawable("attack_icon");
+            buttonStyle.down = skin.getDrawable("attack_selected");
 
             buttonStyles.add(buttonStyle);
 
@@ -92,7 +91,7 @@ public class PlayCardView extends AbstractView{
                     state.handleInput(index);
                 }
             });
-            table.add(cardButtons.get(index)).width(SCREEN_WIDTH/amountCards).height(Gdx.graphics.getHeight()/10);
+            table.add(cardButtons.get(index)).width(SCREEN_WIDTH/amountCards).height(Gdx.graphics.getHeight()/5);
         }
 
         //table.background(new TextureRegionDrawable(new TextureRegion(background)));
@@ -105,7 +104,7 @@ public class PlayCardView extends AbstractView{
         style.font = new BitmapFont();
         cardInfo = new TextArea("",style);
 
-        cardInfo.setPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/10);
+        cardInfo.setPosition(3*SCREEN_WIDTH/4, table.getHeight());
         cardInfo.setWidth(SCREEN_WIDTH/4);
         cardInfo.setHeight(SCREEN_HEIGHT/8);
         stage.addActor(cardInfo);
@@ -143,16 +142,15 @@ public class PlayCardView extends AbstractView{
                     }
                 };
             });
-            //FIXME Få linjene mellom asteroidene til å gå korrekt mellom sentrumene
             for(Asteroid neighbour: asteroids.get(i).getNeighbours()){
                 if(notConnected(asteroids.get(i).getId(), neighbour.getId())){
                     AsteroidConnection connection = new AsteroidConnection(
-                            new Vector2(asteroids.get(i).getPosition().x *Gdx.graphics.getWidth() - asteroid.getWidth() + texture.getWidth()/2,
+                            new Vector2(asteroids.get(i).getPosition().x *(Gdx.graphics.getWidth() - asteroid.getWidth()) + asteroid.getWidth()/2,
                                     asteroids.get(i).getPosition().y *(Gdx.graphics.getHeight() - table.getHeight() - asteroid.getHeight()) + table.getHeight()
-                                            + texture.getHeight()/2),
-                            new Vector2(neighbour.getPosition().x *(Gdx.graphics.getWidth() - asteroid.getWidth()) + texture.getWidth()/2,
+                                            + asteroid.getHeight()/2),
+                            new Vector2(neighbour.getPosition().x *(Gdx.graphics.getWidth() - asteroid.getWidth()) + asteroid.getWidth()/2,
                                     neighbour.getPosition().y *(Gdx.graphics.getHeight() - table.getHeight() - asteroid.getHeight()) + table.getHeight()
-                                            + texture.getHeight()/2),
+                                            + asteroid.getHeight()/2),
                             asteroids.get(i).getId(), neighbour.getId());
                     connections.add(connection);
                 }
@@ -174,18 +172,21 @@ public class PlayCardView extends AbstractView{
     /**
      * Method to change visuals of the buttons depending on if they're pressed down or not
      * @param button ID of the button/card that has been pressed
-     * @param checked Whether the button is pressed down or unpressed
+     * @param checked New position for the card: 0: unchecked, 1: checked, -1: finished
      *      if it is pressed down:
      *                set the up-image to the card-pressed image
      *      else:
      *                set the up-image to the normal card-up image
      */
-    public void clickedButton(Integer button, boolean checked){
-        if(checked){
-            buttonStyles.get(button).up = skin.getDrawable("attack");
+    public void clickedButton(Integer button, int checked){
+        if(checked == -1){
+            buttonStyles.get(button).up = skin.getDrawable("attack_trans");
         }
-        else{
-            buttonStyles.get(button).up = skin.getDrawable("movement");
+        else if(checked == 0){
+            buttonStyles.get(button).up = skin.getDrawable("attack_icon");
+        }
+        else if(checked == 1){
+            buttonStyles.get(button).up = skin.getDrawable("attack_selected");
         }
         cardButtons.get(button).setStyle(buttonStyles.get(button));
     }

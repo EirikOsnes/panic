@@ -16,7 +16,7 @@ import static com.panic.tdt4240.models.Card.TargetType.VEHICLE;
  */
 
 public class PlayCardState extends State {
-
+    //H: 1794, W 1080
     private PlayCardView playView;
     public Player player;
     public Map map;
@@ -85,7 +85,7 @@ public class PlayCardState extends State {
                 } else {
                     playView.cardInfo.setText("");
                 }
-                playView.clickedButton(cardIndex, false);
+                playView.clickedButton(cardIndex, 0);
                 numPlayedCards--;
             }
             //Checks if the max amount of cards already have been played
@@ -95,7 +95,7 @@ public class PlayCardState extends State {
                     playedCardsList.add(hand.get(cardIndex));
                     selectedCard.set(cardIndex, true);
                     playView.cardInfo.setText(hand.get(cardIndex).getTooltip());
-                    playView.clickedButton(cardIndex, true);
+                    playView.clickedButton(cardIndex, 1);
                     numPlayedCards++;
                     playView.selectTarget = true;
                 }
@@ -116,7 +116,7 @@ public class PlayCardState extends State {
     private void selectTarget(String s){
         if(justClicked > -1 && validTarget(s)){
             targets.add(s);
-            playView.clickedButton(justClicked, true);
+            playView.clickedButton(justClicked, -1);
             justClicked = -1;
             playView.selectTarget = false;
         }

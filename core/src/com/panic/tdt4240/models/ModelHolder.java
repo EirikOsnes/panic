@@ -22,10 +22,7 @@ public class ModelHolder {
 
     private ModelHolder() {
         XMLParser parser = new XMLParser();
-
-        XMLParser parser = new XMLParser();
         cardMap = new HashMap<>();
-
         cards = parser.parseCards();
         for (Card card : cards) {
             cardMap.put(card.getId(),card);

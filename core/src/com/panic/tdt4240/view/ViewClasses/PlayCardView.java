@@ -3,10 +3,13 @@ package com.panic.tdt4240.view.ViewClasses;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -15,9 +18,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
+import com.panic.tdt4240.models.Asteroid;
+import com.panic.tdt4240.models.Map;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.PlayCardState;
 import com.panic.tdt4240.view.TextureClasses.HandTexture;
 import com.panic.tdt4240.view.Renderer;
@@ -33,27 +40,32 @@ public class PlayCardView extends AbstractView{
 
     Renderer renderer;
     private HandTexture hv;
-    public ArrayList<TextButton> cardButtons;
+    private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Stage stage;
     private Table table;
-    private Texture background;
+    //private Texture background;
     public TextArea cardInfo;
     private int amountCards;
     private Skin skin;
     public boolean selectTarget = false;
+    private Map map;
 
+    //TODO Render the map, add clicklisteners on each asteroid and vehicle
     public PlayCardView(final PlayCardState state){
         super(state);
+        map = state.map;
         renderer = Renderer.getInstance();
-        background = new Texture("misc/background.png");
+        //background = new Texture("misc/background.png");
         //cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         amountCards = state.player.getHand().size();
         cardButtons = new ArrayList<>(amountCards);
         stage = new Stage();
+        stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.input.setInputProcessor(stage);
+        setUpMap();
         table = new Table();
-        table.setWidth(SCREEN_WIDTH);
+        table.setWidth(Gdx.graphics.getWidth());
         table.left().bottom();
         BitmapFont font = new BitmapFont();
         skin = new Skin();
@@ -83,8 +95,10 @@ public class PlayCardView extends AbstractView{
             });
             table.add(cardButtons.get(index)).width(SCREEN_WIDTH/amountCards);
         }
-        table.background(new TextureRegionDrawable(new TextureRegion(background)));
-        table.pack();
+        //table.background(new TextureRegionDrawable(new TextureRegion(background)));
+        //table.pack();
+
+
         stage.addActor(table);
 
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
@@ -96,7 +110,39 @@ public class PlayCardView extends AbstractView{
         cardInfo.setWidth(SCREEN_WIDTH/4);
         cardInfo.setHeight(SCREEN_HEIGHT/8);
         stage.addActor(cardInfo);
+    }
 
+    /**
+     * Method for setting up the map with listeners on each asteroid and vehicle
+     */
+    //TODO Lagre alle asteroider og vehicles i stage, legge til listeners ol, linjer mellom tilknyttede asteroider
+    private void setUpMap(){
+        final ArrayList<Asteroid> asteroids = map.getAsteroids();
+        ArrayList<String> vehicles = new ArrayList<>();
+
+        for (int i = 0; i < asteroids.size(); i++) {
+            vehicles.addAll(asteroids.get(i).getVehicles());
+            Sprite sprite = new Sprite(new Texture("asteroids/meteorBrown_big1.png"));
+            AsteroidActor asteroid = new AsteroidActor(sprite);
+            asteroid.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
+            asteroid.setPosition(
+                    asteroids.get(i).getPosition().x * Gdx.graphics.getWidth() - asteroid.getOriginX(),
+                    asteroids.get(i).getPosition().y * Gdx.graphics.getHeight() - asteroid.getOriginY());
+
+            System.out.println("X: " + asteroids.get(i).getPosition().x + " Y: " + asteroids.get(i).getPosition().y);
+
+            //System.out.println("X: " + asteroid.getX() + " Y:" + asteroid.getY());
+
+            final int index = i;
+            asteroid.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    state.handleInput(asteroids.get(index).getId());
+                }
+            });
+
+            stage.addActor(asteroid);
+        }
     }
 
     /**
@@ -128,78 +174,22 @@ public class PlayCardView extends AbstractView{
         */
     }
 
-    // TODO:
-    public boolean loadResources(ArrayList<String> cardNames) {
-        loadBackground();
-        loadMap();
-        loadVehicles();
-        loadHand(cardNames);
-
-        return (hv.getCardImgs().size() < ((PlayCardState) state).player.getAmountDrawnCards() ); // simple sanity check
-    }
-/*
-    private void renderHand(SpriteBatch sb){
-        int numCards = cardButtons.size();
-        for (int i = 0; i < numCards; i++) {
-            renderer.render(new CardDrawable(hand.get(i)).getDrawable(),SCREEN_WIDTH/numCards - cardButtons.get(i).getWidth(),
-                    20.0f, getCardWidth(i), getCardHeight(i));
-        }
-
-    }
-*/
-
-    private void renderBackground(){
-
-    }
-
-    private void renderMap(){
-
-    }
-
-    private void renderVehicles(){
-
-    }
-
-    private void loadBackground(){
-
-    }
-
-    private void loadMap(){
-
-    }
-
-    private void loadVehicles(){
-
-    }
-
-    private void loadHand(ArrayList<String> cardNames){
-        this.hv = new HandTexture();
-        for (int i = 0; i < cardNames.size(); i++) {
-            hv.addCard(cardNames.get(i));
-        }
-    }
-    // Make card more visible... maybe by bringing it further up on the screen?
-    private void zoomCard(int i){
-
-    }
-
-    // FOR ITERATION
-    private Drawable getCard(int i){
-        return hv.getCardImgs().get(i).getDrawable();
-    }
-
-    private float getCardHeight(int i){
-        return hv.getCardImgs().get(i).getHeight();
-    }
-
-    private float getCardWidth(int i){
-        return hv.getCardImgs().get(i).getWidth();
-    }
-
     public void dispose(){
         stage.dispose();
-        background.dispose();
+        //background.dispose();
         renderer.dispose();
+    }
+
+    private class AsteroidActor extends Actor{
+        private Sprite asteroid;
+        private AsteroidActor(Sprite asteroid){
+            this.asteroid = asteroid;
+        }
+
+        @Override
+        public void draw(Batch batch, float parentAlpha) {
+            asteroid.draw(batch);
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.State;
 
 /**
@@ -20,7 +21,8 @@ public abstract class AbstractView {
     public AbstractView(State state){
         cam = new OrthographicCamera();
         this.state = state;
-        //Insert whatever should be used by multiple subclasses
+        cam.setToOrtho(false, PanicGame.WIDTH, PanicGame.HEIGHT);
+        // Insert whatever should be used by all the subclasses
     }
 
     public abstract void render();

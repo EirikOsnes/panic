@@ -16,7 +16,7 @@ public class Map {
     private ArrayList<Asteroid> asteroids;
     private int[][] adjacency;
     HashMap<String, Vehicle> vehicles;
-    String Id;
+    private String id;
 
     /**
      * creates a Map object containing a set of asteroids
@@ -25,7 +25,7 @@ public class Map {
     public Map(ArrayList<Asteroid> asteroids, String Id){
         vehicles = new HashMap<>();
         this.asteroids = asteroids;
-        this.Id = Id;
+        this.id = Id;
     }
 
     /**
@@ -163,5 +163,9 @@ public class Map {
 
     public ArrayList<Asteroid> getAsteroids() {
         return asteroids;
+    }
+
+    public String getId() {
+        return id;
     }
 }

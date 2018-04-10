@@ -24,18 +24,18 @@ public class testConnection {
 
     @Test
     public void shouldReturnNullArray(){
-        ArrayList<ArrayList<String>> testArray = connection.readHistory("");
+        ArrayList<ArrayList<String[]>> testArray = connection.readTurns("");
         assertNull(testArray);
     }
 
     @Test
     public void shouldReturnHistoryArray(){
         String testString = "c1&s1&t1&11111//c2&s2&t2&22222//ENDTURN//c3&s3&t3&33333//c4&s4&t4&44444//ENDTURN";
-        ArrayList<ArrayList<String>> testArray = connection.readHistory(testString);
-        assertEquals(6,testArray.get(0).size());
-        assertEquals("c1",testArray.get(0).get(0));
-        assertEquals("ENDTURN",testArray.get(2).get(2));
-        assertEquals("44444",testArray.get(3).get(4));
+        ArrayList<ArrayList<String[]>> testArray = connection.readTurns(testString);
+        assertEquals("c1", testArray.get(0).get(0)[0]);
+        assertEquals("s2", testArray.get(0).get(1)[2]);
+        assertEquals("t3", testArray.get(1).get(0)[1]);
+        assertEquals("44444", testArray.get(1).get(1)[3]);
     }
 /*
     @Test

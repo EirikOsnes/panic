@@ -55,10 +55,12 @@ public class MenuView extends AbstractView {
         joinGameBtn = new TextButton("Join Game", ButtonStyle);
         settingsBtn = new TextButton("Settings", ButtonStyle);
 
-        Label label = new Label(PanicGame.TITLE,skin);
+        Label title = new Label(PanicGame.TITLE,skin);
+        Label fullTitle = new Label(PanicGame.FULL_TITLE,skin);
 
         table.setFillParent(true);
-        table.add(label).top().padBottom(60);
+        table.add(title).top().padBottom(10);
+        table.row().center(); table.add(fullTitle);
         table.center();
         table.row();
         table.add(createGameBtn).width(200).height(50).pad(20);
@@ -89,8 +91,6 @@ public class MenuView extends AbstractView {
                 state.handleInput(3);
             }
         });
-
-
         stage.addActor(table);
 
         renderer = Renderer.getInstance();

@@ -3,20 +3,21 @@ package com.panic.tdt4240.view.ViewClasses;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.states.PlayCardState;
@@ -63,21 +64,21 @@ public class PlayCardView extends AbstractView{
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.input.setInputProcessor(stage);
         table = new Table();
+
         table.setWidth(Gdx.graphics.getWidth());
         table.left().bottom();
         BitmapFont font = new BitmapFont();
         skin = new Skin();
-        TextureAtlas buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
+        TextureAtlas buttonAtlas = new TextureAtlas("cards/card_textures.atlas");
         skin.addRegions(buttonAtlas);
         buttonStyles = new ArrayList<>();
-
         //Create a button for each card
         for (int i = 0; i < amountCards; i++) {
             TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
             buttonStyle.font = font;
             //Images the button has in the normal up-position, and when it is pressed down
-            buttonStyle.up = skin.getDrawable("button-up");
-            buttonStyle.down = skin.getDrawable("button-down");
+            buttonStyle.up = skin.getDrawable("movement");
+            buttonStyle.down = skin.getDrawable("movement");
 
             buttonStyles.add(buttonStyle);
 
@@ -88,15 +89,14 @@ public class PlayCardView extends AbstractView{
             cardButtons.get(index).addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    if(!selectTarget){
-                        state.handleInput(index);
-                    }
+                    state.handleInput(index);
                 }
             });
-            table.add(cardButtons.get(index)).width(SCREEN_WIDTH/amountCards);
+            table.add(cardButtons.get(index)).width(SCREEN_WIDTH/amountCards).height(Gdx.graphics.getHeight()/10);
         }
+
         //table.background(new TextureRegionDrawable(new TextureRegion(background)));
-        //table.pack();
+        table.pack();
 
         stage.addActor(table);
 
@@ -116,7 +116,7 @@ public class PlayCardView extends AbstractView{
     /**
      * Method for setting up the map with listeners on each asteroid and vehicle
      */
-    //TODO Lagre alle asteroider og vehicles i stage, legge til listeners ol,
+    //TODO Lagre alle vehicles i stage, legge til listeners ol,
     private void setUpMap(){
         final ArrayList<Asteroid> asteroids = map.getAsteroids();
         ArrayList<String> vehicles = new ArrayList<>();
@@ -124,38 +124,47 @@ public class PlayCardView extends AbstractView{
 
         for (int i = 0; i < asteroids.size(); i++) {
             vehicles.addAll(asteroids.get(i).getVehicles());
-            Sprite sprite = new Sprite(new Texture("asteroids/meteorBrown_big1.png"));
-            AsteroidActor asteroid = new AsteroidActor(sprite);
+            Texture texture = new Texture("asteroids/meteorBrown_big1.png");
+            Image asteroid = new Image(texture);
 
-            asteroid.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
+            asteroid.setOrigin(texture.getWidth()/2, texture.getHeight()/2);
             asteroid.setPosition(
-                    asteroids.get(i).getPosition().x * Gdx.graphics.getWidth() - asteroid.getOriginX(),
-                    asteroids.get(i).getPosition().y * Gdx.graphics.getHeight() - asteroid.getOriginY());
+                    asteroids.get(i).getPosition().x *(Gdx.graphics.getWidth() - asteroid.getWidth()),
+                    asteroids.get(i).getPosition().y *(Gdx.graphics.getHeight() - table.getHeight() - asteroid.getHeight()) + table.getHeight());
+
+            stage.addActor(asteroid);
+
             final int index = i;
-            asteroid.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
+            asteroid.addListener(new ClickListener(){
+                public void clicked(InputEvent event, float x, float y){
                     if(selectTarget){
+                        System.out.println("Clicked asteroid:" + asteroids.get(index).getId());
                         state.handleInput(asteroids.get(index).getId());
                     }
-                }
+                };
             });
-            stage.addActor(asteroid);
+            //FIXME Få linjene mellom asteroidene til å gå korrekt mellom sentrumene
             for(Asteroid neighbour: asteroids.get(i).getNeighbours()){
-                if(notConnected(asteroids.get(i).getPosition(), neighbour.getPosition())){
-                    AsteroidConnection connection = new AsteroidConnection(asteroids.get(i).getPosition(),
-                                    neighbour.getPosition());
+                if(notConnected(asteroids.get(i).getId(), neighbour.getId())){
+                    AsteroidConnection connection = new AsteroidConnection(
+                            new Vector2(asteroids.get(i).getPosition().x *Gdx.graphics.getWidth() - asteroid.getWidth() + texture.getWidth()/2,
+                                    asteroids.get(i).getPosition().y *(Gdx.graphics.getHeight() - table.getHeight() - asteroid.getHeight()) + table.getHeight()
+                                            + texture.getHeight()/2),
+                            new Vector2(neighbour.getPosition().x *(Gdx.graphics.getWidth() - asteroid.getWidth()) + texture.getWidth()/2,
+                                    neighbour.getPosition().y *(Gdx.graphics.getHeight() - table.getHeight() - asteroid.getHeight()) + table.getHeight()
+                                            + texture.getHeight()/2),
+                            asteroids.get(i).getId(), neighbour.getId());
                     connections.add(connection);
                 }
             }
         }
     }
-    private boolean notConnected(Vector2 start, Vector2 end){
+    private boolean notConnected(String startID, String endID){
         for(AsteroidConnection connection: connections){
-            if(connection.start.equals(end) && connection.end.equals(start)){
+            if(connection.startID.equals(endID) && connection.endID.equals(startID)){
                 return false;
             }
-            else if(connection.start.equals(start) && connection.end.equals(end)){
+            else if(connection.startID.equals(startID) && connection.endID.equals(endID)){
                 return false;
             }
         }
@@ -173,10 +182,10 @@ public class PlayCardView extends AbstractView{
      */
     public void clickedButton(Integer button, boolean checked){
         if(checked){
-            buttonStyles.get(button).up = skin.getDrawable("button-gone");
+            buttonStyles.get(button).up = skin.getDrawable("attack");
         }
         else{
-            buttonStyles.get(button).up = skin.getDrawable("button-up");
+            buttonStyles.get(button).up = skin.getDrawable("movement");
         }
         cardButtons.get(button).setStyle(buttonStyles.get(button));
     }
@@ -185,7 +194,7 @@ public class PlayCardView extends AbstractView{
         renderer.sb.setProjectionMatrix(cam.combined);
         sr.begin(ShapeRenderer.ShapeType.Filled);
         for(AsteroidConnection connection :connections){
-            sr.rectLine(connection.getStart(), connection.getEnd(), 5.0f);
+            sr.rectLine(connection.start, connection.end, 5.0f);
         }
         sr.end();
         stage.draw();
@@ -198,30 +207,16 @@ public class PlayCardView extends AbstractView{
         renderer.dispose();
     }
 
-    private class AsteroidActor extends Actor{
-        private Sprite asteroid;
-        private AsteroidActor(Sprite asteroid){
-            this.asteroid = asteroid;
-        }
-
-        @Override
-        public void draw(Batch batch, float parentAlpha) {
-            batch.draw(asteroid, this.getX(), this.getY());
-        }
-    }
     private class AsteroidConnection {
         private Vector2 start;
         private Vector2 end;
-        private AsteroidConnection(Vector2 start, Vector2 end){
+        private String startID;
+        private String endID;
+        private AsteroidConnection(Vector2 start, Vector2 end, String startID, String endID){
             this.start = start;
+            this.startID = startID;
             this.end = end;
-        }
-
-        public Vector2 getStart() {
-            return new Vector2(start.x * Gdx.graphics.getWidth(), start.y * Gdx.graphics.getHeight());
-        }
-        public Vector2 getEnd() {
-            return new Vector2(end.x * Gdx.graphics.getWidth(), end.y * Gdx.graphics.getHeight());
+            this.endID = endID;
         }
     }
 

@@ -116,6 +116,7 @@ public class PlayCardState extends State {
     private void selectTarget(String s){
         if(justClicked > -1 && validTarget(s)){
             targets.add(s);
+            playView.clickedButton(justClicked, true);
             justClicked = -1;
             playView.selectTarget = false;
         }
@@ -130,7 +131,7 @@ public class PlayCardState extends State {
      * @return whether the target is a valid targer
      */
     private boolean validTarget(String targetID){
-        String attackType = targetID.substring(0,1);
+        String attackType = targetID.substring(0,1).toLowerCase();
         //If the target is an asteroid
         if(attackType.equals("a")){
             return playedCardsList.get(numPlayedCards-1).getTargetType().equals(ASTEROID);
@@ -163,7 +164,6 @@ public class PlayCardState extends State {
 
     @Override
     public void update(float dt) {
-        // TODO: pass appropriate data to gameresults (which then passes to view)
         // e.g. winner=null, if all players left the lobby.
         //if (playerCount < 2) gsm.push(new GameResultsState(gsm));
         //if (playersAlive==1) gsm.push(new GameResultsState(gsm));
@@ -172,13 +172,11 @@ public class PlayCardState extends State {
     @Override
     public void render() {
         playView.render();
-
     }
 
     @Override
     public void dispose() {
         playView.dispose();
     }
-
 
 }

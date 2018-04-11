@@ -140,6 +140,12 @@ public class Asteroid implements EventListener,IStatusAble {
                 }
             }
         }
+
+        if(e.getT() == Event.Type.DESTROYED){
+            if (this.vehicleIDs.contains(e.getTargetID())){
+                this.removeVehicle(e.getTargetID());
+            }
+        }
     }
 
     public void destroy(){

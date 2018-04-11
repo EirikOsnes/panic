@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Card {
 
-    public enum CardType {ATTACK, EFFECT, DEFENSE, MOVEMENT}
+    public enum CardType {ATTACK, EFFECT, DEFENCE, MOVEMENT}
     public enum TargetType {ASTEROID, VEHICLE}
     public enum AllowedTarget {PLAYER, ENEMY, ALL}
 

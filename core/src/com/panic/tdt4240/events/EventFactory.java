@@ -25,13 +25,17 @@ public class EventFactory {
      *                      DO NOT REPOST this list, this is only used for testing
      */
     public static ArrayList<Event> postEventsFromCard(Card c, String targetID, String instigatorID) {
+        return postEventsFromCard(c, targetID, instigatorID, 1);
+    }
+  
+    public static ArrayList<Event> postEventsFromCard(Card c, String targetID, String instigatorID, float multiplier) {
         EventFactory.checkIDs(targetID, instigatorID);
 
         ArrayList<Event> events = new ArrayList<>();
         for (CardEffect ce : c.getCardEffects()) {
             Event e = new Event(Event.Type.ATTACK, targetID, instigatorID);
             e.setDuration(ce.getStatusDuration());
-            e.setEffectValue(ce.getValue());
+            e.setEffectValue(ce.getValue()*multiplier);
             e.setFriendlyFire(ce.isFriendlyFire());
             e.setStatus(ce.getTargetStatus());
             e.setRequirementName(ce.getRequirementName());
@@ -47,6 +51,7 @@ public class EventFactory {
     }
 
     /**
+
      * A factory that creates and posts move events, this should be called each time
      * a vehicle wants to move from one asteroid to another. Or if you want to move another
      * vehicle

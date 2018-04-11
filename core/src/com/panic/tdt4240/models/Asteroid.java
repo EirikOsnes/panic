@@ -7,19 +7,20 @@ import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.events.EventBus;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.util.StatusHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by Eirik on 05-Mar-18.
+ * The Asteroid model.
  */
 
 
 public class Asteroid implements EventListener{
   
     private String id;
-    private HashMap<String,Object> statuses;
+    private StatusHandler statusHandler;
     private Sprite sprite;
     private ArrayList<Asteroid> neighbours;
     private Vector2 position;
@@ -30,7 +31,7 @@ public class Asteroid implements EventListener{
         EventBus.getInstance().addListener(this);
         this.sprite = sprite;
         neighbours = new ArrayList<>();
-        statuses = new HashMap<>();
+        statusHandler = new StatusHandler(this);
         position = new Vector2();
         vehicleIDs = new ArrayList<>();
     }
@@ -44,15 +45,6 @@ public class Asteroid implements EventListener{
         neighbours.add(asteroid);
         asteroid.neighbours.add(this);
         return asteroid;
-    }
-
-    /**
-     * Adds a status to the asteroid. The statuses are stored within the status hashmap
-     * @param key The identity of the status
-     * @param effect The definition of the status to be added
-     */
-    public void addStatus(String key, Object effect){
-        statuses.put(key,effect);
     }
 
     /**
@@ -101,8 +93,8 @@ public class Asteroid implements EventListener{
         return neighbours.contains(asteroid);
     }
 
-    public HashMap<String, Object> getStatuses() {
-        return statuses;
+    public StatusHandler getStatusHandler() {
+        return statusHandler;
     }
 
     public Sprite getSprite() {

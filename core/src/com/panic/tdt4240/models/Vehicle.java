@@ -3,12 +3,13 @@ package com.panic.tdt4240.models;
 import com.panic.tdt4240.events.Event;
 import com.panic.tdt4240.events.EventBus;
 import com.panic.tdt4240.events.EventListener;
+import com.panic.tdt4240.util.IStatusAble;
 import com.panic.tdt4240.util.StatusHandler;
 
 /**
  * The Object for the Vehicle units.
  */
-public class Vehicle implements EventListener {
+public class Vehicle implements EventListener,IStatusAble {
 
     private StatusHandler statusHandler;
     private String vehicleID;
@@ -60,5 +61,9 @@ public class Vehicle implements EventListener {
         if (e.getT() == Event.Type.TIMING) {
             this.statusHandler.runEffects(e.getTiming());
         }
+    }
+
+    public void destroy(){
+        //TODO: Actually post the event
     }
 }

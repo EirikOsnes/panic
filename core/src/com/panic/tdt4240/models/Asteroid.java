@@ -7,17 +7,17 @@ import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.events.EventBus;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.util.IStatusAble;
 import com.panic.tdt4240.util.StatusHandler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * The Asteroid model.
  */
 
 
-public class Asteroid implements EventListener{
+public class Asteroid implements EventListener,IStatusAble {
   
     private String id;
     private StatusHandler statusHandler;
@@ -135,5 +135,9 @@ public class Asteroid implements EventListener{
                 }
             }
         }
+    }
+
+    public void destroy(){
+        //TODO: Actually post the event
     }
 }

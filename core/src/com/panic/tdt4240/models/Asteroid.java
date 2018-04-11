@@ -25,6 +25,7 @@ public class Asteroid implements EventListener,IStatusAble {
     private ArrayList<Asteroid> neighbours;
     private Vector2 position;
     private ArrayList<String> vehicleIDs;
+    private boolean isDestroyed = false;
 
 
     public Asteroid(Sprite sprite) {
@@ -93,6 +94,10 @@ public class Asteroid implements EventListener,IStatusAble {
         return neighbours.contains(asteroid);
     }
 
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
     public StatusHandler getStatusHandler() {
         return statusHandler;
     }
@@ -138,6 +143,8 @@ public class Asteroid implements EventListener,IStatusAble {
     }
 
     public void destroy(){
-        //TODO: Actually post the event
+        isDestroyed = true;
+        EventFactory.postDestroyedEvent(id,id);
+        EventBus.getInstance().removeListener(this);
     }
 }

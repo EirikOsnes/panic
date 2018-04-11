@@ -2,6 +2,7 @@ package com.panic.tdt4240.models;
 
 import com.panic.tdt4240.events.Event;
 import com.panic.tdt4240.events.EventBus;
+import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.util.IStatusAble;
 import com.panic.tdt4240.util.StatusHandler;
@@ -14,6 +15,7 @@ public class Vehicle implements EventListener,IStatusAble {
     private StatusHandler statusHandler;
     private String vehicleID;
     private String vehicleType;
+    private boolean isDestroyed = false;
 
     public Vehicle(String type){
         statusHandler = new StatusHandler(this);
@@ -32,6 +34,10 @@ public class Vehicle implements EventListener,IStatusAble {
 
     public String getVehicleID() {
         return vehicleID;
+    }
+
+    public boolean isDestroyed() {
+        return isDestroyed;
     }
 
     public Vehicle cloneVehicleWithId(String id) {
@@ -64,6 +70,8 @@ public class Vehicle implements EventListener,IStatusAble {
     }
 
     public void destroy(){
-        //TODO: Actually post the event
+        isDestroyed = true;
+        EventFactory.postDestroyedEvent(vehicleID,vehicleID);
+        EventBus.getInstance().removeListener(this);
     }
 }

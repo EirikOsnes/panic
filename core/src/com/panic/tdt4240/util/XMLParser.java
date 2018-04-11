@@ -1,5 +1,7 @@
 package com.panic.tdt4240.util;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
@@ -26,9 +28,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public class XMLParser {
 
-
-    String base = "android/assets/";
-
     /**
      * Create ALL cards in an XML file, and return these in an ArrayList.
      * @param path The path to the XML file.
@@ -39,10 +38,10 @@ public class XMLParser {
         ArrayList<Card> result = new ArrayList<>();
 
         try {
-            File inputFile = new File(path);
+            FileHandle inputFile = Gdx.files.internal(path);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = dbFactory.newDocumentBuilder();
-            Document doc = builder.parse(inputFile);
+            Document doc = builder.parse(inputFile.read());
             doc.getDocumentElement().normalize();
             System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
             NodeList nList = doc.getElementsByTagName("card");
@@ -98,7 +97,7 @@ public class XMLParser {
      * @return Returns an ArrayList of Cards.
      */
     public ArrayList<Card> parseCards(){
-        return parseCards(base+"cards/card_test.xml");
+        return parseCards("cards/card_test.xml");
     }
 
     /**
@@ -111,10 +110,10 @@ public class XMLParser {
         ArrayList<Map> result = new ArrayList<>();
 
         try {
-            File inputFile = new File(path);
+            FileHandle file = Gdx.files.internal(path);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(inputFile);
+            Document doc = builder.parse(file.read());
             doc.getDocumentElement().normalize();
 
             NodeList mapList = doc.getElementsByTagName("map");
@@ -175,7 +174,7 @@ public class XMLParser {
      * @return Returns an ArrayList of instantiated Maps, with neighbourhood matrix finalized.
      */
     public ArrayList<Map> parseMaps() {
-        return parseMaps(base+"maps/maps.xml");
+        return parseMaps("maps/maps.xml");
     }
 
 
@@ -188,10 +187,10 @@ public class XMLParser {
         ArrayList<Vehicle> result = new ArrayList<>();
 
         try {
-            File inputFile = new File(path);
+            FileHandle inputFile = Gdx.files.internal(path);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(inputFile);
+            Document doc = builder.parse(inputFile.read());
             doc.getDocumentElement().normalize();
             NodeList nodeList = doc.getElementsByTagName("vehicle");
 
@@ -226,7 +225,7 @@ public class XMLParser {
      * @return Returns an ArrayList of possible vehicles.
      */
     public ArrayList<Vehicle> parseVehicles(){
-        return parseVehicles(base+"vehicles/vehicle_test.xml");
+        return parseVehicles("vehicles/vehicle_test.xml");
     }
 
     /**
@@ -239,10 +238,10 @@ public class XMLParser {
         Stack<Card> result = new Stack<>();
 
         try {
-            File inputFile = new File(path);
+            FileHandle inputFile = Gdx.files.internal(path);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(inputFile);
+            Document doc = builder.parse(inputFile.read());
             doc.getDocumentElement().normalize();
             NodeList nodeList = doc.getElementsByTagName("deck");
 
@@ -278,7 +277,7 @@ public class XMLParser {
      * @return Returns a Stack<Card> that is related to the given vehicle (will add all cards from all decks at this point)
      */
     public Stack<Card> parseCardStack(String vehicleType){
-        return parseCardStack(base+"decks/deck_test.xml",vehicleType);
+        return parseCardStack("decks/deck_test.xml",vehicleType);
     }
 
 }

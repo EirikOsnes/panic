@@ -17,7 +17,7 @@ public class StatusHandler {
 
     private TreeMap<String, Status> statuses;
     private ArrayList<String> baseStats;
-    private Object parent;
+    private IStatusAble parent;
     public enum TimingType {TURN_START, CARD_PLAYED ,TURN_END}
 
 
@@ -25,7 +25,7 @@ public class StatusHandler {
      * A class to hold all statuses and the logic on them. Passes in the parent for now, in case we want some events to trigger from here.
      * @param parent The object that called this class.
      */
-    public StatusHandler(Object parent){
+    public StatusHandler(IStatusAble parent){
         this.parent = parent;
         baseStats = new ArrayList<>();
         setupBaseStatuses();
@@ -369,6 +369,9 @@ public class StatusHandler {
             }
 
             multipliers+=multiplier;
+            if(name.equalsIgnoreCase("health")){
+                checkForDestroy();
+            }
             return multipliers;
 
         }
@@ -385,6 +388,9 @@ public class StatusHandler {
                 value = checkAddForBaseStat(change);
 
             additions+=value;
+            if(name.equalsIgnoreCase("health")){
+                checkForDestroy();
+            }
             return additions;
         }
 
@@ -395,6 +401,9 @@ public class StatusHandler {
          */
         void addTickingMultiplier(int duration, float multiplier){
             tickMultipliers.add(new float[]{duration,multiplier});
+            if(name.equalsIgnoreCase("health")){
+                checkForDestroy();
+            }
         }
 
         /**
@@ -408,6 +417,9 @@ public class StatusHandler {
                 value = checkAddForBaseStat(change);
 
             tickAdditions.add(new float[]{duration, value});
+            if(name.equalsIgnoreCase("health")){
+                checkForDestroy();
+            }
         }
 
         /**
@@ -487,6 +499,19 @@ public class StatusHandler {
 
             playedThisTurn = false;
 
+            if(name.equalsIgnoreCase("health")){
+                checkForDestroy();
+            }
+
+        }
+
+
+        void checkForDestroy(){
+            if(name.equalsIgnoreCase("health")&&getResultant()<=0){
+                if(parent!=null){
+                    parent.destroy();
+                }
+            }
         }
 
         /**

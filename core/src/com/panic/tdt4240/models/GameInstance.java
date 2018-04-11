@@ -178,6 +178,13 @@ public class GameInstance {
             }
         }
 
+        //Remove any asteroids that have been destroyed from the list. Will probably never be a case.
+        for (int i = validAsteroids.size()-1; i >=0 ; i--) {
+            if(validAsteroids.get(i).isDestroyed()){
+                validAsteroids.remove(i);
+            }
+        }
+
         //If target is an asteroid, all asteroids within range will be valid targets
         if(card.getTargetType() == Card.TargetType.ASTEROID){
             for (Asteroid asteroid : validAsteroids) {
@@ -190,6 +197,13 @@ public class GameInstance {
         if(card.getTargetType() == Card.TargetType.VEHICLE){
             for (Asteroid asteroid : validAsteroids) {
                 result.addAll(asteroid.getVehicles());
+            }
+
+            //Check that none of the vehicles are destroyed. This should never happen.
+            for (int i = result.size()-1; i >= 0; i--) {
+                if(getVehicleById(result.get(i)).isDestroyed()){
+                    result.remove(i);
+                }
             }
 
             //If all vehicles are targetable, just return all the vehicles

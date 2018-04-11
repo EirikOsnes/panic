@@ -24,6 +24,13 @@ attack
     orig: 316,478
     offset: 0,0
     index: -1
+effect
+    rotate: false
+    xy:1070,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index:-1
 
 card_textures_transparent.png
 format: RGBA8888
@@ -50,6 +57,13 @@ attack_trans
     orig: 316,478
     offset: 0,0
     index: -1
+effect_trans
+    rotate: false
+    xy:1070,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index:-1
 
 card_textures_with_icons.png
 format: RGBA8888
@@ -76,6 +90,13 @@ attack_icon
     orig: 316,478
     offset: 0,0
     index: -1
+effect_icon
+    rotate: false
+    xy:1070,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index:-1
 
 card_textures_selected.png
 format: RGBA8888
@@ -102,3 +123,10 @@ attack_selected
     orig: 316,478
     offset: 0,0
     index: -1
+effect_selected
+    rotate: false
+    xy:1070,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index:-1

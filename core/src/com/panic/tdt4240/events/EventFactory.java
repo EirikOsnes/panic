@@ -18,14 +18,15 @@ public class EventFactory {
      * @param c             The card to make the events for
      * @param targetID      The ID of the target of the event
      * @param instigatorID  The ID of the instigator of the event
+     * @param multiplier    An (optional) effect value multiplier
      */
-    public static void postEventsFromCard(Card c, String targetID, String instigatorID) {
+    public static void postEventsFromCard(Card c, String targetID, String instigatorID, float multiplier) {
         //EventFactory.checkIDs(targetID, instigatorID);
 
         for (CardEffect ce : c.getCardEffects()) {
             Event e = new Event(Event.Type.ATTACK, targetID, instigatorID);
             e.setDuration(ce.getStatusDuration());
-            e.setEffectValue(ce.getValue());
+            e.setEffectValue(ce.getValue()*multiplier);
             e.setFriendlyFire(ce.isFriendlyFire());
             e.setStatus(ce.getTargetStatus());
             e.setRequirementName(ce.getRequirementName());
@@ -38,16 +39,24 @@ public class EventFactory {
         EventBus.getInstance().postEvent(e);
     }
 
+    /**
+     * A factory that post events connected to the given card
+     * @param c             The card to make the events for
+     * @param targetID      The ID of the target of the event
+     * @param instigatorID  The ID of the instigator of the event
+     */
+    public static void postEventsFromCard(Card c, String targetID, String instigatorID){
+        postEventsFromCard(c,targetID,instigatorID,1);
+    }
+
     public static Event createMoveEvent(String targetID, String instigatorID) {
         // EventFactory.checkIDs(targetID, instigatorID);
-        Event e = new Event(Event.Type.MOVE, targetID, instigatorID);
-        return e;
+        return new Event(Event.Type.MOVE, targetID, instigatorID);
     }
 
     public static Event createDestroyedEvent(String targetID, String instigatorID) {
         // EventFactory.checkIDs(targetID, instigatorID);
-        Event e = new Event(Event.Type.DESTROYED, targetID, instigatorID);
-        return e;
+        return new Event(Event.Type.DESTROYED, targetID, instigatorID);
     }
 
     static void checkIDs(String ID1, String ID2) {

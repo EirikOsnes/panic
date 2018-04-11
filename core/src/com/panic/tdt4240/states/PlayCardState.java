@@ -124,6 +124,13 @@ public class PlayCardState extends State {
             //TODO Should show 'not valid targed' in PlayCardView
         }
     }
+    public void finishRound(){
+        ArrayList<String[]> result = getCardsAndTargets();
+
+    }
+    public String getCardType(int i){
+        return hand.get(i).getCardType().name().toLowerCase();
+    }
 
     /**
      * Method for determining validity of target

@@ -72,6 +72,18 @@ public class MenuState extends State {
             card.setTooltip("Card nr:" + i + "\nSomething else............\nabcdefghijklmnopqrstuvwxyz");
             card.setTargetType(Card.TargetType.ASTEROID);
             card.setAllowedTarget(Card.AllowedTarget.ALL);
+            if(i == 9){
+                card.setCardType(Card.CardType.ATTACK);
+            }
+            else if(i == 8){
+                card.setCardType(Card.CardType.MOVEMENT);
+            }
+            else if(i == 7){
+                card.setCardType(Card.CardType.EFFECT);
+            }
+            else{
+                card.setCardType(Card.CardType.DEFENSE);
+            }
             cards.push(card);
         }
         Player player = new Player(cards);

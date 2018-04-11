@@ -6,10 +6,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -21,7 +23,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.states.PlayCardState;
-import com.panic.tdt4240.view.TextureClasses.HandTexture;
 import com.panic.tdt4240.view.Renderer;
 
 import java.util.ArrayList;
@@ -46,8 +47,9 @@ public class PlayCardView extends AbstractView{
     private Map map;
     private ArrayList<AsteroidConnection> connections;
     private ShapeRenderer sr;
+    private TextButton finishedButton;
 
-    //TODO Render the map, add clicklisteners on each asteroid and vehicle
+    //TODO Anvende cardtype, lage bilde basert på hvilken type
     public PlayCardView(final PlayCardState state){
         super(state);
         map = state.map;
@@ -76,8 +78,9 @@ public class PlayCardView extends AbstractView{
             TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
             buttonStyle.font = font;
             //Images the button has in the normal up-position, and when it is pressed down
-            buttonStyle.up = skin.getDrawable("attack_icon");
-            buttonStyle.down = skin.getDrawable("attack_selected");
+            String cardType = state.getCardType(i);
+            buttonStyle.up = skin.getDrawable(cardType + "_icon");
+            buttonStyle.down = skin.getDrawable(cardType + "_selected");
 
             buttonStyles.add(buttonStyle);
 
@@ -96,15 +99,35 @@ public class PlayCardView extends AbstractView{
 
         //table.background(new TextureRegionDrawable(new TextureRegion(background)));
         table.pack();
-
         stage.addActor(table);
+
+        buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
+        Skin finishedSkin = new Skin();
+        finishedSkin.addRegions(buttonAtlas);
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+
+        //Images the button has in the normal up-position, and when it is pressed down
+        buttonStyle.up = finishedSkin.getDrawable("button-up");
+        buttonStyle.down = finishedSkin.getDrawable("button-down");
+        finishedButton = new TextButton("Finish Turn", buttonStyle);
+        finishedButton.setWidth(SCREEN_WIDTH/5);
+        finishedButton.setHeight(SCREEN_WIDTH/10);
+        finishedButton.setPosition(4*SCREEN_WIDTH/5, table.getHeight());
+        finishedButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                state.finishRound();
+            }
+        });
+
+        stage.addActor(finishedButton);
 
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.fontColor = Color.WHITE;
         style.font = new BitmapFont();
         cardInfo = new TextArea("",style);
-
-        cardInfo.setPosition(3*SCREEN_WIDTH/4, table.getHeight());
+        cardInfo.setPosition(SCREEN_WIDTH/4, table.getHeight());
         cardInfo.setWidth(SCREEN_WIDTH/4);
         cardInfo.setHeight(SCREEN_HEIGHT/8);
         stage.addActor(cardInfo);
@@ -115,7 +138,7 @@ public class PlayCardView extends AbstractView{
     /**
      * Method for setting up the map with listeners on each asteroid and vehicle
      */
-    //TODO Lagre alle vehicles i stage, legge til listeners ol,
+    //TODO Lagre alle vehicles i stage, bestemme posisjon, legge til listeners, knapp for å gjøre seg ferdig med runden
     private void setUpMap(){
         final ArrayList<Asteroid> asteroids = map.getAsteroids();
         ArrayList<String> vehicles = new ArrayList<>();
@@ -179,14 +202,15 @@ public class PlayCardView extends AbstractView{
      *                set the up-image to the normal card-up image
      */
     public void clickedButton(Integer button, int checked){
+        String cardType = ((PlayCardState) state).getCardType(button);
         if(checked == -1){
-            buttonStyles.get(button).up = skin.getDrawable("attack_trans");
+            buttonStyles.get(button).up = skin.getDrawable(cardType + "_trans");
         }
         else if(checked == 0){
-            buttonStyles.get(button).up = skin.getDrawable("attack_icon");
+            buttonStyles.get(button).up = skin.getDrawable(cardType + "_icon");
         }
         else if(checked == 1){
-            buttonStyles.get(button).up = skin.getDrawable("attack_selected");
+            buttonStyles.get(button).up = skin.getDrawable(cardType + "_selected");
         }
         cardButtons.get(button).setStyle(buttonStyles.get(button));
     }

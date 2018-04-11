@@ -45,7 +45,6 @@ public class PlayCardView extends AbstractView{
     private Skin skin;
     public boolean selectTarget = false;
     private Map map;
-    private ArrayList<AsteroidConnection> connections;
     private ShapeRenderer sr;
     private TextButton finishedButton;
 
@@ -107,8 +106,8 @@ public class PlayCardView extends AbstractView{
         buttonStyle.font = font;
 
         //Images the button has in the normal up-position, and when it is pressed down
-        buttonStyle.up = finishedSkin.getDrawable("button-up");
-        buttonStyle.down = finishedSkin.getDrawable("button-down");
+        buttonStyle.up = finishedSkin.getDrawable("button_up");
+        buttonStyle.down = finishedSkin.getDrawable("button_down");
         finishedButton = new TextButton("Finish Turn", buttonStyle);
         finishedButton.setWidth(SCREEN_WIDTH/5);
         finishedButton.setHeight(SCREEN_WIDTH/10);
@@ -141,7 +140,6 @@ public class PlayCardView extends AbstractView{
     private void setUpMap(){
         final ArrayList<Asteroid> asteroids = map.getAsteroids();
         ArrayList<String> vehicles = new ArrayList<>();
-        connections = new ArrayList<>();
 
         for (int i = 0; i < asteroids.size(); i++) {
             vehicles.addAll(asteroids.get(i).getVehicles());
@@ -150,6 +148,7 @@ public class PlayCardView extends AbstractView{
 
             asteroid.setOrigin(texture.getWidth()/2, texture.getHeight()/2);
             asteroid.setPosition(
+                    //Image should be rendered inside the window and above the table
                     asteroids.get(i).getPosition().x *(Gdx.graphics.getWidth() - asteroid.getWidth()),
                     asteroids.get(i).getPosition().y *(Gdx.graphics.getHeight() - table.getHeight() - asteroid.getHeight()) + table.getHeight());
 
@@ -165,42 +164,8 @@ public class PlayCardView extends AbstractView{
                 };
             });
             for(Asteroid neighbour: asteroids.get(i).getNeighbours()){
-                if(notConnected(asteroids.get(i).getId(), neighbour.getId())){
-                    AsteroidConnection connection = new AsteroidConnection(
-                            new Vector2(asteroids.get(i).getPosition().x *(Gdx.graphics.getWidth() - asteroid.getWidth()) + asteroid.getWidth()/2,
-                                    asteroids.get(i).getPosition().y *(Gdx.graphics.getHeight() - table.getHeight() - asteroid.getHeight()) + table.getHeight()
-                                            + asteroid.getHeight()/2),
-                            new Vector2(neighbour.getPosition().x *(Gdx.graphics.getWidth() - asteroid.getWidth()) + asteroid.getWidth()/2,
-                                    neighbour.getPosition().y *(Gdx.graphics.getHeight() - table.getHeight() - asteroid.getHeight()) + table.getHeight()
-                                            + asteroid.getHeight()/2),
-                            asteroids.get(i).getId(), neighbour.getId());
-                    connections.add(connection);
-                }
+                ((PlayCardState) state).addConnection(asteroids.get(i), neighbour, asteroid.getWidth(), asteroid.getHeight(), table.getHeight());
             }
-        }
-    }
-
-    private boolean notConnected(String startID, String endID){
-        for(AsteroidConnection connection: connections){
-            if(connection.startID.equals(endID) && connection.endID.equals(startID)){
-                return false;
-            }
-            else if(connection.startID.equals(startID) && connection.endID.equals(endID)){
-                return false;
-            }
-        }
-        return true;
-    }
-    private class AsteroidConnection {
-        private Vector2 start;
-        private Vector2 end;
-        private String startID;
-        private String endID;
-        private AsteroidConnection(Vector2 start, Vector2 end, String startID, String endID){
-            this.start = start;
-            this.startID = startID;
-            this.end = end;
-            this.endID = endID;
         }
     }
 
@@ -230,8 +195,9 @@ public class PlayCardView extends AbstractView{
     public void render(){
         renderer.sb.setProjectionMatrix(cam.combined);
         sr.begin(ShapeRenderer.ShapeType.Filled);
-        for(AsteroidConnection connection :connections){
-            sr.rectLine(connection.start, connection.end, 5.0f);
+        ArrayList<Vector2[]> lines = ((PlayCardState) state).getConnections();
+        for(Vector2[] points : lines){
+            sr.rectLine(points[0], points[1], 5.0f);
         }
         sr.end();
         stage.draw();

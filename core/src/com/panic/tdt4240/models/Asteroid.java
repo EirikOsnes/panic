@@ -2,10 +2,12 @@ package com.panic.tdt4240.models;
 
 
 import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.events.EventBus;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.util.StatusHandler;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,25 +15,26 @@ import java.util.HashMap;
 import java.util.Locale;
 
 /**
- * Created by Eirik on 05-Mar-18.
+ * The Asteroid model.
  */
 
 
 public class Asteroid implements EventListener, Comparable<Asteroid>{
   
     private String id;
-    private HashMap<String,Object> statuses;
+    private StatusHandler statusHandler;
     private Sprite sprite;
     private ArrayList<Asteroid> neighbours;
     private Vector2 position;
     private ArrayList<String> vehicleIDs;
 
 
-    public Asteroid(Sprite sprite) {
+    public Asteroid(Sprite sprite, String id) {
         EventBus.getInstance().addListener(this);
         this.sprite = sprite;
+        this.id = id;
         neighbours = new ArrayList<>();
-        statuses = new HashMap<>();
+        statusHandler = new StatusHandler(this);
         position = new Vector2();
         vehicleIDs = new ArrayList<>();
     }
@@ -45,15 +48,6 @@ public class Asteroid implements EventListener, Comparable<Asteroid>{
         neighbours.add(asteroid);
         asteroid.neighbours.add(this);
         return asteroid;
-    }
-
-    /**
-     * Adds a status to the asteroid. The statuses are stored within the status hashmap
-     * @param key The identity of the status
-     * @param effect The definition of the status to be added
-     */
-    public void addStatus(String key, Object effect){
-        statuses.put(key,effect);
     }
 
     /**
@@ -95,15 +89,15 @@ public class Asteroid implements EventListener, Comparable<Asteroid>{
 
     /**
      *
-     * @param asteroid The asteroid to check for a connection
+     * @param asteroid The asteroid to check for a Connection
      * @return Whether the asteroids are connected or not
      */
     public boolean isConnected(Asteroid asteroid){
         return neighbours.contains(asteroid);
     }
 
-    public HashMap<String, Object> getStatuses() {
-        return statuses;
+    public StatusHandler getStatusHandler() {
+        return statusHandler;
     }
 
     public Sprite getSprite() {
@@ -140,8 +134,7 @@ public class Asteroid implements EventListener, Comparable<Asteroid>{
         else if (e.getT() == Event.Type.ATTACK && e.getTargetID().equals(this.id)) {
             for (String vid : vehicleIDs) {
                 if (e.isFriendlyFire() || !vid.equals(e.getInstigatorID())) {
-                    Event newEvent = e.cloneEvent(vid);
-                    EventBus.getInstance().postEvent(newEvent);
+                    EventFactory.postClonedEvent(e, vid);
                 }
                 if (e.isSplashDamage()) {
                     Map map = GameModelHolder.getInstance().getMap();

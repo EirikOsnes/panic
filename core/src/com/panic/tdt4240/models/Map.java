@@ -7,6 +7,7 @@ import com.panic.tdt4240.util.Vertex;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 /**
@@ -17,18 +18,20 @@ public class Map {
     private ArrayList<Asteroid> asteroids;
     private int[][] adjacency;
     HashMap<String, Vehicle> vehicles;
+    private String id;
 
     /**
      * creates a Map object containing a set of asteroids
      * @param asteroids ArrayList of asteroids
      */
-    public Map(ArrayList<Asteroid> asteroids){
+    public Map(ArrayList<Asteroid> asteroids, String Id){
         vehicles = new HashMap<>();
         this.asteroids = asteroids;
+        this.id = Id;
     }
 
     /**
-     * creates a connection between two asteroids
+     * creates a Connection between two asteroids
      * @param a1 first asteroid
      * @param a2 second asteroid
      */
@@ -165,4 +168,7 @@ public class Map {
         return asteroids;
     }
 
+    public String getId() {
+        return id;
+    }
 }

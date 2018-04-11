@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Card {
 
-    public enum CardType {ATTACK, EFFECT, DEFENSE, MOVEMENT}
+    public enum CardType {ATTACK, EFFECT, DEFENCE, MOVEMENT}
     public enum TargetType {ASTEROID, VEHICLE}
     public enum AllowedTarget {PLAYER, ENEMY, ALL}
 
@@ -117,8 +117,7 @@ public class Card {
 
     public void playCard(String targetID, String instigatorID) {
         if (cardType == CardType.MOVEMENT) {
-            Event e = EventFactory.createMoveEvent(targetID, instigatorID);
-            EventBus.getInstance().postEvent(e);
+            EventFactory.postMoveEvent(targetID, instigatorID);
         }
         else if (cardType == CardType.ATTACK) {
             EventFactory.postEventsFromCard(this, targetID, instigatorID);

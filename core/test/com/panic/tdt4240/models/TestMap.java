@@ -33,12 +33,12 @@ public class TestMap {
     @Before
     public void init(){
         asteroids = new ArrayList<Asteroid>();
-        asteroids.add(new Asteroid(null));
-        asteroids.add(new Asteroid(null));
-        asteroids.add(new Asteroid(null));
-        asteroids.add(new Asteroid(null));
-        asteroids.add(new Asteroid(null));
-        map = new Map(asteroids);
+        asteroids.add(new Asteroid(null, "A-001"));
+        asteroids.add(new Asteroid(null, "A-002"));
+        asteroids.add(new Asteroid(null, "A-003"));
+        asteroids.add(new Asteroid(null, "A-004"));
+        asteroids.add(new Asteroid(null, "A-005"));
+        map = new Map(asteroids, "TestMap");
         map.connectAsteroids(map.getAsteroids().get(0),map.getAsteroids().get(1));
         map.connectAsteroids(map.getAsteroids().get(0),map.getAsteroids().get(3));
         map.connectAsteroids(map.getAsteroids().get(1),map.getAsteroids().get(2));
@@ -116,7 +116,7 @@ public class TestMap {
         assertEquals((Integer) map.getAdjacency()[0][4], (Integer) 2);
 
         assertEquals((Integer) map.getAdjacency()[1][0], (Integer) 1);
-        assertEquals((Integer) map.getAdjacency()[1][1],(Integer) 0);
+        assertEquals((Integer) map.getAdjacency()[1][1], (Integer) 0);
         assertEquals((Integer) map.getAdjacency()[1][2], (Integer) 1);
         assertEquals((Integer) map.getAdjacency()[1][3], (Integer) 2);
         assertEquals((Integer) map.getAdjacency()[1][4], (Integer) 3);

@@ -1,0 +1,132 @@
+
+card_textures.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+movement
+    rotate: false
+    xy: 1,2
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index: -1
+defence
+    rotate: false
+    xy: 350,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index: -1
+attack
+    rotate: false
+    xy: 700,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index: -1
+effect
+    rotate: false
+    xy:1070,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index:-1
+
+card_textures_transparent.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+movement_trans
+    rotate: false
+    xy: 1,2
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index: -1
+defence_trans
+    rotate: false
+    xy: 350,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index: -1
+attack_trans
+    rotate: false
+    xy: 700,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index: -1
+effect_trans
+    rotate: false
+    xy:1070,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index:-1
+
+card_textures_with_icons.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+movement_icon
+    rotate: false
+    xy: 1,2
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index: -1
+defence_icon
+    rotate: false
+    xy: 350,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index: -1
+attack_icon
+    rotate: false
+    xy: 700,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index: -1
+effect_icon
+    rotate: false
+    xy:1070,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index:-1
+
+card_textures_selected.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+movement_selected
+    rotate: false
+    xy: 1,2
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index: -1
+defence_selected
+    rotate: false
+    xy: 350,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index: -1
+attack_selected
+    rotate: false
+    xy: 700,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index: -1
+effect_selected
+    rotate: false
+    xy:1070,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index:-1

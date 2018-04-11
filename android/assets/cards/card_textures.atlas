@@ -24,6 +24,13 @@ attack
     orig: 316,478
     offset: 0,0
     index: -1
+effect
+    rotate: false
+    xy:1070,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index:-1
 
 card_textures_transparent.png
 format: RGBA8888
@@ -50,6 +57,13 @@ attack_trans
     orig: 316,478
     offset: 0,0
     index: -1
+effect_trans
+    rotate: false
+    xy:1070,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index:-1
 
 card_textures_with_icons.png
 format: RGBA8888
@@ -76,29 +90,43 @@ attack_icon
     orig: 316,478
     offset: 0,0
     index: -1
+effect_icon
+    rotate: false
+    xy:1070,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index:-1
 
 card_textures_selected.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-movement_icon_selected
+movement_selected
     rotate: false
     xy: 1,2
     size: 316,478
     orig: 316,478
     offset: 0,0
     index: -1
-defence_icon_selected
+defence_selected
     rotate: false
     xy: 350,1
     size: 316,478
     orig: 316,478
     offset: 0,0
     index: -1
-attack_icon_selected
+attack_selected
     rotate: false
     xy: 700,1
     size: 316,478
     orig: 316,478
     offset: 0,0
     index: -1
+effect_selected
+    rotate: false
+    xy:1070,1
+    size: 316,478
+    orig: 316,478
+    offset: 0,0
+    index:-1

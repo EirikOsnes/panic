@@ -6,6 +6,8 @@ import com.panic.tdt4240.util.Graph;
 import com.panic.tdt4240.util.Vertex;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 /**
@@ -107,6 +109,7 @@ public class Map {
      * generates an adjacency matrix based on the asteroids on the map and its connections.
      */
     public void generateAdjacencyMatrix(){
+        Collections.sort(asteroids);
         int[][] matrix = new int[asteroids.size()][asteroids.size()];
         Graph graph = generateVertexAndEdge();
         Dijkstra dijkstra = new Dijkstra(graph);

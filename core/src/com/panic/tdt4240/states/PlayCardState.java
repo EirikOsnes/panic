@@ -23,9 +23,6 @@ public class PlayCardState extends State {
     private PlayCardView playView;
     public Player player;
     public Map map;
-    private boolean gameFinished;
-    private int playerCount;
-    private int playersAlive;
     //Order of cards that are played
     private ArrayList<Card> playedCardsList;
     //Targets for each card
@@ -45,9 +42,6 @@ public class PlayCardState extends State {
         playedCardsList = new ArrayList<>();
         targets = new ArrayList<>();
         connections = new ArrayList<>();
-
-        playerCount = 2;
-        playersAlive = 2;
 
         hand = player.playCards();
         selectedCard = new ArrayList<>(hand.size());
@@ -110,9 +104,19 @@ public class PlayCardState extends State {
             selectTarget((String) o);
         }
     }
+
+    /**
+     * Adds connection between two asteroids on the map, if it doesn't already exist
+     * @param start asteroid id
+     * @param end asteroid id
+     * @param asteroidWidth width of sprite, for calculating center
+     * @param asteroidHeight height of sprite, for calculating center
+     * @param tableHeight height of table, for calculating buffer height
+     */
     public void addConnection(Asteroid start, Asteroid end, float asteroidWidth, float asteroidHeight, float tableHeight){
         if(notConnected(start.getId(), end.getId())){
             AsteroidConnection connection = new AsteroidConnection(
+                    //Calculation of center point of the asteroids, see setUpMap() in PlayCardView
                     new Vector2(start.getPosition().x *(Gdx.graphics.getWidth() - asteroidWidth) + asteroidWidth/2,
                             start.getPosition().y *(Gdx.graphics.getHeight() - tableHeight - asteroidHeight) + tableHeight
                                     + asteroidHeight/2),
@@ -123,6 +127,13 @@ public class PlayCardState extends State {
             connections.add(connection);
         }
     }
+
+    /**
+     * Checks if an equivalent connection has already been added
+     * @param startID start asteroid
+     * @param endID end asteroid
+     * @return whether this connection already exists
+     */
     private boolean notConnected(String startID, String endID){
         for(AsteroidConnection connection: connections){
             if(connection.startID.equals(endID) && connection.endID.equals(startID)){
@@ -134,6 +145,10 @@ public class PlayCardState extends State {
         }
         return true;
     }
+
+    /**
+     * @return array of start and endpoints of connecting lines between asteroids
+     */
     public ArrayList<Vector2[]> getConnections(){
         ArrayList<Vector2[]> lines = new ArrayList<>();
         for(AsteroidConnection connection : connections){
@@ -163,10 +178,20 @@ public class PlayCardState extends State {
             //TODO Should show 'not valid targed' in PlayCardView
         }
     }
+
+    /**
+     * Should be called when the card selection is done
+     */
     public void finishRound(){
         ArrayList<String[]> result = getCardsAndTargets();
 
     }
+
+    /**
+     * Converts enum cardtype to string, ATTACK -> "attack"
+     * @param i cardID
+     * @return lowercase string of cardtype
+     */
     public String getCardType(int i){
         return hand.get(i).getCardType().name().toLowerCase();
     }
@@ -210,9 +235,7 @@ public class PlayCardState extends State {
 
     @Override
     public void update(float dt) {
-        // e.g. winner=null, if all players left the lobby.
-        //if (playerCount < 2) gsm.push(new GameResultsState(gsm));
-        //if (playersAlive==1) gsm.push(new GameResultsState(gsm));
+
     }
 
     @Override
@@ -225,6 +248,10 @@ public class PlayCardState extends State {
         playView.dispose();
     }
 
+    /**
+     * Class for keeping track of connections between asteroids, for rendering in PlayCardView
+     * Has id for start and end asteroid, and their coordinates
+     */
     private class AsteroidConnection {
         private Vector2 start;
         private Vector2 end;

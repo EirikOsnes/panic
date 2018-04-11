@@ -106,8 +106,8 @@ public class PlayCardView extends AbstractView{
         buttonStyle.font = font;
 
         //Images the button has in the normal up-position, and when it is pressed down
-        buttonStyle.up = finishedSkin.getDrawable("button-up");
-        buttonStyle.down = finishedSkin.getDrawable("button-down");
+        buttonStyle.up = finishedSkin.getDrawable("button_up");
+        buttonStyle.down = finishedSkin.getDrawable("button_down");
         finishedButton = new TextButton("Finish Turn", buttonStyle);
         finishedButton.setWidth(SCREEN_WIDTH/5);
         finishedButton.setHeight(SCREEN_WIDTH/10);
@@ -148,6 +148,7 @@ public class PlayCardView extends AbstractView{
 
             asteroid.setOrigin(texture.getWidth()/2, texture.getHeight()/2);
             asteroid.setPosition(
+                    //Image should be rendered inside the window and above the table
                     asteroids.get(i).getPosition().x *(Gdx.graphics.getWidth() - asteroid.getWidth()),
                     asteroids.get(i).getPosition().y *(Gdx.graphics.getHeight() - table.getHeight() - asteroid.getHeight()) + table.getHeight());
 

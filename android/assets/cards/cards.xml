@@ -41,7 +41,7 @@
     <card id = "SHIELD">
         <name>Shields up!</name>
         <priority>8</priority>
-        <type_id>DEFENSE</type_id>
+        <type_id>DEFENCE</type_id>
         <target_type>VEHICLE</target_type>
         <allowed_targets>PLAYER</allowed_targets>
         <min_range>0</min_range>

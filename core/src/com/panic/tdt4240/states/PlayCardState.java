@@ -16,7 +16,7 @@ import static com.panic.tdt4240.models.Card.TargetType.VEHICLE;
  */
 
 public class PlayCardState extends State {
-
+    //H: 1794, W 1080
     private PlayCardView playView;
     public Player player;
     public Map map;
@@ -85,7 +85,7 @@ public class PlayCardState extends State {
                 } else {
                     playView.cardInfo.setText("");
                 }
-                playView.clickedButton(cardIndex, false);
+                playView.clickedButton(cardIndex, 0);
                 numPlayedCards--;
             }
             //Checks if the max amount of cards already have been played
@@ -95,7 +95,7 @@ public class PlayCardState extends State {
                     playedCardsList.add(hand.get(cardIndex));
                     selectedCard.set(cardIndex, true);
                     playView.cardInfo.setText(hand.get(cardIndex).getTooltip());
-                    playView.clickedButton(cardIndex, true);
+                    playView.clickedButton(cardIndex, 1);
                     numPlayedCards++;
                     playView.selectTarget = true;
                 }
@@ -116,12 +116,20 @@ public class PlayCardState extends State {
     private void selectTarget(String s){
         if(justClicked > -1 && validTarget(s)){
             targets.add(s);
+            playView.clickedButton(justClicked, -1);
             justClicked = -1;
             playView.selectTarget = false;
         }
         else{
             //TODO Should show 'not valid targed' in PlayCardView
         }
+    }
+    public void finishRound(){
+        ArrayList<String[]> result = getCardsAndTargets();
+
+    }
+    public String getCardType(int i){
+        return hand.get(i).getCardType().name().toLowerCase();
     }
 
     /**
@@ -130,7 +138,7 @@ public class PlayCardState extends State {
      * @return whether the target is a valid targer
      */
     private boolean validTarget(String targetID){
-        String attackType = targetID.substring(0,1);
+        String attackType = targetID.substring(0,1).toLowerCase();
         //If the target is an asteroid
         if(attackType.equals("a")){
             return playedCardsList.get(numPlayedCards-1).getTargetType().equals(ASTEROID);
@@ -163,7 +171,6 @@ public class PlayCardState extends State {
 
     @Override
     public void update(float dt) {
-        // TODO: pass appropriate data to gameresults (which then passes to view)
         // e.g. winner=null, if all players left the lobby.
         //if (playerCount < 2) gsm.push(new GameResultsState(gsm));
         //if (playersAlive==1) gsm.push(new GameResultsState(gsm));
@@ -172,13 +179,11 @@ public class PlayCardState extends State {
     @Override
     public void render() {
         playView.render();
-
     }
 
     @Override
     public void dispose() {
         playView.dispose();
     }
-
 
 }

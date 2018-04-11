@@ -54,41 +54,31 @@ public class Connection {
      * reads the history of the game. If the game has no history, the method returns null. The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
      * with "ENDTURN//".
      *
-     * @param history The history String
+     * @param turns The turns String
      * @return An arrayList containing ArrayLists of CardIDs, SenderIDs, TargetIDs and Seeds
      */
-    public ArrayList<ArrayList<String>> readHistory(String history) {
-        if (history.equals("")) {
+    public ArrayList<ArrayList<String[]>> readTurns(String turns){
+        if (turns.equals("")) {
             return null;
         }
-        ArrayList<String> cardIDs = new ArrayList<>();
-        ArrayList<String> senderIDs = new ArrayList<>();
-        ArrayList<String> targetIDs = new ArrayList<>();
-        ArrayList<String> seed = new ArrayList<>();
-        String[] data = history.split("//");
-        for (String string : data) {
-            if (string.equals("ENDTURN")) {
-                cardIDs.add("ENDTURN");
-                senderIDs.add("ENDTURN");
-                targetIDs.add("ENDTURN");
-                seed.add("ENDTURN");
+
+        String[] data = turns.split("//");
+        ArrayList<ArrayList<String[]>> result = new ArrayList<>();
+        ArrayList<String[]> currentTurn = new ArrayList<>();
+        for (String string : data){
+            if(string.equals("ENDTURN")){
+                result.add(currentTurn);
+                currentTurn = new ArrayList<>();
             } else {
                 String[] elements = string.split("&");
                 if (elements.length != 4) {
                     throw new IllegalArgumentException("String is not formatted correctly");
                 }
-                cardIDs.add(elements[0]);
-                senderIDs.add(elements[1]);
-                targetIDs.add(elements[2]);
-                seed.add(elements[3]);
+                currentTurn.add(new String[]{elements[0],elements[2],elements[1],elements[3]});
             }
         }
-        ArrayList<ArrayList<String>> returnArray = new ArrayList<>();
-        returnArray.add(cardIDs);
-        returnArray.add(senderIDs);
-        returnArray.add(targetIDs);
-        returnArray.add(seed);
-        return returnArray;
+
+        return result;
     }
 
 
@@ -106,6 +96,11 @@ public class Connection {
             returnString = returnString + move[0] + "&" + move[2] + "&" + move[1] + "&" + priority + "//";
         }
         return returnString;
+    }
+
+    //TODO
+    public ArrayList<ArrayList<String[]>> getTurns() {
+        return null;
     }
 }
 

@@ -1,5 +1,8 @@
 package com.panic.tdt4240.states;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
@@ -31,6 +34,7 @@ public class PlayCardState extends State {
     private int numPlayedCards;
     private ArrayList<Card> hand;
     private ArrayList<Boolean> selectedCard;
+    private ArrayList<AsteroidConnection> connections;
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
 
@@ -40,6 +44,7 @@ public class PlayCardState extends State {
         this.map = map;
         playedCardsList = new ArrayList<>();
         targets = new ArrayList<>();
+        connections = new ArrayList<>();
 
         playerCount = 2;
         playersAlive = 2;
@@ -104,6 +109,40 @@ public class PlayCardState extends State {
         else if(o instanceof String){
             selectTarget((String) o);
         }
+    }
+    public void addConnection(Asteroid start, Asteroid end, float asteroidWidth, float asteroidHeight, float tableHeight){
+        if(notConnected(start.getId(), end.getId())){
+            AsteroidConnection connection = new AsteroidConnection(
+                    new Vector2(start.getPosition().x *(Gdx.graphics.getWidth() - asteroidWidth) + asteroidWidth/2,
+                            start.getPosition().y *(Gdx.graphics.getHeight() - tableHeight - asteroidHeight) + tableHeight
+                                    + asteroidHeight/2),
+                    new Vector2(end.getPosition().x *(Gdx.graphics.getWidth() - asteroidWidth) + asteroidWidth/2,
+                            end.getPosition().y *(Gdx.graphics.getHeight() - tableHeight - asteroidHeight) + tableHeight
+                                    + asteroidHeight/2),
+                    start.getId(), end.getId());
+            connections.add(connection);
+        }
+    }
+    private boolean notConnected(String startID, String endID){
+        for(AsteroidConnection connection: connections){
+            if(connection.startID.equals(endID) && connection.endID.equals(startID)){
+                return false;
+            }
+            else if(connection.startID.equals(startID) && connection.endID.equals(endID)){
+                return false;
+            }
+        }
+        return true;
+    }
+    public ArrayList<Vector2[]> getConnections(){
+        ArrayList<Vector2[]> lines = new ArrayList<>();
+        for(AsteroidConnection connection : connections){
+            Vector2[] line = new Vector2[2];
+            line[0] = connection.start;
+            line[1] = connection.end;
+            lines.add(line);
+        }
+        return lines;
     }
 
     /**
@@ -184,6 +223,19 @@ public class PlayCardState extends State {
     @Override
     public void dispose() {
         playView.dispose();
+    }
+
+    private class AsteroidConnection {
+        private Vector2 start;
+        private Vector2 end;
+        private String startID;
+        private String endID;
+        private AsteroidConnection(Vector2 start, Vector2 end, String startID, String endID){
+            this.start = start;
+            this.startID = startID;
+            this.end = end;
+            this.endID = endID;
+        }
     }
 
 }

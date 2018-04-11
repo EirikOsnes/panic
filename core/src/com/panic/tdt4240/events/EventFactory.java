@@ -42,6 +42,7 @@ public class EventFactory {
         Event e = new Event(Event.Type.TIMING, targetID, instigatorID);
         e.setTiming(StatusHandler.TimingType.CARD_PLAYED);
         eb.postEvent(e);
+        events.add(e);
         return events;
     }
 

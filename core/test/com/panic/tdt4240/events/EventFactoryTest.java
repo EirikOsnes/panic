@@ -47,14 +47,18 @@ public class EventFactoryTest {
         when(c.getCardEffects()).thenReturn(ceList);
 
         ArrayList<Event> events = EventFactory.postEventsFromCard(c, TARGET, INSTIGATOR);
-        Event e = events.get(0);
-        assertEquals(TARGET, e.getTargetID());
-        assertEquals(INSTIGATOR, e.getInstigatorID());
-        assertEquals(DURATION, e.getDuration());
-        assertEquals(VALUE, e.getEffectValue(), 0.0001);
-        assertEquals(FRIENDLY, e.isFriendlyFire());
-        assertEquals(STATUS, e.getStatus());
-        e = events.get(1);
+        Event e = null;
+        int i;
+        for (i = 0; i < events.size()-1; i++) {
+            e = events.get(i);
+            assertEquals(TARGET, e.getTargetID());
+            assertEquals(INSTIGATOR, e.getInstigatorID());
+            assertEquals(DURATION, e.getDuration());
+            assertEquals(VALUE, e.getEffectValue(), 0.0001);
+            assertEquals(FRIENDLY, e.isFriendlyFire());
+            assertEquals(STATUS, e.getStatus());
+        }
+        e = events.get(i);
         assertEquals(TARGET, e.getTargetID());
         assertEquals(INSTIGATOR, e.getInstigatorID());
         assertEquals(Event.Type.TIMING, e.getT());

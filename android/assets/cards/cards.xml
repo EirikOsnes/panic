@@ -56,6 +56,24 @@
         </card_effect>
     </card>
 
+    <card id = "REPAIR">
+        <name>Repair kit</name>
+        <priority>8</priority>
+        <type_id>STATUS</type_id>
+        <target_type>VEHICLE</target_type>
+        <allowed_targets>PLAYER</allowed_targets>
+        <min_range>0</min_range>
+        <max_range>0</max_range>
+        <tooltip>Repair your vehicle. Heal by 25 health.</tooltip>
+        <card_effect>
+            <target_status>health</target_status>
+            <value>25</value>
+            <status_duration>-1</status_duration>
+            <splash_range>0</splash_range>
+            <friendly_fire>true</friendly_fire>
+        </card_effect>
+    </card>
+
     <card id = "HYPER">
         <name>Engage Hyperdrive</name>
         <priority>8</priority>

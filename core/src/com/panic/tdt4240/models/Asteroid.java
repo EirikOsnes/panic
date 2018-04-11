@@ -2,6 +2,7 @@ package com.panic.tdt4240.models;
 
 
 import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.events.EventBus;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -9,14 +10,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.util.StatusHandler;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * The Asteroid model.
  */
 
 
-public class Asteroid implements EventListener{
+public class Asteroid implements EventListener, Comparable<Asteroid>{
   
     private String id;
     private StatusHandler statusHandler;
@@ -26,9 +29,10 @@ public class Asteroid implements EventListener{
     private ArrayList<String> vehicleIDs;
 
 
-    public Asteroid(Sprite sprite) {
+    public Asteroid(Sprite sprite, String id) {
         EventBus.getInstance().addListener(this);
         this.sprite = sprite;
+        this.id = id;
         neighbours = new ArrayList<>();
         statusHandler = new StatusHandler(this);
         position = new Vector2();
@@ -130,10 +134,27 @@ public class Asteroid implements EventListener{
         else if (e.getT() == Event.Type.ATTACK && e.getTargetID().equals(this.id)) {
             for (String vid : vehicleIDs) {
                 if (e.isFriendlyFire() || !vid.equals(e.getInstigatorID())) {
-                    Event newEvent = e.cloneEvent(vid);
-                    EventBus.getInstance().postEvent(newEvent);
+                    EventFactory.postClonedEvent(e, vid);
+                }
+                if (e.isSplashDamage()) {
+                    Map map = GameModelHolder.getInstance().getMap();
+                    map.generateAdjacencyMatrix();
+                    int[][] adjacency = map.getAdjacency();
+                    int index = Integer.parseInt(id.substring(2)) - 1;
+                    int[] neighbours = adjacency[index];
+                    for (int i = 0; i < neighbours.length; i++) {
+                        String nid = map.getAsteroids().get(i).id;
+                        if (!id.equalsIgnoreCase(nid) && e.getSplashRange() >= neighbours[i]) {
+                            e.cloneEvent(nid);
+                        }
+                    }
                 }
             }
         }
+    }
+
+    @Override
+    public int compareTo(Asteroid asteroid) {
+        return this.id.compareTo(asteroid.id);
     }
 }

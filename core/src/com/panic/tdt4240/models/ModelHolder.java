@@ -8,17 +8,28 @@ import java.util.HashMap;
 /**
  * Created by Choffa for panic on 06-Apr-18.
  * On permission can be used outside panic.
+ * This class loads and holds all the models defined in xml
+ * and should be initialised on startup
  */
 public class ModelHolder {
 
-    private static ModelHolder mh;
+    private static ModelHolder mh = new ModelHolder();
 
     private static ArrayList<Card> cards;
     private static HashMap<String, Card> cardMap;
     private static ArrayList<Vehicle> vehicles;
     private static ArrayList<Map> maps;
 
-    private ModelHolder(){}
+    private ModelHolder() {
+        XMLParser parser = new XMLParser();
+        cardMap = new HashMap<>();
+        cards = parser.parseCards();
+        for (Card card : cards) {
+            cardMap.put(card.getId(),card);
+        }
+        maps = parser.parseMaps();
+        vehicles = parser.parseVehicles();
+    }
 
     public Card getCardById(String id) {
         return cardMap.get(id);
@@ -57,20 +68,6 @@ public class ModelHolder {
     }
 
     public static ModelHolder getInstance() {
-        if (mh == null) {
-            mh = new ModelHolder();
-            XMLParser parser = new XMLParser();
-            cardMap = new HashMap<>();
-
-            // TODO: Change to actual path
-            String base = "android/assets/";
-            cards = parser.parseCards();
-            for (Card card : cards) {
-                cardMap.put(card.getId(),card);
-            }
-            maps = parser.parseMaps();
-            vehicles = parser.parseVehicles();
-        }
         return mh;
     }
 }

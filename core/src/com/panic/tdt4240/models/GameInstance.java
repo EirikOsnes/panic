@@ -73,6 +73,25 @@ public class GameInstance {
         return null;
     }
 
+    public Vehicle getVehicleById(String ID){
+        for (Vehicle v : vehicles) {
+            if(v.getVehicleID().equalsIgnoreCase(ID))
+                return v;
+        }
+
+        return null;
+    }
+
+    public Asteroid getAsteroidById(String ID){
+        for (Asteroid a : asteroids) {
+            if(a.getId().equalsIgnoreCase(ID))
+                return a;
+        }
+
+        return null;
+    }
+
+
     public void setVehicles(ArrayList<Vehicle> vehicles) {
         this.vehicles = vehicles;
     }
@@ -81,6 +100,10 @@ public class GameInstance {
         gi = new GameInstance();
     }
 
+    /**
+     * Play out a turn. This method will create all events and check targeting.
+     * @param playedCards An ArrayList of String[]. Each String[] represents 1 card, on the form {CardID, targetID, instigatorID, seed}.
+     */
     public void playTurn(ArrayList<String[]> playedCards){
 
         EventFactory.postNewTurnEvent();
@@ -89,18 +112,26 @@ public class GameInstance {
         Random random = new Random(seed);
         for (String[] s : playedCards) {
             Card card = ModelHolder.getInstance().getCardById(s[0]);
+            float multiplier = 1;
+            if (card.getCardType() == Card.CardType.ATTACK){
+                if (s[2].charAt(0)=='A'){
+                    multiplier = getAsteroidById(s[2]).getStatusHandler().getDamageModifier();
+                }else if(s[2].charAt(0)=='V'){
+                    multiplier = getVehicleById(s[2]).getStatusHandler().getDamageModifier();
+                }
+            }
             ArrayList<String> validTargets = getAllValidTargets(card, s[2]);
             if(validTargets.contains(s[1])){
-                EventFactory.postEventsFromCard(card,s[1],s[2]);
+                EventFactory.postEventsFromCard(card,s[1],s[2],multiplier);
             }
             else {
                 if(validTargets.size()>0) {
                     int index = random.nextInt(validTargets.size());
-                    EventFactory.postEventsFromCard(card,validTargets.get(index),s[2]);
+                    EventFactory.postEventsFromCard(card,validTargets.get(index),s[2],multiplier);
                 }
 
                 else{
-                    //FIXME: No valid targets - how to make the card go away? For visuals.
+                    //TODO: No valid targets - how to make the card go away? For visuals.
                 }
 
             }
@@ -112,6 +143,7 @@ public class GameInstance {
     private ArrayList<String> getAllValidTargets(Card card, String instigatorID){
         ArrayList<String> result = new ArrayList<>();
 
+        //Find the asteroid the instigator is located at - for range checks
         String startPosition = instigatorID;
         if(instigatorID.charAt(0) == 'A'){
             startPosition = instigatorID;
@@ -123,17 +155,30 @@ public class GameInstance {
             }
         }
 
+        //Find the applicable adjacency row.
         int[][] adjacency = gi.getMap().getAdjacency();
         int index = Integer.parseInt(startPosition.substring(2))-1;
         int[] neighbours = adjacency[index];
 
+        //Get min and max range
+        float minRange = card.getMinRange();
+        float maxRange = card.getMaxRange();
+
+        //If the card is a movement card, check for the vehicles movement modifier.
+        if (card.getCardType() == Card.CardType.MOVEMENT && instigatorID.charAt(0)=='V'){
+            minRange = Math.min(minRange,minRange*getVehicleById(instigatorID).getStatusHandler().getMovementModifier());
+            maxRange = maxRange*getVehicleById(instigatorID).getStatusHandler().getMovementModifier();
+        }
+
+        //Create list of all asteroids within range
         ArrayList<Asteroid> validAsteroids = new ArrayList<>();
         for (int i = 0; i < neighbours.length; i++) {
-            if(neighbours[i]>=card.getMinRange() && neighbours[i]<=card.getMaxRange()){
+            if(neighbours[i]>=minRange && neighbours[i]<=maxRange){
                 validAsteroids.add(gi.getMap().getAsteroids().get(i));
             }
         }
 
+        //If target is an asteroid, all asteroids within range will be valid targets
         if(card.getTargetType() == Card.TargetType.ASTEROID){
             for (Asteroid asteroid : validAsteroids) {
                 result.add(asteroid.getId());
@@ -141,19 +186,29 @@ public class GameInstance {
             return result;
         }
 
+        //If target is a vehicle, we have to add all vehicles on them to the valid targets list
         if(card.getTargetType() == Card.TargetType.VEHICLE){
             for (Asteroid asteroid : validAsteroids) {
                 result.addAll(asteroid.getVehicles());
             }
 
+            //If all vehicles are targetable, just return all the vehicles
             if(card.getAllowedTarget() == Card.AllowedTarget.ALL){
                 return result;
             }
+            //If the player is a valid target and the card targets only the player, return a list containing only the player.
             else if(card.getAllowedTarget() == Card.AllowedTarget.PLAYER && result.contains(instigatorID)){
                 result = new ArrayList<>();
                 result.add(instigatorID);
                 return result;
-            }else if(card.getAllowedTarget() == Card.AllowedTarget.ENEMY){
+            }
+            //TargetType is PLAYER, but the player is not a valid target for the card - return an empty array of valid targets.
+            else if(card.getAllowedTarget() == Card.AllowedTarget.PLAYER && !result.contains(instigatorID)){
+                result = new ArrayList<>();
+                return result;
+            }
+            //Target cannot be the player, remove the player from the result array.
+            else if(card.getAllowedTarget() == Card.AllowedTarget.ENEMY){
                 result.remove(instigatorID);
                 return result;
             }

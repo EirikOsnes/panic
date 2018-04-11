@@ -7,6 +7,7 @@ import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.events.EventBus;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.util.IStatusAble;
 import com.panic.tdt4240.util.StatusHandler;
 
 import java.util.ArrayList;
@@ -14,12 +15,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 
+
 /**
  * The Asteroid model.
  */
 
 
-public class Asteroid implements EventListener, Comparable<Asteroid>{
+public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> {
+
   
     private String id;
     private StatusHandler statusHandler;
@@ -27,6 +30,7 @@ public class Asteroid implements EventListener, Comparable<Asteroid>{
     private ArrayList<Asteroid> neighbours;
     private Vector2 position;
     private ArrayList<String> vehicleIDs;
+    private boolean isDestroyed = false;
 
 
     public Asteroid(Sprite sprite, String id) {
@@ -96,6 +100,10 @@ public class Asteroid implements EventListener, Comparable<Asteroid>{
         return neighbours.contains(asteroid);
     }
 
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
     public StatusHandler getStatusHandler() {
         return statusHandler;
     }
@@ -151,6 +159,18 @@ public class Asteroid implements EventListener, Comparable<Asteroid>{
                 }
             }
         }
+
+        if(e.getT() == Event.Type.DESTROYED){
+            if (this.vehicleIDs.contains(e.getTargetID())){
+                this.removeVehicle(e.getTargetID());
+            }
+        }
+    }
+
+    public void destroy(){
+        isDestroyed = true;
+        EventFactory.postDestroyedEvent(id,id);
+        EventBus.getInstance().removeListener(this);
     }
 
     @Override

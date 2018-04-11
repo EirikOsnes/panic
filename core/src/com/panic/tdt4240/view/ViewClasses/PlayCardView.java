@@ -49,7 +49,6 @@ public class PlayCardView extends AbstractView{
     private ShapeRenderer sr;
     private TextButton finishedButton;
 
-    //TODO Anvende cardtype, lage bilde basert på hvilken type
     public PlayCardView(final PlayCardState state){
         super(state);
         map = state.map;
@@ -138,7 +137,7 @@ public class PlayCardView extends AbstractView{
     /**
      * Method for setting up the map with listeners on each asteroid and vehicle
      */
-    //TODO Lagre alle vehicles i stage, bestemme posisjon, legge til listeners, knapp for å gjøre seg ferdig med runden
+    //TODO Lagre alle vehicles i stage, bestemme posisjon, legge til listeners
     private void setUpMap(){
         final ArrayList<Asteroid> asteroids = map.getAsteroids();
         ArrayList<String> vehicles = new ArrayList<>();
@@ -180,6 +179,7 @@ public class PlayCardView extends AbstractView{
             }
         }
     }
+
     private boolean notConnected(String startID, String endID){
         for(AsteroidConnection connection: connections){
             if(connection.startID.equals(endID) && connection.endID.equals(startID)){
@@ -190,6 +190,18 @@ public class PlayCardView extends AbstractView{
             }
         }
         return true;
+    }
+    private class AsteroidConnection {
+        private Vector2 start;
+        private Vector2 end;
+        private String startID;
+        private String endID;
+        private AsteroidConnection(Vector2 start, Vector2 end, String startID, String endID){
+            this.start = start;
+            this.startID = startID;
+            this.end = end;
+            this.endID = endID;
+        }
     }
 
     /**
@@ -232,17 +244,5 @@ public class PlayCardView extends AbstractView{
         renderer.dispose();
     }
 
-    private class AsteroidConnection {
-        private Vector2 start;
-        private Vector2 end;
-        private String startID;
-        private String endID;
-        private AsteroidConnection(Vector2 start, Vector2 end, String startID, String endID){
-            this.start = start;
-            this.startID = startID;
-            this.end = end;
-            this.endID = endID;
-        }
-    }
 
 }

@@ -1,7 +1,5 @@
 package com.panic.tdt4240.states;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
@@ -82,7 +80,7 @@ public class MenuState extends State {
                 card.setCardType(Card.CardType.EFFECT);
             }
             else{
-                card.setCardType(Card.CardType.DEFENSE);
+                card.setCardType(Card.CardType.DEFENCE);
             }
             cards.push(card);
         }

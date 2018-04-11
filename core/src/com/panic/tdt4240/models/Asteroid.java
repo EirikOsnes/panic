@@ -2,6 +2,7 @@ package com.panic.tdt4240.models;
 
 
 import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.events.EventBus;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -130,8 +131,7 @@ public class Asteroid implements EventListener{
         else if (e.getT() == Event.Type.ATTACK && e.getTargetID().equals(this.id)) {
             for (String vid : vehicleIDs) {
                 if (e.isFriendlyFire() || !vid.equals(e.getInstigatorID())) {
-                    Event newEvent = e.cloneEvent(vid);
-                    EventBus.getInstance().postEvent(newEvent);
+                    EventFactory.postClonedEvent(e, vid);
                 }
             }
         }

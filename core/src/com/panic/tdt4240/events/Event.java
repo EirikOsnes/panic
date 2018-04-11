@@ -60,6 +60,10 @@ public class Event {
         return targetID;
     }
 
+    public StatusHandler.TimingType getTiming() {
+        return tt;
+    }
+
     public String getRequirementName() {
         return requirementName;
     }
@@ -100,11 +104,12 @@ public class Event {
         this.tt = tt;
     }
 
-    public StatusHandler.TimingType getTiming() {
-        return tt;
-
-    }
-
+    /**
+     * Clones the event giving it a new target. Used when defering events from
+     * asteroids to vehicles
+     * @param targetID  The ID of the new target
+     * @return          The new event
+     */  
     public Event cloneEvent(String targetID) {
         Event e = new Event(this.t, targetID, this.instigatorID);
         e.setStatus(this.status);

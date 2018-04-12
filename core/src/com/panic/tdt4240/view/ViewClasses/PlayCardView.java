@@ -209,6 +209,6 @@ public class PlayCardView extends AbstractView{
         //background.dispose();
         renderer.dispose();
     }
-
+//TODO Større tekst, større asteroider
 
 }

@@ -265,4 +265,34 @@ public class PlayCardState extends State {
         }
     }
 
+    /**
+     * For an asteroid, gives coordinates within asteroid for each car type
+     */
+    private class AsteroidPositions{
+        private float width;
+        private float height;
+
+        private AsteroidPositions(float width, float height){
+            this.width = width;
+            this.height = height;
+        }
+        //Positions clockwise from lower left corner, gives position of the lower left corner
+        private Vector2 getPosition(String colorCar){
+            Vector2 position = new Vector2();
+            if(colorCar.equals("red_car")){
+                position.set(0, 0);
+            }
+            else if(colorCar.equals("green_car")){
+                position.set(0, height/2);
+            }
+            else if(colorCar.equals("yellow_car")){
+                position.set(width/2, height/2);
+            }
+            else if(colorCar.equals("blue_car")){
+                position.set(width/2, 0);
+            }
+            return position;
+        }
+    }
+
 }

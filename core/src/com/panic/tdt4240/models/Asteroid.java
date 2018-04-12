@@ -32,7 +32,7 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
     private ArrayList<String> vehicleIDs;
     private boolean isDestroyed = false;
 
-
+//TODO Asteroid should contain the string of the asteroid image, not the sprite
     public Asteroid(Sprite sprite, String id) {
         EventBus.getInstance().addListener(this);
         this.sprite = sprite;

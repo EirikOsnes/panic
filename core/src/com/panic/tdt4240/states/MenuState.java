@@ -38,8 +38,9 @@ public class MenuState extends State {
             gsm.push(new SettingsState(gsm));
             System.out.println("Settings...");
         }
-    //For testing the PlayCardState class
-        testLobby(gsm);
+
+        // TESTING
+        //        testLobby(gsm);
     }
 
     /** FOR TESTING VIEWS **/

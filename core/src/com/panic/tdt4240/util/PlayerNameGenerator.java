@@ -17,7 +17,7 @@ public class PlayerNameGenerator {
                     "Defamatory Outrage", "Notoriously Thick-headed", "People",
                     "Assaulting Neighbours", "Interstellar Comets",
                     "A... thing", "Oh hi Mark", "It", "Newton's Flaming Laser Sword",
-                    "Rubber Ducky", "win32", ""};
+                    "Rubber Ducky", "win32", };
 
     public static int getCount(){return names.length; }
 

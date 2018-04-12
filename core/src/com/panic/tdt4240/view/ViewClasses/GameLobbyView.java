@@ -60,7 +60,7 @@ public class GameLobbyView extends AbstractView {
         textBtns = new ArrayList<>();
 
         buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
-        skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
+        skin = new Skin(Gdx.files.internal("skins/uiskin.json"), buttonAtlas);
 
         playerBtnStyle = new TextButton.TextButtonStyle();
         playerBtnStyle.font = font;
@@ -102,6 +102,9 @@ public class GameLobbyView extends AbstractView {
         // For shitty testing
         usedNames = new ArrayList<>();
         players = new ArrayList<>();
+        players.add(new Player(new Stack<Card>()));
+        players.add(new Player(new Stack<Card>()));
+        players.add(new Player(new Stack<Card>()));
         players.add(new Player(new Stack<Card>()));
         players.add(new Player(new Stack<Card>()));
         players.add(new Player(new Stack<Card>()));
@@ -148,17 +151,18 @@ public class GameLobbyView extends AbstractView {
     private void preparePlayerList(){
         int counted = 0;
         String name;
-        while (counted < players.size()-1){
-            int rand = (int) Math.random() * (PlayerNameGenerator.getCount()-1);
-            name = PlayerNameGenerator.getName(rand);
+        while (true){
+            if (counted >= players.size()) break;
+            double seed = Math.floor(Math.random() * PlayerNameGenerator.getCount());
+            name = PlayerNameGenerator.getName((int) seed);
             if (! usedNames.contains(name)) {
                 TextButton button = new TextButton(
                         name, playerBtnStyle);
                 textBtns.add(button);
-                System.out.println(counted);
+                counted++;
                 usedNames.add(name);
+                System.out.println(counted);
             }
-            else System.out.println(name);
         }
 
     }

@@ -64,13 +64,13 @@ public class GameLobbyView extends AbstractView {
 
         playerBtnStyle = new TextButton.TextButtonStyle();
         playerBtnStyle.font = font;
-        playerBtnStyle.up = skin.getDrawable("button-up");
-        playerBtnStyle.down = skin.getDrawable("button-up");
+        playerBtnStyle.up = skin.getDrawable("button_up");
+        playerBtnStyle.down = skin.getDrawable("button_up");
 
         exitBtnStyle = new TextButton.TextButtonStyle();
         exitBtnStyle.font = font;
-        exitBtnStyle.up = skin.getDrawable("button-up");
-        exitBtnStyle.down = skin.getDrawable("button-down");
+        exitBtnStyle.up = skin.getDrawable("button_up");
+        exitBtnStyle.down = skin.getDrawable("button_down");
 
         playerBtn = new TextButton("", playerBtnStyle);
         launchGameBtn = new TextButton("", exitBtnStyle);

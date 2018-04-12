@@ -2,34 +2,43 @@ package com.panic.tdt4240.models;
 
 
 import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.events.EventBus;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.util.IStatusAble;
+import com.panic.tdt4240.util.StatusHandler;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Locale;
+
 
 /**
- * Created by Eirik on 05-Mar-18.
+ * The Asteroid model.
  */
 
 
-public class Asteroid implements EventListener{
+public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> {
+
   
     private String id;
-    private HashMap<String,Object> statuses;
+    private StatusHandler statusHandler;
     private Sprite sprite;
     private ArrayList<Asteroid> neighbours;
     private Vector2 position;
     private ArrayList<String> vehicleIDs;
+    private boolean isDestroyed = false;
 
 
-    public Asteroid(Sprite sprite) {
+    public Asteroid(Sprite sprite, String id) {
         EventBus.getInstance().addListener(this);
         this.sprite = sprite;
+        this.id = id;
         neighbours = new ArrayList<>();
-        statuses = new HashMap<>();
+        statusHandler = new StatusHandler(this);
         position = new Vector2();
         vehicleIDs = new ArrayList<>();
     }
@@ -43,15 +52,6 @@ public class Asteroid implements EventListener{
         neighbours.add(asteroid);
         asteroid.neighbours.add(this);
         return asteroid;
-    }
-
-    /**
-     * Adds a status to the asteroid. The statuses are stored within the status hashmap
-     * @param key The identity of the status
-     * @param effect The definition of the status to be added
-     */
-    public void addStatus(String key, Object effect){
-        statuses.put(key,effect);
     }
 
     /**
@@ -100,8 +100,12 @@ public class Asteroid implements EventListener{
         return neighbours.contains(asteroid);
     }
 
-    public HashMap<String, Object> getStatuses() {
-        return statuses;
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
+    public StatusHandler getStatusHandler() {
+        return statusHandler;
     }
 
     public Sprite getSprite() {
@@ -138,10 +142,39 @@ public class Asteroid implements EventListener{
         else if (e.getT() == Event.Type.ATTACK && e.getTargetID().equals(this.id)) {
             for (String vid : vehicleIDs) {
                 if (e.isFriendlyFire() || !vid.equals(e.getInstigatorID())) {
-                    Event newEvent = e.cloneEvent(vid);
-                    EventBus.getInstance().postEvent(newEvent);
+                    EventFactory.postClonedEvent(e, vid);
+                }
+                if (e.isSplashDamage()) {
+                    Map map = GameModelHolder.getInstance().getMap();
+                    map.generateAdjacencyMatrix();
+                    int[][] adjacency = map.getAdjacency();
+                    int index = Integer.parseInt(id.substring(2)) - 1;
+                    int[] neighbours = adjacency[index];
+                    for (int i = 0; i < neighbours.length; i++) {
+                        String nid = map.getAsteroids().get(i).id;
+                        if (!id.equalsIgnoreCase(nid) && e.getSplashRange() >= neighbours[i]) {
+                            e.cloneEvent(nid);
+                        }
+                    }
                 }
             }
         }
+
+        if(e.getT() == Event.Type.DESTROYED){
+            if (this.vehicleIDs.contains(e.getTargetID())){
+                this.removeVehicle(e.getTargetID());
+            }
+        }
+    }
+
+    public void destroy(){
+        isDestroyed = true;
+        EventFactory.postDestroyedEvent(id,id);
+        EventBus.getInstance().removeListener(this);
+    }
+
+    @Override
+    public int compareTo(Asteroid asteroid) {
+        return this.id.compareTo(asteroid.id);
     }
 }

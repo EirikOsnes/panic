@@ -1,5 +1,7 @@
 package com.panic.tdt4240.util;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
@@ -36,10 +38,10 @@ public class XMLParser {
         ArrayList<Card> result = new ArrayList<>();
 
         try {
-            File inputFile = new File(path);
+            FileHandle inputFile = Gdx.files.internal(path);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = dbFactory.newDocumentBuilder();
-            Document doc = builder.parse(inputFile);
+            Document doc = builder.parse(inputFile.read());
             doc.getDocumentElement().normalize();
             System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
             NodeList nList = doc.getElementsByTagName("card");
@@ -91,19 +93,27 @@ public class XMLParser {
     }
 
     /**
+     * Create ALL cards in an XML file, and return these in an ArrayList.
+     * @return Returns an ArrayList of Cards.
+     */
+    public ArrayList<Card> parseCards(){
+        return parseCards("cards/card_test.xml");
+    }
+
+    /**
      * Create an array of Maps from an XML file, by passing in the path to this file. The Maps will already be set up with neighbourhood matrix.
      * @param path The path to the XML file to use.
-     * @return Returns an instantiated Map, with neighbourhood matrix finalized.
+     * @return Returns an ArrayList of instantiated Maps, with neighbourhood matrix finalized.
      */
     public ArrayList<Map> parseMaps(String path){
 
         ArrayList<Map> result = new ArrayList<>();
 
         try {
-            File inputFile = new File(path);
+            FileHandle file = Gdx.files.internal(path);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(inputFile);
+            Document doc = builder.parse(file.read());
             doc.getDocumentElement().normalize();
 
             NodeList mapList = doc.getElementsByTagName("map");
@@ -123,15 +133,14 @@ public class XMLParser {
 
                         if (node.getNodeType() == Node.ELEMENT_NODE) {
                             Element element = (Element) node;
-                            Asteroid myAsteroid = new Asteroid(null);
+                            String asteroidId = element.getAttribute("id");
+                            Asteroid myAsteroid = new Asteroid(null, asteroidId);
                             //TODO: Sprite should be separated
-                            String AsteroidId = element.getAttribute("id");
-                            myAsteroid.setId(AsteroidId);
                             myAsteroid.setPosition(new Vector2(
                                     Float.parseFloat(element.getElementsByTagName("posX").item(0).getTextContent()),
                                     Float.parseFloat(element.getElementsByTagName("posY").item(0).getTextContent())
                             ));
-                            asteroidHashMap.put(AsteroidId, myAsteroid);
+                            asteroidHashMap.put(asteroidId, myAsteroid);
                         }
                     }
 
@@ -160,6 +169,14 @@ public class XMLParser {
         return result;
     }
 
+    /**
+     * Create an array of Maps from an XML file, by passing in the path to this file. The Maps will already be set up with neighbourhood matrix.
+     * @return Returns an ArrayList of instantiated Maps, with neighbourhood matrix finalized.
+     */
+    public ArrayList<Map> parseMaps() {
+        return parseMaps("maps/maps.xml");
+    }
+
 
     /**
      * A method to create Vehicle objects from an xml.
@@ -170,10 +187,10 @@ public class XMLParser {
         ArrayList<Vehicle> result = new ArrayList<>();
 
         try {
-            File inputFile = new File(path);
+            FileHandle inputFile = Gdx.files.internal(path);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(inputFile);
+            Document doc = builder.parse(inputFile.read());
             doc.getDocumentElement().normalize();
             NodeList nodeList = doc.getElementsByTagName("vehicle");
 
@@ -204,6 +221,14 @@ public class XMLParser {
     }
 
     /**
+     * A method to create Vehicle objects from an xml.
+     * @return Returns an ArrayList of possible vehicles.
+     */
+    public ArrayList<Vehicle> parseVehicles(){
+        return parseVehicles("vehicles/vehicle_test.xml");
+    }
+
+    /**
      * parse the Stack of cards related to the given vehicle type. The stack will be empty if no such deck is defined.
      * @param path The path to the decks
      * @param vehicleType The vehicle type
@@ -213,10 +238,10 @@ public class XMLParser {
         Stack<Card> result = new Stack<>();
 
         try {
-            File inputFile = new File(path);
+            FileHandle inputFile = Gdx.files.internal(path);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(inputFile);
+            Document doc = builder.parse(inputFile.read());
             doc.getDocumentElement().normalize();
             NodeList nodeList = doc.getElementsByTagName("deck");
 
@@ -244,6 +269,15 @@ public class XMLParser {
 
 
         return result;
+    }
+
+    /**
+     * parse the Stack of cards related to the given vehicle type. The stack will be empty if no such deck is defined.
+     * @param vehicleType The vehicle type
+     * @return Returns a Stack<Card> that is related to the given vehicle (will add all cards from all decks at this point)
+     */
+    public Stack<Card> parseCardStack(String vehicleType){
+        return parseCardStack("decks/deck_test.xml",vehicleType);
     }
 
 }

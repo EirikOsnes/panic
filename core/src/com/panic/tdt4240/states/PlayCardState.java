@@ -1,5 +1,8 @@
 package com.panic.tdt4240.states;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
@@ -16,13 +19,10 @@ import static com.panic.tdt4240.models.Card.TargetType.VEHICLE;
  */
 
 public class PlayCardState extends State {
-
+    //H: 1794, W 1080
     private PlayCardView playView;
     public Player player;
     public Map map;
-    private boolean gameFinished;
-    private int playerCount;
-    private int playersAlive;
     //Order of cards that are played
     private ArrayList<Card> playedCardsList;
     //Targets for each card
@@ -31,6 +31,7 @@ public class PlayCardState extends State {
     private int numPlayedCards;
     private ArrayList<Card> hand;
     private ArrayList<Boolean> selectedCard;
+    private ArrayList<AsteroidConnection> connections;
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
 
@@ -40,9 +41,7 @@ public class PlayCardState extends State {
         this.map = map;
         playedCardsList = new ArrayList<>();
         targets = new ArrayList<>();
-
-        playerCount = 2;
-        playersAlive = 2;
+        connections = new ArrayList<>();
 
         hand = player.playCards();
         selectedCard = new ArrayList<>(hand.size());
@@ -85,7 +84,7 @@ public class PlayCardState extends State {
                 } else {
                     playView.cardInfo.setText("");
                 }
-                playView.clickedButton(cardIndex, false);
+                playView.clickedButton(cardIndex, 0);
                 numPlayedCards--;
             }
             //Checks if the max amount of cards already have been played
@@ -95,7 +94,7 @@ public class PlayCardState extends State {
                     playedCardsList.add(hand.get(cardIndex));
                     selectedCard.set(cardIndex, true);
                     playView.cardInfo.setText(hand.get(cardIndex).getTooltip());
-                    playView.clickedButton(cardIndex, true);
+                    playView.clickedButton(cardIndex, 1);
                     numPlayedCards++;
                     playView.selectTarget = true;
                 }
@@ -104,6 +103,61 @@ public class PlayCardState extends State {
         else if(o instanceof String){
             selectTarget((String) o);
         }
+    }
+
+    /**
+     * Adds connection between two asteroids on the map, if it doesn't already exist
+     * @param start asteroid id
+     * @param end asteroid id
+     * @param asteroidWidth width of sprite, for calculating center
+     * @param asteroidHeight height of sprite, for calculating center
+     * @param tableHeight height of table, for calculating buffer height
+     */
+    public void addConnection(Asteroid start, Asteroid end, float asteroidWidth, float asteroidHeight, float tableHeight){
+        if(notConnected(start.getId(), end.getId())){
+            AsteroidConnection connection = new AsteroidConnection(
+                    //Calculation of center point of the asteroids, see setUpMap() in PlayCardView
+                    new Vector2(start.getPosition().x *(Gdx.graphics.getWidth() - asteroidWidth) + asteroidWidth/2,
+                            start.getPosition().y *(Gdx.graphics.getHeight() - tableHeight - asteroidHeight) + tableHeight
+                                    + asteroidHeight/2),
+                    new Vector2(end.getPosition().x *(Gdx.graphics.getWidth() - asteroidWidth) + asteroidWidth/2,
+                            end.getPosition().y *(Gdx.graphics.getHeight() - tableHeight - asteroidHeight) + tableHeight
+                                    + asteroidHeight/2),
+                    start.getId(), end.getId());
+            connections.add(connection);
+        }
+    }
+
+    /**
+     * Checks if an equivalent connection has already been added
+     * @param startID start asteroid
+     * @param endID end asteroid
+     * @return whether this connection already exists
+     */
+    private boolean notConnected(String startID, String endID){
+        for(AsteroidConnection connection: connections){
+            if(connection.startID.equals(endID) && connection.endID.equals(startID)){
+                return false;
+            }
+            else if(connection.startID.equals(startID) && connection.endID.equals(endID)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @return array of start and endpoints of connecting lines between asteroids
+     */
+    public ArrayList<Vector2[]> getConnections(){
+        ArrayList<Vector2[]> lines = new ArrayList<>();
+        for(AsteroidConnection connection : connections){
+            Vector2[] line = new Vector2[2];
+            line[0] = connection.start;
+            line[1] = connection.end;
+            lines.add(line);
+        }
+        return lines;
     }
 
     /**
@@ -116,6 +170,7 @@ public class PlayCardState extends State {
     private void selectTarget(String s){
         if(justClicked > -1 && validTarget(s)){
             targets.add(s);
+            playView.clickedButton(justClicked, -1);
             justClicked = -1;
             playView.selectTarget = false;
         }
@@ -125,12 +180,29 @@ public class PlayCardState extends State {
     }
 
     /**
+     * Should be called when the card selection is done
+     */
+    public void finishRound(){
+        ArrayList<String[]> result = getCardsAndTargets();
+
+    }
+
+    /**
+     * Converts enum cardtype to string, ATTACK -> "attack"
+     * @param i cardID
+     * @return lowercase string of cardtype
+     */
+    public String getCardType(int i){
+        return hand.get(i).getCardType().name().toLowerCase();
+    }
+
+    /**
      * Method for determining validity of target
      * @param targetID asteroid or vehicle id of the target
      * @return whether the target is a valid targer
      */
     private boolean validTarget(String targetID){
-        String attackType = targetID.substring(0,1);
+        String attackType = targetID.substring(0,1).toLowerCase();
         //If the target is an asteroid
         if(attackType.equals("a")){
             return playedCardsList.get(numPlayedCards-1).getTargetType().equals(ASTEROID);
@@ -163,16 +235,12 @@ public class PlayCardState extends State {
 
     @Override
     public void update(float dt) {
-        // TODO: pass appropriate data to gameresults (which then passes to view)
-        // e.g. winner=null, if all players left the lobby.
-        //if (playerCount < 2) gsm.push(new GameResultsState(gsm));
-        //if (playersAlive==1) gsm.push(new GameResultsState(gsm));
+
     }
 
     @Override
     public void render() {
         playView.render();
-
     }
 
     @Override
@@ -180,5 +248,21 @@ public class PlayCardState extends State {
         playView.dispose();
     }
 
+    /**
+     * Class for keeping track of connections between asteroids, for rendering in PlayCardView
+     * Has id for start and end asteroid, and their coordinates
+     */
+    private class AsteroidConnection {
+        private Vector2 start;
+        private Vector2 end;
+        private String startID;
+        private String endID;
+        private AsteroidConnection(Vector2 start, Vector2 end, String startID, String endID){
+            this.start = start;
+            this.startID = startID;
+            this.end = end;
+            this.endID = endID;
+        }
+    }
 
 }

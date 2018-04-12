@@ -1,7 +1,5 @@
 package com.panic.tdt4240.states;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
@@ -71,6 +69,20 @@ public class MenuState extends State {
         for (int i = 0; i < 10; i++) {
             Card card = new Card(i + "");
             card.setTooltip("Card nr:" + i + "\nSomething else............\nabcdefghijklmnopqrstuvwxyz");
+            card.setTargetType(Card.TargetType.ASTEROID);
+            card.setAllowedTarget(Card.AllowedTarget.ALL);
+            if(i == 9){
+                card.setCardType(Card.CardType.ATTACK);
+            }
+            else if(i == 8){
+                card.setCardType(Card.CardType.MOVEMENT);
+            }
+            else if(i == 7){
+                card.setCardType(Card.CardType.EFFECT);
+            }
+            else{
+                card.setCardType(Card.CardType.DEFENCE);
+            }
             cards.push(card);
         }
         Player player = new Player(cards);

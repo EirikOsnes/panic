@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 public class GameListState extends State {
 
-    GameListView view;
-    ArrayList<Lobby> lobbies;
+    private GameListView view;
+    private ArrayList<Lobby> lobbies;
     private static String err_full_lobby = "Error: full lobby.";
     private static String err_lobby404 = "Error: lobby not found.";
 
@@ -39,6 +39,10 @@ public class GameListState extends State {
     @Override
     public void handleInput(Object o) {
         // when a lobby is clicked, enter it.
+        if (o.getClass() == Lobby.class){
+            updateLobbyList();
+            Lobby lob = (Lobby) o;
+        }
         if (o == 1){
             view.dispose();
             gsm.pop();
@@ -50,7 +54,6 @@ public class GameListState extends State {
                 }
                 //TODO: connect with actual Lobby objects instead - use
                 else{
-                    connectToLobby((Lobby) o);
                 }
             } catch(Exception e){
 

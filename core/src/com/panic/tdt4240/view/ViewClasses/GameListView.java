@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -62,29 +64,34 @@ public class GameListView extends AbstractView {
         btnStyle.up = skin.getDrawable("button_up");
         btnStyle.down = skin.getDrawable("button_up");
 
-        scroller = new ScrollPane(table);
-
-
-        String info;
 
         table.setFillParent(true);
         table.center();
 
+        /**  // ACTUAL CODE BLOCK; disable when testing. /**/
+
+        String info;
         for (int i = 0; i < listState.getLobbies().size(); i++){
-            final Lobby l = listState.getLobbies().get(i);
-            info = l.toString();
+            final Lobby lobby = listState.getLobbies().get(i);
+            info = lobby.toString();
             TextButton button = new TextButton(info, btnStyle);
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    state.handleInput(l.getLobbyID());
+                    state.handleInput(lobby);
                 }
             });
             table.add(button); table.row();
         }
         /**/
 
-        table.add(scroller).fill().expand();
+        /** TESTING THIS VIEW */
+
+        Lobby l1 = new Lobby(2, "ENGLISH", 0, "TEST");
+        Lobby l2 = new Lobby(3, "MOTHERFUCKER", 1, "TEST");
+        Lobby l3 = new Lobby(4, "DO YOU SPEAK IT?!", 2, "TEST");
+
+        /**/
 
         table.background(new TextureRegionDrawable(new TextureRegion(bg)));
 
@@ -93,13 +100,16 @@ public class GameListView extends AbstractView {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 state.handleInput(1);
-                // insert whatever should happen
             }
         });
 
         // TODO: a button for text input and direct connection to a game lobby?
 
         table.add(exitToMainMenuBtn).row();
+
+        scroller = new ScrollPane(table);
+        scroller.setScrollingDisabled(true, false);
+        table.add(scroller).fill().expand();
 
         stage.addActor(table);
 
@@ -117,7 +127,7 @@ public class GameListView extends AbstractView {
         renderer.sb.setProjectionMatrix(cam.combined);
         renderer.sb.begin();
         renderer.sb.draw(bg, 0, 0, PanicGame.WIDTH, PanicGame.HEIGHT);
-        stage.act();
+        stage.act(); // this allows the scroller to have any effect
         stage.draw();
         renderer.sb.end();
     }

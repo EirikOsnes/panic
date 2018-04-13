@@ -36,17 +36,18 @@ public class MenuState extends State {
             gsm.push(new SettingsState(gsm));
             System.out.println("Settings...");
         }
-    //For testing the PlayCardState class
-        startPlayCard();
+
+        // TESTING
+        //        testLobby(gsm);
     }
 
     /** FOR TESTING VIEWS **/
-    private void startLobby(GameStateManager gsm){
+    private void testLobby(GameStateManager gsm){
         gsm.set(new GameLobbyState(gsm, "0"));
         System.out.println("lobby state created");
     }
 
-    private void startResults(GameStateManager gsm){
+    private void testResults(GameStateManager gsm){
         ArrayList<Player> dedbodies = new ArrayList<>();
         Player p1 = new Player(new Stack<Card>()); dedbodies.add(p1);
         Player p2 = new Player(new Stack<Card>()); dedbodies.add(p2);
@@ -58,7 +59,7 @@ public class MenuState extends State {
         System.out.println("results state created");
     }
 
-    private void startCreateGame(GameStateManager gsm){
+    private void testCreateGame(GameStateManager gsm){
         gsm.set(new CreateGameState(gsm));
         System.out.println("'Create Game' state created");
     }

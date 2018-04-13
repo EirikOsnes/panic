@@ -8,20 +8,35 @@ import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
 
 
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
- * Created by Eirik on 09-Apr-18.
+ * The class to communicate with the server
  */
 
-public class Connection {
-    private static final Connection ourInstance = new Connection();
+public class Connection extends WebSocketClient{
+    private static Connection ourInstance;
 
     public static Connection getInstance() {
+        if(ourInstance == null){
+            try {
+                URI uri = new URI("ws://panicserver.herokuapp.com");
+                ourInstance = new Connection(uri);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+
         return ourInstance;
     }
 
-    private Connection() {
+    private Connection(URI uri) {
+        super(uri);
     }
 
     /**
@@ -202,6 +217,26 @@ public class Connection {
     //TODO
     public ArrayList<ArrayList<String[]>> getTurns() {
         return null;
+    }
+
+    @Override
+    public void onOpen(ServerHandshake handshakedata) {
+
+    }
+
+    @Override
+    public void onMessage(String message){
+
+    }
+
+    @Override
+    public void onClose(int code, String reason, boolean remote) {
+
+    }
+
+    @Override
+    public void onError(Exception ex) {
+
     }
 }
 

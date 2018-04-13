@@ -1,8 +1,10 @@
 package com.panic.tdt4240.states;
 
 import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.XMLParser;
 import com.panic.tdt4240.view.ViewClasses.MenuView;
 
@@ -84,10 +86,34 @@ public class MenuState extends State {
             }
             cards.push(card);
         }
+        GameInstance instance = GameInstance.getInstance();
         Player player = new Player(cards);
         XMLParser parser = new XMLParser();
         Map map = parser.parseMaps().get(0);
-        gsm.set(new PlayCardState(gsm, player, map)); 
+        instance.setMap(map);
+        instance.setPlayer(player);
+        ArrayList<Vehicle> vehicles = new ArrayList<>();
+        Vehicle vehicle = new Vehicle("");
+        for (int i = 0; i < 4; i++) {
+            Vehicle vehicle1 = vehicle.cloneVehicleWithId("V-00"+i);
+            if(i == 0){
+                vehicle1.setColorCar("red_car");
+            }
+            else if(i == 1){
+                vehicle1.setColorCar("green_car");
+            }
+            else if(i == 2){
+                vehicle1.setColorCar("yellow_car");
+            }
+            else{
+                vehicle1.setColorCar("blue_car");
+            }
+            vehicles.add(vehicle1);
+            map.getAsteroids().get(1).addVehicle(vehicle1.getVehicleID());
+        }
+        instance.setVehicles(vehicles);
+
+        gsm.set(new PlayCardState(gsm));
     }
 
     @Override

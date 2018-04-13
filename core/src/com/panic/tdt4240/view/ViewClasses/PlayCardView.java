@@ -6,12 +6,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -21,7 +19,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.panic.tdt4240.models.Asteroid;
+import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.PlayCardState;
 import com.panic.tdt4240.view.Renderer;
 
@@ -34,30 +34,33 @@ import java.util.ArrayList;
 
 public class PlayCardView extends AbstractView{
 
-    Renderer renderer;
+    private Renderer renderer;
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Stage stage;
     private Table table;
     //private Texture background;
-    public TextArea cardInfo;
+    private TextArea cardInfo;
     private int amountCards;
     private Skin skin;
-    public boolean selectTarget = false;
+    private boolean selectTarget = false;
     private Map map;
     private ShapeRenderer sr;
     private TextButton finishedButton;
+    private ArrayList<String[]> vehicleOnAsteroid;
+    private GameInstance gameInstance;
 
     public PlayCardView(final PlayCardState state){
         super(state);
-        map = state.map;
+        gameInstance = GameInstance.getInstance();
+        map = gameInstance.getMap();
         renderer = Renderer.getInstance();
         sr = new ShapeRenderer();
         sr.setColor(1,1,1,0);
         sr.setAutoShapeType(true);
         //background = new Texture("misc/background.png");
         //cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
-        amountCards = state.player.getHand().size();
+        amountCards = gameInstance.getPlayer().getHand().size();
         cardButtons = new ArrayList<>(amountCards);
         stage = new Stage();
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -139,18 +142,28 @@ public class PlayCardView extends AbstractView{
     //TODO Lagre alle vehicles i stage, bestemme posisjon, legge til listeners
     private void setUpMap(){
         final ArrayList<Asteroid> asteroids = map.getAsteroids();
-        ArrayList<String> vehicles = new ArrayList<>();
+        vehicleOnAsteroid = new ArrayList<>();
+        ArrayList<Vector2> asteroidPositions = new ArrayList<>();
+        ArrayList<Vector2> asteroidDimensions = new ArrayList<>();
 
+        TextureAtlas carsAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
+        Skin skin = new Skin(carsAtlas);
         for (int i = 0; i < asteroids.size(); i++) {
-            vehicles.addAll(asteroids.get(i).getVehicles());
+            for(int j = 0; j < asteroids.get(i).getVehicles().size(); j++){
+                String[] onAsteroid = new String[3];
+                onAsteroid[0] = asteroids.get(i).getVehicles().get(j);
+                onAsteroid[1] = asteroids.get(i).getId();
+                onAsteroid[2] = i + "";
+                vehicleOnAsteroid.add(onAsteroid);
+            }
             Texture texture = new Texture("asteroids/meteorBrown_big1.png");
             Image asteroid = new Image(texture);
-
-            asteroid.setOrigin(texture.getWidth()/2, texture.getHeight()/2);
+            asteroidDimensions.add(i, new Vector2(asteroid.getWidth(), asteroid.getHeight()));
             asteroid.setPosition(
                     //Image should be rendered inside the window and above the table
                     asteroids.get(i).getPosition().x *(Gdx.graphics.getWidth() - asteroid.getWidth()),
                     asteroids.get(i).getPosition().y *(Gdx.graphics.getHeight() - table.getHeight() - asteroid.getHeight()) + table.getHeight());
+            asteroidPositions.add(i, new Vector2(asteroid.getX(), asteroid.getY()));
 
             stage.addActor(asteroid);
 
@@ -166,6 +179,28 @@ public class PlayCardView extends AbstractView{
             for(Asteroid neighbour: asteroids.get(i).getNeighbours()){
                 ((PlayCardState) state).addConnection(asteroids.get(i), neighbour, asteroid.getWidth(), asteroid.getHeight(), table.getHeight());
             }
+        }
+        for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
+            int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
+            Vehicle activeVehicle = gameInstance.getVehicleById(vehicleOnAsteroid.get(j)[0]);
+            Vector2 asteroidPos = asteroidPositions.get(asteroid);
+
+            Image vehicle = new Image(skin.getDrawable(activeVehicle.getColorCar()));
+            Vector2 position = ((PlayCardState) state).AsteroidPositions(asteroidPos.x, asteroidPos.y,
+                    asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
+                    activeVehicle.getColorCar());
+            vehicle.setPosition(position.x, position.y);
+            vehicle.setSize(asteroidDimensions.get(asteroid).x/4, asteroidDimensions.get(asteroid).y*2/5);
+            final int vIndex = j;
+            vehicle.addListener(new ClickListener(){
+                public void clicked(InputEvent event, float x, float y){
+                    if(selectTarget){
+                        System.out.println("Clicked vehicle:" + vehicleOnAsteroid.get(vIndex)[0]);
+                        state.handleInput(vehicleOnAsteroid.get(vIndex)[0].concat(vehicleOnAsteroid.get(vIndex)[1]));
+                    }
+                };
+            });
+            stage.addActor(vehicle);
         }
     }
 
@@ -190,6 +225,17 @@ public class PlayCardView extends AbstractView{
             buttonStyles.get(button).up = skin.getDrawable(cardType + "_selected");
         }
         cardButtons.get(button).setStyle(buttonStyles.get(button));
+    }
+
+    public boolean isSelectTarget() {
+        return selectTarget;
+    }
+
+    public void setSelectTarget(boolean selectTarget) {
+        this.selectTarget = selectTarget;
+    }
+    public void setCardInfoText(String text){
+        cardInfo.setText(text);
     }
 
     public void render(){

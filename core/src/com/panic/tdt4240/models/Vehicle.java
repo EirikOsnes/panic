@@ -67,7 +67,7 @@ public class Vehicle implements EventListener,IStatusAble {
     @Override
     public void handleEvent(Event e) {
 
-        if (e.getT() == Event.Type.ATTACK && e.getTargetID() == this.vehicleID) {
+        if (e.getT() == Event.Type.ATTACK && e.getTargetID().equals(this.vehicleID)) {
             if(this.statusHandler.isRequirementsMet(e.getRequirementName(),e.getRequirementVal())) {
                 this.statusHandler.addStatusAddition(e.getStatus(), e.getEffectValue(), e.getDuration());
             }

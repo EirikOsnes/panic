@@ -4,13 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
 
 import static com.panic.tdt4240.models.Card.AllowedTarget.ENEMY;
+import static com.panic.tdt4240.models.Card.AllowedTarget.PLAYER;
 import static com.panic.tdt4240.models.Card.TargetType.ASTEROID;
 import static com.panic.tdt4240.models.Card.TargetType.VEHICLE;
 
@@ -21,8 +24,8 @@ import static com.panic.tdt4240.models.Card.TargetType.VEHICLE;
 public class PlayCardState extends State {
     //H: 1794, W 1080
     private PlayCardView playView;
-    public Player player;
-    public Map map;
+    private Player player;
+    private Map map;
     //Order of cards that are played
     private ArrayList<Card> playedCardsList;
     //Targets for each card
@@ -32,13 +35,19 @@ public class PlayCardState extends State {
     private ArrayList<Card> hand;
     private ArrayList<Boolean> selectedCard;
     private ArrayList<AsteroidConnection> connections;
+    private ArrayList<Vehicle> vehicles;
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
+    private GameInstance gameInstance;
 
-    public PlayCardState(GameStateManager gsm, Player player, Map map) {
+    public PlayCardState(GameStateManager gsm) {
         super(gsm);
-        this.player = player;
-        this.map = map;
+        gameInstance = GameInstance.getInstance();
+
+        player = gameInstance.getPlayer();
+        map = gameInstance.getMap();
+        vehicles = gameInstance.getVehicles();
+
         playedCardsList = new ArrayList<>();
         targets = new ArrayList<>();
         connections = new ArrayList<>();
@@ -62,6 +71,7 @@ public class PlayCardState extends State {
      */
     @Override
     public void handleInput(Object o) {
+        System.out.println(o.toString());
         if (o instanceof Integer) {
             Integer cardIndex = (Integer) o;
 
@@ -80,9 +90,9 @@ public class PlayCardState extends State {
 
                 //Sets the tooltip text to the most recently pressed card, or to an empty string
                 if (playedCardsList.size() > 0) {
-                    playView.cardInfo.setText(playedCardsList.get(playedCardsList.size() - 1).getTooltip());
+                    playView.setCardInfoText(playedCardsList.get(playedCardsList.size() - 1).getTooltip());
                 } else {
-                    playView.cardInfo.setText("");
+                    playView.setCardInfoText("");
                 }
                 playView.clickedButton(cardIndex, 0);
                 numPlayedCards--;
@@ -93,16 +103,82 @@ public class PlayCardState extends State {
                     justClicked = cardIndex;
                     playedCardsList.add(hand.get(cardIndex));
                     selectedCard.set(cardIndex, true);
-                    playView.cardInfo.setText(hand.get(cardIndex).getTooltip());
+                    playView.setCardInfoText(hand.get(cardIndex).getTooltip());
                     playView.clickedButton(cardIndex, 1);
                     numPlayedCards++;
-                    playView.selectTarget = true;
+                    playView.setSelectTarget(true);
                 }
             }
         }
         else if(o instanceof String){
             selectTarget((String) o);
         }
+    }
+    /**
+     * Saves the target of a card, if a target is waiting to be selected
+     * @param s ID of target that has been clicked
+     *      if we have selected a card:
+     *          add the target as the target of the most recently selected card
+     *          reset the justClicked index, allowing us to select a new card and target
+     */
+    //FIXME Click on valid target asteroid should end select target phase
+    private void selectTarget(String s){
+        s = s.toLowerCase();
+        String firstTarget;
+        String potentialTarget;
+        int targetID = s.indexOf("a");
+        if(targetID > 0){
+            //Targets vehicle, but can potentially target asteroid instead
+            firstTarget = s.substring(0, targetID);
+            potentialTarget = s.substring(targetID);
+        }
+        else{
+            //Targets asteroid
+            firstTarget = s;
+            potentialTarget = "";
+        }
+        //If the first target is valid
+        if(justClicked > -1 && validTarget(firstTarget)){
+            targets.add(firstTarget);
+            playView.clickedButton(justClicked, -1);
+            justClicked = -1;
+            playView.setSelectTarget(false);
+        }
+        else{
+            //Checks whether we can target the asteroid instead
+            if(potentialTarget.length() > 0){
+                selectTarget(potentialTarget);
+            }
+            else{
+                //TODO Should show 'not valid targed' in PlayCardView
+            }
+        }
+    }
+    /**
+     * Method for determining validity of target
+     * @param targetID asteroid or vehicle id of the target
+     * @return whether the target is a valid target
+     */
+    private boolean validTarget(String targetID){
+        System.out.println(targetID);
+        //If the target is an asteroid
+        if(targetID.substring(0, 1).equals("a")){
+            return playedCardsList.get(numPlayedCards-1).getTargetType().equals(ASTEROID);
+        }
+        //If the target is a vehicle
+        else if(targetID.substring(0, 1).equals("v")){
+            //If the player can target a vehicle
+            if(playedCardsList.get(numPlayedCards-1).getTargetType().equals(VEHICLE)){
+                //If the player targets themselves
+                if(player.getVehicle().getVehicleID().equals(targetID)){
+                    return !playedCardsList.get(numPlayedCards-1).getAllowedTarget().equals(ENEMY);
+                }
+                //The player targets someone else
+                return !playedCardsList.get(numPlayedCards-1).getAllowedTarget().equals(PLAYER);
+            }
+            return false;
+        }
+        return false;
     }
 
     /**
@@ -161,30 +237,12 @@ public class PlayCardState extends State {
     }
 
     /**
-     * Saves the target of a card, if a target is waiting to be selected
-     * @param s ID of target that has been clicked
-     *      if we have selected a card:
-     *          add the target as the target of the most recently selected card
-     *          reset the justClicked index, allowing us to select a new card and target
-     */
-    private void selectTarget(String s){
-        if(justClicked > -1 && validTarget(s)){
-            targets.add(s);
-            playView.clickedButton(justClicked, -1);
-            justClicked = -1;
-            playView.selectTarget = false;
-        }
-        else{
-            //TODO Should show 'not valid targed' in PlayCardView
-        }
-    }
-
-    /**
      * Should be called when the card selection is done
      */
-    public void finishRound(){
+    public ArrayList<String[]> finishRound(){
         ArrayList<String[]> result = getCardsAndTargets();
-
+        //TODO Avslutt viewet m.m
+        return result;
     }
 
     /**
@@ -196,27 +254,6 @@ public class PlayCardState extends State {
         return hand.get(i).getCardType().name().toLowerCase();
     }
 
-    /**
-     * Method for determining validity of target
-     * @param targetID asteroid or vehicle id of the target
-     * @return whether the target is a valid targer
-     */
-    private boolean validTarget(String targetID){
-        String attackType = targetID.substring(0,1).toLowerCase();
-        //If the target is an asteroid
-        if(attackType.equals("a")){
-            return playedCardsList.get(numPlayedCards-1).getTargetType().equals(ASTEROID);
-        }
-        //If the target is a vehicle
-        else if(attackType.equals("v")){
-            //If the player targets themselves
-            if(player.getVehicle().getVehicleID().equals(targetID)){
-                return !playedCardsList.get(numPlayedCards-1).getAllowedTarget().equals(ENEMY);
-            }
-            return playedCardsList.get(numPlayedCards-1).getTargetType().equals(VEHICLE);
-        }
-        return false;
-    }
     /**
      * Converts the list of cards and targets to a list of actions by the player
      * @return ArrayList with card, target id and id of vehicle that played the card
@@ -249,6 +286,30 @@ public class PlayCardState extends State {
     }
 
     /**
+     * For an asteroid, gives coordinates within asteroid for each car type
+     * Positions are clockwise from lower left section
+     * Position of the lower left corner of each section
+     */
+    public Vector2 AsteroidPositions(float posX, float posY, float width, float height, String colorCar){
+        Vector2 position = new Vector2(posX + width/9, posY);
+        switch (colorCar){
+            case "red_car":
+                position.add(0,0);
+                break;
+            case "green_car":
+                position.add(0, height/2);
+                break;
+            case "yellow_car":
+                position.add(width/2, height/2);
+                break;
+            case "blue_car":
+                position.add(width/2, 0);
+                break;
+        }
+        return position;
+    }
+
+    /**
      * Class for keeping track of connections between asteroids, for rendering in PlayCardView
      * Has id for start and end asteroid, and their coordinates
      */
@@ -262,36 +323,6 @@ public class PlayCardState extends State {
             this.startID = startID;
             this.end = end;
             this.endID = endID;
-        }
-    }
-
-    /**
-     * For an asteroid, gives coordinates within asteroid for each car type
-     */
-    private class AsteroidPositions{
-        private float width;
-        private float height;
-
-        private AsteroidPositions(float width, float height){
-            this.width = width;
-            this.height = height;
-        }
-        //Positions clockwise from lower left corner, gives position of the lower left corner
-        private Vector2 getPosition(String colorCar){
-            Vector2 position = new Vector2();
-            if(colorCar.equals("red_car")){
-                position.set(0, 0);
-            }
-            else if(colorCar.equals("green_car")){
-                position.set(0, height/2);
-            }
-            else if(colorCar.equals("yellow_car")){
-                position.set(width/2, height/2);
-            }
-            else if(colorCar.equals("blue_car")){
-                position.set(width/2, 0);
-            }
-            return position;
         }
     }
 

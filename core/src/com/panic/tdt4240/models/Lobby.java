@@ -1,6 +1,6 @@
 package com.panic.tdt4240.models;
 
-import com.sun.istack.internal.NotNull;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ public class Lobby {
     private ArrayList<String> vehicleTypes;
     private ArrayList<Boolean> playersReady;
 
-    public Lobby(int maxPlayers, String lobbyname, int lobbyID, @NotNull String mapID) {
+    public Lobby(int maxPlayers, String lobbyname, int lobbyID, @NonNull String mapID) {
         this.maxPlayers = maxPlayers;
         this.lobbyname = lobbyname;
         this.lobbyID = lobbyID;

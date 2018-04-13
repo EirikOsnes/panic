@@ -1,10 +1,12 @@
 package com.panic.tdt4240.connection;
 
+import android.support.annotation.NonNull;
+
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
-import com.sun.istack.internal.NotNull;
+
 
 import java.util.ArrayList;
 
@@ -29,7 +31,7 @@ public class Connection {
      * @param name A chosen name for the lobby. (Optional?)
      * @return Returns the newly created Lobby.
      */
-    public Lobby createLobby(int maxPlayerCount, @NotNull String mapID, String name){
+    public Lobby createLobby(int maxPlayerCount, @NonNull String mapID, String name){
 
         //TODO: Create and return the Lobby with the designated parameters, and the creator already added.
 

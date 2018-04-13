@@ -20,7 +20,9 @@ import java.util.ArrayList;
  */
 
 public class Connection extends WebSocketClient{
+
     private static Connection ourInstance;
+    private ICallbackAdapter adapter;
 
     public static Connection getInstance() {
         if(ourInstance == null){
@@ -226,7 +228,9 @@ public class Connection extends WebSocketClient{
 
     @Override
     public void onMessage(String message){
-
+        if (adapter != null) {
+            adapter.onMessage(message);
+        }
     }
 
     @Override
@@ -237,6 +241,10 @@ public class Connection extends WebSocketClient{
     @Override
     public void onError(Exception ex) {
 
+    }
+
+    public void setAdapter(ICallbackAdapter adapter) {
+        this.adapter = adapter;
     }
 }
 

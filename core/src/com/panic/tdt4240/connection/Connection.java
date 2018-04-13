@@ -1,8 +1,12 @@
 package com.panic.tdt4240.connection;
 
+import android.support.annotation.NonNull;
+
 import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
+
 
 import java.util.ArrayList;
 
@@ -18,6 +22,86 @@ public class Connection {
     }
 
     private Connection() {
+    }
+
+    /**
+     * The method to create a new lobby. Should it return the Lobby? Probably.
+     * @param maxPlayerCount The maximum amount of players in the game. Should default to 4?
+     * @param mapID The id of the map chosen.
+     * @param name A chosen name for the lobby. (Optional?)
+     * @return Returns the newly created Lobby.
+     */
+    public Lobby createLobby(int maxPlayerCount, @NonNull String mapID, String name){
+
+        //TODO: Create and return the Lobby with the designated parameters, and the creator already added.
+
+        return null;
+
+    }
+
+    /**
+     * Get all the Lobbies available
+     * @return Returns an ArrayList of all available Lobbies.
+     */
+    public ArrayList<Lobby> getAllLobbies(){
+        //TODO: Return a list of all available lobbies - instantiated as Lobby objects.
+        return null;
+    }
+
+    /**
+     * Connect to the given Lobby if this returns true.
+     * @param lobbyID The ID of the Lobby you wish to connect to
+     * @return Returns true if added on the server, false if it was non-successful.
+     */
+    public boolean connectToLobby(int lobbyID){
+
+        //TODO: Try to connect to the given Lobby. Should return true if it was successful.
+
+        return false;
+    }
+
+
+    /**
+     * Remove the player from the given Lobby.
+     * @param lobbyID The ID of the Lobby
+     */
+    public void leaveLobby(int lobbyID){
+
+        //TODO: Remove me from the lobby.
+
+    }
+
+    /**
+     * Get the latest state of the given Lobby - used to update the GameLobbyState
+     * @param lobbyID The id of the lobby
+     * @return Returns the updated Lobby object.
+     */
+    public Lobby updateLobby(int lobbyID){
+
+        //TODO: Return the latest state of this Lobby.
+
+        return null;
+    }
+
+    /**
+     * Set the vehicle type for the given Lobby to the given vehicleType.
+     * @param vehicleType
+     * @param lobbyID
+     */
+    public void chooseVehicleType(String vehicleType, int lobbyID){
+
+        //TODO: Set my vehicle in the Lobby to tbe given vehicle type
+
+    }
+
+    /**
+     * Set me to ready for the given lobby
+     * @param lobbyID The ID of the lobby.
+     */
+    public void setReady(int lobbyID){
+
+        //TODO: Set me to ready
+
     }
 
     /**

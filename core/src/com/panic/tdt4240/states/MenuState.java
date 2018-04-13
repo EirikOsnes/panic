@@ -1,6 +1,7 @@
 package com.panic.tdt4240.states;
 
 import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.util.XMLParser;
@@ -43,7 +44,7 @@ public class MenuState extends State {
 
     /** FOR TESTING VIEWS **/
     private void testLobby(GameStateManager gsm){
-        gsm.set(new GameLobbyState(gsm, "0"));
+        gsm.set(new GameLobbyState(gsm, new Lobby(4, "test lobby", 0, "M-001")));
         System.out.println("lobby state created");
     }
 

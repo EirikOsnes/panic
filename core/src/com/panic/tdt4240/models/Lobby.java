@@ -10,11 +10,11 @@ import java.util.ArrayList;
 
 public class Lobby {
 
-    int maxPlayers = 4;
-    String lobbyname;
-    int lobbyID;
-    String mapID;
-    ArrayList<Integer> playerIDs;
+    private int maxPlayers = 4;
+    private String lobbyname;
+    private int lobbyID;
+    private String mapID;
+    private ArrayList<Integer> playerIDs; //ConnectionIDs?
 
     public Lobby(int maxPlayers, String lobbyname, int lobbyID, @NotNull String mapID) {
         this.maxPlayers = maxPlayers;
@@ -31,5 +31,30 @@ public class Lobby {
         else{
             //TODO: Player could not be added - throw error?
         }
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public int getLobbyID() {
+        return lobbyID;
+    }
+
+    public String getMapID() {
+        return mapID;
+    }
+
+    public String getLobbyname() {
+        return lobbyname;
+    }
+
+    public ArrayList<Integer> getPlayerIDs() {
+        return playerIDs;
+    }
+
+    @Override
+    public String toString() {
+        return lobbyname + " | Players: "+ playerIDs.size() + "/" + maxPlayers;
     }
 }

@@ -1,6 +1,7 @@
 package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.view.ViewClasses.GameLobbyView;
 
@@ -15,11 +16,11 @@ public class GameLobbyState extends State {
 
     // fields: player(s), numOfPlayers...
     GameLobbyView view;
-    int lobbyID;
-    ArrayList<Player> players;
+    Lobby lobby;
 
-    public GameLobbyState(GameStateManager gsm, String lobbyID){
+    public GameLobbyState(GameStateManager gsm, Lobby lobby){
         super(gsm);
+        this.lobby = lobby;
         view = new GameLobbyView(this);
         // generate lobbyID from somewhere...
     }
@@ -48,14 +49,5 @@ public class GameLobbyState extends State {
     public void dispose() {
 
     }
-
-    public ArrayList<Player> getPlayers(){return players;}
-
-    public void playerJoined(Player p){
-        players.add(p);
-        view.playerJoined(p);
-    }
-
-    public Player getNewestPlayer(){return players.get(players.size()-1);}
 
 }

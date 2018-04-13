@@ -129,44 +129,6 @@ public class Connection extends WebSocketClient{
     }
 
     /**
-     * A method call to get all the Vehicles for this game. Should be instatiated copies, with ID.
-     *
-     * @return Returns all the Vehicles for this game.
-     */
-    public ArrayList<Vehicle> getAllVehicles() {
-
-        //TODO: Actually receive and parse the vehicles. Comments below is one way:
-        //Probably get strings on the form {VehicleType, VehicleID}
-        //Foreach string: result.add(ModelHolder.getInstance.getVehicleByName(VehicleType).clone(VehicleID))
-
-        ArrayList<Vehicle> result = null;
-
-        return result;
-    }
-
-    /**
-     * Get the ID of the current players vehicle.
-     *
-     * @return returns the ID.
-     */
-    public String getMyVehicle() {
-        return null;
-    }
-
-
-    /**
-     * Get the map ID for this game
-     *
-     * @return Returns the map ID.
-     */
-
-
-    public String getMapID() {
-        return null;
-    }
-
-
-    /**
      * Tell the server that runEffectsState is done animating, so the next turn can begin.
      */
     public void sendDoneAnimating(){

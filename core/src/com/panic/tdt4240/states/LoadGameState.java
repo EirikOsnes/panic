@@ -109,6 +109,7 @@ public class LoadGameState extends State {
             switch (strings[0]){
                 case "GAME_INFO":
                     parseGameInfo(strings);
+                    break;
             }
 
         }

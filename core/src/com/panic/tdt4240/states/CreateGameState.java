@@ -1,6 +1,7 @@
 package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.view.ViewClasses.CreateGameView;
 
 /**
@@ -10,12 +11,26 @@ import com.panic.tdt4240.view.ViewClasses.CreateGameView;
 public class CreateGameState extends State {
 
     CreateGameView view;
+    Connection connection;
+    int maxPlayerCount;
+    String mapID;
+    String name;
 
     public CreateGameState(GameStateManager gsm){
         super(gsm);
+        connection = Connection.getInstance();
         view = new CreateGameView(this);
-
     }
+
+    /**
+     * Method to run the onClick for the create click
+     * @param gsm The GameStateManager
+     */
+    private void createButtonClick(GameStateManager gsm){
+        //TODO: Actually set the maxPlayerCount, mapID and name parameters.
+        gsm.set(new GameLobbyState(gsm, connection.createLobby(maxPlayerCount,mapID,name)));
+    }
+
     @Override
     public void handleInput(Object o) {
 

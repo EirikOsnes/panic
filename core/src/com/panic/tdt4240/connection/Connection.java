@@ -3,6 +3,7 @@ package com.panic.tdt4240.connection;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
+import com.sun.istack.internal.NotNull;
 
 import java.util.ArrayList;
 
@@ -19,6 +20,18 @@ public class Connection {
 
     private Connection() {
     }
+
+    /**
+     * The method to create a new lobby. Should it return the Lobby? Probably.
+     * @param maxPlayerCount The maximum amount of players in the game. Should default to 4?
+     * @param mapID The id of the map chosen.
+     * @param name A chosen name for the lobby. (Optional?)
+     */
+    public void createLobby(int maxPlayerCount, @NotNull String mapID, String name){
+
+    }
+
+
 
     /**
      * A method call to get all the Vehicles for this game. Should be instatiated copies, with ID.

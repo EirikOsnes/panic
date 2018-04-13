@@ -24,6 +24,8 @@ public class RunEffectsState extends State {
     void runTurnEffects(){
         ArrayList<String[]> playedCards = new ArrayList<>(); //FIXME Get this from Connection
         gi.playTurn(playedCards);
+
+        //TODO: When animations are done - call Connection.getInstance.sendDoneAnimating()
     }
 
     @Override

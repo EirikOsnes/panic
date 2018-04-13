@@ -110,6 +110,11 @@ public class Connection {
      * @return Returns all the Vehicles for this game.
      */
     public ArrayList<Vehicle> getAllVehicles() {
+
+        //TODO: Actually receive and parse the vehicles. Comments below is one way:
+        //Probably get strings on the form {VehicleType, VehicleID}
+        //Foreach string: result.add(ModelHolder.getInstance.getVehicleByName(VehicleType).clone(VehicleID))
+
         ArrayList<Vehicle> result = null;
 
         return result;
@@ -130,8 +135,20 @@ public class Connection {
      *
      * @return Returns the map ID.
      */
+
+
     public String getMapID() {
         return null;
+    }
+
+
+    /**
+     * Tell the server that runEffectsState is done animating, so the next turn can begin.
+     */
+    public void sendDoneAnimating(){
+
+        //TODO: Actually send this info to the server.
+
     }
 
     /**

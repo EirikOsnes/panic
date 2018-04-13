@@ -31,6 +31,8 @@ public class Lobby {
         else{
             //TODO: Player could not be added - throw error?
         }
+
+        //Does this ever need to be used, or should server handle this?
     }
 
     public int getMaxPlayers() {

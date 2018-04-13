@@ -58,6 +58,17 @@ public class Connection {
         return false;
     }
 
+
+    /**
+     * Remove the player from the given Lobby.
+     * @param lobbyID The ID of the Lobby
+     */
+    public void leaveLobby(int lobbyID){
+
+        //TODO: Remove me from the lobby.
+
+    }
+
     /**
      * Get the latest state of the given Lobby - used to update the GameLobbyState
      * @param lobbyID The id of the lobby
@@ -70,6 +81,26 @@ public class Connection {
         return null;
     }
 
+    /**
+     * Set the vehicle type for the given Lobby to the given vehicleType.
+     * @param vehicleType
+     * @param lobbyID
+     */
+    public void chooseVehicleType(String vehicleType, int lobbyID){
+
+        //TODO: Set my vehicle in the Lobby to tbe given vehicle type
+
+    }
+
+    /**
+     * Set me to ready for the given lobby
+     * @param lobbyID The ID of the lobby.
+     */
+    public void setReady(int lobbyID){
+
+        //TODO: Set me to ready
+
+    }
 
     /**
      * A method call to get all the Vehicles for this game. Should be instatiated copies, with ID.

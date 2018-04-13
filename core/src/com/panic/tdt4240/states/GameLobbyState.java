@@ -40,6 +40,29 @@ public class GameLobbyState extends State {
         lobby = Connection.getInstance().updateLobby(lobby.getLobbyID());
     }
 
+    /**
+     * Use this method to change/choose vehicle type (i.e. EDDISON)
+     * @param vehicleType The vehicle type.
+     */
+    private void setVehicleType(String vehicleType){
+        Connection.getInstance().chooseVehicleType(vehicleType,lobby.getLobbyID());
+    }
+
+    /**
+     * Set me to ready.
+     */
+    private void setReady(){
+        Connection.getInstance().setReady(lobby.getLobbyID());
+    }
+
+    /**
+     * Leave the Lobby
+     */
+    private void leaveLobby(){
+        Connection.getInstance().leaveLobby(lobby.getLobbyID());
+        gsm.pop();
+    }
+
     @Override
     public void handleInput(Object o) {
     }
@@ -48,6 +71,9 @@ public class GameLobbyState extends State {
     public void update(float dt) {
         // players joining...?
         // Call updateLobby() when applicable.
+
+        //Is all players ready? lobby.isAllReady() == true
+        //If so, should start a count-down for game starting?
     }
 
     @Override

@@ -2,14 +2,10 @@ package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.panic.tdt4240.connection.Connection;
+import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
-import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.view.ViewClasses.GameLobbyView;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 
 /**
  * Created by victor on 12.03.2018.
@@ -87,6 +83,19 @@ public class GameLobbyState extends State {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    protected void setUpAdapter() {
+        callbackAdapter = new GameLobbyAdapter();
+    }
+
+    private class GameLobbyAdapter implements ICallbackAdapter {
+
+        @Override
+        public void onMessage(String message) {
+
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package com.panic.tdt4240.states;
 
 import com.panic.tdt4240.connection.Connection;
+import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
@@ -83,5 +84,18 @@ public class LoadGameState extends State {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    protected void setUpAdapter() {
+        callbackAdapter = new LoadGameAdapter();
+    }
+
+    private class LoadGameAdapter implements ICallbackAdapter {
+
+        @Override
+        public void onMessage(String message) {
+
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.panic.tdt4240.states;
 
+import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.GameInstance;
 
 import java.util.ArrayList;
@@ -46,5 +47,18 @@ public class RunEffectsState extends State {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    protected void setUpAdapter() {
+        callbackAdapter = new RunEffectsAdapter();
+    }
+
+    private class RunEffectsAdapter implements ICallbackAdapter {
+
+        @Override
+        public void onMessage(String message) {
+
+        }
     }
 }

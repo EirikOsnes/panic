@@ -2,6 +2,7 @@ package com.panic.tdt4240.states;
 
 
 import com.panic.tdt4240.connection.Connection;
+import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.view.ViewClasses.GameListView;
 
@@ -69,6 +70,19 @@ public class GameListState extends State {
         }
         else{
             //TODO: Cannot join the lobby - it might be full. Maybe give a error pop-up, and refresh the lobby list with updateLobbyList()?
+        }
+    }
+
+    @Override
+    protected void setUpAdapter() {
+        callbackAdapter = new GameListAdapter();
+    }
+
+    private class GameListAdapter implements ICallbackAdapter {
+
+        @Override
+        public void onMessage(String message) {
+
         }
     }
 

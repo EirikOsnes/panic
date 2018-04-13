@@ -7,6 +7,8 @@ import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.view.ViewClasses.GameLobbyView;
 
+import java.util.ArrayList;
+
 /**
  * Created by victor on 12.03.2018.
  */
@@ -35,7 +37,7 @@ public class GameLobbyState extends State {
      * Update the lobby - should be called every second maybe?
      */
     private void updateLobby(){
-        lobby = Connection.getInstance().updateLobby(lobby.getLobbyID());
+        Connection.getInstance().updateLobby(lobby.getLobbyID());
     }
 
     /**
@@ -94,7 +96,35 @@ public class GameLobbyState extends State {
 
         @Override
         public void onMessage(String message) {
+            String[] strings = message.split(":");
 
+            switch (strings[0]){
+                case "UPDATE_LOBBY":
+                    parseLobby(strings);
+                    break;
+
+            }
+
+
+        }
+
+        private void parseLobby(String[] strings){
+            Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),strings[2],Integer.parseInt(strings[3]),strings[4]);
+            String[] playerIDstrings = strings[5].split("&");
+            String[] vehicleTypestrings = strings[6].split("&");
+            String[] playerReadystrings = strings[7].split("&");
+            ArrayList<Integer> playerIDs = new ArrayList<>();
+            ArrayList<String> vehicleTypes = new ArrayList<>();
+            ArrayList<Boolean> playersReady = new ArrayList<>();
+            for (int i = 0; i < playerIDstrings.length; i++) { //Assuming proper set up here - the same amount of values.
+                playerIDs.add(Integer.parseInt(playerIDstrings[i]));
+                vehicleTypes.add(vehicleTypestrings[i]);
+                playersReady.add(Boolean.parseBoolean(playerReadystrings[i]));
+            }
+            myLobby.setPlayerIDs(playerIDs);
+            myLobby.setVehicleTypes(vehicleTypes);
+            myLobby.setPlayersReady(playersReady);
+            lobby = myLobby;
         }
     }
 

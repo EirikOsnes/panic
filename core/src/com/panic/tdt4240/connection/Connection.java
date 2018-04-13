@@ -46,13 +46,12 @@ public class Connection extends WebSocketClient{
      * @param maxPlayerCount The maximum amount of players in the game. Should default to 4?
      * @param mapID The id of the map chosen.
      * @param name A chosen name for the lobby. (Optional?)
-     * @return Return the new Lobby as a string on the form: CREATE_LOBBY:
+     * Return the new Lobby as a string on the form:
+     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN:PlayerReady1&PlayerReady2&...&PlayerReadyN
      */
-    public Lobby createLobby(int maxPlayerCount, @NonNull String mapID, String name){
+    public void createLobby(int maxPlayerCount, @NonNull String mapID, String name){
 
         //TODO: Create and return the Lobby with the designated parameters, and the creator already added.
-
-        return null;
 
     }
 
@@ -91,13 +90,14 @@ public class Connection extends WebSocketClient{
     /**
      * Get the latest state of the given Lobby - used to update the GameLobbyState
      * @param lobbyID The id of the lobby
-     * @return Returns the updated Lobby object.
+     * Return the updated Lobby as a string on the form:
+     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN:PlayerReady1&PlayerReady2&...&PlayerReadyN
+     *
      */
-    public Lobby updateLobby(int lobbyID){
+    public void updateLobby(int lobbyID){
 
-        //TODO: Return the latest state of this Lobby.
+        //TODO: Send the call to the server.
 
-        return null;
     }
 
     /**

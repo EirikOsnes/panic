@@ -139,7 +139,6 @@ public class PlayCardView extends AbstractView{
     /**
      * Method for setting up the map with listeners on each asteroid and vehicle
      */
-    //TODO Lagre alle vehicles i stage, bestemme posisjon, legge til listeners
     private void setUpMap(){
         final ArrayList<Asteroid> asteroids = map.getAsteroids();
         vehicleOnAsteroid = new ArrayList<>();

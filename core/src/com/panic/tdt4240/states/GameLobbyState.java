@@ -86,7 +86,7 @@ public class GameLobbyState extends State {
 
     @Override
     public void dispose() {
-
+        view.dispose();
     }
 
 }

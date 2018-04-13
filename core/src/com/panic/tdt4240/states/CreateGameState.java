@@ -48,6 +48,6 @@ public class CreateGameState extends State {
 
     @Override
     public void dispose() {
-
+        view.dispose();
     }
 }

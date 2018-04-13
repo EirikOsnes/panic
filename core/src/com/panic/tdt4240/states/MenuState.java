@@ -71,7 +71,7 @@ public class MenuState extends State {
             Card card = new Card(i + "");
             card.setTooltip("Card nr:" + i + "\nSomething else............\nabcdefghijklmnopqrstuvwxyz");
             card.setTargetType(Card.TargetType.ASTEROID);
-            card.setAllowedTarget(Card.AllowedTarget.ALL);
+            card.setAllowedTarget(Card.AllowedTarget.ENEMY);
             if(i == 9){
                 card.setCardType(Card.CardType.ATTACK);
             }
@@ -91,7 +91,6 @@ public class MenuState extends State {
         XMLParser parser = new XMLParser();
         Map map = parser.parseMaps().get(0);
         instance.setMap(map);
-        instance.setPlayer(player);
         ArrayList<Vehicle> vehicles = new ArrayList<>();
         Vehicle vehicle = new Vehicle("");
         for (int i = 0; i < 4; i++) {
@@ -111,8 +110,9 @@ public class MenuState extends State {
             vehicles.add(vehicle1);
             map.getAsteroids().get(1).addVehicle(vehicle1.getVehicleID());
         }
+        player.setVehicle(vehicles.get(0));
+        instance.setPlayer(player);
         instance.setVehicles(vehicles);
-
         gsm.set(new PlayCardState(gsm));
     }
 

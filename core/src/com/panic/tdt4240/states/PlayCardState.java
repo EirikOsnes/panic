@@ -170,7 +170,7 @@ public class PlayCardState extends State {
             //If the player can target a vehicle
             if(playedCardsList.get(numPlayedCards-1).getTargetType().equals(VEHICLE)){
                 //If the player targets themselves
-                if(player.getVehicle().getVehicleID().equals(targetID)){
+                if(player.getVehicle().getVehicleID().toLowerCase().equals(targetID)){
                     return !playedCardsList.get(numPlayedCards-1).getAllowedTarget().equals(ENEMY);
                 }
                 //The player targets someone else

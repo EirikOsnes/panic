@@ -58,6 +58,18 @@ public class Connection {
         return false;
     }
 
+    /**
+     * Get the latest state of the given Lobby - used to update the GameLobbyState
+     * @param lobbyID The id of the lobby
+     * @return Returns the updated Lobby object.
+     */
+    public Lobby updateLobby(int lobbyID){
+
+        //TODO: Return the latest state of this Lobby.
+
+        return null;
+    }
+
 
     /**
      * A method call to get all the Vehicles for this game. Should be instatiated copies, with ID.

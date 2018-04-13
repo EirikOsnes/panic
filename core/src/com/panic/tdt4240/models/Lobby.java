@@ -15,6 +15,7 @@ public class Lobby {
     private int lobbyID;
     private String mapID;
     private ArrayList<Integer> playerIDs; //ConnectionIDs?
+    private ArrayList<String> vehicleTypes;
 
     public Lobby(int maxPlayers, String lobbyname, int lobbyID, @NotNull String mapID) {
         this.maxPlayers = maxPlayers;
@@ -22,11 +23,13 @@ public class Lobby {
         this.lobbyID = lobbyID;
         this.mapID = mapID;
         playerIDs = new ArrayList<>();
+        vehicleTypes = new ArrayList<>();
     }
 
     public void addPlayer(int ID){
         if (playerIDs.size()<maxPlayers && !playerIDs.contains(ID)){
             playerIDs.add(ID);
+            vehicleTypes.add("Placeholder");
         }
         else{
             //TODO: Player could not be added - throw error?

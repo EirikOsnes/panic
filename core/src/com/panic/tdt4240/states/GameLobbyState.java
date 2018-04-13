@@ -1,6 +1,7 @@
 package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.view.ViewClasses.GameLobbyView;
@@ -32,6 +33,13 @@ public class GameLobbyState extends State {
         //gsm.push(new PlayCardState(gsm));
     }
 
+    /**
+     * Update the lobby - should be called every second maybe?
+     */
+    private void updateLobby(){
+        lobby = Connection.getInstance().updateLobby(lobby.getLobbyID());
+    }
+
     @Override
     public void handleInput(Object o) {
     }
@@ -39,6 +47,7 @@ public class GameLobbyState extends State {
     @Override
     public void update(float dt) {
         // players joining...?
+        // Call updateLobby() when applicable.
     }
 
     @Override

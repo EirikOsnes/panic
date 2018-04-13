@@ -21,6 +21,7 @@ public class LoadGameState extends State {
 
     private GameInstance gi;
     private Connection connection;
+    private boolean isLoading; //Flag to use for rendering of a loading screen.
 
     protected LoadGameState(GameStateManager gsm) {
         super(gsm);
@@ -35,8 +36,11 @@ public class LoadGameState extends State {
      */
     private void setUpGameInstance(){
         gi.reset();
-        ArrayList<Vehicle> vehicles = connection.getAllVehicles();
-        String myVehicleID = connection.getMyVehicle();
+        isLoading = true;
+        connection.getGameInfo();
+    }
+
+    private void setGIValues(ArrayList<Vehicle> vehicles, String mapID, String myVehicleID){
         Vehicle myVehicle = null;
         for (Vehicle v : vehicles) {
             if (v.getVehicleID().equals(myVehicleID))
@@ -47,10 +51,11 @@ public class LoadGameState extends State {
         Stack<Card> myCards = parser.parseCardStack(myVehicle.getVehicleType());
         gi.setPlayer(new Player(myCards));
         gi.getPlayer().setVehicle(myVehicle);
-        String mapID = connection.getMapID();
         Map myMap = ModelHolder.getInstance().getMapById(mapID);
         gi.setMap(myMap);
+        isLoading = false;
     }
+
 
     /**
      * Checks to see if the client is reconnecting - i.e. there is a history of cards played, and plays these if that is the case.
@@ -64,6 +69,10 @@ public class LoadGameState extends State {
             }
         }
 
+    }
+
+    public boolean isLoading() {
+        return isLoading;
     }
 
     @Override
@@ -95,6 +104,26 @@ public class LoadGameState extends State {
 
         @Override
         public void onMessage(String message) {
+            String[] strings = message.split(":");
+
+            switch (strings[0]){
+                case "GAME_INFO":
+                    parseGameInfo(strings);
+            }
+
+        }
+
+        private void parseGameInfo(String[] strings){
+            String[] vehicleStrings = strings[1].split("&");
+            ArrayList<Vehicle> vehicles = new ArrayList<>();
+            for (String vehicleString : vehicleStrings) {
+                String[] vehicleInfo = vehicleString.split(",");
+                Vehicle myVehicle = ModelHolder.getInstance().getVehicleByName(vehicleInfo[0]).cloneVehicleWithId(vehicleInfo[1]);
+                //TODO: myVehicle.setColor(vehicleInfo[2]);
+                vehicles.add(myVehicle);
+            }
+
+            setGIValues(vehicles, strings[2], strings[3]);
 
         }
     }

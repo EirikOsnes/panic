@@ -2,6 +2,7 @@ package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 
 /**
@@ -17,6 +18,7 @@ public abstract class State {
         this.gsm = gsm;
         mouse = new Vector2();
         setUpAdapter();
+        Connection.getInstance().setAdapter(callbackAdapter);
     }
 
     protected abstract void setUpAdapter();

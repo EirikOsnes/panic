@@ -122,6 +122,13 @@ public class Connection extends WebSocketClient{
     }
 
     /**
+     * Return on the form GAME_INFO:VehicleType1,VehicleID1,Color1&VehicleType2,...ColorN:MapID:MyVehicleID
+     */
+    public void getGameInfo(){
+        //TODO: Send request to server
+    }
+
+    /**
      * A method call to get all the Vehicles for this game. Should be instatiated copies, with ID.
      *
      * @return Returns all the Vehicles for this game.

@@ -15,6 +15,8 @@ public class GameListState extends State {
 
     GameListView view;
     ArrayList<Lobby> lobbies;
+    private static String err_full_lobby = "Error: full lobby.";
+    private static String err_lobby404 = "Error: lobby not found.";
 
     public GameListState(GameStateManager gsm){
         super(gsm);
@@ -25,9 +27,13 @@ public class GameListState extends State {
 
     }
 
+    public ArrayList<Lobby> getLobbies(){return lobbies;}
+
     private void updateLobbyList(){
         lobbies = Connection.getInstance().getAllLobbies();
-        //TODO: Actually visualize this list.
+        //TODO: Actually visualize this list. Use ScrollPane
+        // import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+        // https://stackoverflow.com/questions/15484077/libgdx-and-scrollpane-with-multiple-widgets
     }
 
     @Override
@@ -35,8 +41,13 @@ public class GameListState extends State {
         // when a lobby is clicked, enter it.
         if ( o.getClass() == String.class){
             try{
+                if (o=="error:Full lobby"){
+                    view.popup((String) o);
+                }
                 //TODO: connect with actual Lobby objects instead - use
-
+                else{
+                    connectToLobby((Lobby) o);
+                }
             } catch(Exception e){
 
             }
@@ -69,6 +80,10 @@ public class GameListState extends State {
         }
         else{
             //TODO: Cannot join the lobby - it might be full. Maybe give a error pop-up, and refresh the lobby list with updateLobbyList()?
+            if (lobby.getMaxPlayers() == lobby.getPlayerIDs().size()) {
+                handleInput("Error: full lobby");
+                updateLobbyList();
+            }
         }
     }
 

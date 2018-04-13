@@ -105,6 +105,7 @@ public class MenuView extends AbstractView {
         renderer.sb.end();
     }
 
+
     public void dispose(){
         renderer.dispose();
         font.dispose();

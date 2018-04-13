@@ -5,9 +5,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -17,6 +19,7 @@ import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.states.GameLobbyState;
+import com.panic.tdt4240.util.PlayerNameGenerator;
 import com.panic.tdt4240.view.Renderer;
 
 import java.util.ArrayList;
@@ -30,30 +33,34 @@ public class GameLobbyView extends AbstractView {
 
 
     private Renderer renderer;
-    private Stage stage;
-    private Button playerBtn, exitBtn;
-    private TextureAtlas buttonAtlas;
-    private Skin skin;
-    private BitmapFont font;
-    private TextButton.TextButtonStyle playerBtnStyle, exitBtnStyle;
     private Table table;
-    private Texture background;
-    private Player localUser;
-    ArrayList<Player> players;
+    private TextureAtlas buttonAtlas;
+    private Texture bg;
+    private Skin skin;
+    private Stage stage;
+    private BitmapFont font;
+
+    private ArrayList<String> usedNames;
+
+    private ArrayList<TextButton> textBtns;
+    private Button playerBtn, exitBtn, launchGameBtn;
+    private TextButton.TextButtonStyle playerBtnStyle, exitBtnStyle;
+
+    private ArrayList<Player> players;
 
     public GameLobbyView(GameLobbyState lobbyState) {
         super(lobbyState);
-        background = new Texture("misc/background.png");
+        bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         table = new Table();
 
         font = new BitmapFont();
+        textBtns = new ArrayList<>();
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
-        buttonAtlas = new TextureAtlas("start_menu_buttons/buttons.pack");
-        skin.addRegions(buttonAtlas);
+        buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
+        skin = new Skin(Gdx.files.internal("skins/uiskin.json"), buttonAtlas);
 
         playerBtnStyle = new TextButton.TextButtonStyle();
         playerBtnStyle.font = font;
@@ -66,6 +73,7 @@ public class GameLobbyView extends AbstractView {
         exitBtnStyle.down = skin.getDrawable("button_down");
 
         playerBtn = new TextButton("", playerBtnStyle);
+        launchGameBtn = new TextButton("", exitBtnStyle);
         exitBtn = new TextButton("", exitBtnStyle);
 
         playerBtn.addListener(new ChangeListener() {
@@ -74,7 +82,12 @@ public class GameLobbyView extends AbstractView {
                 state.handleInput( 0);
             }
         });
-
+        launchGameBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                state.handleInput( 0);
+            }
+        });
         exitBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -82,21 +95,34 @@ public class GameLobbyView extends AbstractView {
             }
         });
 
-        /** not initialised: localUser, players
-         *
-         */
+        /** testing tools: initialised localUser, players */
 
-        // TODO: some server-side code must be completed before proper finishing...
+        // TODO: some server-side code must be completed prior to completion...
 
         // For shitty testing
-        localUser = new Player(new Stack<Card>());
-        players.add(localUser);
+        usedNames = new ArrayList<>();
+        players = new ArrayList<>();
         players.add(new Player(new Stack<Card>()));
-        renderPlayerList();
+        players.add(new Player(new Stack<Card>()));
+        players.add(new Player(new Stack<Card>()));
+        players.add(new Player(new Stack<Card>()));
+        players.add(new Player(new Stack<Card>()));
+        players.add(new Player(new Stack<Card>()));
+        preparePlayerList();
 
-        table.background(new TextureRegionDrawable(new TextureRegion(background)));
+        table.background(new TextureRegionDrawable(new TextureRegion(bg)));
 
-        //-------
+        table.setFillParent(true);
+        table.row().center();
+        table.add(new Label(PanicGame.TITLE, skin)).top().padBottom(10);
+        table.row().center();
+        table.add(new Label(PanicGame.FULL_TITLE, skin));
+        for (TextButton tb : textBtns){
+            table.row().center();
+            table.add(tb).width(200).height(50).pad(10);
+        }
+        table.pack();
+
         stage.addActor(table);
 
         renderer = Renderer.getInstance();
@@ -111,7 +137,7 @@ public class GameLobbyView extends AbstractView {
     public void render(){
         renderer.sb.setProjectionMatrix(cam.combined);
         renderer.sb.begin();
-        renderer.sb.draw(background,0,0,PanicGame.WIDTH,PanicGame.HEIGHT);
+        renderer.sb.draw(bg,0,0,PanicGame.WIDTH,PanicGame.HEIGHT);
         stage.draw();
         renderer.sb.end();
     }
@@ -122,11 +148,20 @@ public class GameLobbyView extends AbstractView {
         stage.dispose();
     }
 
-    private void renderPlayerList(){
-        for (Player p : players){
-            // generate btn for players
-            if (p == localUser){
-
+    private void preparePlayerList(){
+        int counted = 0;
+        String name;
+        while (true){
+            if (counted >= players.size()) break;
+            double seed = Math.floor(Math.random() * PlayerNameGenerator.getCount());
+            name = PlayerNameGenerator.getName((int) seed);
+            if (! usedNames.contains(name)) {
+                TextButton button = new TextButton(
+                        name, playerBtnStyle);
+                textBtns.add(button);
+                counted++;
+                usedNames.add(name);
+                System.out.println(counted);
             }
         }
 

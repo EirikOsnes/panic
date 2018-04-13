@@ -1,5 +1,7 @@
 package com.panic.tdt4240.states;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.models.Lobby;
@@ -65,6 +67,8 @@ public class GameLobbyState extends State {
 
     @Override
     public void handleInput(Object o) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) gsm.reset();
+
     }
 
     @Override

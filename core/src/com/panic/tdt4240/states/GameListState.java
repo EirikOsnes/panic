@@ -2,7 +2,6 @@ package com.panic.tdt4240.states;
 
 
 import com.panic.tdt4240.connection.Connection;
-import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.view.ViewClasses.GameListView;
 
@@ -15,7 +14,9 @@ import java.util.ArrayList;
 public class GameListState extends State {
 
     GameListView view;
-    ArrayList<String> lobbies;
+    ArrayList<Lobby> lobbies;
+    private static String err_full_lobby = "Error: full lobby.";
+    private static String err_lobby404 = "Error: lobby not found.";
 
     public GameListState(GameStateManager gsm){
         super(gsm);
@@ -26,13 +27,13 @@ public class GameListState extends State {
 
     }
 
-    private void updateLobbyList(){
-        Connection.getInstance().getAllLobbies();
-        //TODO: Actually visualize this list.
-    }
+    public ArrayList<Lobby> getLobbies(){return lobbies;}
 
-    public void setLobbies(ArrayList<String> lobbies){
-        this.lobbies = lobbies;
+    private void updateLobbyList(){
+        lobbies = Connection.getInstance().getAllLobbies();
+        //TODO: Actually visualize this list. Use ScrollPane
+        // import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+        // https://stackoverflow.com/questions/15484077/libgdx-and-scrollpane-with-multiple-widgets
     }
 
     @Override
@@ -40,8 +41,13 @@ public class GameListState extends State {
         // when a lobby is clicked, enter it.
         if ( o.getClass() == String.class){
             try{
+                if (o=="error:Full lobby"){
+                    view.popup((String) o);
+                }
                 //TODO: connect with actual Lobby objects instead - use
-
+                else{
+                    connectToLobby((Lobby) o);
+                }
             } catch(Exception e){
 
             }
@@ -74,36 +80,10 @@ public class GameListState extends State {
         }
         else{
             //TODO: Cannot join the lobby - it might be full. Maybe give a error pop-up, and refresh the lobby list with updateLobbyList()?
-        }
-    }
-
-    @Override
-    protected void setUpAdapter() {
-        callbackAdapter = new GameListAdapter();
-    }
-
-    private class GameListAdapter implements ICallbackAdapter {
-
-        @Override
-        public void onMessage(String message) {
-            String[] strings = message.split(":");
-
-            switch (strings[0]){
-                case "GET_LOBBIES":
-                    parseLobbies(strings);
-                    break;
+            if (lobby.getMaxPlayers() == lobby.getPlayerIDs().size()) {
+                handleInput("Error: full lobby");
+                updateLobbyList();
             }
-        }
-
-        private void parseLobbies(String[] strings){
-            String[] lobbystrings = strings[1].split("&");
-            ArrayList<String> stringArrayList = new ArrayList<>();
-            for (String string :
-                    lobbystrings) {
-                stringArrayList.add(string);
-            }
-
-            setLobbies(stringArrayList);
         }
     }
 

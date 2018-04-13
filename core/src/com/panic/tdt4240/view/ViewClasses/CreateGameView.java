@@ -20,4 +20,8 @@ public class CreateGameView extends AbstractView {
 
 
     }
+
+    public void dispose(){
+
+    }
 }

@@ -39,6 +39,10 @@ public class GameListState extends State {
     @Override
     public void handleInput(Object o) {
         // when a lobby is clicked, enter it.
+        if (o == 1){
+            view.dispose();
+            gsm.pop();
+        }
         if ( o.getClass() == String.class){
             try{
                 if (o=="error:Full lobby"){

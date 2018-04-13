@@ -46,7 +46,7 @@ public class Connection extends WebSocketClient{
      * @param maxPlayerCount The maximum amount of players in the game. Should default to 4?
      * @param mapID The id of the map chosen.
      * @param name A chosen name for the lobby. (Optional?)
-     * @return Returns the newly created Lobby.
+     * @return Return the new Lobby as a string on the form: CREATE_LOBBY:
      */
     public Lobby createLobby(int maxPlayerCount, @NonNull String mapID, String name){
 

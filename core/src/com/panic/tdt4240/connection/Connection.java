@@ -57,11 +57,11 @@ public class Connection extends WebSocketClient{
 
     /**
      * Get all the Lobbies available
-     * @return Returns an ArrayList of all available Lobbies.
+     * Returns an ArrayList of all available Lobbies as a string on the form:
+     * GET_LOBBIES:Lobbyname1,CurrentPlayerNum1,MaxPlayers1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN
      */
-    public ArrayList<Lobby> getAllLobbies(){
-        //TODO: Return a list of all available lobbies - instantiated as Lobby objects.
-        return null;
+    public void getAllLobbies(){
+        //TODO: Return a list of all available lobbies.
     }
 
     /**

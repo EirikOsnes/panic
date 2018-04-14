@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class GameListState extends State {
 
     GameListView view;
-    ArrayList<Lobby> lobbies;
+    ArrayList<String> lobbies;
 
     public GameListState(GameStateManager gsm){
         super(gsm);
@@ -27,8 +27,12 @@ public class GameListState extends State {
     }
 
     private void updateLobbyList(){
-        lobbies = Connection.getInstance().getAllLobbies();
+        Connection.getInstance().getAllLobbies();
         //TODO: Actually visualize this list.
+    }
+
+    public void setLobbies(ArrayList<String> lobbies){
+        this.lobbies = lobbies;
     }
 
     @Override
@@ -82,7 +86,26 @@ public class GameListState extends State {
 
         @Override
         public void onMessage(String message) {
+            String[] strings = message.split(":");
 
+            switch (strings[0]){
+                case "GET_LOBBIES":
+                    parseLobbies(strings);
+                    break;
+            }
+        }
+
+        private void parseLobbies(String[] strings){
+            String[] lobbystrings = strings[1].split("&");
+            ArrayList<String> stringArrayList = new ArrayList<>();
+            for (String string :
+                    lobbystrings) {
+                //ANY CHANGE IN LIST ELEMENT TEXT GOES HERE
+                String[] lobbyelements = string.split(",");
+                stringArrayList.add(lobbyelements[0] + " | " + lobbyelements[1] + "/" + lobbyelements[2]);
+            }
+
+            setLobbies(stringArrayList);
         }
     }
 

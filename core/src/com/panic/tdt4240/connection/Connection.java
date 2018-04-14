@@ -8,20 +8,37 @@ import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
 
 
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
- * Created by Eirik on 09-Apr-18.
+ * The class to communicate with the server
  */
 
-public class Connection {
-    private static final Connection ourInstance = new Connection();
+public class Connection extends WebSocketClient{
+
+    private static Connection ourInstance;
+    private ICallbackAdapter adapter;
 
     public static Connection getInstance() {
+        if(ourInstance == null){
+            try {
+                URI uri = new URI("ws://panicserver.herokuapp.com");
+                ourInstance = new Connection(uri);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+
         return ourInstance;
     }
 
-    private Connection() {
+    private Connection(URI uri) {
+        super(uri);
     }
 
     /**
@@ -29,23 +46,22 @@ public class Connection {
      * @param maxPlayerCount The maximum amount of players in the game. Should default to 4?
      * @param mapID The id of the map chosen.
      * @param name A chosen name for the lobby. (Optional?)
-     * @return Returns the newly created Lobby.
+     * Return the new Lobby as a string on the form:
+     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID
      */
-    public Lobby createLobby(int maxPlayerCount, @NonNull String mapID, String name){
+    public void createLobby(int maxPlayerCount, @NonNull String mapID, String name){
 
         //TODO: Create and return the Lobby with the designated parameters, and the creator already added.
-
-        return null;
 
     }
 
     /**
      * Get all the Lobbies available
-     * @return Returns an ArrayList of all available Lobbies.
+     * Returns an ArrayList of all available Lobbies as a string on the form:
+     * GET_LOBBIES:Lobbyname1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
      */
-    public ArrayList<Lobby> getAllLobbies(){
-        //TODO: Return a list of all available lobbies - instantiated as Lobby objects.
-        return null;
+    public void getAllLobbies(){
+        //TODO: Return a list of all available lobbies.
     }
 
     /**
@@ -74,13 +90,14 @@ public class Connection {
     /**
      * Get the latest state of the given Lobby - used to update the GameLobbyState
      * @param lobbyID The id of the lobby
-     * @return Returns the updated Lobby object.
+     * Return the updated Lobby as a string on the form:
+     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN:PlayerReady1&PlayerReady2&...&PlayerReadyN
+     *
      */
-    public Lobby updateLobby(int lobbyID){
+    public void updateLobby(int lobbyID){
 
-        //TODO: Return the latest state of this Lobby.
+        //TODO: Send the call to the server.
 
-        return null;
     }
 
     /**
@@ -105,42 +122,11 @@ public class Connection {
     }
 
     /**
-     * A method call to get all the Vehicles for this game. Should be instatiated copies, with ID.
-     *
-     * @return Returns all the Vehicles for this game.
+     * Return on the form GAME_INFO:VehicleType1,VehicleID1,Color1&VehicleType2,...ColorN:MapID:MyVehicleID
      */
-    public ArrayList<Vehicle> getAllVehicles() {
-
-        //TODO: Actually receive and parse the vehicles. Comments below is one way:
-        //Probably get strings on the form {VehicleType, VehicleID}
-        //Foreach string: result.add(ModelHolder.getInstance.getVehicleByName(VehicleType).clone(VehicleID))
-
-        ArrayList<Vehicle> result = null;
-
-        return result;
+    public void getGameInfo(){
+        //TODO: Send request to server
     }
-
-    /**
-     * Get the ID of the current players vehicle.
-     *
-     * @return returns the ID.
-     */
-    public String getMyVehicle() {
-        return null;
-    }
-
-
-    /**
-     * Get the map ID for this game
-     *
-     * @return Returns the map ID.
-     */
-
-
-    public String getMapID() {
-        return null;
-    }
-
 
     /**
      * Tell the server that runEffectsState is done animating, so the next turn can begin.
@@ -152,35 +138,20 @@ public class Connection {
     }
 
     /**
-     * reads the history of the game. If the game has no history, the method returns null. The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
-     * with "ENDTURN//".
-     *
-     * @param turns The turns String
-     * @return An arrayList containing ArrayLists of CardIDs, SenderIDs, TargetIDs and Seeds
+     * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
      */
-    public ArrayList<ArrayList<String[]>> readTurns(String turns){
-        if (turns.equals("")) {
-            return null;
-        }
-
-        String[] data = turns.split("//");
-        ArrayList<ArrayList<String[]>> result = new ArrayList<>();
-        ArrayList<String[]> currentTurn = new ArrayList<>();
-        for (String string : data){
-            if(string.equals("ENDTURN")){
-                result.add(currentTurn);
-                currentTurn = new ArrayList<>();
-            } else {
-                String[] elements = string.split("&");
-                if (elements.length != 4) {
-                    throw new IllegalArgumentException("String is not formatted correctly");
-                }
-                currentTurn.add(new String[]{elements[0],elements[2],elements[1],elements[3]});
-            }
-        }
-
-        return result;
+    public void sendRunEffectsState(){
+        //TODO: Send info
     }
+
+    /**
+     * The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
+     * with "ENDTURN//".
+     */
+    public void getLog(){
+        //TODO: send a getAllTurns command
+    }
+
 
 
     /**
@@ -199,9 +170,30 @@ public class Connection {
         return returnString;
     }
 
-    //TODO
-    public ArrayList<ArrayList<String[]>> getTurns() {
-        return null;
+    @Override
+    public void onOpen(ServerHandshake handshakedata) {
+
+    }
+
+    @Override
+    public void onMessage(String message){
+        if (adapter != null) {
+            adapter.onMessage(message);
+        }
+    }
+
+    @Override
+    public void onClose(int code, String reason, boolean remote) {
+
+    }
+
+    @Override
+    public void onError(Exception ex) {
+
+    }
+
+    public void setAdapter(ICallbackAdapter adapter) {
+        this.adapter = adapter;
     }
 }
 

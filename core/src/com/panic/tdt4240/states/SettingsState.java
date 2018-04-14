@@ -1,6 +1,6 @@
 package com.panic.tdt4240.states;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.view.ViewClasses.SettingsView;
 
 /**
@@ -50,5 +50,18 @@ public class SettingsState extends State {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    protected void setUpAdapter() {
+        callbackAdapter = new SettingsAdapter();
+    }
+
+    private class SettingsAdapter implements ICallbackAdapter {
+
+        @Override
+        public void onMessage(String message) {
+
+        }
     }
 }

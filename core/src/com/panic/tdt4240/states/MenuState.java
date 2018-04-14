@@ -1,5 +1,6 @@
 package com.panic.tdt4240.states;
 
+import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.Map;
@@ -105,5 +106,18 @@ public class MenuState extends State {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    protected void setUpAdapter() {
+        callbackAdapter = new MenuAdapter();
+    }
+
+    private class MenuAdapter implements ICallbackAdapter {
+
+        @Override
+        public void onMessage(String message) {
+
+        }
     }
 }

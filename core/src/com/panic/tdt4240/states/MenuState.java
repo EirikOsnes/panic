@@ -30,6 +30,8 @@ public class MenuState extends State {
 
     @Override
     public void handleInput(Object o) {
+        //startPlayCard();
+
         if (o == (Integer) 1) {
             gsm.push(new CreateGameState(gsm));
             System.out.println("Creating game...");
@@ -117,7 +119,8 @@ public class MenuState extends State {
         player.setVehicle(vehicles.get(0));
         instance.setPlayer(player);
         instance.setVehicles(vehicles);
-        gsm.set(new PlayCardState(gsm));
+        gsm.set(new RunEffectsState(gsm));
+        //gsm.set(new PlayCardState(gsm));
     }
 
     @Override

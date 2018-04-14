@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.GameInstance;
+import com.panic.tdt4240.view.ViewClasses.RunEffectsView;
 
 import java.util.ArrayList;
 
@@ -14,11 +15,13 @@ import java.util.ArrayList;
 public class RunEffectsState extends State {
 
     private GameInstance gi;
+    private RunEffectsView runEffectsView;
 
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
         gi = GameInstance.getInstance();
-        Connection.getInstance().sendRunEffectsState();
+        //Connection.getInstance().sendRunEffectsState();
+        runEffectsView = new RunEffectsView(this);
     }
 
     @Override
@@ -33,12 +36,12 @@ public class RunEffectsState extends State {
 
     @Override
     public void render() {
-
+        runEffectsView.render();
     }
 
     @Override
     public void dispose() {
-
+        runEffectsView.dispose();
     }
 
     @Override

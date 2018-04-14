@@ -100,9 +100,7 @@ public class GameListState extends State {
             ArrayList<String> stringArrayList = new ArrayList<>();
             for (String string :
                     lobbystrings) {
-                //ANY CHANGE IN LIST ELEMENT TEXT GOES HERE
-                String[] lobbyelements = string.split(",");
-                stringArrayList.add(lobbyelements[0] + " | " + lobbyelements[1] + "/" + lobbyelements[2]);
+                stringArrayList.add(string);
             }
 
             setLobbies(stringArrayList);

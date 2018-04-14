@@ -47,7 +47,7 @@ public class Connection extends WebSocketClient{
      * @param mapID The id of the map chosen.
      * @param name A chosen name for the lobby. (Optional?)
      * Return the new Lobby as a string on the form:
-     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN:PlayerReady1&PlayerReady2&...&PlayerReadyN
+     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID
      */
     public void createLobby(int maxPlayerCount, @NonNull String mapID, String name){
 
@@ -58,7 +58,7 @@ public class Connection extends WebSocketClient{
     /**
      * Get all the Lobbies available
      * Returns an ArrayList of all available Lobbies as a string on the form:
-     * GET_LOBBIES:Lobbyname1,CurrentPlayerNum1,MaxPlayers1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN
+     * GET_LOBBIES:Lobbyname1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
      */
     public void getAllLobbies(){
         //TODO: Return a list of all available lobbies.

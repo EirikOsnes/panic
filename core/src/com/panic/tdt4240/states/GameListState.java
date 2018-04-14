@@ -14,73 +14,100 @@ import java.util.ArrayList;
 public class GameListState extends State {
 
     private GameListView view;
-    private ArrayList<Lobby> lobbies;
+    ArrayList<String[]> lobbyListData;
     private static String err_full_lobby = "Error: full lobby.";
     private static String err_lobby404 = "Error: lobby not found.";
 
     public GameListState(GameStateManager gsm){
         super(gsm);
-        view = new GameListView(this);
-        lobbies = new ArrayList<>();
+        Connection.getInstance().getAllLobbies();
+        lobbyListData = new ArrayList<>();
+
         // load available games from master server - can be done with updateLobbyList
-        // ... maybe with ping?
+        /** TESTING {LobbyName, playerCount, maxPlayers, lobbyID} */
+        String[] data = {"testing", "1", "4", "0"};
+        lobbyListData.add(data);
+        Connection.getInstance().getAllLobbies();
+/*        Lobby l1 = new Lobby(2, "ENGLISH", 0, "TEST");
+        Lobby l2 = new Lobby(3, "MOTHERFUCKER", 1, "TEST");
+        Lobby l3 = new Lobby(4, "DO YOU SPEAK IT?!", 2, "TEST");
+/**/
+        view = new GameListView(this);
+    }
+
+    public ArrayList<String[]> getLobbies(){return lobbyListData;}
+
+    @Override
+    protected void setUpAdapter() {
 
     }
 
-    public ArrayList<Lobby> getLobbies(){return lobbies;}
-
     private void updateLobbyList(){
-        lobbies = Connection.getInstance().getAllLobbies();
+        Connection.getInstance().getAllLobbies();
         //TODO: Actually visualize this list. Use ScrollPane
         // import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
         // https://stackoverflow.com/questions/15484077/libgdx-and-scrollpane-with-multiple-widgets
     }
 
+    /** @param o: what to do, what to do...
+     * */
     @Override
     public void handleInput(Object o) {
         // when a lobby is clicked, enter it.
-        if (o.getClass() == Lobby.class){
-            updateLobbyList();
-            Lobby lob = (Lobby) o;
+        if (o.getClass()==Integer.class){
+            if ((int) o == -1) gsm.reset();  // exit to main menu
         }
-        if (o == 1){
-            view.dispose();
-            gsm.pop();
-        }
-        if ( o.getClass() == String.class){
-            try{
+        if ( o.getClass() == String.class){  // lobbyID is still a string
+            if ((int) o >= 0){ // lobbyID entered
+                Connection.getInstance().connectToLobby((int) o);
+            }
+            try{    // error handling
                 if (o=="error:Full lobby"){
-                    view.popup((String) o);
+                    view.popup(GameListView.error0);
                 }
                 //TODO: connect with actual Lobby objects instead - use
-                else{
+                else if (o=="error: Missing lobby"){
+                    view.popup(GameListView.error1);
                 }
             } catch(Exception e){
-
+                e.printStackTrace();
             }
         }
 
     }
 
     @Override
-    public void update(float dt) {
-
-    }
+    public void update(float dt) { }
 
     @Override
-    public void render() {
-        view.render();
-    }
+    public void render() { view.render(); }
 
     @Override
-    public void dispose() {
-
-    }
+    public void dispose() { view.dispose(); }
 
     /**
-     * Connect to the lobby designated - if allowed
-     * @param lobby The lobby you wish to connect to
+     GET_LOBBIES:LobbyName1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
+     ':'    - remove
+     '&'    - separate lobbies
+     ','    - lobby data separators
+     Result: String[], {LobbyName, playerCount, maxPlayers, lobbyID}
+
+     @return 1. Data is added to the arrayList in the format:
+         { LobbyName \t   playerCount/maxPlayers, lobbyID}
      */
+    public boolean readLobbyData(String s){
+        String[] untagged = s.split(":"); // removes the first separator
+        String[] full_list = untagged[1].split("&");
+        for (String lobby : full_list){
+            String[] lobby_data = lobby.split(",");
+            String[] cleaned_data = {lobby_data[0] + "\tSlots: " + lobby_data[1]
+                    + "/" + lobby_data[2], lobby_data[3]};
+            lobbyListData.add(cleaned_data);
+        }
+        return full_list.length == lobbyListData.size() ; // simple validity check
+    }
+
+
     private void connectToLobby(Lobby lobby){
         if(Connection.getInstance().connectToLobby(lobby.getLobbyID())){
             gsm.push(new GameLobbyState(gsm,lobby));

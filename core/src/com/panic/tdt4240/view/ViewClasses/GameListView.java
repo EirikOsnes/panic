@@ -1,14 +1,11 @@
 package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -18,10 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
-import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.states.GameListState;
 import com.panic.tdt4240.view.Renderer;
-import java.util.ArrayList;
 
 /**
  * Created by victor on 12.03.2018.
@@ -43,15 +38,14 @@ public class GameListView extends AbstractView {
     private Texture bg;
     private TextButton exitToMainMenuBtn;
 
-    private static String err_full_lobby = "Error: full lobby.";
-    private static String err_lobby404 = "Error: lobby not found.";
+    public static final String error0 = "Error: full lobby.";
+    public static final String error1 = "Error: lobby not found.";
 
     public GameListView(final GameListState listState) {
         super(listState);
         renderer = Renderer.getInstance();
-        renderer.dispose();
 
-        bg = new Texture("misc/bg.png");
+        bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         stage = new Stage();
         table = new Table();
@@ -64,33 +58,20 @@ public class GameListView extends AbstractView {
         btnStyle.up = skin.getDrawable("button_up");
         btnStyle.down = skin.getDrawable("button_up");
 
-
         table.setFillParent(true);
         table.center();
 
-        /**  // ACTUAL CODE BLOCK; disable when testing. /**/
-
-        String info;
         for (int i = 0; i < listState.getLobbies().size(); i++){
-            final Lobby lobby = listState.getLobbies().get(i);
-            info = lobby.toString();
-            TextButton button = new TextButton(info, btnStyle);
+            final String data[] = listState.getLobbies().get(i);
+            TextButton button = new TextButton(data[0], btnStyle);
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    state.handleInput(lobby);
+                    listState.handleInput(data[1]); // lobbyID
                 }
             });
-            table.add(button); table.row();
+            table.add(button).width(300); table.row();
         }
-        /**/
-
-        /** TESTING THIS VIEW */
-
-        Lobby l1 = new Lobby(2, "ENGLISH", 0, "TEST");
-        Lobby l2 = new Lobby(3, "MOTHERFUCKER", 1, "TEST");
-        Lobby l3 = new Lobby(4, "DO YOU SPEAK IT?!", 2, "TEST");
-
         /**/
 
         table.background(new TextureRegionDrawable(new TextureRegion(bg)));
@@ -99,7 +80,7 @@ public class GameListView extends AbstractView {
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput(1);
+                state.handleInput(-1);
             }
         });
 
@@ -109,8 +90,10 @@ public class GameListView extends AbstractView {
 
         scroller = new ScrollPane(table);
         scroller.setScrollingDisabled(true, false);
-        table.add(scroller).fill().expand();
+        table.pack();
 
+//        table.add(scroller).fill().expand();
+//        stage.addActor(scroller);
         stage.addActor(table);
 
     }
@@ -120,6 +103,7 @@ public class GameListView extends AbstractView {
         Dialog popup = new Dialog("Error", skin, "dialog");
         popup.text(errorMsg);
         popup.button("OK");
+        popup.pack();
         popup.show(stage);
     }
 
@@ -127,17 +111,16 @@ public class GameListView extends AbstractView {
         renderer.sb.setProjectionMatrix(cam.combined);
         renderer.sb.begin();
         renderer.sb.draw(bg, 0, 0, PanicGame.WIDTH, PanicGame.HEIGHT);
-        stage.act(); // this allows the scroller to have any effect
+        stage.act(); // this allows the scroller to have any effect, supposedly.
         stage.draw();
         renderer.sb.end();
     }
+
 
     public void dispose(){
         stage.dispose();
         font.dispose();
         renderer.dispose();
     }
-
-
 }
 

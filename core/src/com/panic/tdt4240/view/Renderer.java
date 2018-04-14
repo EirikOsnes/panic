@@ -44,7 +44,6 @@ public class Renderer {
     } /**/
 
     public void dispose(){
-        sb.dispose();
     }
 
 }

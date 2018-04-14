@@ -8,7 +8,7 @@ import com.panic.tdt4240.models.GameInstance;
 import java.util.ArrayList;
 
 /**
- * State for running thorught the cards gotten from the server.
+ * State for running through the cards gotten from the server.
  */
 
 public class RunEffectsState extends State {

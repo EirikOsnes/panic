@@ -2,6 +2,7 @@ package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
@@ -329,6 +330,19 @@ public class PlayCardState extends State {
             this.startID = startID;
             this.end = end;
             this.endID = endID;
+        }
+    }
+
+    @Override
+    protected void setUpAdapter() {
+        callbackAdapter = new PlayCardAdapter();
+    }
+
+    private class PlayCardAdapter implements ICallbackAdapter {
+
+        @Override
+        public void onMessage(String message) {
+
         }
     }
 

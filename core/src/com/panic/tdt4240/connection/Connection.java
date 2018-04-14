@@ -1,85 +1,157 @@
 package com.panic.tdt4240.connection;
 
+import android.support.annotation.NonNull;
+
 import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
 
+
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
- * Created by Eirik on 09-Apr-18.
+ * The class to communicate with the server
  */
 
-public class Connection {
-    private static final Connection ourInstance = new Connection();
+public class Connection extends WebSocketClient{
+
+    private static Connection ourInstance;
+    private ICallbackAdapter adapter;
 
     public static Connection getInstance() {
-        return ourInstance;
-    }
-
-    private Connection() {
-    }
-
-    /**
-     * A method call to get all the Vehicles for this game. Should be instatiated copies, with ID.
-     *
-     * @return Returns all the Vehicles for this game.
-     */
-    public ArrayList<Vehicle> getAllVehicles() {
-        ArrayList<Vehicle> result = null;
-
-        return result;
-    }
-
-    /**
-     * Get the ID of the current players vehicle.
-     *
-     * @return returns the ID.
-     */
-    public String getMyVehicle() {
-        return null;
-    }
-
-
-    /**
-     * Get the map ID for this game
-     *
-     * @return Returns the map ID.
-     */
-    public String getMapID() {
-        return null;
-    }
-
-    /**
-     * reads the history of the game. If the game has no history, the method returns null. The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
-     * with "ENDTURN//".
-     *
-     * @param turns The turns String
-     * @return An arrayList containing ArrayLists of CardIDs, SenderIDs, TargetIDs and Seeds
-     */
-    public ArrayList<ArrayList<String[]>> readTurns(String turns){
-        if (turns.equals("")) {
-            return null;
-        }
-
-        String[] data = turns.split("//");
-        ArrayList<ArrayList<String[]>> result = new ArrayList<>();
-        ArrayList<String[]> currentTurn = new ArrayList<>();
-        for (String string : data){
-            if(string.equals("ENDTURN")){
-                result.add(currentTurn);
-                currentTurn = new ArrayList<>();
-            } else {
-                String[] elements = string.split("&");
-                if (elements.length != 4) {
-                    throw new IllegalArgumentException("String is not formatted correctly");
-                }
-                currentTurn.add(new String[]{elements[0],elements[2],elements[1],elements[3]});
+        if(ourInstance == null){
+            try {
+                URI uri = new URI("ws://panicserver.herokuapp.com");
+                ourInstance = new Connection(uri);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
             }
         }
 
-        return result;
+        return ourInstance;
     }
+
+    private Connection(URI uri) {
+        super(uri);
+    }
+
+    /**
+     * The method to create a new lobby. Should it return the Lobby? Probably.
+     * @param maxPlayerCount The maximum amount of players in the game. Should default to 4?
+     * @param mapID The id of the map chosen.
+     * @param name A chosen name for the lobby. (Optional?)
+     * Return the new Lobby as a string on the form:
+     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID
+     */
+    public void createLobby(int maxPlayerCount, @NonNull String mapID, String name){
+
+        //TODO: Create and return the Lobby with the designated parameters, and the creator already added.
+
+    }
+
+    /**
+     * Get all the Lobbies available
+     * Returns an ArrayList of all available Lobbies as a string on the form:
+     * GET_LOBBIES:Lobbyname1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
+     */
+    public void getAllLobbies(){
+        //TODO: Return a list of all available lobbies.
+    }
+
+    /**
+     * Connect to the given Lobby if this returns true.
+     * @param lobbyID The ID of the Lobby you wish to connect to
+     * @return Returns true if added on the server, false if it was non-successful.
+     */
+    public boolean connectToLobby(int lobbyID){
+
+        //TODO: Try to connect to the given Lobby. Should return true if it was successful.
+
+        return false;
+    }
+
+
+    /**
+     * Remove the player from the given Lobby.
+     * @param lobbyID The ID of the Lobby
+     */
+    public void leaveLobby(int lobbyID){
+
+        //TODO: Remove me from the lobby.
+
+    }
+
+    /**
+     * Get the latest state of the given Lobby - used to update the GameLobbyState
+     * @param lobbyID The id of the lobby
+     * Return the updated Lobby as a string on the form:
+     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN:PlayerReady1&PlayerReady2&...&PlayerReadyN
+     *
+     */
+    public void updateLobby(int lobbyID){
+
+        //TODO: Send the call to the server.
+
+    }
+
+    /**
+     * Set the vehicle type for the given Lobby to the given vehicleType.
+     * @param vehicleType
+     * @param lobbyID
+     */
+    public void chooseVehicleType(String vehicleType, int lobbyID){
+
+        //TODO: Set my vehicle in the Lobby to tbe given vehicle type
+
+    }
+
+    /**
+     * Set me to ready for the given lobby
+     * @param lobbyID The ID of the lobby.
+     */
+    public void setReady(int lobbyID){
+
+        //TODO: Set me to ready
+
+    }
+
+    /**
+     * Return on the form GAME_INFO:VehicleType1,VehicleID1,Color1&VehicleType2,...ColorN:MapID:MyVehicleID
+     */
+    public void getGameInfo(){
+        //TODO: Send request to server
+    }
+
+    /**
+     * Tell the server that runEffectsState is done animating, so the next turn can begin.
+     */
+    public void sendDoneAnimating(){
+
+        //TODO: Actually send this info to the server.
+
+    }
+
+    /**
+     * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
+     */
+    public void sendRunEffectsState(){
+        //TODO: Send info
+    }
+
+    /**
+     * The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
+     * with "ENDTURN//".
+     */
+    public void getLog(){
+        //TODO: send a getAllTurns command
+    }
+
 
 
     /**
@@ -98,9 +170,30 @@ public class Connection {
         return returnString;
     }
 
-    //TODO
-    public ArrayList<ArrayList<String[]>> getTurns() {
-        return null;
+    @Override
+    public void onOpen(ServerHandshake handshakedata) {
+
+    }
+
+    @Override
+    public void onMessage(String message){
+        if (adapter != null) {
+            adapter.onMessage(message);
+        }
+    }
+
+    @Override
+    public void onClose(int code, String reason, boolean remote) {
+
+    }
+
+    @Override
+    public void onError(Exception ex) {
+
+    }
+
+    public void setAdapter(ICallbackAdapter adapter) {
+        this.adapter = adapter;
     }
 }
 

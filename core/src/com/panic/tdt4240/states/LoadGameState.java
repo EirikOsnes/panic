@@ -61,13 +61,7 @@ public class LoadGameState extends State {
      * Checks to see if the client is reconnecting - i.e. there is a history of cards played, and plays these if that is the case.
      */
     private void checkForHistory() {
-        ArrayList<ArrayList<String[]>> log = connection.getTurns();
-
-        if(log!=null){
-            for (ArrayList<String[]> turn : log) {
-                gi.playTurn(turn);
-            }
-        }
+        connection.getLog();
 
     }
 
@@ -110,6 +104,12 @@ public class LoadGameState extends State {
                 case "GAME_INFO":
                     parseGameInfo(strings);
                     break;
+                case "GET_LOG":
+                    for (ArrayList<String[]> turns: GameInstance.getInstance().readTurns(strings[1])) {
+                        GameInstance.getInstance().playTurn(turns);
+                    }
+                    break;
+
             }
 
         }

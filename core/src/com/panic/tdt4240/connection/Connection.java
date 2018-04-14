@@ -138,35 +138,21 @@ public class Connection extends WebSocketClient{
     }
 
     /**
-     * reads the history of the game. If the game has no history, the method returns null. The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
+     * The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
      * with "ENDTURN//".
-     *
-     * @param turns The turns String
-     * @return An arrayList containing ArrayLists of CardIDs, SenderIDs, TargetIDs and Seeds
      */
-    public ArrayList<ArrayList<String[]>> readTurns(String turns){
-        if (turns.equals("")) {
-            return null;
-        }
-
-        String[] data = turns.split("//");
-        ArrayList<ArrayList<String[]>> result = new ArrayList<>();
-        ArrayList<String[]> currentTurn = new ArrayList<>();
-        for (String string : data){
-            if(string.equals("ENDTURN")){
-                result.add(currentTurn);
-                currentTurn = new ArrayList<>();
-            } else {
-                String[] elements = string.split("&");
-                if (elements.length != 4) {
-                    throw new IllegalArgumentException("String is not formatted correctly");
-                }
-                currentTurn.add(new String[]{elements[0],elements[2],elements[1],elements[3]});
-            }
-        }
-
-        return result;
+    public void getLastTurn(){
+        //TODO: Send a getLastTurn command
     }
+
+    /**
+     * The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
+     * with "ENDTURN//".
+     */
+    public void getLog(){
+        //TODO: send a getAllTurns command
+    }
+
 
 
     /**
@@ -183,11 +169,6 @@ public class Connection extends WebSocketClient{
             returnString = returnString + move[0] + "&" + move[2] + "&" + move[1] + "&" + priority + "//";
         }
         return returnString;
-    }
-
-    //TODO
-    public ArrayList<ArrayList<String[]>> getTurns() {
-        return null;
     }
 
     @Override

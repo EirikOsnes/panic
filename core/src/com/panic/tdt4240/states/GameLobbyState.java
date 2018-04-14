@@ -102,6 +102,9 @@ public class GameLobbyState extends State {
                 case "UPDATE_LOBBY":
                     parseLobby(strings);
                     break;
+                case "GAME_START":
+                    //TODO: Create this call, and handle it pls.
+                    break;
 
             }
 

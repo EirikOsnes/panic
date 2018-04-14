@@ -1,7 +1,6 @@
 package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,14 +10,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -45,7 +40,7 @@ public class PlayCardView extends AbstractView{
     private Stage stage;
     private Table table;
     //private Texture background;
-    private TextArea cardInfo;
+    private TextButton cardInfo;
     private int amountCards;
     private Skin skin;
     private boolean selectTarget = false;
@@ -107,33 +102,48 @@ public class PlayCardView extends AbstractView{
             TextButton button = new TextButton("", cardButtonStyle);
             cardButtons.add(i, button);
 
-
             final int index = i;
             cardButtons.get(index).addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    if(!removeDialog.get(index)){
-                        Label.LabelStyle style = new Label.LabelStyle();
-                        style.font = font;
-                        style.fontColor = Color.WHITE;
-                        skin.add("default", style);
-                        skin.add("default", buttonStyle);
+                    if(noneSelected()){
+                        if(!(cardInfo == null)){
+                            cardInfo.remove();
+                        }
                         Card card = ((PlayCardState) state).getCard(index);
-                        final Dialog dialog = new Dialog(card.getName(), skin, "dialog");
+                        TextButton.TextButtonStyle cardInfoStyle = new TextButton.TextButtonStyle();
+                        cardInfoStyle.font = font;
+                        cardInfoStyle.fontColor = Color.BLACK;
+                        cardInfoStyle.up = skin.getDrawable(((PlayCardState) state).getCardType(index));
 
-                        dialog.text(card.getTooltip());
-                        dialog.button("OK", true).addListener(new ClickListener() {
+                        String tooltip = "";
+                        String[] words = card.getTooltip().split(" ");
+                        int length = 0;
+                        for(String string : words){
+                            length = length + string.length() + 1;
+                            if(length > 20){
+                                length = 0;
+                                tooltip = tooltip.concat("\n" + string + " ");
+                            }
+                            else{
+                                tooltip = tooltip.concat(string + " ");
+                            }
+                        }
+                        cardInfo = new TextButton(tooltip, cardInfoStyle);
+                        cardInfo.addListener(new ChangeListener() {
                             @Override
-                            public void clicked(InputEvent event, float x, float y) {
-                                dialog.remove();
+                            public void changed(ChangeEvent event, Actor actor) {
+                                cardInfo.remove();
                             }});
-                        dialog.key(Input.Buttons.LEFT, true);
-                        dialog.show(stage);
+                        cardInfo.setPosition(SCREEN_WIDTH/4, SCREEN_HEIGHT/4);
+                        cardInfo.setWidth(SCREEN_WIDTH/2);
+                        cardInfo.setHeight(SCREEN_HEIGHT/2);
+                        stage.addActor(cardInfo);
                         removeDialog.set(index, true);
-
                     }
                     else{
                         removeDialog.set(index, false);
+                        cardInfo.remove();
                     }
                     state.handleInput(index);
                 }
@@ -141,7 +151,6 @@ public class PlayCardView extends AbstractView{
             table.add(cardButtons.get(index)).width(SCREEN_WIDTH/amountCards).height(Gdx.graphics.getHeight()/5);
         }
 
-        //table.background(new TextureRegionDrawable(new TextureRegion(background)));
         table.pack();
         stage.addActor(table);
 
@@ -161,20 +170,18 @@ public class PlayCardView extends AbstractView{
         });
 
         stage.addActor(finishedButton);
-        /*
-//FIXME Større cardinfo tekst, bedre plassert
-        TextField.TextFieldStyle style = new TextField.TextFieldStyle();
-        style.background = skin.getDrawable("attack");
-        style.fontColor = Color.BLACK;
-        style.font = new BitmapFont();
-        cardInfo = new TextArea("",style);
-        cardInfo.setPosition(0, table.getHeight());
-        cardInfo.setWidth(cardButtons.get(0).getWidth());
-        cardInfo.setHeight(cardButtons.get(0).getHeight());
-        stage.addActor(cardInfo);
-        */
         setUpMap();
     }
+    private boolean noneSelected(){
+        Boolean isNoneSelected = true;
+        for(Boolean bol : removeDialog){
+            if(bol){
+                isNoneSelected = false;
+            }
+        }
+        return isNoneSelected;
+    }
+
 
     /**
      * Method for setting up the map with listeners on each asteroid and vehicle
@@ -295,6 +302,6 @@ public class PlayCardView extends AbstractView{
         //background.dispose();
         renderer.dispose();
     }
-//TODO Større tekst, større asteroider
+//TODO Større tekst
 
 }

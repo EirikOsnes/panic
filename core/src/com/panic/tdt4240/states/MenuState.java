@@ -1,5 +1,6 @@
 package com.panic.tdt4240.states;
 
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Lobby;
@@ -117,7 +118,15 @@ public class MenuState extends State {
 
         @Override
         public void onMessage(String message) {
+            String[] strings = message.split(":");
 
+            switch (strings[0]){
+                case "CONNECTION_ID":
+                    if(Connection.getInstance().getConnectionID()==0){
+                        Connection.getInstance().setConnectionID(Integer.parseInt(strings[1]));
+                    }
+
+            }
         }
     }
 }

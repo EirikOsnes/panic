@@ -23,6 +23,7 @@ public class Connection extends WebSocketClient{
 
     private static Connection ourInstance;
     private ICallbackAdapter adapter;
+    private int connectionID = 0;
 
     public static Connection getInstance() {
         if(ourInstance == null){
@@ -39,6 +40,19 @@ public class Connection extends WebSocketClient{
 
     private Connection(URI uri) {
         super(uri);
+    }
+
+    public void setConnectionID(int connectionID) {
+        this.connectionID = connectionID;
+    }
+
+    public int getConnectionID() {
+        return connectionID;
+    }
+
+    //Get a personal connectionID from the server
+    public void findConnectionID(){
+        //TODO: Send this call.
     }
 
     /**

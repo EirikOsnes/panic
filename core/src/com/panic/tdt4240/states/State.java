@@ -18,7 +18,6 @@ public abstract class State {
         this.gsm = gsm;
         mouse = new Vector2();
         setUpAdapter();
-        Connection.getInstance().setAdapter(callbackAdapter);
     }
 
     protected abstract void setUpAdapter();

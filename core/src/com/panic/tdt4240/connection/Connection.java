@@ -2,6 +2,7 @@ package com.panic.tdt4240.connection;
 
 import android.support.annotation.NonNull;
 
+import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.ModelHolder;
@@ -30,8 +31,18 @@ public class Connection extends WebSocketClient{
             try {
                 URI uri = new URI("ws://panicserver.herokuapp.com");
                 ourInstance = new Connection(uri);
-                ourInstance.connect();
+                ourInstance.connectBlocking(); //FIXME: This returns a boolean - should it be used?
             } catch (URISyntaxException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(!ourInstance.getSocket().isConnected()){
+            try {
+                ourInstance.connectBlocking();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -52,7 +63,7 @@ public class Connection extends WebSocketClient{
     }
 
     public void test(){
-        this.send("TEST");
+        ourInstance.send("TEST");
     }
 
     //Get a personal connectionID from the server
@@ -191,11 +202,13 @@ public class Connection extends WebSocketClient{
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        System.out.println("OnOpen");
+        Gdx.app.log("", "onOpen");
+        System.out.println("onOpen");
     }
 
     @Override
     public void onMessage(String message){
+        Gdx.app.log("", message);
         System.out.println(message);
         if (adapter != null) {
             adapter.onMessage(message);
@@ -204,12 +217,14 @@ public class Connection extends WebSocketClient{
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        System.out.println("OnClose");
+        Gdx.app.log("", "onClose");
+        System.out.println("onClose");
     }
 
     @Override
     public void onError(Exception ex) {
-
+        Gdx.app.log("onError", ex.getMessage());
+        System.out.println("onError: " + ex.getMessage());
     }
 
     public void setAdapter(ICallbackAdapter adapter) {

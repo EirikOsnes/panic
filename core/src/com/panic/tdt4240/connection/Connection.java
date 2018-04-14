@@ -30,6 +30,7 @@ public class Connection extends WebSocketClient{
             try {
                 URI uri = new URI("ws://panicserver.herokuapp.com");
                 ourInstance = new Connection(uri);
+                ourInstance.connect();
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -48,6 +49,10 @@ public class Connection extends WebSocketClient{
 
     public int getConnectionID() {
         return connectionID;
+    }
+
+    public void test(){
+        this.send("TEST");
     }
 
     //Get a personal connectionID from the server
@@ -186,11 +191,12 @@ public class Connection extends WebSocketClient{
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-
+        System.out.println("OnOpen");
     }
 
     @Override
     public void onMessage(String message){
+        System.out.println(message);
         if (adapter != null) {
             adapter.onMessage(message);
         }
@@ -198,7 +204,7 @@ public class Connection extends WebSocketClient{
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-
+        System.out.println("OnClose");
     }
 
     @Override

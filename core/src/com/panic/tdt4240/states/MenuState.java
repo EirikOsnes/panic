@@ -24,7 +24,7 @@ public class MenuState extends State {
     public MenuState(GameStateManager gsm){
         super(gsm);
         menuView = new MenuView(this);
-
+        Connection.getInstance().test();
     }
 
     @Override
@@ -124,6 +124,7 @@ public class MenuState extends State {
                 case "CONNECTION_ID":
                     if(Connection.getInstance().getConnectionID()==0){
                         Connection.getInstance().setConnectionID(Integer.parseInt(strings[1]));
+                        System.out.println("Received connection ID: "+strings[1]);
                     }
 
             }

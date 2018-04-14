@@ -64,6 +64,7 @@ public class PlayCardView extends AbstractView{
         Gdx.input.setInputProcessor(stage);
         table = new Table();
 
+
         table.setWidth(Gdx.graphics.getWidth());
         table.left().bottom();
         final BitmapFont font = new BitmapFont();

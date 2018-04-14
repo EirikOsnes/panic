@@ -27,7 +27,7 @@ public class PlayCardState extends State {
     private Player player;
     private Map map;
     //Order of cards that are played
-    private ArrayList<Card> playedCardsList;
+    private ArrayList<Integer> playedCardsList;
     //Targets for each card
     private ArrayList<String> targets;
     //Number of cards we have played up to this point
@@ -39,7 +39,7 @@ public class PlayCardState extends State {
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
     private GameInstance gameInstance;
-
+//TODO Når kort deselectes bør rekkefølge respekteres: fjern position of Integer
     public PlayCardState(GameStateManager gsm) {
         super(gsm);
         gameInstance = GameInstance.getInstance();
@@ -73,38 +73,40 @@ public class PlayCardState extends State {
     public void handleInput(Object o) {
         System.out.println(o.toString());
         if (o instanceof Integer) {
-            Integer cardIndex = (Integer) o;
+            Integer handIndex = (Integer) o;
 
             //Checks if the user wants to deselect an already selected card
-            if (selectedCard.get(cardIndex)) {
+            if (selectedCard.get(handIndex)) {
                 //Removes the card and its target from arrays
-                int index = playedCardsList.indexOf(hand.get(cardIndex));
+                int index = playedCardsList.indexOf(handIndex);
                 playedCardsList.remove(index);
-                //If the card is still selected, ie target is about to be selected
-                if (justClicked.equals(cardIndex)) {
+                //If the card is still selected, i.e target is about to be selected
+                if (justClicked.equals(handIndex)) {
                     justClicked = -1;
-                } else {
+                }
+                else {
                     targets.remove(index);
                 }
-                selectedCard.set(cardIndex, false);
+                selectedCard.set(handIndex, false);
 
+                numPlayedCards--;
                 //Sets the tooltip text to the most recently pressed card, or to an empty string
-                if (playedCardsList.size() > 0) {
-                    playView.setCardInfoText(playedCardsList.get(playedCardsList.size() - 1).getTooltip());
-                } else {
+                if (numPlayedCards > 0) {
+                    playView.setCardInfoText(hand.get(playedCardsList.get(numPlayedCards-1)).getTooltip());
+                }
+                else {
                     playView.setCardInfoText("");
                 }
-                playView.clickedButton(cardIndex, 0);
-                numPlayedCards--;
+                playView.clickedButton(handIndex, 0);
             }
             //Checks if the max amount of cards already have been played
             else if (numPlayedCards < player.getAmountPlayedCards()) {
                 if (justClicked == -1) {
-                    justClicked = cardIndex;
-                    playedCardsList.add(hand.get(cardIndex));
-                    selectedCard.set(cardIndex, true);
-                    playView.setCardInfoText(hand.get(cardIndex).getTooltip());
-                    playView.clickedButton(cardIndex, 1);
+                    justClicked = handIndex;
+                    playedCardsList.add(handIndex);
+                    selectedCard.set(handIndex, true);
+                    playView.setCardInfoText(hand.get(handIndex).getTooltip());
+                    playView.clickedButton(handIndex, 1);
                     numPlayedCards++;
                     playView.setSelectTarget(true);
                 }
@@ -113,6 +115,7 @@ public class PlayCardState extends State {
         else if(o instanceof String){
             selectTarget((String) o);
         }
+        System.out.println(playedCardsList);
     }
     /**
      * Saves the target of a card, if a target is waiting to be selected
@@ -163,18 +166,18 @@ public class PlayCardState extends State {
         System.out.println(targetID);
         //If the target is an asteroid
         if(targetID.substring(0, 1).equals("a")){
-            return playedCardsList.get(numPlayedCards-1).getTargetType().equals(ASTEROID);
+            return hand.get(playedCardsList.get(numPlayedCards-1)).getTargetType().equals(ASTEROID);
         }
         //If the target is a vehicle
         else if(targetID.substring(0, 1).equals("v")){
             //If the player can target a vehicle
-            if(playedCardsList.get(numPlayedCards-1).getTargetType().equals(VEHICLE)){
+            if(hand.get(playedCardsList.get(numPlayedCards-1)).getTargetType().equals(VEHICLE)){
                 //If the player targets themselves
                 if(player.getVehicle().getVehicleID().toLowerCase().equals(targetID)){
-                    return !playedCardsList.get(numPlayedCards-1).getAllowedTarget().equals(ENEMY);
+                    return !hand.get(playedCardsList.get(numPlayedCards-1)).getAllowedTarget().equals(ENEMY);
                 }
                 //The player targets someone else
-                return !playedCardsList.get(numPlayedCards-1).getAllowedTarget().equals(PLAYER);
+                return !hand.get(playedCardsList.get(numPlayedCards-1)).getAllowedTarget().equals(PLAYER);
             }
             return false;
         }
@@ -239,10 +242,10 @@ public class PlayCardState extends State {
     /**
      * Should be called when the card selection is done
      */
-    public ArrayList<String[]> finishRound(){
+    public void finishRound(){
         ArrayList<String[]> result = getCardsAndTargets();
-        //TODO Avslutt viewet m.m
-        return result;
+        //TODO Avslutt viewet, bytt til neste, send videre result ...
+        //return result;
     }
 
     /**
@@ -253,6 +256,9 @@ public class PlayCardState extends State {
     public String getCardType(int i){
         return hand.get(i).getCardType().name().toLowerCase();
     }
+    public Card getCard(int pos){
+        return hand.get(pos);
+    }
 
     /**
      * Converts the list of cards and targets to a list of actions by the player
@@ -262,7 +268,7 @@ public class PlayCardState extends State {
         ArrayList<String[]> cardsAndTargets = new ArrayList<>();
         for (int i = 0; i < targets.size(); i++) {
             String[] playerActions = new String[3];
-            playerActions[0] = playedCardsList.get(i).getId();
+            playerActions[0] = hand.get(playedCardsList.get(i)).getId();
             playerActions[1] = targets.get(i);
             playerActions[2] = player.getVehicle().getVehicleID();
             cardsAndTargets.add(playerActions);

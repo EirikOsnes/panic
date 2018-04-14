@@ -69,7 +69,8 @@ public class MenuState extends State {
         Stack<Card> cards = new Stack<>();
         for (int i = 0; i < 10; i++) {
             Card card = new Card(i + "");
-            card.setTooltip("Card nr:" + i + "\nSomething else............\nabcdefghijklmnopqrstuvwxyz");
+            card.setTooltip("Fire a tube of glue on an asteroid, making all vehicles currently on it unable to move for the rest of the turn.");
+            card.setName("Glue shot");
             card.setTargetType(Card.TargetType.ASTEROID);
             card.setAllowedTarget(Card.AllowedTarget.ENEMY);
             if(i == 9){

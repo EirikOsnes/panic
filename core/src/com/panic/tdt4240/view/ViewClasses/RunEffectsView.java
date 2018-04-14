@@ -93,6 +93,7 @@ public class RunEffectsView extends AbstractView {
     /**
      * AsteroidPositions, notConnected, getConnections, addConnection, AsteroidConnections should be
      * moved to state, or be static
+     *
      */
     private Vector2 AsteroidPositions(float posX, float posY, float width, float height, String colorCar){
         Vector2 position = new Vector2(posX + width/9, posY);

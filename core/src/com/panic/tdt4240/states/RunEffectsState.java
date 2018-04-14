@@ -1,5 +1,7 @@
 package com.panic.tdt4240.states;
 
+import com.badlogic.gdx.Gdx;
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.GameInstance;
 
@@ -16,17 +18,7 @@ public class RunEffectsState extends State {
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
         gi = GameInstance.getInstance();
-        runTurnEffects();
-    }
-
-    /**
-     * Fetch the cards played from the server, and run these.
-     */
-    void runTurnEffects(){
-        ArrayList<String[]> playedCards = new ArrayList<>(); //FIXME Get this from Connection
-        gi.playTurn(playedCards);
-
-        //TODO: When animations are done - call Connection.getInstance.sendDoneAnimating()
+        Connection.getInstance().sendRunEffectsState();
     }
 
     @Override
@@ -58,7 +50,18 @@ public class RunEffectsState extends State {
 
         @Override
         public void onMessage(String message) {
+            String[] strings = message.split(":");
 
+            switch (strings[0]){
+                case "GET_TURN":
+                    ArrayList<ArrayList<String[]>> turns = GameInstance.getInstance().readTurns(strings[1]);
+                    if(turns.size()>1){
+                        Gdx.app.error("MULTIPLETURN_ERROR", "Have received more than one turn in the RunEffectsState...");
+                    }
+                    GameInstance.getInstance().playTurn(turns.get(0));
+                    break;
+
+            }
         }
     }
 }

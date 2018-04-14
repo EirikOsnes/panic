@@ -138,11 +138,10 @@ public class Connection extends WebSocketClient{
     }
 
     /**
-     * The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
-     * with "ENDTURN//".
+     * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
      */
-    public void getLastTurn(){
-        //TODO: Send a getLastTurn command
+    public void sendRunEffectsState(){
+        //TODO: Send info
     }
 
     /**

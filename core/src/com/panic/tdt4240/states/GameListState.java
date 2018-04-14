@@ -21,6 +21,7 @@ public class GameListState extends State {
         super(gsm);
         view = new GameListView(this);
         lobbies = new ArrayList<>();
+        updateLobbyList();
         // load available games from master server - can be done with updateLobbyList
         // ... maybe with ping?
 

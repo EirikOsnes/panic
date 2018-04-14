@@ -41,7 +41,8 @@ public class Connection extends WebSocketClient{
 
         if(!ourInstance.getSocket().isConnected()){
             try {
-                ourInstance.connectBlocking();
+                //ourInstance.connectBlocking();
+                ourInstance.reconnectBlocking();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -68,7 +69,7 @@ public class Connection extends WebSocketClient{
 
     //Get a personal connectionID from the server
     public void findConnectionID(){
-        //TODO: Send this call.
+        this.send("CONNECTION_ID");
     }
 
     /**
@@ -81,6 +82,8 @@ public class Connection extends WebSocketClient{
      */
     public void createLobby(int maxPlayerCount, @NonNull String mapID, String name){
 
+        String message = "CREATE//" + mapID + "//" + maxPlayerCount + "//" + name;
+        this.send(message);
         //TODO: Create and return the Lobby with the designated parameters, and the creator already added.
 
     }
@@ -88,9 +91,11 @@ public class Connection extends WebSocketClient{
     /**
      * Get all the Lobbies available
      * Returns an ArrayList of all available Lobbies as a string on the form:
-     * GET_LOBBIES:Lobbyname1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
+     * GET_LOBBIES:ID1,Lobbyname1,CurrentPlayerNum1,MaxPlayers1&ID2,LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN
      */
     public void getAllLobbies(){
+
+        this.send("GET_LOBBIES");
         //TODO: Return a list of all available lobbies.
     }
 
@@ -121,12 +126,12 @@ public class Connection extends WebSocketClient{
      * Get the latest state of the given Lobby - used to update the GameLobbyState
      * @param lobbyID The id of the lobby
      * Return the updated Lobby as a string on the form:
-     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN:PlayerReady1&PlayerReady2&...&PlayerReadyN
+     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN
      *
      */
     public void updateLobby(int lobbyID){
 
-        //TODO: Send the call to the server.
+        this.send("TOGAME//"+lobbyID+"//GET_LOBBY_INFO");
 
     }
 
@@ -209,7 +214,7 @@ public class Connection extends WebSocketClient{
     @Override
     public void onMessage(String message){
         Gdx.app.log("", message);
-        System.out.println(message);
+        System.out.println("RECEIVED MESSAGE: " + message);
         if (adapter != null) {
             adapter.onMessage(message);
         }
@@ -224,7 +229,7 @@ public class Connection extends WebSocketClient{
     @Override
     public void onError(Exception ex) {
         Gdx.app.log("onError", ex.getMessage());
-        System.out.println("onError: " + ex.getMessage());
+        System.out.println("onError.....: " + ex.getMessage());
     }
 
     public void setAdapter(ICallbackAdapter adapter) {

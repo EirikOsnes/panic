@@ -133,6 +133,7 @@ public class MenuState extends State {
                         System.out.println("Received connection ID: "+strings[1]);
                         menuView.isConnecting(false);
                     }
+                    break;
 
             }
         }

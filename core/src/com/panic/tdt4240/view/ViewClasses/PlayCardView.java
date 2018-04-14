@@ -49,7 +49,7 @@ public class PlayCardView extends AbstractView{
     private TextButton finishedButton;
     private ArrayList<String[]> vehicleOnAsteroid;
     private GameInstance gameInstance;
-    private ArrayList<Boolean> removeDialog;
+//    private ArrayList<Boolean> removeDialog;
 
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
@@ -63,7 +63,7 @@ public class PlayCardView extends AbstractView{
         //cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         amountCards = gameInstance.getPlayer().getHand().size();
         cardButtons = new ArrayList<>(amountCards);
-        removeDialog = new ArrayList<>(amountCards);
+//        removeDialog = new ArrayList<>(amountCards);
         stage = new Stage();
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.input.setInputProcessor(stage);
@@ -89,7 +89,7 @@ public class PlayCardView extends AbstractView{
 
         //Create a button for each card
         for (int i = 0; i < amountCards; i++) {
-            removeDialog.add(false);
+//            removeDialog.add(false);
             final TextButton.TextButtonStyle cardButtonStyle = new TextButton.TextButtonStyle();
             cardButtonStyle.font = font;
             //Images the button has in the normal up-position, and when it is pressed down
@@ -106,7 +106,7 @@ public class PlayCardView extends AbstractView{
             cardButtons.get(index).addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    if(noneSelected()){
+                    if(!selectTarget){
                         if(!(cardInfo == null)){
                             cardInfo.remove();
                         }
@@ -133,19 +133,21 @@ public class PlayCardView extends AbstractView{
                         cardInfo.addListener(new ChangeListener() {
                             @Override
                             public void changed(ChangeEvent event, Actor actor) {
+//                                removeDialog.set(index, false);
                                 cardInfo.remove();
                             }});
                         cardInfo.setPosition(SCREEN_WIDTH/4, SCREEN_HEIGHT/4);
                         cardInfo.setWidth(SCREEN_WIDTH/2);
                         cardInfo.setHeight(SCREEN_HEIGHT/2);
                         stage.addActor(cardInfo);
-                        removeDialog.set(index, true);
+//                        removeDialog.set(index, true);
                     }
                     else{
-                        removeDialog.set(index, false);
+//                        removeDialog.set(index, false);
                         cardInfo.remove();
                     }
                     state.handleInput(index);
+                    System.out.println(selectTarget);
                 }
             });
             table.add(cardButtons.get(index)).width(SCREEN_WIDTH/amountCards).height(Gdx.graphics.getHeight()/5);
@@ -153,7 +155,6 @@ public class PlayCardView extends AbstractView{
 
         table.pack();
         stage.addActor(table);
-
 
         //Images the button has in the normal up-position, and when it is pressed down
         buttonStyle.up = finishedSkin.getDrawable("button_up");
@@ -172,16 +173,6 @@ public class PlayCardView extends AbstractView{
         stage.addActor(finishedButton);
         setUpMap();
     }
-    private boolean noneSelected(){
-        Boolean isNoneSelected = true;
-        for(Boolean bol : removeDialog){
-            if(bol){
-                isNoneSelected = false;
-            }
-        }
-        return isNoneSelected;
-    }
-
 
     /**
      * Method for setting up the map with listeners on each asteroid and vehicle

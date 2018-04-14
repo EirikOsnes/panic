@@ -83,6 +83,7 @@ public class PlayCardState extends State {
                 playedCardsList.remove(index);
                 //If the card is still selected, i.e target is about to be selected
                 if (justClicked.equals(handIndex)) {
+                    playView.setSelectTarget(false);
                     justClicked = -1;
                 }
                 else {

@@ -26,16 +26,16 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
   
     private String id;
     private StatusHandler statusHandler;
-    private Sprite sprite;
+    private String texture;
     private ArrayList<Asteroid> neighbours;
     private Vector2 position;
     private ArrayList<String> vehicleIDs;
     private boolean isDestroyed = false;
 
-
-    public Asteroid(Sprite sprite, String id) {
+//TODO Asteroid should contain the string of the asteroid image, not the sprite
+    public Asteroid(String path, String id) {
         EventBus.getInstance().addListener(this);
-        this.sprite = sprite;
+        this.texture = path;
         this.id = id;
         neighbours = new ArrayList<>();
         statusHandler = new StatusHandler(this);
@@ -108,8 +108,8 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
         return statusHandler;
     }
 
-    public Sprite getSprite() {
-        return sprite;
+    public String getTexture() {
+        return texture;
     }
 
     public Vector2 getPosition() {

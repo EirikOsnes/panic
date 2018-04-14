@@ -12,6 +12,7 @@ import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.State;
+import com.panic.tdt4240.util.MapMethods;
 
 import java.util.ArrayList;
 
@@ -80,7 +81,7 @@ public class RunEffectsView extends AbstractView {
             Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
             Image vehicle = new Image(skin.getDrawable(activeVehicle.getColorCar()));
-            Vector2 position = AsteroidPositions(asteroidPos.x, asteroidPos.y,
+            Vector2 position = MapMethods.asteroidPositions(asteroidPos.x, asteroidPos.y,
                     asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
                     activeVehicle.getColorCar());
             vehicle.setPosition(position.x, position.y);
@@ -90,29 +91,7 @@ public class RunEffectsView extends AbstractView {
         }
     }
 
-    /**
-     * AsteroidPositions, notConnected, getConnections, addConnection, AsteroidConnections should be
-     * moved to state, or be static
-     *
-     */
-    private Vector2 AsteroidPositions(float posX, float posY, float width, float height, String colorCar){
-        Vector2 position = new Vector2(posX + width/9, posY);
-        switch (colorCar){
-            case "red_car":
-                position.add(0,0);
-                break;
-            case "green_car":
-                position.add(0, height/2);
-                break;
-            case "yellow_car":
-                position.add(width/2, height/2);
-                break;
-            case "blue_car":
-                position.add(width/2, 0);
-                break;
-        }
-        return position;
-    }private boolean notConnected(String startID, String endID){
+    private boolean notConnected(String startID, String endID){
         for(AsteroidConnection connection: connections){
             if(connection.startID.equals(endID) && connection.endID.equals(startID)){
                 return false;
@@ -144,7 +123,8 @@ public class RunEffectsView extends AbstractView {
                     start.getId(), end.getId());
             connections.add(connection);
         }
-    }private class AsteroidConnection {
+    }
+    private class AsteroidConnection {
         private Vector2 start;
         private Vector2 end;
         private String startID;

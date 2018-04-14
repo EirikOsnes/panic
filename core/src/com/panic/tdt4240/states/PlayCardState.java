@@ -284,30 +284,6 @@ public class PlayCardState extends State {
     }
 
     /**
-     * For an asteroid, gives coordinates within asteroid for each car type
-     * Positions are clockwise from lower left section
-     * Position of the lower left corner of each section
-     */
-    public Vector2 AsteroidPositions(float posX, float posY, float width, float height, String colorCar){
-        Vector2 position = new Vector2(posX + width/9, posY);
-        switch (colorCar){
-            case "red_car":
-                position.add(0,0);
-                break;
-            case "green_car":
-                position.add(0, height/2);
-                break;
-            case "yellow_car":
-                position.add(width/2, height/2);
-                break;
-            case "blue_car":
-                position.add(width/2, 0);
-                break;
-        }
-        return position;
-    }
-
-    /**
      * Class for keeping track of connections between asteroids, for rendering in PlayCardView
      * Has id for start and end asteroid, and their coordinates
      */

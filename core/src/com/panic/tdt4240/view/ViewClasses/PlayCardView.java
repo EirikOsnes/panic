@@ -23,6 +23,7 @@ import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.PlayCardState;
+import com.panic.tdt4240.util.MapMethods;
 import com.panic.tdt4240.view.Renderer;
 
 import java.util.ArrayList;
@@ -216,7 +217,7 @@ public class PlayCardView extends AbstractView{
             Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
             Image vehicle = new Image(skin.getDrawable(activeVehicle.getColorCar()));
-            Vector2 position = ((PlayCardState) state).AsteroidPositions(asteroidPos.x, asteroidPos.y,
+            Vector2 position = MapMethods.asteroidPositions(asteroidPos.x, asteroidPos.y,
                     asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
                     activeVehicle.getColorCar());
             vehicle.setPosition(position.x, position.y);

@@ -19,14 +19,11 @@ public class GameLobbyState extends State {
     GameLobbyView view;
     Lobby lobby;
 
-    public GameLobbyState(GameStateManager gsm, Lobby lobby){
+    public GameLobbyState(GameStateManager gsm, int lobbyID){
         super(gsm);
         System.out.println("GameLobbyState");
-        this.lobby = lobby;
-        Connection.getInstance().updateLobby(lobby.getLobbyID());
-        view = new GameLobbyView(this);
-
-        // generate lobbyID from somewhere...
+        Connection.getInstance().updateLobby(lobbyID);
+        //view = new GameLobbyView(this);
     }
 
     public void launchGame(){
@@ -83,11 +80,12 @@ public class GameLobbyState extends State {
 
     @Override
     public void render() {
-        view.render(); }
+        //view.render();
+    }
 
     @Override
     public void dispose() {
-        view.dispose();
+        //view.dispose();
     }
 
     @Override
@@ -126,6 +124,7 @@ public class GameLobbyState extends State {
             }
             myLobby.setPlayerIDs(playerIDs);
             myLobby.setVehicleTypes(vehicleTypes);
+            System.out.println(myLobby.toString());
             lobby = myLobby;
         }
     }

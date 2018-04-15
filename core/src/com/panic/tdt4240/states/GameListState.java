@@ -88,7 +88,7 @@ public class GameListState extends State {
         String[] full_list = s.split("&");
         for (String lobby : full_list){
             String[] lobby_data = lobby.split(",");
-            String[] cleaned_data = {lobby_data[0] + "\tSlots: " + lobby_data[1]
+            String[] cleaned_data = {Connection.getInstance().parseFromServer(lobby_data[0]) + "\tSlots: " + lobby_data[1]
                     + "/" + lobby_data[2], lobby_data[3]};
             lobbyListData.add(cleaned_data);
         }

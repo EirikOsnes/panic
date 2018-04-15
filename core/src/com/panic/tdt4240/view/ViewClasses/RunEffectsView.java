@@ -5,9 +5,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Pool;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
@@ -15,6 +21,9 @@ import com.panic.tdt4240.states.State;
 import com.panic.tdt4240.util.MapMethods;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 
 /**
@@ -27,8 +36,10 @@ public class RunEffectsView extends AbstractView {
     private Stage stage;
     private ShapeRenderer sr;
     private ArrayList<AsteroidConnection> connections;
-    private ArrayList<Image> vehicleImages;
-    private ArrayList<Image> asteroidImages;
+    private HashMap<String, Image> vehicleImages;
+    private HashMap<String, Image> asteroidImages;
+    private AnimationAdapter animator;
+
 
     public RunEffectsView(State state) {
         super(state);
@@ -38,10 +49,11 @@ public class RunEffectsView extends AbstractView {
         gameInstance = GameInstance.getInstance();
         stage = new Stage();
         setUpMap();
+        animator = new AnimationAdapter();
     }
     private void setUpMap() {
-        asteroidImages = new ArrayList<>();
-        vehicleImages = new ArrayList<>();
+        asteroidImages = new HashMap<>();
+        vehicleImages = new HashMap<>();
         connections = new ArrayList<>();
         ArrayList<Asteroid> asteroids = gameInstance.getMap().getAsteroids();
 
@@ -68,7 +80,7 @@ public class RunEffectsView extends AbstractView {
                     asteroids.get(i).getPosition().x * (Gdx.graphics.getWidth() - asteroid.getWidth()),
                     asteroids.get(i).getPosition().y * (Gdx.graphics.getHeight() - table - asteroid.getHeight()) + table);
             asteroidPositions.add(i, new Vector2(asteroid.getX(), asteroid.getY()));
-            asteroidImages.add(asteroid);
+            asteroidImages.put(asteroids.get(i).getId(), asteroid);
             stage.addActor(asteroid);
 
             for (Asteroid neighbour : asteroids.get(i).getNeighbours()) {
@@ -86,7 +98,7 @@ public class RunEffectsView extends AbstractView {
                     activeVehicle.getColorCar());
             vehicle.setPosition(position.x, position.y);
             vehicle.setSize(asteroidDimensions.get(asteroid).x / 3, asteroidDimensions.get(asteroid).y * 2 / 3);
-            vehicleImages.add(vehicle);
+            vehicleImages.put(activeVehicle.getVehicleID(), vehicle);
             stage.addActor(vehicle);
         }
     }
@@ -101,6 +113,7 @@ public class RunEffectsView extends AbstractView {
             }
         }
         return true;
+
     }private ArrayList<Vector2[]> getConnections(){
         ArrayList<Vector2[]> lines = new ArrayList<>();
         for(AsteroidConnection connection : connections){
@@ -110,7 +123,9 @@ public class RunEffectsView extends AbstractView {
             lines.add(line);
         }
         return lines;
-    }private void addConnection(Asteroid start, Asteroid end, float asteroidWidth, float asteroidHeight, float tableHeight){
+    }
+
+    private void addConnection(Asteroid start, Asteroid end, float asteroidWidth, float asteroidHeight, float tableHeight) {
         if(notConnected(start.getId(), end.getId())){
             AsteroidConnection connection = new AsteroidConnection(
                     //Calculation of center point of the asteroids, see setUpMap() in PlayCardView
@@ -122,18 +137,6 @@ public class RunEffectsView extends AbstractView {
                                     + asteroidHeight/2),
                     start.getId(), end.getId());
             connections.add(connection);
-        }
-    }
-    private class AsteroidConnection {
-        private Vector2 start;
-        private Vector2 end;
-        private String startID;
-        private String endID;
-        private AsteroidConnection(Vector2 start, Vector2 end, String startID, String endID){
-            this.start = start;
-            this.startID = startID;
-            this.end = end;
-            this.endID = endID;
         }
     }
 
@@ -148,7 +151,78 @@ public class RunEffectsView extends AbstractView {
         stage.draw();
     }
 
+    //TODO: All of the following methods should add animation to a stack
+
+    public void moveVehicle(String vehicleID, String asteroidID) {
+        //TODO: Animate the moving of the vehicle
+        Actor actor = vehicleImages.get(vehicleID);
+        Image asteroid = asteroidImages.get(asteroidID);
+        Action action = Actions.moveTo(asteroid.getX(), asteroid.getY(), 500);
+        animator.addAction(action, actor);
+    }
+
+    public void attackVehicle(String vehicleID) {
+        //TODO: Animate the attacking of a vehicle
+    }
+
+    public void attackAsteroid(String asteroidID) {
+        //TODO: Animate the atticking of an asteroid
+    }
+
+    public void destroyVehicle(String vehicleID) {
+        //TODO: Animate the destruction of a vehicle
+    }
+
     public void dispose(){
 
+    }
+    private class AsteroidConnection {
+        private Vector2 start;
+        private Vector2 end;
+        private String startID;
+        private String endID;
+        private AsteroidConnection(Vector2 start, Vector2 end, String startID, String endID){
+            this.start = start;
+            this.startID = startID;
+            this.end = end;
+            this.endID = endID;
+        }
+
+    }
+
+    private class AnimationAdapter {
+        private LinkedList<Actor> actors;
+        private LinkedList<Action> actions;
+        private Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                nextAction();
+            }
+        };
+
+        private boolean empty;
+
+        AnimationAdapter() {
+            actors = new LinkedList<>();
+            actions = new LinkedList<>();
+            empty = true;
+        }
+
+        void addAction(Action action, Actor actor) {
+            Action sAction = Actions.sequence(action, Actions.run(run));
+            actions.add(sAction);
+            actors.add(actor);
+            if (empty) {
+                empty = false;
+                nextAction();
+            }
+        }
+
+        void nextAction() {
+            actors.pop().addAction(actions.pop());
+            if (actions.size() == 0) {
+                empty = true;
+            }
+        }
     }
 }

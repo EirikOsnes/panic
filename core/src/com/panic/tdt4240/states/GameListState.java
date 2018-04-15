@@ -15,6 +15,7 @@ public class GameListState extends State {
 
     private GameListView view;
     ArrayList<String[]> lobbyListData;
+    ArrayList<String> lobbies;
     private static String err_full_lobby = "Error: full lobby.";
     private static String err_lobby404 = "Error: lobby not found.";
 

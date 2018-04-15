@@ -176,6 +176,10 @@ public class Connection extends WebSocketClient{
 
     }
 
+    public void sendPlayCardState(){
+        this.send("BEGIN_TURN");
+    }
+
     /**
      * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
      */
@@ -196,17 +200,17 @@ public class Connection extends WebSocketClient{
     /**
      * Generates a String to be sent to server containing cardID, senderID, targetID and priority. The String will be formatted such that the Server can process it.
      * @param moves An arrayList of the moves to be executed
-     * @return The formatted string
+     * Sends a round of cards on the format SEND_CARDS//CardID1&SenderID1&TargetID1&Priority1//...&TargetIDN&PriorityN//
      */
-    public String createCardString(ArrayList<String[]> moves) {
-        String returnString = "";
+    public void sendTurn(ArrayList<String[]> moves) {
+        String returnString = "SEND_CARDS//";
         ModelHolder mh = ModelHolder.getInstance();
         for (String[] move : moves) {
             Card card = mh.getCardById(move[0]);
             String priority = Integer.toString(card.getPriority());
             returnString = returnString + move[0] + "&" + move[2] + "&" + move[1] + "&" + priority + "//";
         }
-        return returnString;
+        this.send(returnString);
     }
 
     @Override

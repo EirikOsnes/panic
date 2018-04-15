@@ -45,7 +45,6 @@ public class GameResultsView extends AbstractView {
 
         bg = new Texture("misc/background.png");
         textBtns = new ArrayList<>(deadPlayers.size());
-        stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
         table = new Table();

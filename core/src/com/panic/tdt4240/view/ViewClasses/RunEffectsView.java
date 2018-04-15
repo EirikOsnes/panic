@@ -47,7 +47,6 @@ public class RunEffectsView extends AbstractView {
         sr.setColor(1,1,1,0);
         sr.setAutoShapeType(true);
         gameInstance = GameInstance.getInstance();
-        stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         setUpMap();
         animator = new AnimationAdapter();

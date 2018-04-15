@@ -37,7 +37,6 @@ public class MenuView extends AbstractView {
         super(menuState);
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,PanicGame.WIDTH,PanicGame.HEIGHT);
-        stage = new Stage();
         table = new Table();
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();

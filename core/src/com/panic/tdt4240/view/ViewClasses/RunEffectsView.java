@@ -39,6 +39,7 @@ public class RunEffectsView extends AbstractView {
     private HashMap<String, Image> vehicleImages;
     private HashMap<String, Image> asteroidImages;
     private AnimationAdapter animator;
+    private Actor emptyActor;
 
 
     public RunEffectsView(State state) {
@@ -48,8 +49,13 @@ public class RunEffectsView extends AbstractView {
         sr.setAutoShapeType(true);
         gameInstance = GameInstance.getInstance();
         stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
         setUpMap();
         animator = new AnimationAdapter();
+        emptyActor = new Actor();
+        stage.addActor(emptyActor);
+        System.out.println(vehicleImages.keySet().toString());
+        System.out.println(asteroidImages.keySet().toString());
     }
     private void setUpMap() {
         asteroidImages = new HashMap<>();
@@ -148,6 +154,7 @@ public class RunEffectsView extends AbstractView {
             sr.rectLine(points[0], points[1], 5.0f);
         }
         sr.end();
+        stage.act();
         stage.draw();
     }
 
@@ -157,16 +164,17 @@ public class RunEffectsView extends AbstractView {
         //TODO: Animate the moving of the vehicle
         Actor actor = vehicleImages.get(vehicleID);
         Image asteroid = asteroidImages.get(asteroidID);
-        Action action = Actions.moveTo(asteroid.getX(), asteroid.getY(), 500);
+        Action action = Actions.moveTo(asteroid.getX(), asteroid.getY(), 2);
         animator.addAction(action, actor);
     }
 
     public void attackVehicle(String vehicleID) {
         //TODO: Animate the attacking of a vehicle
+
     }
 
     public void attackAsteroid(String asteroidID) {
-        //TODO: Animate the atticking of an asteroid
+        //TODO: Animate the attacking of an asteroid
     }
 
     public void destroyVehicle(String vehicleID) {
@@ -196,7 +204,9 @@ public class RunEffectsView extends AbstractView {
         private Runnable run = new Runnable() {
             @Override
             public void run() {
-                nextAction();
+                if (!empty) {
+                    nextAction();
+                }
             }
         };
 
@@ -209,6 +219,7 @@ public class RunEffectsView extends AbstractView {
         }
 
         void addAction(Action action, Actor actor) {
+            System.out.println("An action was added to the AnimationAdapter");
             Action sAction = Actions.sequence(action, Actions.run(run));
             actions.add(sAction);
             actors.add(actor);
@@ -219,10 +230,12 @@ public class RunEffectsView extends AbstractView {
         }
 
         void nextAction() {
-            actors.pop().addAction(actions.pop());
+            System.out.println("Next Action called");
             if (actions.size() == 0) {
                 empty = true;
+                return;
             }
+            actors.pop().addAction(actions.pop());
         }
     }
 }

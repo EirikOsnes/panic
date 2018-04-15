@@ -4,8 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventBus;
+import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.events.EventListener;
+import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
+import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.view.ViewClasses.RunEffectsView;
 
 import java.util.ArrayList;
@@ -22,8 +26,11 @@ public class RunEffectsState extends State implements EventListener {
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
         gi = GameInstance.getInstance();
+        EventBus.getInstance().addListener(this);
         //Connection.getInstance().sendRunEffectsState();
         runEffectsView = new RunEffectsView(this);
+        Card c = ModelHolder.getInstance().getCardById("MOVE");
+        EventFactory.postEventsFromCard(c, "A-003", "V-001");
     }
 
     @Override
@@ -44,6 +51,7 @@ public class RunEffectsState extends State implements EventListener {
     @Override
     public void dispose() {
         runEffectsView.dispose();
+        EventBus.getInstance().removeListener(this);
     }
 
     @Override

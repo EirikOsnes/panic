@@ -172,6 +172,16 @@ public class GameInstance {
         EventFactory.postEndTurnEvent();
     }
 
+    /**
+     * Parse and play multiple turns from a log
+     * @param strings The log string
+     */
+    public void playTurns(String strings){
+        for (ArrayList<String[]> s : readTurns(strings)){
+            playTurn(s);
+        }
+    }
+
     private ArrayList<String> getAllValidTargets(Card card, String instigatorID){
         ArrayList<String> result = new ArrayList<>();
 

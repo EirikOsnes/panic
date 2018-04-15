@@ -49,7 +49,7 @@ public class GameStateManager {
 
     public void reset(){
         clear();
-        states.push(new MenuState(this));
+        push(new MenuState(this));
     }
 
     private void setAdapter() {

@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.panic.tdt4240.models.Asteroid;
@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 /**
  * Created by victor on 05.03.2018.
+ * View for selecting cards and targets
  */
 
 public class PlayCardView extends AbstractView{
@@ -39,8 +40,11 @@ public class PlayCardView extends AbstractView{
     private boolean selectTarget = false;
     private ShapeRenderer sr;
     private ArrayList<String[]> vehicleOnAsteroid;
+    private TextField timer;
+    private TextField invalidTarget;
 
-    //TODO Synliggjør personlig bil, få beskjed om ugyldig unput
+
+    //TODO Make the player vehicle more visible, inform if the targeting is wrong
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
         sr = new ShapeRenderer();
@@ -57,11 +61,13 @@ public class PlayCardView extends AbstractView{
         table.setWidth(Gdx.graphics.getWidth());
         table.left().bottom();
         final BitmapFont font = new BitmapFont();
+        float textScale = 0;
         if(Gdx.app.getType() == Application.ApplicationType.Android){
-            font.getData().scale(SCREEN_HEIGHT/SCREEN_WIDTH*1.5f);
+            textScale = SCREEN_HEIGHT/SCREEN_WIDTH*1.5f;
         }
+        font.getData().scale(textScale);
         skin = new Skin();
-        TextureAtlas buttonAtlas = new TextureAtlas("cards/card_textures.atlas");
+        TextureAtlas buttonAtlas = new TextureAtlas("skin/uiskin.json");
         skin.addRegions(buttonAtlas);
         buttonStyles = new ArrayList<>();
 
@@ -154,8 +160,16 @@ public class PlayCardView extends AbstractView{
                 ((PlayCardState) state).finishRound();
             }
         });
-
         stage.addActor(finishedButton);
+        TextField.TextFieldStyle style = new TextField.TextFieldStyle();
+        style.font = font;
+        style.fontColor = Color.WHITE;
+        timer = new TextField(((PlayCardState)state).getElapsedTime()+"", style);
+        timer.setPosition(0, SCREEN_HEIGHT - timer.getHeight());
+        stage.addActor(timer);
+        invalidTarget = new TextField("Default", style);
+        invalidTarget.setPosition(0, table.getHeight() + invalidTarget.getHeight());
+
         setUpMap();
     }
 
@@ -198,7 +212,7 @@ public class PlayCardView extends AbstractView{
                         System.out.println("Clicked asteroid:" + asteroids.get(index).getId());
                         state.handleInput(asteroids.get(index).getId());
                     }
-                };
+                }
             });
             for(Asteroid neighbour: asteroids.get(i).getNeighbours()){
                 ((PlayCardState) state).addConnection(asteroids.get(i), neighbour, asteroid.getWidth(), asteroid.getHeight(), table.getHeight());
@@ -222,10 +236,22 @@ public class PlayCardView extends AbstractView{
                         System.out.println("Clicked vehicle:" + vehicleOnAsteroid.get(vIndex)[0]);
                         state.handleInput(vehicleOnAsteroid.get(vIndex)[0].concat(vehicleOnAsteroid.get(vIndex)[1]));
                     }
-                };
+                }
             });
             stage.addActor(vehicle);
         }
+    }
+    //TODO Should show: cannot target this asteroid/this vehicle
+    public void showInvalidTarget(String targetID){
+        String target = "You cannot target this ";
+        if(targetID.substring(0,1).equals("a")){
+            target = target.concat("asteroid");
+        }
+        else{
+            target = target.concat("vehicle");
+        }
+        invalidTarget.setText(target);
+        stage.addActor(invalidTarget);
     }
 
     /**
@@ -250,8 +276,16 @@ public class PlayCardView extends AbstractView{
         }
         cardButtons.get(button).setStyle(buttonStyles.get(button));
     }
+
     public void setSelectTarget(boolean selectTarget) {
         this.selectTarget = selectTarget;
+    }
+
+    public void update(float elapsedTime){
+        timer.setText(Math.round(elapsedTime) + "");
+        //if(elapsedTime <= 0){
+        //    ((PlayCardState) state).finishRound();
+        //}
     }
     /**
      * Renders connections between asteroids, then the stage

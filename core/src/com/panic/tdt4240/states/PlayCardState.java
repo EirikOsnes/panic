@@ -20,6 +20,7 @@ import static com.panic.tdt4240.models.Card.TargetType.VEHICLE;
 
 /**
  * Created by Hermann on 12.03.2018.
+ * State for keeping track of played cards and targets
  */
 
 public class PlayCardState extends State {
@@ -39,10 +40,13 @@ public class PlayCardState extends State {
     private Integer justClicked = -1;
     private GameInstance gameInstance;
     private MapConnections mapConnections;
+    private float elapsedTime;
+    private boolean enableTimer;
 
     public PlayCardState(GameStateManager gsm) {
         super(gsm);
         gameInstance = GameInstance.getInstance();
+        enableTimer = false;
 
         player = gameInstance.getPlayer();
         map = gameInstance.getMap();
@@ -145,6 +149,7 @@ public class PlayCardState extends State {
             }
             else{
                 //TODO Should show 'not valid targed' in PlayCardView
+                playView.showInvalidTarget(firstTarget);
             }
         }
     }
@@ -199,7 +204,7 @@ public class PlayCardState extends State {
      */
     public void finishRound(){
         ArrayList<String[]> result = getCardsAndTargets();
-        //TODO Avslutt viewet, bytt til neste, send videre result ...
+        //TODO Finish the view, change to the next state, send the result...
         //return result;
     }
 
@@ -232,7 +237,13 @@ public class PlayCardState extends State {
     public String getCardName(int i){
         return hand.get(i).getName();
     }
-
+    public float getElapsedTime(){
+        return elapsedTime;
+    }
+    public void setTimeLeft(float timeLeft){
+        elapsedTime = timeLeft;
+        enableTimer = true;
+    }
     /**
      * Converts the list of cards and targets to a list of actions by the player
      * @return ArrayList with card, target id and id of vehicle that played the card
@@ -251,7 +262,10 @@ public class PlayCardState extends State {
 
     @Override
     public void update(float dt) {
-
+        if(enableTimer){
+        elapsedTime -= dt;
+        playView.update(elapsedTime);
+        }
     }
 
     @Override

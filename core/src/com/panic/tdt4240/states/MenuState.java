@@ -59,7 +59,7 @@ public class MenuState extends State {
     }
 
     private void testLobby(GameStateManager gsm){
-        gsm.set(new GameLobbyState(gsm, new Lobby(4, "test lobby", 0, "M-001")));
+        gsm.set(new GameLobbyState(gsm, 1));
         System.out.println("lobby state created");
     }
 

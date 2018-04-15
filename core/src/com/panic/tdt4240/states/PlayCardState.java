@@ -151,7 +151,6 @@ public class PlayCardState extends State {
                 selectTarget(potentialTarget);
             }
             else{
-                //TODO Should show 'not valid target' in PlayCardView
                 if(vehicleTarget){
                     playView.showInvalidTarget("vehicle");
                 }
@@ -246,9 +245,7 @@ public class PlayCardState extends State {
     public String getCardName(int i){
         return hand.get(i).getName();
     }
-    public float getElapsedTime(){
-        return timeLeft;
-    }
+
     public void setTimeLeft(float timeLeft){
         this.timeLeft = timeLeft;
         enableTimer = true;

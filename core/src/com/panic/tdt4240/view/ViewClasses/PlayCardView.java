@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.states.PlayCardState;
+import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.MapMethods;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class PlayCardView extends AbstractView{
     private TextField timer;
     private Label invalidTarget;
 
-    //TODO Make the player vehicle more visible, inform if the targeting is wrong
+    //TODO Make the player vehicle more visible
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
         sr = new ShapeRenderer();
@@ -63,7 +64,7 @@ public class PlayCardView extends AbstractView{
         final BitmapFont font = new BitmapFont();
         float textScale = 0;
         if(Gdx.app.getType() == Application.ApplicationType.Android){
-            textScale = SCREEN_HEIGHT/SCREEN_WIDTH*1.5f;
+            textScale = GlobalConstants.TEXT_SCALE;
         }
         font.getData().scale(textScale);
         skin = new Skin();
@@ -129,9 +130,9 @@ public class PlayCardView extends AbstractView{
                             public void changed(ChangeEvent event, Actor actor) {
                                 cardInfo.remove();
                             }});
-                        cardInfo.setPosition(SCREEN_WIDTH/4, SCREEN_HEIGHT/4);
-                        cardInfo.setWidth(SCREEN_WIDTH/2);
-                        cardInfo.setHeight(SCREEN_HEIGHT/2);
+                        cardInfo.setPosition(Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/4);
+                        cardInfo.setWidth(Gdx.graphics.getWidth()/2);
+                        cardInfo.setHeight(Gdx.graphics.getHeight()/2);
                         stage.addActor(cardInfo);
                     }
                     else{
@@ -141,7 +142,7 @@ public class PlayCardView extends AbstractView{
                     System.out.println(selectTarget);
                 }
             });
-            table.add(cardButtons.get(index)).width(SCREEN_WIDTH/amountCards).height(Gdx.graphics.getHeight()/5);
+            table.add(cardButtons.get(index)).width(Gdx.graphics.getWidth()/amountCards).height(Gdx.graphics.getHeight()/5);
         }
 
         table.pack();
@@ -151,9 +152,9 @@ public class PlayCardView extends AbstractView{
         buttonStyle.up = finishedSkin.getDrawable("button-up");
         buttonStyle.down = finishedSkin.getDrawable("button-down");
         TextButton finishedButton = new TextButton("Finish Turn", buttonStyle);
-        finishedButton.setWidth(SCREEN_WIDTH/5);
-        finishedButton.setHeight(SCREEN_WIDTH/10);
-        finishedButton.setPosition(4*SCREEN_WIDTH/5, table.getHeight());
+        finishedButton.setWidth(Gdx.graphics.getWidth()/5);
+        finishedButton.setHeight(Gdx.graphics.getWidth()/10);
+        finishedButton.setPosition(4*Gdx.graphics.getWidth()/5, table.getHeight());
         finishedButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -164,8 +165,8 @@ public class PlayCardView extends AbstractView{
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.font = font;
         style.fontColor = Color.WHITE;
-        timer = new TextField(((PlayCardState)state).getElapsedTime()+"", style);
-        timer.setPosition(0, SCREEN_HEIGHT - timer.getHeight());
+        timer = new TextField(elapsedTime + "", style);
+        timer.setPosition(0, Gdx.graphics.getHeight() - timer.getHeight());
         stage.addActor(timer);
 
 
@@ -198,7 +199,7 @@ public class PlayCardView extends AbstractView{
             Texture texture = new Texture("asteroids/" + asteroids.get(i).getTexture() + ".png");
 
             Image asteroid = new Image(texture);
-            asteroid.setSize(SCREEN_WIDTH/5, SCREEN_WIDTH/5);
+            asteroid.setSize(Gdx.graphics.getWidth()/5, Gdx.graphics.getWidth()/5);
             asteroidDimensions.add(i, new Vector2(asteroid.getWidth(), asteroid.getHeight()));
             asteroid.setPosition(
                     //Image should be rendered inside the window and above the table
@@ -244,16 +245,13 @@ public class PlayCardView extends AbstractView{
             stage.addActor(vehicle);
         }
     }
-    //TODO Should show: cannot target this asteroid/this vehicle
-    public void showInvalidTarget(String targetID){
-        String target = "You cannot target this ";
 
-        if(targetID.substring(0,1).equals("a")){
-            target = target.concat("asteroid");
-        }
-        else{
-            target = target.concat("vehicle");
-        }
+    /**
+     * Creates a short text onscreen saying the target is invalid
+     * @param targetType vehicle or asteroid
+     */
+    public void showInvalidTarget(String targetType){
+        String target = "You cannot target this " + targetType;
         invalidTarget.setText(target);
         invalidTarget.setVisible(true);
         duration = 2;
@@ -292,7 +290,8 @@ public class PlayCardView extends AbstractView{
     }
 
     public void update(float dt){
-        timer.setText(Math.round(elapsedTime - dt) + "");
+        elapsedTime-= dt;
+        timer.setText(Math.round(elapsedTime) + "");
         if(duration > 0){
             duration -= dt;
         }

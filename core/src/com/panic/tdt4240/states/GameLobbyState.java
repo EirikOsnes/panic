@@ -21,9 +21,8 @@ public class GameLobbyState extends State {
 
     public GameLobbyState(GameStateManager gsm, int lobbyID){
         super(gsm);
-        System.out.println("GameLobbyState");
         Connection.getInstance().updateLobby(lobbyID);
-        //view = new GameLobbyView(this);
+        view = new GameLobbyView(this);
     }
 
     public void launchGame(){
@@ -77,12 +76,12 @@ public class GameLobbyState extends State {
 
     @Override
     public void render() {
-        //view.render();
+        view.render();
     }
 
     @Override
     public void dispose() {
-        //view.dispose();
+        view.dispose();
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class CreateGameState extends State {
 
-    //CreateGameView view;
+    CreateGameView view;
     Connection connection;
     int maxPlayerCount;
     String mapID;
@@ -23,9 +23,7 @@ public class CreateGameState extends State {
     public CreateGameState(GameStateManager gsm){
         super(gsm);
         connection = Connection.getInstance();
-        //view = new CreateGameView(this);
-        System.out.println("CreateGameState");
-        connection.createLobby(5,"M-001", "Hei Magnus!");
+        view = new CreateGameView(this);
     }
 
     /**
@@ -49,12 +47,12 @@ public class CreateGameState extends State {
 
     @Override
     public void render() {
-        //view.render();
+        view.render();
     }
 
     @Override
     public void dispose() {
-        //view.dispose();
+        view.dispose();
     }
 
     @Override

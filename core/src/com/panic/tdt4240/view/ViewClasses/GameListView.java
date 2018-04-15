@@ -80,7 +80,7 @@ public class GameListView extends AbstractView {
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput(-1);
+                listState.handleInput(-1);
             }
         });
 

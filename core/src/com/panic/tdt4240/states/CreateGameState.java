@@ -29,6 +29,19 @@ public class CreateGameState extends State {
     /**
      * Method to run the onClick for the create click
      */
+
+    public void setMaxPlayerCount(int maxPlayerCount) {
+        this.maxPlayerCount = maxPlayerCount;
+    }
+
+    public void setMapID(String mapID) {
+        this.mapID = mapID;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     private void createButtonClick(){
         //TODO: Actually set the maxPlayerCount, mapID and name parameters.
         connection.createLobby(maxPlayerCount,mapID,name);
@@ -37,7 +50,9 @@ public class CreateGameState extends State {
 
     @Override
     public void handleInput(Object o) {
-
+        if ((int) o == -1){
+            gsm.reset();
+        }
     }
 
     @Override

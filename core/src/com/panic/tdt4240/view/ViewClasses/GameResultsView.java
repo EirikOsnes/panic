@@ -39,7 +39,7 @@ public class GameResultsView extends AbstractView {
     private BitmapFont font;
     TextButton exitToLobbyBtn, exitToMainMenuBtn;
 
-    public GameResultsView(GameResultsState resultsState, ArrayList<Player> deadPlayers) {
+    public GameResultsView(final GameResultsState resultsState, ArrayList<Player> deadPlayers) {
         super(resultsState);
         renderer = Renderer.getInstance();
         Gdx.gl.glClearColor(0,0,0,0);
@@ -96,14 +96,14 @@ public class GameResultsView extends AbstractView {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 // state type: State.java... runs GameResultsState.handleInput()
-                state.handleInput( 0);
+                resultsState.handleInput( 0);
             }
         });
 
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput(1);
+                resultsState.handleInput(-1);
                 // insert whatever should happen
 
             }

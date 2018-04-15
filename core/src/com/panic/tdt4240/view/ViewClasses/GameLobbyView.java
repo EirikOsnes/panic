@@ -48,7 +48,7 @@ public class GameLobbyView extends AbstractView {
 
     private ArrayList<Player> players;
 
-    public GameLobbyView(GameLobbyState lobbyState) {
+    public GameLobbyView(final GameLobbyState lobbyState) {
         super(lobbyState);
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
@@ -79,19 +79,19 @@ public class GameLobbyView extends AbstractView {
         playerBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput( 0);
+                lobbyState.handleInput( 0);
             }
         });
         launchGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput( 0);
+                lobbyState.handleInput( 1);
             }
         });
         exitBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput( 1);
+                lobbyState.handleInput( -1);
             }
         });
 

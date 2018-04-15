@@ -105,9 +105,7 @@ public class LoadGameState extends State {
                     parseGameInfo(strings);
                     break;
                 case "GET_LOG":
-                    for (ArrayList<String[]> turns: GameInstance.getInstance().readTurns(strings[1])) {
-                        GameInstance.getInstance().playTurn(turns);
-                    }
+                    GameInstance.getInstance().playTurns(strings[1]);
                     break;
 
             }
@@ -125,6 +123,9 @@ public class LoadGameState extends State {
             }
 
             setGIValues(vehicles, strings[2], strings[3]);
+            if(strings.length>4){
+                GameInstance.getInstance().playTurns(strings[4]);
+            }
 
         }
     }

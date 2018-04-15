@@ -184,7 +184,7 @@ public class Connection extends WebSocketClient{
      * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
      */
     public void sendRunEffectsState(){
-        //TODO: Send info
+        this.send("ENTERED_RUN_EFFECT_STATE");
     }
 
     /**

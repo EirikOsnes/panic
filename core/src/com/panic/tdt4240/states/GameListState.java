@@ -64,7 +64,7 @@ public class GameListState extends State {
             }
             try{    // error handling
                 if (o=="error:Full lobby"){
-                    (/GameListView)view).popup(GameListView.error0);
+                    ((GameListView)view).popup(GameListView.error0);
                 }
                 //TODO: connect with actual Lobby objects instead - use
                 else if (o=="error: Missing lobby"){

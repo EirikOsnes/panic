@@ -82,9 +82,17 @@ public class Connection extends WebSocketClient{
      */
     public void createLobby(int maxPlayerCount, @NonNull String mapID, String name){
 
-        String message = "CREATE//" + mapID + "//" + maxPlayerCount + "//" + name;
+        String message = "CREATE//" + mapID + "//" + maxPlayerCount + "//" + parseToServer(name);
         this.send(message);
 
+    }
+
+    private String parseToServer(String string){
+        return string.replaceAll("," , "§" ).replaceAll(":", "€").replaceAll("//", "£").replaceAll("&", "¤");
+    }
+
+    public String parseFromServer(String string){
+        return string.replaceAll("§", ",").replaceAll("€", ":").replaceAll("£", "//").replaceAll("¤","&");
     }
 
     /**

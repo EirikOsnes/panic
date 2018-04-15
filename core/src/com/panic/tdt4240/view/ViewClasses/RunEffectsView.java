@@ -12,10 +12,10 @@ import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.State;
+import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.util.MapMethods;
 
 import java.util.ArrayList;
-
 
 /**
  * Created by Hermann on 14.04.2018.
@@ -26,9 +26,9 @@ public class RunEffectsView extends AbstractView {
     private GameInstance gameInstance;
     private Stage stage;
     private ShapeRenderer sr;
-    private ArrayList<AsteroidConnection> connections;
     private ArrayList<Image> vehicleImages;
     private ArrayList<Image> asteroidImages;
+    private MapConnections mapConnections;
 
     public RunEffectsView(State state) {
         super(state);
@@ -40,9 +40,9 @@ public class RunEffectsView extends AbstractView {
         setUpMap();
     }
     private void setUpMap() {
+        mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         asteroidImages = new ArrayList<>();
         vehicleImages = new ArrayList<>();
-        connections = new ArrayList<>();
         ArrayList<Asteroid> asteroids = gameInstance.getMap().getAsteroids();
 
         ArrayList<String[]> vehicleOnAsteroid = new ArrayList<>();
@@ -59,7 +59,7 @@ public class RunEffectsView extends AbstractView {
                 onAsteroid[2] = i + "";
                 vehicleOnAsteroid.add(onAsteroid);
             }
-            Texture texture = new Texture("asteroids/meteorBrown_big1.png");
+            Texture texture = new Texture("asteroids/" + asteroids.get(i).getTexture() + ".png");
             Image asteroid = new Image(texture);
             asteroid.setSize(SCREEN_WIDTH / 5, SCREEN_WIDTH / 5);
             asteroidDimensions.add(i, new Vector2(asteroid.getWidth(), asteroid.getHeight()));
@@ -72,7 +72,7 @@ public class RunEffectsView extends AbstractView {
             stage.addActor(asteroid);
 
             for (Asteroid neighbour : asteroids.get(i).getNeighbours()) {
-                addConnection(asteroids.get(i), neighbour, asteroid.getWidth(), asteroid.getHeight(), table);
+                mapConnections.addConnection(asteroids.get(i), neighbour, asteroid.getWidth(), asteroid.getHeight(), table);
             }
         }
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
@@ -91,50 +91,8 @@ public class RunEffectsView extends AbstractView {
         }
     }
 
-    private boolean notConnected(String startID, String endID){
-        for(AsteroidConnection connection: connections){
-            if(connection.startID.equals(endID) && connection.endID.equals(startID)){
-                return false;
-            }
-            else if(connection.startID.equals(startID) && connection.endID.equals(endID)){
-                return false;
-            }
-        }
-        return true;
-    }private ArrayList<Vector2[]> getConnections(){
-        ArrayList<Vector2[]> lines = new ArrayList<>();
-        for(AsteroidConnection connection : connections){
-            Vector2[] line = new Vector2[2];
-            line[0] = connection.start;
-            line[1] = connection.end;
-            lines.add(line);
-        }
-        return lines;
-    }private void addConnection(Asteroid start, Asteroid end, float asteroidWidth, float asteroidHeight, float tableHeight){
-        if(notConnected(start.getId(), end.getId())){
-            AsteroidConnection connection = new AsteroidConnection(
-                    //Calculation of center point of the asteroids, see setUpMap() in PlayCardView
-                    new Vector2(start.getPosition().x *(Gdx.graphics.getWidth() - asteroidWidth) + asteroidWidth/2,
-                            start.getPosition().y *(Gdx.graphics.getHeight() - tableHeight - asteroidHeight) + tableHeight
-                                    + asteroidHeight/2),
-                    new Vector2(end.getPosition().x *(Gdx.graphics.getWidth() - asteroidWidth) + asteroidWidth/2,
-                            end.getPosition().y *(Gdx.graphics.getHeight() - tableHeight - asteroidHeight) + tableHeight
-                                    + asteroidHeight/2),
-                    start.getId(), end.getId());
-            connections.add(connection);
-        }
-    }
-    private class AsteroidConnection {
-        private Vector2 start;
-        private Vector2 end;
-        private String startID;
-        private String endID;
-        private AsteroidConnection(Vector2 start, Vector2 end, String startID, String endID){
-            this.start = start;
-            this.startID = startID;
-            this.end = end;
-            this.endID = endID;
-        }
+    private ArrayList<Vector2[]> getConnections(){
+        return mapConnections.getConnections();
     }
 
     @Override
@@ -149,6 +107,7 @@ public class RunEffectsView extends AbstractView {
     }
 
     public void dispose(){
-
+        sr.dispose();
+        stage.dispose();
     }
 }

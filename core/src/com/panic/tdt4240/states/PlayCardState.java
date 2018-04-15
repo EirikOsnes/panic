@@ -8,7 +8,7 @@ import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
-import com.panic.tdt4240.models.Vehicle;
+import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
@@ -35,28 +35,27 @@ public class PlayCardState extends State {
     private int numPlayedCards;
     private ArrayList<Card> hand;
     private ArrayList<Boolean> selectedCard;
-    private ArrayList<AsteroidConnection> connections;
-    private ArrayList<Vehicle> vehicles;
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
     private GameInstance gameInstance;
+    private MapConnections mapConnections;
+
     public PlayCardState(GameStateManager gsm) {
         super(gsm);
         gameInstance = GameInstance.getInstance();
 
         player = gameInstance.getPlayer();
         map = gameInstance.getMap();
-        vehicles = gameInstance.getVehicles();
 
         playedCardsList = new ArrayList<>();
         targets = new ArrayList<>();
-        connections = new ArrayList<>();
 
         hand = player.playCards();
         selectedCard = new ArrayList<>(hand.size());
         for (int i = 0; i < hand.size(); i++) {
             selectedCard.add(i, false);
         }
+        mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         playView = new PlayCardView(this);
     }
 
@@ -185,50 +184,14 @@ public class PlayCardState extends State {
      * @param tableHeight height of table, for calculating buffer height
      */
     public void addConnection(Asteroid start, Asteroid end, float asteroidWidth, float asteroidHeight, float tableHeight){
-        if(notConnected(start.getId(), end.getId())){
-            AsteroidConnection connection = new AsteroidConnection(
-                    //Calculation of center point of the asteroids, see setUpMap() in PlayCardView
-                    new Vector2(start.getPosition().x *(Gdx.graphics.getWidth() - asteroidWidth) + asteroidWidth/2,
-                            start.getPosition().y *(Gdx.graphics.getHeight() - tableHeight - asteroidHeight) + tableHeight
-                                    + asteroidHeight/2),
-                    new Vector2(end.getPosition().x *(Gdx.graphics.getWidth() - asteroidWidth) + asteroidWidth/2,
-                            end.getPosition().y *(Gdx.graphics.getHeight() - tableHeight - asteroidHeight) + tableHeight
-                                    + asteroidHeight/2),
-                    start.getId(), end.getId());
-            connections.add(connection);
-        }
-    }
-
-    /**
-     * Checks if an equivalent connection has already been added
-     * @param startID start asteroid
-     * @param endID end asteroid
-     * @return whether this connection already exists
-     */
-    private boolean notConnected(String startID, String endID){
-        for(AsteroidConnection connection: connections){
-            if(connection.startID.equals(endID) && connection.endID.equals(startID)){
-                return false;
-            }
-            else if(connection.startID.equals(startID) && connection.endID.equals(endID)){
-                return false;
-            }
-        }
-        return true;
+        mapConnections.addConnection(start, end,asteroidWidth, asteroidHeight, tableHeight);
     }
 
     /**
      * @return array of start and endpoints of connecting lines between asteroids
      */
     public ArrayList<Vector2[]> getConnections(){
-        ArrayList<Vector2[]> lines = new ArrayList<>();
-        for(AsteroidConnection connection : connections){
-            Vector2[] line = new Vector2[2];
-            line[0] = connection.start;
-            line[1] = connection.end;
-            lines.add(line);
-        }
-        return lines;
+        return mapConnections.getConnections();
     }
 
     /**
@@ -241,15 +204,24 @@ public class PlayCardState extends State {
     }
 
     /**
-     * Converts enum cardtype to string, ATTACK -> "attack"
+     * Converts enum cardType to string, ATTACK -> "attack"
      * @param i cardID
-     * @return lowercase string of cardtype
+     * @return lowercase string of cardType
      */
     public String getCardType(int i){
         return hand.get(i).getCardType().name().toLowerCase();
     }
-    public Card getCard(int pos){
-        return hand.get(pos);
+    public String[] getCardToolTip(int i){
+        return hand.get(i).getTooltip().split(" ");
+    }
+    public int getHandSize(){
+        return hand.size();
+    }
+    public Map getMap(){
+        return map;
+    }
+    public String getColorCar(String id){
+        return gameInstance.getVehicleById(id).getColorCar();
     }
 
     /**
@@ -281,23 +253,6 @@ public class PlayCardState extends State {
     @Override
     public void dispose() {
         playView.dispose();
-    }
-
-    /**
-     * Class for keeping track of connections between asteroids, for rendering in PlayCardView
-     * Has id for start and end asteroid, and their coordinates
-     */
-    private class AsteroidConnection {
-        private Vector2 start;
-        private Vector2 end;
-        private String startID;
-        private String endID;
-        private AsteroidConnection(Vector2 start, Vector2 end, String startID, String endID){
-            this.start = start;
-            this.startID = startID;
-            this.end = end;
-            this.endID = endID;
-        }
     }
 
     @Override

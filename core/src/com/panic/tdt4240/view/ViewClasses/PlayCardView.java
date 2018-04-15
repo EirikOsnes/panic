@@ -1,5 +1,6 @@
 package com.panic.tdt4240.view.ViewClasses;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -39,6 +40,7 @@ public class PlayCardView extends AbstractView{
     private ShapeRenderer sr;
     private ArrayList<String[]> vehicleOnAsteroid;
 
+    //TODO Større tekst
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
         sr = new ShapeRenderer();
@@ -55,14 +57,13 @@ public class PlayCardView extends AbstractView{
         table.setWidth(Gdx.graphics.getWidth());
         table.left().bottom();
         final BitmapFont font = new BitmapFont();
+        if(Gdx.app.getType() == Application.ApplicationType.Android){
+            font.getData().scale(SCREEN_HEIGHT/SCREEN_WIDTH*1.5f);
+        }
         skin = new Skin();
         TextureAtlas buttonAtlas = new TextureAtlas("cards/card_textures.atlas");
         skin.addRegions(buttonAtlas);
         buttonStyles = new ArrayList<>();
-
-        Window.WindowStyle ws =  new Window.WindowStyle();
-        ws.titleFont = font;
-        skin.add("dialog", ws);
 
         buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
         Skin finishedSkin = new Skin();
@@ -259,11 +260,8 @@ public class PlayCardView extends AbstractView{
         sr.end();
         stage.draw();
     }
-
     public void dispose(){
         sr.dispose();
         stage.dispose();
     }
-//TODO Større tekst
-
 }

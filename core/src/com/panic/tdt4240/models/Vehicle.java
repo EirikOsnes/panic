@@ -15,6 +15,8 @@ public class Vehicle implements EventListener,IStatusAble {
     private StatusHandler statusHandler;
     private String vehicleID;
     private String vehicleType;
+    //From cars/cars.atlas, ie: red_car, green_car etc
+    private String colorCar;
     private boolean isDestroyed = false;
 
     public Vehicle(String type){
@@ -26,6 +28,12 @@ public class Vehicle implements EventListener,IStatusAble {
     public StatusHandler getStatusHandler() {
         return statusHandler;
 
+    }
+    public String getColorCar(){
+        return colorCar;
+    }
+    public void setColorCar(String colorCar){
+        this.colorCar = colorCar;
     }
 
     public String getVehicleType() {
@@ -59,7 +67,7 @@ public class Vehicle implements EventListener,IStatusAble {
     @Override
     public void handleEvent(Event e) {
 
-        if (e.getT() == Event.Type.ATTACK && e.getTargetID() == this.vehicleID) {
+        if (e.getT() == Event.Type.ATTACK && e.getTargetID().equals(this.vehicleID)) {
             if(this.statusHandler.isRequirementsMet(e.getRequirementName(),e.getRequirementVal())) {
                 this.statusHandler.addStatusAddition(e.getStatus(), e.getEffectValue(), e.getDuration());
             }

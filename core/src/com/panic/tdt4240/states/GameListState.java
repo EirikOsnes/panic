@@ -20,9 +20,11 @@ public class GameListState extends State {
 
     public GameListState(GameStateManager gsm){
         super(gsm);
-        Connection.getInstance().getAllLobbies();
+        updateLobbyList();
         lobbyListData = new ArrayList<>();
-
+        view = new GameListView(this);
+        lobbies = new ArrayList<>();
+       
         // load available games from master server - can be done with updateLobbyList
         /** TESTING {LobbyName, playerCount, maxPlayers, lobbyID} */
         String[] data = {"testing", "1", "4", "0"};

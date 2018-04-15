@@ -1,10 +1,13 @@
 package com.panic.tdt4240.states;
 
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Lobby;
+import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.XMLParser;
 import com.panic.tdt4240.view.ViewClasses.MenuView;
 
@@ -23,7 +26,13 @@ public class MenuState extends State {
     public MenuState(GameStateManager gsm){
         super(gsm);
         menuView = new MenuView(this);
-
+        menuView.isConnecting(true); //Tell the menu view that the connection is loading
+        if(Connection.getInstance().getConnectionID()== 0){
+            Connection.getInstance().findConnectionID();
+        }
+        else{
+            menuView.isConnecting(false);
+        }
     }
 
     @Override
@@ -76,9 +85,10 @@ public class MenuState extends State {
         Stack<Card> cards = new Stack<>();
         for (int i = 0; i < 10; i++) {
             Card card = new Card(i + "");
-            card.setTooltip("Card nr:" + i + "\nSomething else............\nabcdefghijklmnopqrstuvwxyz");
+            card.setTooltip("Shoot a laser guided missile. Will only hit if target is marked with laser_pointer, but will always hit if it is the case. Dealing 30 damage");
+            card.setName("Glue shot");
             card.setTargetType(Card.TargetType.ASTEROID);
-            card.setAllowedTarget(Card.AllowedTarget.ALL);
+            card.setAllowedTarget(Card.AllowedTarget.ENEMY);
             if(i == 9){
                 card.setCardType(Card.CardType.ATTACK);
             }
@@ -93,10 +103,34 @@ public class MenuState extends State {
             }
             cards.push(card);
         }
+        GameInstance instance = GameInstance.getInstance();
         Player player = new Player(cards);
         XMLParser parser = new XMLParser();
-        Map map = parser.parseMaps("maps/maps.xml").get(0);
-        gsm.set(new PlayCardState(gsm, player, map)); 
+        Map map = parser.parseMaps().get(0);
+        instance.setMap(map);
+        ArrayList<Vehicle> vehicles = new ArrayList<>();
+        Vehicle vehicle = new Vehicle("");
+        for (int i = 0; i < 4; i++) {
+            Vehicle vehicle1 = vehicle.cloneVehicleWithId("V-00"+i);
+            if(i == 0){
+                vehicle1.setColorCar("red_car");
+            }
+            else if(i == 1){
+                vehicle1.setColorCar("green_car");
+            }
+            else if(i == 2){
+                vehicle1.setColorCar("yellow_car");
+            }
+            else{
+                vehicle1.setColorCar("blue_car");
+            }
+            vehicles.add(vehicle1);
+            map.getAsteroids().get(1).addVehicle(vehicle1.getVehicleID());
+        }
+        player.setVehicle(vehicles.get(0));
+        instance.setPlayer(player);
+        instance.setVehicles(vehicles);
+        gsm.set(new PlayCardState(gsm));
     }
 
     @Override
@@ -123,7 +157,18 @@ public class MenuState extends State {
 
         @Override
         public void onMessage(String message) {
+            String[] strings = message.split(":");
 
+            switch (strings[0]){
+                case "CONNECTION_ID":
+                    if(Connection.getInstance().getConnectionID()==0){
+                        Connection.getInstance().setConnectionID(Integer.parseInt(strings[1]));
+                        System.out.println("Received connection ID: "+strings[1]);
+                        menuView.isConnecting(false);
+                    }
+                    break;
+
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package com.panic.tdt4240.connection;
 
 import android.support.annotation.NonNull;
 
+import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.ModelHolder;
@@ -23,13 +24,26 @@ public class Connection extends WebSocketClient{
 
     private static Connection ourInstance;
     private ICallbackAdapter adapter;
+    private int connectionID = 0;
 
     public static Connection getInstance() {
         if(ourInstance == null){
             try {
                 URI uri = new URI("ws://panicserver.herokuapp.com");
                 ourInstance = new Connection(uri);
+                ourInstance.connectBlocking(); //FIXME: This returns a boolean - should it be used?
             } catch (URISyntaxException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(!ourInstance.getSocket().isConnected()){
+            try {
+                //ourInstance.connectBlocking();
+                ourInstance.reconnectBlocking();
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -39,6 +53,23 @@ public class Connection extends WebSocketClient{
 
     private Connection(URI uri) {
         super(uri);
+    }
+
+    public void setConnectionID(int connectionID) {
+        this.connectionID = connectionID;
+    }
+
+    public int getConnectionID() {
+        return connectionID;
+    }
+
+    public void test(){
+        ourInstance.send("TEST");
+    }
+
+    //Get a personal connectionID from the server
+    public void findConnectionID(){
+        this.send("CONNECTION_ID");
     }
 
     /**
@@ -51,6 +82,8 @@ public class Connection extends WebSocketClient{
      */
     public void createLobby(int maxPlayerCount, @NonNull String mapID, String name){
 
+        String message = "CREATE//" + mapID + "//" + maxPlayerCount + "//" + name;
+        this.send(message);
         //TODO: Create and return the Lobby with the designated parameters, and the creator already added.
 
     }
@@ -58,10 +91,15 @@ public class Connection extends WebSocketClient{
     /**
      * Get all the Lobbies available
      * Returns an ArrayList of all available Lobbies as a string on the form:
+
      * GET_LOBBIES: {4 fields} & {4 fields} & ... repeating. '&' = lobby separator
-     * GET_LOBBIES:Lobbyname1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
+
+     * GET_LOBBIES:ID1,Lobbyname1,CurrentPlayerNum1,MaxPlayers1&ID2,LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN
+
      */
     public void getAllLobbies(){
+
+        this.send("GET_LOBBIES");
         //TODO: Return a list of all available lobbies.
     }
 
@@ -92,12 +130,12 @@ public class Connection extends WebSocketClient{
      * Get the latest state of the given Lobby - used to update the GameLobbyState
      * @param lobbyID The id of the lobby
      * Return the updated Lobby as a string on the form:
-     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN:PlayerReady1&PlayerReady2&...&PlayerReadyN
+     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN
      *
      */
     public void updateLobby(int lobbyID){
 
-        //TODO: Send the call to the server.
+        this.send("TOGAME//"+lobbyID+"//GET_LOBBY_INFO");
 
     }
 
@@ -173,11 +211,14 @@ public class Connection extends WebSocketClient{
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-
+        Gdx.app.log("", "onOpen");
+        System.out.println("onOpen");
     }
 
     @Override
     public void onMessage(String message){
+        Gdx.app.log("", message);
+        System.out.println("RECEIVED MESSAGE: " + message);
         if (adapter != null) {
             adapter.onMessage(message);
         }
@@ -185,12 +226,14 @@ public class Connection extends WebSocketClient{
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-
+        Gdx.app.log("", "onClose");
+        System.out.println("onClose");
     }
 
     @Override
     public void onError(Exception ex) {
-
+        Gdx.app.log("onError", ex.getMessage());
+        System.out.println("onError.....: " + ex.getMessage());
     }
 
     public void setAdapter(ICallbackAdapter adapter) {

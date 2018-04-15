@@ -1,7 +1,6 @@
 package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.Gdx;
-import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.events.Event;
 import com.panic.tdt4240.events.EventBus;
@@ -21,14 +20,13 @@ import java.util.ArrayList;
 public class RunEffectsState extends State implements EventListener {
 
     private GameInstance gi;
-    private RunEffectsView runEffectsView;
 
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
         gi = GameInstance.getInstance();
         EventBus.getInstance().addListener(this);
         //Connection.getInstance().sendRunEffectsState();
-        runEffectsView = new RunEffectsView(this);
+        view = new RunEffectsView(this);
         Card c = ModelHolder.getInstance().getCardById("MOVE");
         EventFactory.postEventsFromCard(c, "A-003", "V-001");
     }
@@ -45,12 +43,12 @@ public class RunEffectsState extends State implements EventListener {
 
     @Override
     public void render() {
-        runEffectsView.render();
+        view.render();
     }
 
     @Override
     public void dispose() {
-        runEffectsView.dispose();
+        ((RunEffectsView) view).dispose();
         EventBus.getInstance().removeListener(this);
     }
 
@@ -63,17 +61,18 @@ public class RunEffectsState extends State implements EventListener {
     public void handleEvent(Event e) {
         if (e.getT() == Event.Type.ATTACK) {
             if (e.getTargetID().matches("A-\\d\\d\\d")) {
-                runEffectsView.attackAsteroid(e.getTargetID());
+                ((RunEffectsView) view).attackAsteroid(e.getTargetID());
             }
             else if (e.getTargetID().matches("V-\\d\\d\\d")) {
-                runEffectsView.attackVehicle(e.getTargetID());
+                ((RunEffectsView) view).attackVehicle(e.getTargetID());
             }
         }
         else if (e.getT() == Event.Type.MOVE) {
-            runEffectsView.moveVehicle(e.getInstigatorID(), e.getTargetID());
+            ((RunEffectsView) view).moveVehicle(e.getInstigatorID(), e.getTargetID());
         }
+
         else if (e.getT() == Event.Type.DESTROYED) {
-            runEffectsView.destroyVehicle(e.getTargetID());
+            ((RunEffectsView) view).destroyVehicle(e.getTargetID());
         }
     }
 

@@ -16,7 +16,6 @@ import java.util.ArrayList;
 public class GameLobbyState extends State {
 
     // fields: player(s), numOfPlayers...
-    GameLobbyView view;
     Lobby lobby;
 
     public GameLobbyState(GameStateManager gsm, Lobby lobby){

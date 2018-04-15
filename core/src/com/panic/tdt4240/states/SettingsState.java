@@ -9,7 +9,6 @@ import com.panic.tdt4240.view.ViewClasses.SettingsView;
 
 public class SettingsState extends State {
 
-    private SettingsView view;
 
     public SettingsState(GameStateManager gsm){
         super(gsm);

@@ -51,12 +51,12 @@ public class GameListView extends AbstractView {
         table = new Table();
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
-        btnAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
+        btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         btnStyle = new TextButton.TextButtonStyle();
         btnStyle.font = font;
-        btnStyle.up = skin.getDrawable("button_up");
-        btnStyle.down = skin.getDrawable("button_up");
+        btnStyle.up = skin.getDrawable("button-up");
+        btnStyle.down = skin.getDrawable("button-up");
 
         table.setFillParent(true);
         table.center();

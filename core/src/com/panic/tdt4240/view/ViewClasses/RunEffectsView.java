@@ -91,6 +91,11 @@ public class RunEffectsView extends AbstractView {
         }
     }
 
+    private void animateExplosion(){
+        TextureAtlas atlas = new TextureAtlas("animations/explosion.atlas");
+
+    }
+
     private ArrayList<Vector2[]> getConnections(){
         return mapConnections.getConnections();
     }

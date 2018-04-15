@@ -25,7 +25,6 @@ import com.panic.tdt4240.view.Renderer;
 public class MenuView extends AbstractView {
 
     private Renderer renderer;
-    private Stage stage;
     private Button createGameBtn, joinGameBtn, settingsBtn;
     private TextureAtlas buttonAtlas;
     private Skin skin;

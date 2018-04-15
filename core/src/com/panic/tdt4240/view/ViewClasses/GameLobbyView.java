@@ -37,7 +37,6 @@ public class GameLobbyView extends AbstractView {
     private TextureAtlas buttonAtlas;
     private Texture bg;
     private Skin skin;
-    private Stage stage;
     private BitmapFont font;
 
     private ArrayList<String> usedNames;

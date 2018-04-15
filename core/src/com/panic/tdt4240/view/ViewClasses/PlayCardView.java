@@ -38,7 +38,6 @@ public class PlayCardView extends AbstractView{
     private Renderer renderer;
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
-    private Stage stage;
     private Table table;
     private TextButton cardInfo;
     private int amountCards;

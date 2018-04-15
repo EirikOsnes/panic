@@ -30,7 +30,6 @@ public class GameResultsView extends AbstractView {
 
     private Renderer renderer;
     private ArrayList<TextButton> textBtns;
-    private Stage stage;
     private Skin skin;
     TextButton.TextButtonStyle btnStyle, rankingStyle;
     private TextureAtlas btnAtlas;

@@ -33,7 +33,6 @@ import java.util.Queue;
 public class RunEffectsView extends AbstractView {
 
     private GameInstance gameInstance;
-    private Stage stage;
     private ShapeRenderer sr;
     private ArrayList<AsteroidConnection> connections;
     private HashMap<String, Image> vehicleImages;

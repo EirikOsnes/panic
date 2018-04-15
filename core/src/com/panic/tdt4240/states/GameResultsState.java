@@ -27,6 +27,7 @@ public class GameResultsState extends State {
             gsm.pop(); // to GameLobbyState
             if (originalNumOfPlayers != numOfPlayers) {
                 // TODO : some players left the lobby. Update/replace lobby?
+                dispose();
             }
             else {
                 gsm.pop(); // to GameLobbyState
@@ -49,7 +50,7 @@ public class GameResultsState extends State {
 
     @Override
     public void dispose() {
-
+        view.dispose();
     }
 
     @Override

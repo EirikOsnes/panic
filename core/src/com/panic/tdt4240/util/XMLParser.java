@@ -134,8 +134,11 @@ public class XMLParser {
                         if (node.getNodeType() == Node.ELEMENT_NODE) {
                             Element element = (Element) node;
                             String asteroidId = element.getAttribute("id");
-                            Asteroid myAsteroid = new Asteroid(null, asteroidId);
-                            //TODO: Sprite should be separated
+                            String spritename = "meteorBrown_big1";
+                            if(element.hasAttribute("sprite")){
+                                spritename = element.getAttribute("sprite");
+                            }
+                            Asteroid myAsteroid = new Asteroid(spritename, asteroidId);
                             myAsteroid.setPosition(new Vector2(
                                     Float.parseFloat(element.getElementsByTagName("posX").item(0).getTextContent()),
                                     Float.parseFloat(element.getElementsByTagName("posY").item(0).getTextContent())

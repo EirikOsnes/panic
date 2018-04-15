@@ -91,7 +91,11 @@ public class Connection extends WebSocketClient{
     /**
      * Get all the Lobbies available
      * Returns an ArrayList of all available Lobbies as a string on the form:
+
+     * GET_LOBBIES: {4 fields} & {4 fields} & ... repeating. '&' = lobby separator
+
      * GET_LOBBIES:ID1,Lobbyname1,CurrentPlayerNum1,MaxPlayers1&ID2,LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN
+
      */
     public void getAllLobbies(){
 

@@ -22,7 +22,7 @@ public class SettingsView extends AbstractView {
     }
 
     public void dispose(){
-    }
 
+    }
 
 }

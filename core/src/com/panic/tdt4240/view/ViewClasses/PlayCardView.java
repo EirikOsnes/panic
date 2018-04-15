@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -41,8 +42,7 @@ public class PlayCardView extends AbstractView{
     private ShapeRenderer sr;
     private ArrayList<String[]> vehicleOnAsteroid;
     private TextField timer;
-    private TextField invalidTarget;
-
+    private Label invalidTarget;
 
     //TODO Make the player vehicle more visible, inform if the targeting is wrong
     public PlayCardView(PlayCardState playCardState){
@@ -167,9 +167,12 @@ public class PlayCardView extends AbstractView{
         timer = new TextField(((PlayCardState)state).getElapsedTime()+"", style);
         timer.setPosition(0, SCREEN_HEIGHT - timer.getHeight());
         stage.addActor(timer);
-        invalidTarget = new TextField("Default", style);
-        invalidTarget.setPosition(0, table.getHeight() + invalidTarget.getHeight());
 
+
+        invalidTarget = new Label("Default", new Label.LabelStyle(font, Color.WHITE));
+        invalidTarget.setPosition(0, table.getHeight() + invalidTarget.getHeight());
+        stage.addActor(invalidTarget);
+        invalidTarget.setVisible(false);
         setUpMap();
     }
 
@@ -244,6 +247,7 @@ public class PlayCardView extends AbstractView{
     //TODO Should show: cannot target this asteroid/this vehicle
     public void showInvalidTarget(String targetID){
         String target = "You cannot target this ";
+
         if(targetID.substring(0,1).equals("a")){
             target = target.concat("asteroid");
         }
@@ -251,9 +255,10 @@ public class PlayCardView extends AbstractView{
             target = target.concat("vehicle");
         }
         invalidTarget.setText(target);
-        stage.addActor(invalidTarget);
+        invalidTarget.setVisible(true);
+        duration = 2;
     }
-
+    private float duration = 0;
     /**
      * Method to change visuals of the buttons depending on if they're pressed down or not
      * @param button ID of the button/card that has been pressed
@@ -281,11 +286,19 @@ public class PlayCardView extends AbstractView{
         this.selectTarget = selectTarget;
     }
 
-    public void update(float elapsedTime){
-        timer.setText(Math.round(elapsedTime) + "");
-        //if(elapsedTime <= 0){
-        //    ((PlayCardState) state).finishRound();
-        //}
+    private float elapsedTime;
+    public void setElapsedTime(float elapsedTime){
+        this.elapsedTime = elapsedTime;
+    }
+
+    public void update(float dt){
+        timer.setText(Math.round(elapsedTime - dt) + "");
+        if(duration > 0){
+            duration -= dt;
+        }
+        else if(invalidTarget.isVisible()){
+            invalidTarget.setVisible(false);
+        }
     }
     /**
      * Renders connections between asteroids, then the stage

@@ -40,8 +40,9 @@ public class PlayCardState extends State {
     private Integer justClicked = -1;
     private GameInstance gameInstance;
     private MapConnections mapConnections;
-    private float elapsedTime;
+    private float timeLeft;
     private boolean enableTimer;
+    private boolean vehicleTarget;
 
     public PlayCardState(GameStateManager gsm) {
         super(gsm);
@@ -61,6 +62,7 @@ public class PlayCardState extends State {
         }
         mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         playView = new PlayCardView(this);
+        setTimeLeft(30f);
     }
 
     /**
@@ -109,6 +111,7 @@ public class PlayCardState extends State {
             }
         }
         else if(o instanceof String){
+            vehicleTarget = false;
             selectTarget((String) o);
         }
         System.out.println(playedCardsList);
@@ -148,8 +151,13 @@ public class PlayCardState extends State {
                 selectTarget(potentialTarget);
             }
             else{
-                //TODO Should show 'not valid targed' in PlayCardView
-                playView.showInvalidTarget(firstTarget);
+                //TODO Should show 'not valid target' in PlayCardView
+                if(vehicleTarget){
+                    playView.showInvalidTarget("vehicle");
+                }
+                else{
+                    playView.showInvalidTarget("asteroid");
+                }
             }
         }
     }
@@ -166,6 +174,7 @@ public class PlayCardState extends State {
         }
         //If the target is a vehicle
         else if(targetID.substring(0, 1).equals("v")){
+            vehicleTarget = true;
             //If the player can target a vehicle
             if(hand.get(playedCardsList.get(numPlayedCards-1)).getTargetType().equals(VEHICLE)){
                 //If the player targets themselves
@@ -238,11 +247,12 @@ public class PlayCardState extends State {
         return hand.get(i).getName();
     }
     public float getElapsedTime(){
-        return elapsedTime;
+        return timeLeft;
     }
     public void setTimeLeft(float timeLeft){
-        elapsedTime = timeLeft;
+        this.timeLeft = timeLeft;
         enableTimer = true;
+        playView.setElapsedTime(timeLeft);
     }
     /**
      * Converts the list of cards and targets to a list of actions by the player
@@ -263,8 +273,8 @@ public class PlayCardState extends State {
     @Override
     public void update(float dt) {
         if(enableTimer){
-        elapsedTime -= dt;
-        playView.update(elapsedTime);
+            //elapsedTime -= dt;
+            playView.update(dt);
         }
     }
 

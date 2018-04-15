@@ -67,11 +67,11 @@ public class PlayCardView extends AbstractView{
         }
         font.getData().scale(textScale);
         skin = new Skin();
-        TextureAtlas buttonAtlas = new TextureAtlas("skin/uiskin.json");
+        TextureAtlas buttonAtlas = new TextureAtlas("cards/card_textures.atlas");
         skin.addRegions(buttonAtlas);
         buttonStyles = new ArrayList<>();
 
-        buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
+        buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
         Skin finishedSkin = new Skin();
         finishedSkin.addRegions(buttonAtlas);
         final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
@@ -148,8 +148,8 @@ public class PlayCardView extends AbstractView{
         stage.addActor(table);
 
         //Images the button has in the normal up-position, and when it is pressed down
-        buttonStyle.up = finishedSkin.getDrawable("button_up");
-        buttonStyle.down = finishedSkin.getDrawable("button_down");
+        buttonStyle.up = finishedSkin.getDrawable("button-up");
+        buttonStyle.down = finishedSkin.getDrawable("button-down");
         TextButton finishedButton = new TextButton("Finish Turn", buttonStyle);
         finishedButton.setWidth(SCREEN_WIDTH/5);
         finishedButton.setHeight(SCREEN_WIDTH/10);

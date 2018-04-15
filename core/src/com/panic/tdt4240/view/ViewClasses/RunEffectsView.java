@@ -164,7 +164,9 @@ public class RunEffectsView extends AbstractView {
         //TODO: Animate the moving of the vehicle
         Actor actor = vehicleImages.get(vehicleID);
         Image asteroid = asteroidImages.get(asteroidID);
-        Action action = Actions.moveTo(asteroid.getX(), asteroid.getY(), 2);
+        Vector2 vec = MapMethods.asteroidPositions(asteroid.getX(), asteroid.getY(), asteroid.getWidth(),
+                asteroid.getHeight(), gameInstance.getVehicleById(vehicleID).getColorCar());
+        Action action = Actions.moveTo(vec.x, vec.y, 2);
         animator.addAction(action, actor);
     }
 

@@ -27,10 +27,7 @@ public class GameLobbyState extends State {
     }
 
     public void launchGame(){
-        // might want to test this
-
-        // needs additional parameters?
-        //gsm.push(new PlayCardState(gsm));
+        gsm.push(new LoadGameState(gsm));
     }
 
     /**
@@ -104,7 +101,7 @@ public class GameLobbyState extends State {
                     parseLobby(strings);
                     break;
                 case "GAME_START":
-                    //TODO: Create this call, and handle it pls.
+                    launchGame();
                     break;
 
             }

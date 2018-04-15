@@ -84,7 +84,6 @@ public class Connection extends WebSocketClient{
 
         String message = "CREATE//" + mapID + "//" + maxPlayerCount + "//" + name;
         this.send(message);
-        //TODO: Create and return the Lobby with the designated parameters, and the creator already added.
 
     }
 
@@ -98,21 +97,15 @@ public class Connection extends WebSocketClient{
 
      */
     public void getAllLobbies(){
-
         this.send("GET_LOBBIES");
-        //TODO: Return a list of all available lobbies.
     }
 
     /**
-     * Connect to the given Lobby if this returns true.
+     * Connect to the given Lobby if it is possible.
      * @param lobbyID The ID of the Lobby you wish to connect to
-     * @return Returns true if added on the server, false if it was non-successful.
      */
-    public boolean connectToLobby(int lobbyID){
-
-        //TODO: Try to connect to the given Lobby. Should return true if it was successful.
-
-        return false;
+    public void connectToLobby(int lobbyID){
+        this.send("ENTER//"+lobbyID);
     }
 
 
@@ -122,7 +115,7 @@ public class Connection extends WebSocketClient{
      */
     public void leaveLobby(int lobbyID){
 
-        //TODO: Remove me from the lobby.
+        this.send("TOGAME//" + lobbyID + "//LEAVE_GAME");
 
     }
 
@@ -145,9 +138,7 @@ public class Connection extends WebSocketClient{
      * @param lobbyID
      */
     public void chooseVehicleType(String vehicleType, int lobbyID){
-
-        //TODO: Set my vehicle in the Lobby to tbe given vehicle type
-
+        this.send("TOGAME//" + lobbyID + "//VEHICLE_SET//" + vehicleType + "//" + connectionID);
     }
 
     /**
@@ -157,6 +148,7 @@ public class Connection extends WebSocketClient{
     public void setReady(int lobbyID){
 
         //TODO: Set me to ready
+        //FOR NOW THIS IS NOT TO BE USED
 
     }
 
@@ -164,16 +156,7 @@ public class Connection extends WebSocketClient{
      * Return on the form GAME_INFO:VehicleType1,VehicleID1,Color1&VehicleType2,...ColorN:MapID:MyVehicleID
      */
     public void getGameInfo(){
-        //TODO: Send request to server
-    }
-
-    /**
-     * Tell the server that runEffectsState is done animating, so the next turn can begin.
-     */
-    public void sendDoneAnimating(){
-
-        //TODO: Actually send this info to the server.
-
+        this.send("GAME_INFO");
     }
 
     public void sendPlayCardState(){
@@ -193,6 +176,7 @@ public class Connection extends WebSocketClient{
      */
     public void getLog(){
         //TODO: send a getAllTurns command
+        //FOR NOW THIS IS NOT TO BE USED
     }
 
 

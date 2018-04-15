@@ -28,7 +28,6 @@ public class LoadGameState extends State {
         gi = GameInstance.getInstance();
         connection = Connection.getInstance();
         setUpGameInstance();
-        checkForHistory();
     }
 
     /**

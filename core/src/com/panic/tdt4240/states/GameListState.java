@@ -97,12 +97,7 @@ public class GameListState extends State {
 
 
     private void connectToLobby(int lobbyID){
-        if(Connection.getInstance().connectToLobby(lobbyID)){
-            gsm.push(new GameLobbyState(gsm,lobbyID));
-        }
-        else{
-            //TODO: Cannot join the lobby - it might be full. Maybe give a error pop-up, and refresh the lobby list with updateLobbyList()?
-        }
+        Connection.getInstance().connectToLobby(lobbyID);
     }
 
     @Override
@@ -119,6 +114,13 @@ public class GameListState extends State {
             switch (strings[0]){
                 case "GET_LOBBIES":
                     readLobbyData(strings[1]);
+                    break;
+                case "LOBBY_SUCCESSFUL":
+                    gsm.push(new GameLobbyState(gsm,Integer.parseInt(strings[1])));
+                    break;
+                case "LOBBY_FAILED":
+                    //TODO: Pop-up error? Lobby was full or deleted.
+                    updateLobbyList();
                     break;
             }
         }

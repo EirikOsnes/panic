@@ -1,5 +1,6 @@
 package com.panic.tdt4240.states;
 
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.view.Renderer;
 
 import java.util.Stack;
@@ -19,16 +20,18 @@ public class GameStateManager {
 
     public void push(State state){
         states.push(state);
+        setAdapter();
     }
 
     public void pop(){
         states.pop().dispose();
-        states.peek().setUpAdapter();
+        setAdapter();
     }
 
     public void set(State state){
         states.pop().dispose();
         states.push(state);
+        setAdapter();
     }
 
     public void update(float dt){
@@ -47,6 +50,10 @@ public class GameStateManager {
     public void reset(){
         clear();
         states.push(new MenuState(this));
+    }
+
+    private void setAdapter() {
+        Connection.getInstance().setAdapter(states.peek().callbackAdapter);
     }
 
 }

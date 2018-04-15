@@ -16,7 +16,6 @@ public class Lobby {
     private String mapID;
     private ArrayList<Integer> playerIDs; //ConnectionIDs?
     private ArrayList<String> vehicleTypes;
-    private ArrayList<Boolean> playersReady;
 
     public Lobby(int maxPlayers, String lobbyname, int lobbyID, @NonNull String mapID) {
         this.maxPlayers = maxPlayers;
@@ -25,7 +24,6 @@ public class Lobby {
         this.mapID = mapID;
         playerIDs = new ArrayList<>();
         vehicleTypes = new ArrayList<>();
-        playersReady = new ArrayList<>();
     }
 
     public int getMaxPlayers() {
@@ -52,33 +50,12 @@ public class Lobby {
         return vehicleTypes;
     }
 
-    public ArrayList<Boolean> getPlayersReady() {
-        return playersReady;
-    }
-
     public void setPlayerIDs(ArrayList<Integer> playerIDs) {
         this.playerIDs = playerIDs;
     }
 
     public void setVehicleTypes(ArrayList<String> vehicleTypes) {
         this.vehicleTypes = vehicleTypes;
-    }
-
-    public void setPlayersReady(ArrayList<Boolean> playersReady) {
-        this.playersReady = playersReady;
-    }
-
-    /**
-     * Returns true if all players are ready.
-     * @return Returns true if all players are ready, false otherwise.
-     */
-    public boolean isAllReady(){
-        for (Boolean b : playersReady) {
-            if (!b){
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override

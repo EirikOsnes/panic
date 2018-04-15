@@ -67,7 +67,7 @@ public class CreateGameState extends State {
             String[] strings = message.split(":");
 
             switch (strings[0]){
-                case "CREATE_LOBBY":
+                case "LOBBY_INFO":
                     parseLobby(strings);
                     break;
             }
@@ -77,6 +77,7 @@ public class CreateGameState extends State {
 
         private void parseLobby(String[] strings){
             Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),strings[2],Integer.parseInt(strings[3]),strings[4]);
+            System.out.println("Lobby parsed: " + myLobby.toString());
             gsm.push(new GameLobbyState(gsm,myLobby));
         }
     }

@@ -96,6 +96,18 @@ public class MenuView extends AbstractView {
         renderer = Renderer.getInstance();
     }
 
+    /**
+     * A method to be called from MenuState to tell the view that it's waiting for a connection.
+     * @param isConnecting
+     */
+    public void isConnecting(boolean isConnecting){
+        if(isConnecting){
+            //TODO: Set a "Connecting to server" message or spinner or something
+        }else{
+            //TODO: Unset the message.
+        }
+    }
+
     // TODO: legge inn input
     public void render() {
         renderer.sb.setProjectionMatrix(cam.combined);

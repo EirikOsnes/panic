@@ -223,6 +223,15 @@ public class PlayCardState extends State {
     public String getColorCar(String id){
         return gameInstance.getVehicleById(id).getColorCar();
     }
+    public String getAllowedTarget(int i){
+        return hand.get(i).getAllowedTarget().name().toLowerCase();
+    }
+    public String getTargetType(int i){
+        return hand.get(i).getTargetType().name().toLowerCase();
+    }
+    public String getCardName(int i){
+        return hand.get(i).getName();
+    }
 
     /**
      * Converts the list of cards and targets to a list of actions by the player

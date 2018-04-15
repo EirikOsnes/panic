@@ -40,7 +40,7 @@ public class PlayCardView extends AbstractView{
     private ShapeRenderer sr;
     private ArrayList<String[]> vehicleOnAsteroid;
 
-    //TODO Større tekst
+    //TODO Synliggjør personlig bil, få beskjed om ugyldig unput
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
         sr = new ShapeRenderer();
@@ -100,7 +100,7 @@ public class PlayCardView extends AbstractView{
                         cardInfoStyle.up = skin.getDrawable(((PlayCardState) state).getCardType(index));
 
                         String[] words = ((PlayCardState) state).getCardToolTip(index);
-                        String tooltip = "";
+                        String tooltip = ((PlayCardState) state).getCardName(index) + "\n\n";
                         int length = 0;
                         for(String string : words){
                             length = length + string.length() + 1;
@@ -112,6 +112,11 @@ public class PlayCardView extends AbstractView{
                                 tooltip = tooltip.concat(string + " ");
                             }
                         }
+                        String allowedTarget = ((PlayCardState)state).getAllowedTarget(index);
+                        String targetType = ((PlayCardState)state).getTargetType(index);
+                        tooltip = tooltip.concat("\n\nCan effect: " + allowedTarget);
+                        tooltip = tooltip.concat("\nCan be aimed at: " + targetType);
+
                         cardInfo = new TextButton(tooltip, cardInfoStyle);
                         cardInfo.addListener(new ChangeListener() {
                             @Override

@@ -23,7 +23,6 @@ import com.panic.tdt4240.models.Hand;
 public class Renderer {
 
     public SpriteBatch sb;
-    OrthographicCamera cam;
 
     private static Renderer INSTANCE = new Renderer();
 
@@ -34,8 +33,6 @@ public class Renderer {
 
     private Renderer(){
         sb = new SpriteBatch();
-        cam = new OrthographicCamera();
-        cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
 /*    public void render(Texture img, int x, int y, int width, int height){

@@ -1,6 +1,6 @@
 package com.panic.tdt4240.states;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.view.ViewClasses.SettingsView;
 
 /**
@@ -9,7 +9,7 @@ import com.panic.tdt4240.view.ViewClasses.SettingsView;
 
 public class SettingsState extends State {
 
-    SettingsView view;
+    private SettingsView view;
 
     public SettingsState(GameStateManager gsm){
         super(gsm);
@@ -32,6 +32,7 @@ public class SettingsState extends State {
         catch (Exception e){
             // popup with error message?
 
+            /* e.printStackTrace(); /**/
             return false;
         }
     }
@@ -43,11 +44,24 @@ public class SettingsState extends State {
 
     @Override
     public void render() {
-
+        view.render();
     }
 
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    protected void setUpAdapter() {
+        callbackAdapter = new SettingsAdapter();
+    }
+
+    private class SettingsAdapter implements ICallbackAdapter {
+
+        @Override
+        public void onMessage(String message) {
+
+        }
     }
 }

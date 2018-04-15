@@ -2,19 +2,20 @@
 <maps>
     <map id = "M-001">
         <asteroids>
-            <asteroid id = "A-001">
+            <asteroid id = "A-001" sprite = "meteorBrown_big1">
                 <posX>0.122</posX>
                 <posY>0.310</posY>
             </asteroid>
-            <asteroid id = "A-002">
+            <asteroid id = "A-002" sprite = "meteorBrown_big2">
                 <posX>0.456</posX>
                 <posY>0.076</posY>
+
             </asteroid>
-            <asteroid id = "A-003">
+            <asteroid id = "A-003" sprite = "meteorBrown_big3">
                 <posX>0.778</posX>
                 <posY>0.262</posY>
             </asteroid>
-            <asteroid id = "A-004">
+            <asteroid id = "A-004" sprite = "meteorBrown_big4">
                 <posX>0.344</posX>
                 <posY>0.595</posY>
             </asteroid>
@@ -22,11 +23,11 @@
                 <posX>0.750</posX>
                 <posY>0.561</posY>
             </asteroid>
-            <asteroid id = "A-006">
+            <asteroid id = "A-006" sprite = "meteorBrown_big2">
                 <posX>0.167</posX>
                 <posY>0.867</posY>
             </asteroid>
-            <asteroid id = "A-007">
+            <asteroid id = "A-007" sprite = "meteorBrown_big3">
                 <posX>0.750</posX>
                 <posY>0.857</posY>
             </asteroid>

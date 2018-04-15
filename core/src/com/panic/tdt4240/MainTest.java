@@ -6,6 +6,7 @@ import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.StatusHandler;
+import com.panic.tdt4240.util.XMLParser;
 
 import java.util.Stack;
 
@@ -20,11 +21,14 @@ final class MainTest {
 
     public static void main(String[] args) {
         mh = ModelHolder.getInstance();
+        XMLParser parser = new XMLParser();
+
+
         Vehicle myVehicle = mh.getVehicleByName("EDDISON").cloneVehicleWithId("V-001");
         Vehicle myInstigator = mh.getVehicleByName("EDDISON").cloneVehicleWithId("V-002");
         Map myMap = mh.getMaps().get(0);
-        Stack<Card> cardStack = new Stack<>();
-        cardStack.addAll(mh.getAllCards());
+        Stack<Card> cardStack = parser.parseCardStack("EDDISON");
+        //cardStack.addAll(mh.getAllCards());
         Player myPlayer = new Player(cardStack);
         myMap.addVehicle("RED", myVehicle);
         myMap.getAsteroids().get(0).addVehicle(myVehicle.getVehicleID());

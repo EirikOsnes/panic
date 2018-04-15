@@ -2,17 +2,22 @@ package com.panic.tdt4240.models;
 
 import com.panic.tdt4240.events.Event;
 import com.panic.tdt4240.events.EventBus;
+import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.events.EventListener;
+import com.panic.tdt4240.util.IStatusAble;
 import com.panic.tdt4240.util.StatusHandler;
 
 /**
  * The Object for the Vehicle units.
  */
-public class Vehicle implements EventListener {
+public class Vehicle implements EventListener,IStatusAble {
 
     private StatusHandler statusHandler;
     private String vehicleID;
     private String vehicleType;
+    //From cars/cars.atlas, ie: red_car, green_car etc
+    private String colorCar;
+    private boolean isDestroyed = false;
 
     public Vehicle(String type){
         statusHandler = new StatusHandler(this);
@@ -24,6 +29,12 @@ public class Vehicle implements EventListener {
         return statusHandler;
 
     }
+    public String getColorCar(){
+        return colorCar;
+    }
+    public void setColorCar(String colorCar){
+        this.colorCar = colorCar;
+    }
 
     public String getVehicleType() {
         return vehicleType;
@@ -31,6 +42,10 @@ public class Vehicle implements EventListener {
 
     public String getVehicleID() {
         return vehicleID;
+    }
+
+    public boolean isDestroyed() {
+        return isDestroyed;
     }
 
     public Vehicle cloneVehicleWithId(String id) {
@@ -52,7 +67,7 @@ public class Vehicle implements EventListener {
     @Override
     public void handleEvent(Event e) {
 
-        if (e.getT() == Event.Type.ATTACK && e.getTargetID() == this.vehicleID) {
+        if (e.getT() == Event.Type.ATTACK && e.getTargetID().equals(this.vehicleID)) {
             if(this.statusHandler.isRequirementsMet(e.getRequirementName(),e.getRequirementVal())) {
                 this.statusHandler.addStatusAddition(e.getStatus(), e.getEffectValue(), e.getDuration());
             }
@@ -60,5 +75,11 @@ public class Vehicle implements EventListener {
         if (e.getT() == Event.Type.TIMING) {
             this.statusHandler.runEffects(e.getTiming());
         }
+    }
+
+    public void destroy(){
+        isDestroyed = true;
+        EventFactory.postDestroyedEvent(vehicleID,vehicleID);
+        EventBus.getInstance().removeListener(this);
     }
 }

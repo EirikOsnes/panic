@@ -1,95 +1,196 @@
 package com.panic.tdt4240.connection;
 
+import android.support.annotation.NonNull;
+
+import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
 
+
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
- * Created by Eirik on 09-Apr-18.
+ * The class to communicate with the server
  */
 
-public class Connection {
-    private static final Connection ourInstance = new Connection();
+public class Connection extends WebSocketClient{
+
+    private static Connection ourInstance;
+    private ICallbackAdapter adapter;
+    private int connectionID = 0;
 
     public static Connection getInstance() {
+        if(ourInstance == null){
+            try {
+                URI uri = new URI("ws://panicserver.herokuapp.com");
+                ourInstance = new Connection(uri);
+                ourInstance.connectBlocking(); //FIXME: This returns a boolean - should it be used?
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(!ourInstance.getSocket().isConnected()){
+            try {
+                //ourInstance.connectBlocking();
+                ourInstance.reconnectBlocking();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         return ourInstance;
     }
 
-    private Connection() {
+    private Connection(URI uri) {
+        super(uri);
+    }
+
+    public void setConnectionID(int connectionID) {
+        this.connectionID = connectionID;
+    }
+
+    public int getConnectionID() {
+        return connectionID;
+    }
+
+    public void test(){
+        ourInstance.send("TEST");
+    }
+
+    //Get a personal connectionID from the server
+    public void findConnectionID(){
+        this.send("CONNECTION_ID");
     }
 
     /**
-     * A method call to get all the Vehicles for this game. Should be instatiated copies, with ID.
-     *
-     * @return Returns all the Vehicles for this game.
+     * The method to create a new lobby. Should it return the Lobby? Probably.
+     * @param maxPlayerCount The maximum amount of players in the game. Should default to 4?
+     * @param mapID The id of the map chosen.
+     * @param name A chosen name for the lobby. (Optional?)
+     * Return the new Lobby as a string on the form:
+     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID
      */
-    public ArrayList<Vehicle> getAllVehicles() {
-        ArrayList<Vehicle> result = null;
+    public void createLobby(int maxPlayerCount, @NonNull String mapID, String name){
 
-        return result;
+        String message = "CREATE//" + mapID + "//" + maxPlayerCount + "//" + name;
+        this.send(message);
+        //TODO: Create and return the Lobby with the designated parameters, and the creator already added.
+
     }
 
     /**
-     * Get the ID of the current players vehicle.
-     *
-     * @return returns the ID.
+     * Get all the Lobbies available
+     * Returns an ArrayList of all available Lobbies as a string on the form:
+
+     * GET_LOBBIES: {4 fields} & {4 fields} & ... repeating. '&' = lobby separator
+
+     * GET_LOBBIES:ID1,Lobbyname1,CurrentPlayerNum1,MaxPlayers1&ID2,LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN
+
      */
-    public String getMyVehicle() {
-        return null;
+    public void getAllLobbies(){
+
+        this.send("GET_LOBBIES");
+        //TODO: Return a list of all available lobbies.
     }
 
-
     /**
-     * Get the map ID for this game
-     *
-     * @return Returns the map ID.
+     * Connect to the given Lobby if this returns true.
+     * @param lobbyID The ID of the Lobby you wish to connect to
+     * @return Returns true if added on the server, false if it was non-successful.
      */
-    public String getMapID() {
-        return null;
+    public boolean connectToLobby(int lobbyID){
+
+        //TODO: Try to connect to the given Lobby. Should return true if it was successful.
+
+        return false;
+    }
+
+
+    /**
+     * Remove the player from the given Lobby.
+     * @param lobbyID The ID of the Lobby
+     */
+    public void leaveLobby(int lobbyID){
+
+        //TODO: Remove me from the lobby.
+
     }
 
     /**
-     * reads the history of the game. If the game has no history, the method returns null. The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
+     * Get the latest state of the given Lobby - used to update the GameLobbyState
+     * @param lobbyID The id of the lobby
+     * Return the updated Lobby as a string on the form:
+     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN
+     *
+     */
+    public void updateLobby(int lobbyID){
+
+        this.send("TOGAME//"+lobbyID+"//GET_LOBBY_INFO");
+
+    }
+
+    /**
+     * Set the vehicle type for the given Lobby to the given vehicleType.
+     * @param vehicleType
+     * @param lobbyID
+     */
+    public void chooseVehicleType(String vehicleType, int lobbyID){
+
+        //TODO: Set my vehicle in the Lobby to tbe given vehicle type
+
+    }
+
+    /**
+     * Set me to ready for the given lobby
+     * @param lobbyID The ID of the lobby.
+     */
+    public void setReady(int lobbyID){
+
+        //TODO: Set me to ready
+
+    }
+
+    /**
+     * Return on the form GAME_INFO:VehicleType1,VehicleID1,Color1&VehicleType2,...ColorN:MapID:MyVehicleID
+     */
+    public void getGameInfo(){
+        //TODO: Send request to server
+    }
+
+    /**
+     * Tell the server that runEffectsState is done animating, so the next turn can begin.
+     */
+    public void sendDoneAnimating(){
+
+        //TODO: Actually send this info to the server.
+
+    }
+
+    /**
+     * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
+     */
+    public void sendRunEffectsState(){
+        //TODO: Send info
+    }
+
+    /**
+     * The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
      * with "ENDTURN//".
-     *
-     * @param history The history String
-     * @return An arrayList containing ArrayLists of CardIDs, SenderIDs, TargetIDs and Seeds
      */
-    public ArrayList<ArrayList<String>> readHistory(String history) {
-        if (history.equals("")) {
-            return null;
-        }
-        ArrayList<String> cardIDs = new ArrayList<>();
-        ArrayList<String> senderIDs = new ArrayList<>();
-        ArrayList<String> targetIDs = new ArrayList<>();
-        ArrayList<String> seed = new ArrayList<>();
-        String[] data = history.split("//");
-        for (String string : data) {
-            if (string.equals("ENDTURN")) {
-                cardIDs.add("ENDTURN");
-                senderIDs.add("ENDTURN");
-                targetIDs.add("ENDTURN");
-                seed.add("ENDTURN");
-            } else {
-                String[] elements = string.split("&");
-                if (elements.length != 4) {
-                    throw new IllegalArgumentException("String is not formatted correctly");
-                }
-                cardIDs.add(elements[0]);
-                senderIDs.add(elements[1]);
-                targetIDs.add(elements[2]);
-                seed.add(elements[3]);
-            }
-        }
-        ArrayList<ArrayList<String>> returnArray = new ArrayList<>();
-        returnArray.add(cardIDs);
-        returnArray.add(senderIDs);
-        returnArray.add(targetIDs);
-        returnArray.add(seed);
-        return returnArray;
+    public void getLog(){
+        //TODO: send a getAllTurns command
     }
+
 
 
     /**
@@ -106,6 +207,37 @@ public class Connection {
             returnString = returnString + move[0] + "&" + move[2] + "&" + move[1] + "&" + priority + "//";
         }
         return returnString;
+    }
+
+    @Override
+    public void onOpen(ServerHandshake handshakedata) {
+        Gdx.app.log("", "onOpen");
+        System.out.println("onOpen");
+    }
+
+    @Override
+    public void onMessage(String message){
+        Gdx.app.log("", message);
+        System.out.println("RECEIVED MESSAGE: " + message);
+        if (adapter != null) {
+            adapter.onMessage(message);
+        }
+    }
+
+    @Override
+    public void onClose(int code, String reason, boolean remote) {
+        Gdx.app.log("", "onClose");
+        System.out.println("onClose");
+    }
+
+    @Override
+    public void onError(Exception ex) {
+        Gdx.app.log("onError", ex.getMessage());
+        System.out.println("onError.....: " + ex.getMessage());
+    }
+
+    public void setAdapter(ICallbackAdapter adapter) {
+        this.adapter = adapter;
     }
 }
 

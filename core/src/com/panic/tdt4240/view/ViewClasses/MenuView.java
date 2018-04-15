@@ -48,17 +48,19 @@ public class MenuView extends AbstractView {
         ButtonStyle = new TextButton.TextButtonStyle();
 
         ButtonStyle.font = font;
-        ButtonStyle.up = skin.getDrawable("button-up");
-        ButtonStyle.down = skin.getDrawable("button-down");
+        ButtonStyle.up = skin.getDrawable("button_up");
+        ButtonStyle.down = skin.getDrawable("button_down");
 
         createGameBtn = new TextButton("Create New Game", ButtonStyle);
         joinGameBtn = new TextButton("Join Game", ButtonStyle);
         settingsBtn = new TextButton("Settings", ButtonStyle);
 
-        Label label = new Label(PanicGame.TITLE,skin);
+        Label title = new Label(PanicGame.TITLE,skin);
+        Label fullTitle = new Label(PanicGame.FULL_TITLE,skin);
 
         table.setFillParent(true);
-        table.add(label).top().padBottom(60);
+        table.add(title).top().padBottom(10);
+        table.row().center(); table.add(fullTitle);
         table.center();
         table.row();
         table.add(createGameBtn).width(200).height(50).pad(20);
@@ -89,11 +91,21 @@ public class MenuView extends AbstractView {
                 state.handleInput(3);
             }
         });
-
-
         stage.addActor(table);
 
         renderer = Renderer.getInstance();
+    }
+
+    /**
+     * A method to be called from MenuState to tell the view that it's waiting for a connection.
+     * @param isConnecting
+     */
+    public void isConnecting(boolean isConnecting){
+        if(isConnecting){
+            //TODO: Set a "Connecting to server" message or spinner or something
+        }else{
+            //TODO: Unset the message.
+        }
     }
 
     // TODO: legge inn input
@@ -105,9 +117,11 @@ public class MenuView extends AbstractView {
         renderer.sb.end();
     }
 
+
     public void dispose(){
         renderer.dispose();
         font.dispose();
+        stage.dispose();
     }
 
 

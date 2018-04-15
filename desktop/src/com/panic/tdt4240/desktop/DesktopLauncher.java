@@ -7,6 +7,8 @@ import com.panic.tdt4240.PanicGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.height = 750;
+		config.width = 451;
 		new LwjglApplication(new PanicGame(), config);
 	}
 }

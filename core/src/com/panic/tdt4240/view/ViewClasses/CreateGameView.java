@@ -1,6 +1,7 @@
 package com.panic.tdt4240.view.ViewClasses;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -33,7 +34,7 @@ public class CreateGameView extends AbstractView {
     private Table table;
     private Texture bg;
     private TextButton exitToMainMenuBtn;
-    private String lobbyName;
+    private Renderer renderer;
 
     private TextField in_LobbyName;
     private SelectBox<String> in_mapID;
@@ -41,19 +42,20 @@ public class CreateGameView extends AbstractView {
 
     public CreateGameView(CreateGameState cgState) {
         super(cgState);
+        renderer = Renderer.getInstance();
 
         bg = new Texture("misc/background.png");
-        cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
+        cam.setToOrtho(false, PanicGame.WIDTH, PanicGame.HEIGHT);
         stage = new Stage();
         table = new Table();
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
-        btnAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
+        btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         btnStyle = new TextButton.TextButtonStyle();
         btnStyle.font = font;
-        btnStyle.up = skin.getDrawable("button_up");
-        btnStyle.down = skin.getDrawable("button_up");
+        btnStyle.up = skin.getDrawable("button-up");
+        btnStyle.down = skin.getDrawable("button-up");
 
         table.setFillParent(true);
         table.center();
@@ -61,21 +63,25 @@ public class CreateGameView extends AbstractView {
 
         TextField.TextFieldStyle textStyle = new TextField.TextFieldStyle();
         textStyle.font = font;
+        textStyle.fontColor = Color.WHITE;
 
         in_LobbyName = new TextField("Set lobby name", textStyle);
-        table.add(in_LobbyName).center().top().pad(30); table.row();
+        table.add(in_LobbyName).center().top().pad(30);
+        table.row();
 
 
-        String[] mapIDs = {"test", "01"};
+        String[] mapIDs = {"test", "not a test"};
 
         //FIXME
         SelectBox.SelectBoxStyle boxStyle = new SelectBox.SelectBoxStyle();
-        boxStyle.font=font;
-        in_mapID = new SelectBox(skin);
+        boxStyle.font = font;
+        boxStyle.fontColor = new Color(1,1,1,0.75f);
+        in_mapID = new SelectBox<>(skin);
         in_mapID.setItems(mapIDs);
 
         String[] max_players = {"2", "3", "4", "5", "6"};
-        in_maxPlayers = new SelectBox(skin); in_maxPlayers.setItems(max_players);
+        in_maxPlayers = new SelectBox<>(skin);
+        in_maxPlayers.setItems(max_players);
 
         exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
         exitToMainMenuBtn.addListener(new ChangeListener() {
@@ -85,9 +91,9 @@ public class CreateGameView extends AbstractView {
             }
         });
 
-        table.add(in_LobbyName).center().padTop(PanicGame.HEIGHT/9).row();
-        table.add(in_mapID).center().padTop(PanicGame.HEIGHT/8).row();
-        table.add(in_maxPlayers).center().padTop(PanicGame.HEIGHT/8).row();
+        table.add(in_LobbyName).center().padTop(PanicGame.HEIGHT / 9).row();
+        table.add(in_mapID).center().padTop(PanicGame.HEIGHT / 8).row();
+        table.add(in_maxPlayers).center().padTop(PanicGame.HEIGHT / 8).row();
 
         // TODO: a button for text input and direct connection to a game lobby?
 
@@ -101,23 +107,28 @@ public class CreateGameView extends AbstractView {
         // TODO: display list of settings, previews... etc.
     }
 
-    public void handleInput(Object o){
-        if (o.getClass() == String.class){
+    public void handleInput(Object o) {
+        if (o.getClass() == String.class) {
 
         }
     }
 
-    public void render(){
-
+    public void render() {
+        renderer.sb.setProjectionMatrix(cam.combined);
+        renderer.sb.begin();
+        renderer.sb.draw(bg, 0, 0, PanicGame.WIDTH, PanicGame.HEIGHT);
+        stage.draw();
+        renderer.sb.end();
     }
 
-    public void dispose(){
+    public void dispose() {
         stage.dispose();
         btnAtlas.dispose();
         font.dispose();
         skin.dispose();
     }
-
+}
+/*
     public class MyTextInputListener implements Input.TextInputListener {
         @Override
         public void input (String text) {
@@ -127,4 +138,4 @@ public class CreateGameView extends AbstractView {
         public void canceled () {
         }
     }
-}
+*/

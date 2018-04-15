@@ -28,9 +28,11 @@ public class GameListState extends State {
        
         // load available games from master server - can be done with updateLobbyList
         /** TESTING {LobbyName, playerCount, maxPlayers, lobbyID} */
-        String[] data = {"testing", "1", "4", "0"};
-        lobbyListData.add(data);
-        Connection.getInstance().getAllLobbies();
+//        String[] data = {"testing", "1", "4", "0"};
+//        lobbyListData.add(data);
+        updateLobbyList();
+        System.out.println(lobbies.size());
+        System.out.println(lobbyListData.size());
 /*        Lobby l1 = new Lobby(2, "ENGLISH", 0, "TEST");
         Lobby l2 = new Lobby(3, "MOTHERFUCKER", 1, "TEST");
         Lobby l3 = new Lobby(4, "DO YOU SPEAK IT?!", 2, "TEST");
@@ -61,7 +63,7 @@ public class GameListState extends State {
             if ((int) o == -1) gsm.reset();  // exit to main menu
         }
         if ( o.getClass() == String.class){  // lobbyID is still a string
-            if ((int) o >= 0){ // lobbyID entered
+            if ((Integer) o >= (Integer) 0){ // lobbyID entered
                 Connection.getInstance().connectToLobby((int) o);
             }
             try{    // error handling
@@ -89,6 +91,8 @@ public class GameListState extends State {
     public void dispose() { view.dispose(); }
 
     /**
+     * FIXME: Note to self (vww): do NOT touch. No touchies. Bad.
+     *
      GET_LOBBIES:LobbyName1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
      ':'    - remove
      '&'    - separate lobbies

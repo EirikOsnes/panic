@@ -50,11 +50,17 @@ public class MenuState extends State {
             System.out.println("Settings...");
         }
 
-        // TESTING
-        //        testLobby(gsm);
+        // TESTING: forcibly push a state on the gsm stack
+
     }
 
     /** FOR TESTING VIEWS **/
+
+    private void testList(GameStateManager gsm){
+        gsm.push(new GameListState(gsm));
+        System.out.println("list state created");
+    }
+
     private void testLobby(GameStateManager gsm){
         gsm.set(new GameLobbyState(gsm, new Lobby(4, "test lobby", 0, "M-001")));
         System.out.println("lobby state created");

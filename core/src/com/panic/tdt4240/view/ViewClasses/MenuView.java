@@ -42,7 +42,7 @@ public class MenuView extends AbstractView {
         table = new Table();
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
-        buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
+        buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
 
         ButtonStyle = new TextButton.TextButtonStyle();
@@ -121,6 +121,7 @@ public class MenuView extends AbstractView {
     public void dispose(){
         renderer.dispose();
         font.dispose();
+        stage.dispose();
     }
 
 

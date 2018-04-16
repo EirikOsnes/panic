@@ -158,7 +158,6 @@ public class RunEffectsView extends AbstractView {
     //TODO: All of the following methods should add animation to a stack
 
     public void moveVehicle(String vehicleID, String asteroidID) {
-        //TODO: Animate the moving of the vehicle
         Actor actor = vehicleImages.get(vehicleID);
         Image asteroid = asteroidImages.get(asteroidID);
         Vector2 vec = MapMethods.asteroidPositions(asteroid.getX(), asteroid.getY(), asteroid.getWidth(),

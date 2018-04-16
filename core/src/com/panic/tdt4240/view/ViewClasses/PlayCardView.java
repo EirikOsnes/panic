@@ -46,8 +46,6 @@ public class PlayCardView extends AbstractView{
 
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
-        gameInstance = GameInstance.getInstance();
-        map = gameInstance.getMap();
         sr = new ShapeRenderer();
         sr.setColor(1,1,1,0);
         sr.setAutoShapeType(true);

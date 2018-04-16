@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.GameListState;
+import com.panic.tdt4240.util.GlobalConstants;
 
 /**
  * Created by victor on 12.03.2018.
@@ -44,6 +45,8 @@ public class GameListView extends AbstractView {
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         table = new Table();
         font = new BitmapFont();
+        float textScale = GlobalConstants.GET_TEXT_SCALE();
+        font.getData().scale(textScale);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         btnStyle = new TextButton.TextButtonStyle();
@@ -63,7 +66,7 @@ public class GameListView extends AbstractView {
                     listState.handleInput(data[1]); // lobbyID
                 }
             });
-            table.add(button).width(300); table.row();
+            table.add(button).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40); table.row();
         }
         /**/
 
@@ -79,7 +82,7 @@ public class GameListView extends AbstractView {
 
         // TODO: a button for text input and direct connection to a game lobby?
 
-        table.add(exitToMainMenuBtn).row();
+        table.add(exitToMainMenuBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
 
         scroller = new ScrollPane(table);
         scroller.setScrollingDisabled(true, false);

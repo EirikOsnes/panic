@@ -1,5 +1,6 @@
 package com.panic.tdt4240.view.ViewClasses;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.MenuState;
+import com.panic.tdt4240.util.GlobalConstants;
 
 /**
  * Created by victor on 05.03.2018.
@@ -35,9 +37,12 @@ public class MenuView extends AbstractView {
     public MenuView(final MenuState menuState) {
         super(menuState);
         background = new Texture("misc/background.png");
-        cam.setToOrtho(false,PanicGame.WIDTH,PanicGame.HEIGHT);
+        cam.setToOrtho(false,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         table = new Table();
         font = new BitmapFont();
+        float textScale = GlobalConstants.GET_TEXT_SCALE();
+
+        font.getData().scale(textScale);
         buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
 
@@ -50,20 +55,25 @@ public class MenuView extends AbstractView {
         createGameBtn = new TextButton("Create New Game", ButtonStyle);
         joinGameBtn = new TextButton("Join Game", ButtonStyle);
         settingsBtn = new TextButton("Settings", ButtonStyle);
+        Label.LabelStyle style = new Label.LabelStyle();
+        style.font = font;
+        Label title = new Label(PanicGame.TITLE,style);
+        Label fullTitle = new Label(PanicGame.FULL_TITLE,style);
 
-        Label title = new Label(PanicGame.TITLE,skin);
-        Label fullTitle = new Label(PanicGame.FULL_TITLE,skin);
+        float width = Gdx.graphics.getHeight()/2;
+        float height = Gdx.graphics.getHeight()/15;
+        float padding = Gdx.graphics.getHeight()/40;
 
         table.setFillParent(true);
-        table.add(title).top().padBottom(10);
+        table.add(title).top().padBottom(padding/2);
         table.row().center(); table.add(fullTitle);
         table.center();
         table.row();
-        table.add(createGameBtn).width(200).height(50).pad(20);
+        table.add(createGameBtn).width(width).height(height).pad(padding);
         table.row();
-        table.add(joinGameBtn).width(200).height(50).pad(20);
+        table.add(joinGameBtn).width(width).height(height).pad(padding);
         table.row();
-        table.add(settingsBtn).width(200).height(50).pad(20);
+        table.add(settingsBtn).width(width).height(height).pad(padding);
         table.background(new TextureRegionDrawable(new TextureRegion(background)));
         table.pack();
 

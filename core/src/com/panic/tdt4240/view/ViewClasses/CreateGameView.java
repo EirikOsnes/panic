@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.states.CreateGameState;
+import com.panic.tdt4240.util.GlobalConstants;
 
 /**
  * Created by victor on 12.03.2018.
@@ -31,7 +32,7 @@ public class CreateGameView extends AbstractView {
 
     private TextureAtlas btnAtlas;
     private Skin skin;
-    private BitmapFont font;
+    private BitmapFont font, boxFont;
     private TextButton.TextButtonStyle btnStyle, btnStyle2;
     private Table table;
     private Texture bg;
@@ -48,6 +49,11 @@ public class CreateGameView extends AbstractView {
         cam.setToOrtho(false, PanicGame.WIDTH, PanicGame.HEIGHT);
         table = new Table();
         font = new BitmapFont();
+        boxFont = new BitmapFont();
+        font.setColor(Color.WHITE);
+        float textScale = GlobalConstants.GET_TEXT_SCALE();
+        font.getData().scale(textScale);
+        boxFont.getData().scale(textScale*2);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         btnStyle = new TextButton.TextButtonStyle();
@@ -67,9 +73,7 @@ public class CreateGameView extends AbstractView {
 
         TextField.TextFieldStyle textStyle = new TextField.TextFieldStyle();
         textStyle.font = font;
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            textStyle.font.getData().scale(SCREEN_HEIGHT/ SCREEN_WIDTH * 1.5f);
-        }
+
         textStyle.fontColor = skin.getColor("white");
 
         in_LobbyName = new TextField("Set lobby name", textStyle);
@@ -99,27 +103,28 @@ public class CreateGameView extends AbstractView {
         String[] mapIDs = {"test", "not a test"};
 
         // FIXME
-        SelectBox.SelectBoxStyle boxStyle = new SelectBox.SelectBoxStyle();
-        boxStyle.font = font;
-        boxStyle.fontColor = new Color(1,1,1,0.75f);
+        SelectBox.SelectBoxStyle boxStyle = new SelectBox.SelectBoxStyle(skin.get(SelectBox.SelectBoxStyle.class));
+        boxStyle.font = boxFont;
 
         in_mapID = new SelectBox<>(skin);
+        in_mapID.setStyle(boxStyle);
         in_mapID.setName("Select map");
         in_mapID.setItems(mapIDs);
+        in_mapID.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE()*2);
         in_mapID.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 cgState.setMapID(in_mapID.getSelected());
             }
         });
-        in_mapID.scaleBy(1.3f);
         in_mapID.pack();
 
         String[] max_players = {"2", "3", "4", "5", "6", "7", "8"};
         in_maxPlayers = new SelectBox<>(skin);
+        in_maxPlayers.setStyle(boxStyle);
         in_maxPlayers.setName("Max number of players");
-        in_maxPlayers.setScale(1.3f);
         in_maxPlayers.setItems(max_players);
+        in_maxPlayers.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE()*2);
         in_maxPlayers.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -168,13 +173,13 @@ public class CreateGameView extends AbstractView {
         });
         exitToMainMenuBtn.pack();
 
-        table.add(in_LobbyName).top().padTop(PanicGame.HEIGHT / 16).row();
-        table.add(in_mapID).padTop(PanicGame.HEIGHT / 16).row();
-        table.add(in_maxPlayers).padTop(PanicGame.HEIGHT / 16).row();
+        table.add(in_LobbyName).top().padTop(Gdx.graphics.getHeight() / 16).row();
+        table.add(in_mapID).padTop(Gdx.graphics.getHeight() / 16).row();
+        table.add(in_maxPlayers).padTop(Gdx.graphics.getHeight() / 16).row();
 
         // TODO: a button for text input and direct connection to a game lobby?
-        table.add(createLobbyBtn).pad(30).row();
-        table.add(exitToMainMenuBtn).pad(30).row();
+        table.add(createLobbyBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
+        table.add(exitToMainMenuBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
 
         table.pack();
 
@@ -193,6 +198,7 @@ public class CreateGameView extends AbstractView {
         stage.dispose();
         bg.dispose();
         font.dispose();
+        boxFont.dispose();
         skin.dispose();
         btnAtlas.dispose();
     }

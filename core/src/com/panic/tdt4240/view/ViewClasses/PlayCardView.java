@@ -60,7 +60,6 @@ public class PlayCardView extends AbstractView{
         amountCards = gameInstance.getPlayer().getHand().size();
         cardButtons = new ArrayList<>(amountCards);
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        Gdx.input.setInputProcessor(stage);
         table = new Table();
 
         table.setWidth(Gdx.graphics.getWidth());

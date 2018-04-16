@@ -38,7 +38,6 @@ public class MenuView extends AbstractView {
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,PanicGame.WIDTH,PanicGame.HEIGHT);
         table = new Table();
-        Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);

@@ -29,7 +29,6 @@ public class GameListView extends AbstractView {
 
     private Renderer renderer;
     private ScrollPane scroller;
-    private Stage stage;
     private TextureAtlas btnAtlas;
     private Skin skin;
     private BitmapFont font;
@@ -47,9 +46,7 @@ public class GameListView extends AbstractView {
 
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
-        stage = new Stage();
         table = new Table();
-        Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         btnAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);

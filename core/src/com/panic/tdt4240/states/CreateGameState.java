@@ -5,7 +5,6 @@ import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.CreateGameView;
-import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 /**
  * Created by magnus on 12.03.2018.
@@ -28,7 +27,20 @@ public class CreateGameState extends State {
     /**
      * Method to run the onClick for the create click
      */
-    private void createButtonClick(){
+
+    public void setMaxPlayerCount(int maxPlayerCount) {
+        this.maxPlayerCount = maxPlayerCount;
+    }
+
+    public void setMapID(String mapID) {
+        this.mapID = mapID;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void createButtonClick(){
         //TODO: Actually set the maxPlayerCount, mapID and name parameters.
         connection.createLobby(maxPlayerCount,mapID,name);
     }
@@ -36,7 +48,9 @@ public class CreateGameState extends State {
 
     @Override
     public void handleInput(Object o) {
-
+        if ((int) o == -1){
+            gsm.reset();
+        }
     }
 
     @Override

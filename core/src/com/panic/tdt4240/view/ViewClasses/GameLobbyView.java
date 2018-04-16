@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -20,7 +19,6 @@ import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.states.GameLobbyState;
 import com.panic.tdt4240.util.PlayerNameGenerator;
-import com.panic.tdt4240.view.Renderer;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -31,8 +29,6 @@ import java.util.Stack;
 
 public class GameLobbyView extends AbstractView {
 
-
-    private Renderer renderer;
     private Table table;
     private TextureAtlas buttonAtlas;
     private Texture bg;
@@ -47,7 +43,7 @@ public class GameLobbyView extends AbstractView {
 
     private ArrayList<Player> players;
 
-    public GameLobbyView(GameLobbyState lobbyState) {
+    public GameLobbyView(final GameLobbyState lobbyState) {
         super(lobbyState);
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
@@ -61,13 +57,13 @@ public class GameLobbyView extends AbstractView {
 
         playerBtnStyle = new TextButton.TextButtonStyle();
         playerBtnStyle.font = font;
-        playerBtnStyle.up = skin.getDrawable("button_up");
-        playerBtnStyle.down = skin.getDrawable("button_up");
+        playerBtnStyle.up = skin.getDrawable("button-up");
+        playerBtnStyle.down = skin.getDrawable("button-up");
 
         exitBtnStyle = new TextButton.TextButtonStyle();
         exitBtnStyle.font = font;
-        exitBtnStyle.up = skin.getDrawable("button_up");
-        exitBtnStyle.down = skin.getDrawable("button_down");
+        exitBtnStyle.up = skin.getDrawable("button-up");
+        exitBtnStyle.down = skin.getDrawable("button-down");
 
         playerBtn = new TextButton("", playerBtnStyle);
         launchGameBtn = new TextButton("", exitBtnStyle);
@@ -76,19 +72,19 @@ public class GameLobbyView extends AbstractView {
         playerBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput( 0);
+                lobbyState.handleInput( 0);
             }
         });
         launchGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput( 0);
+                lobbyState.handleInput( 1);
             }
         });
         exitBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput( 1);
+                lobbyState.handleInput( -1);
             }
         });
 
@@ -121,8 +117,6 @@ public class GameLobbyView extends AbstractView {
         table.pack();
 
         stage.addActor(table);
-
-        renderer = Renderer.getInstance();
     }
 
     public void playerJoined(Player p){
@@ -132,17 +126,16 @@ public class GameLobbyView extends AbstractView {
 
 
     public void render(){
-        renderer.sb.setProjectionMatrix(cam.combined);
-        renderer.sb.begin();
-        renderer.sb.draw(bg,0,0,PanicGame.WIDTH,PanicGame.HEIGHT);
         stage.draw();
-        renderer.sb.end();
     }
 
     public void dispose(){
-        renderer.dispose();
         font.dispose();
         stage.dispose();
+        bg.dispose();
+        font.dispose();
+        skin.dispose();
+        buttonAtlas.dispose();
     }
 
     private void preparePlayerList(){

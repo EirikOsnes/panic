@@ -30,13 +30,12 @@ public class GameResultsState extends State {
             gsm.pop(); // to GameLobbyState
             if (originalNumOfPlayers != numOfPlayers) {
                 // TODO : some players left the lobby. Update/replace lobby?
-                dispose();
             }
             else {
                 gsm.pop(); // to GameLobbyState
             }
         }
-    else if (o== (Integer) 1){ // back to main menu. Reset entirely.
+    else if ((int) o== -1){ // back to main menu. Reset entirely.
             gsm.reset();
         }
     }

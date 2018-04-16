@@ -9,6 +9,8 @@ import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.XMLParser;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
+import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -28,7 +30,6 @@ public class LoadGameState extends State {
         gi = GameInstance.getInstance();
         connection = Connection.getInstance();
         setUpGameInstance();
-        checkForHistory();
     }
 
     /**
@@ -90,6 +91,12 @@ public class LoadGameState extends State {
     }
 
     @Override
+    public AbstractView getView() {
+        return null;
+        //TODO: Return view when implemented!
+    }
+
+    @Override
     protected void setUpAdapter() {
         callbackAdapter = new LoadGameAdapter();
     }
@@ -105,9 +112,7 @@ public class LoadGameState extends State {
                     parseGameInfo(strings);
                     break;
                 case "GET_LOG":
-                    for (ArrayList<String[]> turns: GameInstance.getInstance().readTurns(strings[1])) {
-                        GameInstance.getInstance().playTurn(turns);
-                    }
+                    GameInstance.getInstance().playTurns(strings[1]);
                     break;
 
             }
@@ -125,6 +130,9 @@ public class LoadGameState extends State {
             }
 
             setGIValues(vehicles, strings[2], strings[3]);
+            if(strings.length>4){
+                GameInstance.getInstance().playTurns(strings[4]);
+            }
 
         }
     }

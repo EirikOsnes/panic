@@ -2,6 +2,7 @@ package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
@@ -9,6 +10,8 @@ import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.util.MapConnections;
+import com.panic.tdt4240.models.Vehicle;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
@@ -39,6 +42,10 @@ public class PlayCardState extends State {
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
     private GameInstance gameInstance;
+    private boolean isLockedIn = false;
+
+//TODO Når kort deselectes bør rekkefølge respekteres: fjern position of Integer
+
     private MapConnections mapConnections;
     private float timeLeft;
     private boolean enableTimer;
@@ -62,7 +69,8 @@ public class PlayCardState extends State {
         }
         mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         playView = new PlayCardView(this);
-        setTimeLeft(30f);
+        readyForNewTurn();
+
     }
 
     /**
@@ -214,6 +222,8 @@ public class PlayCardState extends State {
         ArrayList<String[]> result = getCardsAndTargets();
         //TODO Finish the view, change to the next state, send the result...
         //return result;
+        isLockedIn = true;
+        Connection.getInstance().sendTurn(result);
     }
 
     /**
@@ -286,6 +296,18 @@ public class PlayCardState extends State {
     }
 
     @Override
+    public AbstractView getView() {
+        return playView;
+    }
+
+    /**
+     * Tell the server that you are ready to start a new turn
+     */
+    private void readyForNewTurn(){
+        Connection.getInstance().sendPlayCardState();
+    }
+
+    @Override
     protected void setUpAdapter() {
         callbackAdapter = new PlayCardAdapter();
     }
@@ -294,7 +316,21 @@ public class PlayCardState extends State {
 
         @Override
         public void onMessage(String message) {
+            String[] strings = message.split(":");
 
+            switch (strings[0]){
+                case "TURN_END":
+                    if(!isLockedIn){
+                        finishRound();
+                    }
+                    gsm.push(new RunEffectsState(gsm));
+                    break;
+                case "BEGIN_TURN":
+                    //setTimeLeft(Float.parse(strings[1]));
+                    //TODO: Start the timer
+                    break;
+
+            }
         }
     }
 

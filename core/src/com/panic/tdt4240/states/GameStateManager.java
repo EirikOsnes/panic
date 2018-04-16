@@ -21,17 +21,20 @@ public class GameStateManager {
     public void push(State state){
         states.push(state);
         setAdapter();
+        setInputProcessor();
     }
 
     public void pop(){
         states.pop().dispose();
         setAdapter();
+        setInputProcessor();
     }
 
     public void set(State state){
         states.pop().dispose();
         states.push(state);
         setAdapter();
+        setInputProcessor();
     }
 
     public void update(float dt){
@@ -49,11 +52,15 @@ public class GameStateManager {
 
     public void reset(){
         clear();
-        states.push(new MenuState(this));
+        push(new MenuState(this));
     }
 
     private void setAdapter() {
         Connection.getInstance().setAdapter(states.peek().callbackAdapter);
+    }
+
+    private void setInputProcessor() {
+        states.peek().getView().setInputProcessor();
     }
 
 }

@@ -1,12 +1,11 @@
 package com.panic.tdt4240.states;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.CreateGameView;
-
-import java.util.ArrayList;
+import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 /**
  * Created by magnus on 12.03.2018.
@@ -56,6 +55,11 @@ public class CreateGameState extends State {
     }
 
     @Override
+    public AbstractView getView() {
+        return view;
+    }
+
+    @Override
     protected void setUpAdapter() {
         callbackAdapter = new CreateGameAdapter();
     }
@@ -78,7 +82,7 @@ public class CreateGameState extends State {
         private void parseLobby(String[] strings){
             Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),strings[2],Integer.parseInt(strings[3]),strings[4]);
             System.out.println("Lobby parsed: " + myLobby.toString());
-            gsm.push(new GameLobbyState(gsm,myLobby));
+            gsm.push(new GameLobbyState(gsm,myLobby.getLobbyID()));
         }
     }
 }

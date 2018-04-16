@@ -35,7 +35,6 @@ public class PlayCardView extends AbstractView{
 
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
-    private Stage stage;
     private Table table;
     private TextButton cardInfo;
     private Skin skin;
@@ -54,7 +53,6 @@ public class PlayCardView extends AbstractView{
         int amountCards = ((PlayCardState) state).getHandSize();
 
         cardButtons = new ArrayList<>(amountCards);
-        stage = new Stage();
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.input.setInputProcessor(stage);
         table = new Table();

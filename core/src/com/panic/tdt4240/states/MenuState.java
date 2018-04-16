@@ -9,7 +9,9 @@ import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.XMLParser;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.MenuView;
+import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -62,7 +64,7 @@ public class MenuState extends State {
     }
 
     private void testLobby(GameStateManager gsm){
-        gsm.set(new GameLobbyState(gsm, new Lobby(4, "test lobby", 0, "M-001")));
+        gsm.set(new GameLobbyState(gsm, 1));
         System.out.println("lobby state created");
     }
 
@@ -149,6 +151,11 @@ public class MenuState extends State {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    public AbstractView getView() {
+        return menuView;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.panic.tdt4240.states;
 
 import com.panic.tdt4240.connection.Connection;
-import com.panic.tdt4240.view.Renderer;
 
 import java.util.Stack;
 
@@ -11,11 +10,9 @@ import java.util.Stack;
 
 public class GameStateManager {
     private Stack<State> states;
-    private Renderer renderer;
 
     public GameStateManager(){
         states = new Stack<>();
-        renderer = Renderer.getInstance();
     }
 
     public void push(State state){

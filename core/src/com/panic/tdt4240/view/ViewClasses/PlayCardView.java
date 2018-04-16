@@ -23,7 +23,6 @@ import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.PlayCardState;
-import com.panic.tdt4240.view.Renderer;
 
 import java.util.ArrayList;
 
@@ -34,7 +33,6 @@ import java.util.ArrayList;
 
 public class PlayCardView extends AbstractView{
 
-    private Renderer renderer;
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Stage stage;
@@ -55,7 +53,6 @@ public class PlayCardView extends AbstractView{
         super(playCardState);
         gameInstance = GameInstance.getInstance();
         map = gameInstance.getMap();
-        renderer = Renderer.getInstance();
         sr = new ShapeRenderer();
         sr.setColor(1,1,1,0);
         sr.setAutoShapeType(true);
@@ -277,7 +274,6 @@ public class PlayCardView extends AbstractView{
     }
 
     public void render(){
-        renderer.sb.setProjectionMatrix(cam.combined);
         sr.begin(ShapeRenderer.ShapeType.Filled);
         ArrayList<Vector2[]> lines = ((PlayCardState) state).getConnections();
         for(Vector2[] points : lines){
@@ -291,7 +287,6 @@ public class PlayCardView extends AbstractView{
         sr.dispose();
         stage.dispose();
         //background.dispose();
-        renderer.dispose();
     }
 //TODO Større tekst
 

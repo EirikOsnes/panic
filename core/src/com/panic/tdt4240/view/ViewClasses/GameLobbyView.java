@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -20,7 +19,6 @@ import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.states.GameLobbyState;
 import com.panic.tdt4240.util.PlayerNameGenerator;
-import com.panic.tdt4240.view.Renderer;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -31,8 +29,6 @@ import java.util.Stack;
 
 public class GameLobbyView extends AbstractView {
 
-
-    private Renderer renderer;
     private Table table;
     private TextureAtlas buttonAtlas;
     private Texture bg;
@@ -124,8 +120,6 @@ public class GameLobbyView extends AbstractView {
         table.pack();
 
         stage.addActor(table);
-
-        renderer = Renderer.getInstance();
     }
 
     public void playerJoined(Player p){
@@ -135,15 +129,10 @@ public class GameLobbyView extends AbstractView {
 
 
     public void render(){
-        renderer.sb.setProjectionMatrix(cam.combined);
-        renderer.sb.begin();
-        renderer.sb.draw(bg,0,0,PanicGame.WIDTH,PanicGame.HEIGHT);
         stage.draw();
-        renderer.sb.end();
     }
 
     public void dispose(){
-        renderer.dispose();
         font.dispose();
         stage.dispose();
     }

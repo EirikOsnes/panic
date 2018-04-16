@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.MenuState;
-import com.panic.tdt4240.view.Renderer;
 
 /**
  * Created by victor on 05.03.2018.
@@ -24,7 +23,6 @@ import com.panic.tdt4240.view.Renderer;
 
 public class MenuView extends AbstractView {
 
-    private Renderer renderer;
     private Stage stage;
     private Button createGameBtn, joinGameBtn, settingsBtn;
     private TextureAtlas buttonAtlas;
@@ -93,7 +91,6 @@ public class MenuView extends AbstractView {
         });
         stage.addActor(table);
 
-        renderer = Renderer.getInstance();
     }
 
     /**
@@ -110,16 +107,11 @@ public class MenuView extends AbstractView {
 
     // TODO: legge inn input
     public void render() {
-        renderer.sb.setProjectionMatrix(cam.combined);
-        renderer.sb.begin();
-        renderer.sb.draw(background,0,0,PanicGame.WIDTH,PanicGame.HEIGHT);
         stage.draw();
-        renderer.sb.end();
     }
 
 
     public void dispose(){
-        renderer.dispose();
         font.dispose();
         stage.dispose();
     }

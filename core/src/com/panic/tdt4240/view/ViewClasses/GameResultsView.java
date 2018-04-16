@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.panic.tdt4240.view.Renderer;
 
 import java.util.ArrayList;
 
@@ -28,7 +27,6 @@ import java.util.ArrayList;
 
 public class GameResultsView extends AbstractView {
 
-    private Renderer renderer;
     private ArrayList<TextButton> textBtns;
     private Stage stage;
     private Skin skin;
@@ -41,7 +39,6 @@ public class GameResultsView extends AbstractView {
 
     public GameResultsView(final GameResultsState resultsState, ArrayList<Player> deadPlayers) {
         super(resultsState);
-        renderer = Renderer.getInstance();
         Gdx.gl.glClearColor(0,0,0,0);
 
         bg = new Texture("misc/background.png");
@@ -125,18 +122,13 @@ public class GameResultsView extends AbstractView {
     }
 
     public void render(){
-        renderer.sb.setProjectionMatrix(cam.combined);
-        renderer.sb.begin();
-        renderer.sb.draw(bg, 0, 0, PanicGame.WIDTH, PanicGame.HEIGHT);
         stage.draw();
 /*        font.draw(renderer.sb, "Ha! The worst of you don't deserve \n " +
                 "mentioning because YOU SUCK.",
                 PanicGame.HEIGHT/2, PanicGame.WIDTH/2); /**/
-        renderer.sb.end();
     }
 
     public void dispose(){
-        renderer.dispose();
         font.dispose();
         stage.dispose();
     }

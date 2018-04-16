@@ -7,12 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -22,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.CreateGameState;
-import com.panic.tdt4240.view.Renderer;
+
 /**
  * Created by victor on 12.03.2018.
  */
@@ -37,7 +33,6 @@ public class CreateGameView extends AbstractView {
     private Table table;
     private Texture bg;
     private TextButton exitToMainMenuBtn;
-    private Renderer renderer;
 
     private TextField in_LobbyName;
     private SelectBox<String> in_mapID;
@@ -45,7 +40,6 @@ public class CreateGameView extends AbstractView {
 
     public CreateGameView(final CreateGameState cgState) {
         super(cgState);
-        renderer = Renderer.getInstance();
 
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH, PanicGame.HEIGHT);
@@ -155,12 +149,8 @@ public class CreateGameView extends AbstractView {
     }
 
     public void render() {
-        renderer.sb.setProjectionMatrix(cam.combined);
-        renderer.sb.begin();
-        renderer.sb.draw(bg, 0, 0, PanicGame.WIDTH, PanicGame.HEIGHT);
         stage.act();
         stage.draw();
-        renderer.sb.end();
     }
 
     public void dispose() {

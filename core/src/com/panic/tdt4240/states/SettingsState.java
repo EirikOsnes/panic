@@ -1,6 +1,7 @@
 package com.panic.tdt4240.states;
 
 import com.panic.tdt4240.connection.ICallbackAdapter;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 import com.panic.tdt4240.view.ViewClasses.SettingsView;
 
@@ -54,7 +55,7 @@ public class SettingsState extends State {
     }
 
     @Override
-    public PlayCardView getView() {
+    public AbstractView getView() {
         return view;
     }
 

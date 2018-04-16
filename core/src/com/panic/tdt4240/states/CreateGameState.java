@@ -3,6 +3,7 @@ package com.panic.tdt4240.states;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.CreateGameView;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
@@ -54,7 +55,7 @@ public class CreateGameState extends State {
     }
 
     @Override
-    public PlayCardView getView() {
+    public AbstractView getView() {
         return view;
     }
 

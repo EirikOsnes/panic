@@ -1,9 +1,8 @@
 package com.panic.tdt4240.states;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
 
 /**
  * Created by magnus on 12.03.2018.
@@ -25,5 +24,6 @@ public abstract class State {
     public abstract void update(float dt);
     public abstract void render();
     public abstract void dispose();
+    public abstract AbstractView getView();
 
 }

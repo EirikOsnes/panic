@@ -9,6 +9,7 @@ import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.models.Vehicle;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
@@ -281,6 +282,11 @@ public class PlayCardState extends State {
     @Override
     public void dispose() {
         playView.dispose();
+    }
+
+    @Override
+    public AbstractView getView() {
+        return playView;
     }
 
     /**

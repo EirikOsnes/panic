@@ -10,9 +10,13 @@ import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.ModelHolder;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
+import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 import com.panic.tdt4240.view.ViewClasses.RunEffectsView;
 
 import java.util.ArrayList;
+
+import javax.swing.text.View;
 
 /**
  * State for running through the cards gotten from the server.
@@ -52,6 +56,11 @@ public class RunEffectsState extends State implements EventListener {
     public void dispose() {
         runEffectsView.dispose();
         EventBus.getInstance().removeListener(this);
+    }
+
+    @Override
+    public AbstractView getView() {
+        return runEffectsView;
     }
 
     @Override

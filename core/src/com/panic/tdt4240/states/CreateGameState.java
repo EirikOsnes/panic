@@ -1,12 +1,10 @@
 package com.panic.tdt4240.states;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.view.ViewClasses.CreateGameView;
-
-import java.util.ArrayList;
+import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 /**
  * Created by magnus on 12.03.2018.
@@ -53,6 +51,11 @@ public class CreateGameState extends State {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    public PlayCardView getView() {
+        return view;
     }
 
     @Override

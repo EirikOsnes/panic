@@ -5,7 +5,9 @@ import com.badlogic.gdx.Input;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.GameLobbyView;
+import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
 
@@ -88,6 +90,11 @@ public class GameLobbyState extends State {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    public AbstractView getView() {
+        return view;
     }
 
     @Override

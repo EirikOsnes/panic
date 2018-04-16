@@ -27,7 +27,6 @@ import com.panic.tdt4240.states.GameListState;
 public class GameListView extends AbstractView {
 
     private ScrollPane scroller;
-    private Stage stage;
     private TextureAtlas btnAtlas;
     private Skin skin;
     private BitmapFont font;
@@ -43,9 +42,7 @@ public class GameListView extends AbstractView {
         super(listState);
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
-        stage = new Stage();
         table = new Table();
-        Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);

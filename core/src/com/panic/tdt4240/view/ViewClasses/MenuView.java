@@ -23,7 +23,7 @@ import com.panic.tdt4240.states.MenuState;
 
 public class MenuView extends AbstractView {
 
-    private Stage stage;
+
     private Button createGameBtn, joinGameBtn, settingsBtn;
     private TextureAtlas buttonAtlas;
     private Skin skin;
@@ -32,13 +32,11 @@ public class MenuView extends AbstractView {
     private Table table;
     private Texture background;
 
-    public MenuView(MenuState menuState) {
+    public MenuView(final MenuState menuState) {
         super(menuState);
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,PanicGame.WIDTH,PanicGame.HEIGHT);
-        stage = new Stage();
         table = new Table();
-        Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
@@ -72,21 +70,21 @@ public class MenuView extends AbstractView {
         createGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput( 1);
+                menuState.handleInput( 1);
             }
         });
 
         joinGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput(2);
+                menuState.handleInput(2);
             }
         });
 
         settingsBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput(3);
+                menuState.handleInput(3);
             }
         });
         stage.addActor(table);

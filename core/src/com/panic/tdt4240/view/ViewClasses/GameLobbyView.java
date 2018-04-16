@@ -47,7 +47,6 @@ public class GameLobbyView extends AbstractView {
         super(lobbyState);
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
-        Gdx.input.setInputProcessor(stage);
         table = new Table();
 
         font = new BitmapFont();

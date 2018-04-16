@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -15,8 +17,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.states.CreateGameState;
 
 /**
@@ -25,14 +29,13 @@ import com.panic.tdt4240.states.CreateGameState;
 
 public class CreateGameView extends AbstractView {
 
-    private Stage stage;
     private TextureAtlas btnAtlas;
     private Skin skin;
     private BitmapFont font;
-    private TextButton.TextButtonStyle btnStyle;
+    private TextButton.TextButtonStyle btnStyle, btnStyle2;
     private Table table;
     private Texture bg;
-    private TextButton exitToMainMenuBtn;
+    private TextButton createLobbyBtn, exitToMainMenuBtn;
 
     private TextField in_LobbyName;
     private SelectBox<String> in_mapID;
@@ -43,9 +46,7 @@ public class CreateGameView extends AbstractView {
 
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH, PanicGame.HEIGHT);
-        stage = new Stage();
         table = new Table();
-        Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
@@ -53,6 +54,11 @@ public class CreateGameView extends AbstractView {
         btnStyle.font = font;
         btnStyle.up = skin.getDrawable("button-up");
         btnStyle.down = skin.getDrawable("button-up");
+
+        btnStyle2 = new TextButton.TextButtonStyle();
+        btnStyle2.font=font;
+        btnStyle2.up = skin.getDrawable("button-up");
+        btnStyle2.down = skin.getDrawable("button-down");
 
         table.setFillParent(true);
         table.background(new TextureRegionDrawable(new TextureRegion(bg)));
@@ -121,13 +127,41 @@ public class CreateGameView extends AbstractView {
         });
         in_maxPlayers.pack();
 
+        createLobbyBtn = new TextButton("Create lobby", btnStyle2);
+        createLobbyBtn.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event,
+                                float x,
+                                float y){
+                System.out.println("shit is going on" + "\n"+x+"; "+y);
+/*                    Connection.getInstance().createLobby(
+                            Integer.valueOf(in_maxPlayers.getSelected()),
+                            in_mapID.getSelected(),
+                            in_LobbyName.getText()); /**/
+                cgState.createButtonClick();
+            }
+        });
+/*
+        createLobbyBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (!lobbyCreated) {
+                    lobbyCreated=true;
+                    Connection.getInstance().createLobby(
+                            Integer.valueOf(in_maxPlayers.getSelected()),
+                            in_mapID.getSelected(),
+                            in_LobbyName.getText());
+                }
+            }
+        });/**/
+        createLobbyBtn.pack();
 
         exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 cgState.handleInput(-1);
-                System.out.println("IS IT WORKING");
+//                System.out.println("IS IT WORKING");
             }
         });
         exitToMainMenuBtn.pack();
@@ -137,7 +171,7 @@ public class CreateGameView extends AbstractView {
         table.add(in_maxPlayers).padTop(PanicGame.HEIGHT / 16).row();
 
         // TODO: a button for text input and direct connection to a game lobby?
-
+        table.add(createLobbyBtn).pad(30).row();
         table.add(exitToMainMenuBtn).pad(30).row();
 
         table.pack();

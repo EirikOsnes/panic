@@ -19,16 +19,19 @@ import java.util.Stack;
  */
 
 public class MenuState extends State {
+    
+
+    MenuView menuView;
 
     public MenuState(GameStateManager gsm){
         super(gsm);
-        view = new MenuView(this);
-        ((MenuView) view).isConnecting(true);   //Tell the menu view that the connection is loading
+        menuView = new MenuView(this);
+        menuView.isConnecting(true); //Tell the menu view that the connection is loading
         if(Connection.getInstance().getConnectionID()== 0){
             Connection.getInstance().findConnectionID();
         }
         else{
-            ((MenuView) view).isConnecting(false);
+            menuView.isConnecting(false);
         }
     }
 
@@ -134,7 +137,7 @@ public class MenuState extends State {
 
     @Override
     public void render() {
-        view.render();
+        menuView.render();
     }
 
     @Override
@@ -158,7 +161,7 @@ public class MenuState extends State {
                     if(Connection.getInstance().getConnectionID()==0){
                         Connection.getInstance().setConnectionID(Integer.parseInt(strings[1]));
                         System.out.println("Received connection ID: "+strings[1]);
-                        ((MenuView) view).isConnecting(false);
+                        menuView.isConnecting(false);
                     }
                     break;
 

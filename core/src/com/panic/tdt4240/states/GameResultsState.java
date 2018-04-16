@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class GameResultsState extends State {
 
+    GameResultsView view;
     int originalNumOfPlayers;
     int numOfPlayers;
 

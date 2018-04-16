@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class CreateGameState extends State {
 
+    CreateGameView view;
     Connection connection;
     int maxPlayerCount;
     String mapID;

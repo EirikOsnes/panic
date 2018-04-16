@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class GameListState extends State {
 
+    GameListView view;
     ArrayList<String> lobbies;
 
     public GameListState(GameStateManager gsm){

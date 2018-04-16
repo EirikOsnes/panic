@@ -24,6 +24,7 @@ import static com.panic.tdt4240.models.Card.TargetType.VEHICLE;
 
 public class PlayCardState extends State {
     //H: 1794, W 1080
+    private PlayCardView playView;
     private Player player;
     private Map map;
     //Order of cards that are played
@@ -56,7 +57,7 @@ public class PlayCardState extends State {
         for (int i = 0; i < hand.size(); i++) {
             selectedCard.add(i, false);
         }
-        view = new PlayCardView(this);
+        playView = new PlayCardView(this);
     }
 
     /**
@@ -81,7 +82,7 @@ public class PlayCardState extends State {
                 playedCardsList.remove(index);
                 //If the card is still selected, i.e target is about to be selected
                 if (justClicked.equals(handIndex)) {
-                    ((PlayCardView) view).setSelectTarget(false);
+                    playView.setSelectTarget(false);
                     justClicked = -1;
                 }
                 else {
@@ -90,7 +91,7 @@ public class PlayCardState extends State {
                 selectedCard.set(handIndex, false);
 
                 numPlayedCards--;
-                ((PlayCardView) view).clickedButton(handIndex, 0);
+                playView.clickedButton(handIndex, 0);
             }
             //Checks if the max amount of cards already have been played
             else if (numPlayedCards < player.getAmountPlayedCards()) {
@@ -98,9 +99,9 @@ public class PlayCardState extends State {
                     justClicked = handIndex;
                     playedCardsList.add(handIndex);
                     selectedCard.set(handIndex, true);
-                    ((PlayCardView) view).clickedButton(handIndex, 1);
+                    playView.clickedButton(handIndex, 1);
                     numPlayedCards++;
-                    ((PlayCardView) view).setSelectTarget(true);
+                    playView.setSelectTarget(true);
                 }
             }
         }
@@ -134,9 +135,9 @@ public class PlayCardState extends State {
         //If the first target is valid
         if(justClicked > -1 && validTarget(firstTarget)){
             targets.add(firstTarget);
-            ((PlayCardView) view).clickedButton(justClicked, -1);
+            playView.clickedButton(justClicked, -1);
             justClicked = -1;
-            ((PlayCardView) view).setSelectTarget(false);
+            playView.setSelectTarget(false);
         }
         else{
             //Checks whether we can target the asteroid instead
@@ -274,12 +275,12 @@ public class PlayCardState extends State {
 
     @Override
     public void render() {
-        view.render();
+        playView.render();
     }
 
     @Override
     public void dispose() {
-        ((PlayCardView) view).dispose();
+        playView.dispose();
     }
 
     /**

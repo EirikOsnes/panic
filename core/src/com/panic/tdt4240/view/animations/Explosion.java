@@ -4,7 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 
@@ -18,18 +20,24 @@ public class Explosion  extends Actor{
     private TextureRegion currentFrame;
 
     private int frameCount;
+    private static final int DIM = 64;
 
     private float currentFrameTime;
     private float maxFrameTime;
 
     private float x,y;
 
+    public Explosion() {
+        this(1/20f, 16);
+    }
+
     public Explosion(float maxFrameTime, int frameCount){
+        this.currentFrameTime = 99f;
         this.maxFrameTime = maxFrameTime;
         this.frameCount = frameCount;
         frames = new Array<>();
         Texture texture = new Texture("animations/explosion.png");
-        TextureRegion[][] tmp = TextureRegion.split(texture,64,64);
+        TextureRegion[][] tmp = TextureRegion.split(texture,DIM,DIM);
         TextureRegion[] regions = new TextureRegion[frameCount];
         for(int i=0;i<tmp.length;i++){
             for(int j=0;j<tmp[i].length;j++){
@@ -50,6 +58,7 @@ public class Explosion  extends Actor{
 
     @Override
     public void act(float dt){
+        super.act(dt);
         currentFrameTime+=dt;
 
         currentFrame = animation.getKeyFrame(currentFrameTime,false);
@@ -69,6 +78,10 @@ public class Explosion  extends Actor{
         currentFrameTime=0;
         this.x = x;
         this.y = y;
+    }
+
+    public float getDuration() {
+        return animation.getAnimationDuration();
     }
 /*
     public void update(float dt){

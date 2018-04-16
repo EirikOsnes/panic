@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -20,6 +21,7 @@ import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.State;
 import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.util.MapMethods;
+import com.panic.tdt4240.view.animations.Explosion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,9 +39,9 @@ public class RunEffectsView extends AbstractView {
     private HashMap<String, Image> vehicleImages;
     private HashMap<String, Image> asteroidImages;
     private AnimationAdapter animator;
-    private Actor emptyActor;
     private MapConnections mapConnections;
     private ArrayList<AsteroidConnection> connections;
+    private final Explosion explosion;
 
     public RunEffectsView(State state) {
         super(state);
@@ -49,8 +51,8 @@ public class RunEffectsView extends AbstractView {
         gameInstance = GameInstance.getInstance();
         setUpMap();
         animator = new AnimationAdapter();
-        emptyActor = new Actor();
-        stage.addActor(emptyActor);
+        explosion = new Explosion();
+        stage.addActor(explosion);
         System.out.println(vehicleImages.keySet().toString());
         System.out.println(asteroidImages.keySet().toString());
     }
@@ -172,6 +174,15 @@ public class RunEffectsView extends AbstractView {
     public void attackVehicle(String vehicleID) {
         //TODO: Animate the attacking of a vehicle
 
+        final Image vehicle = vehicleImages.get(vehicleID);
+        Runnable explosionRunnable = new Runnable() {
+            @Override
+            public void run() {
+                explosion.startAnimation(vehicle.getX(), vehicle.getY());
+            }
+        };
+        Action action = Actions.sequence(Actions.run(explosionRunnable), Actions.delay(explosion.getDuration()));
+        animator.addAction(action, explosion);
     }
 
     public void attackAsteroid(String asteroidID) {

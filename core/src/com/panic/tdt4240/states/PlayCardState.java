@@ -9,12 +9,9 @@ import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
-<<<<<<< HEAD
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
-=======
 import com.panic.tdt4240.util.MapConnections;
->>>>>>> origin/magnus/explosions
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
@@ -45,15 +42,12 @@ public class PlayCardState extends State {
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
     private GameInstance gameInstance;
-<<<<<<< HEAD
     private boolean isLockedIn = false;
 
 //TODO Når kort deselectes bør rekkefølge respekteres: fjern position of Integer
-=======
     private MapConnections mapConnections;
     private float elapsedTime;
     private boolean enableTimer;
->>>>>>> origin/magnus/explosions
 
     public PlayCardState(GameStateManager gsm) {
         super(gsm);
@@ -218,13 +212,10 @@ public class PlayCardState extends State {
      */
     public void finishRound(){
         ArrayList<String[]> result = getCardsAndTargets();
-<<<<<<< HEAD
         isLockedIn = true;
         Connection.getInstance().sendTurn(result);
-=======
         //TODO Finish the view, change to the next state, send the result...
         //return result;
->>>>>>> origin/magnus/explosions
     }
 
     /**
@@ -297,7 +288,6 @@ public class PlayCardState extends State {
         playView.dispose();
     }
 
-<<<<<<< HEAD
     @Override
     public AbstractView getView() {
         return playView;
@@ -327,8 +317,6 @@ public class PlayCardState extends State {
         Connection.getInstance().sendPlayCardState();
     }
 
-=======
->>>>>>> origin/magnus/explosions
     @Override
     protected void setUpAdapter() {
         callbackAdapter = new PlayCardAdapter();

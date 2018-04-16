@@ -68,11 +68,11 @@ public class CreateGameView extends AbstractView {
         //FIXME
         SelectBox.SelectBoxStyle boxStyle = new SelectBox.SelectBoxStyle();
         boxStyle.font=font;
-        in_mapID = new SelectBox(skin);
+        in_mapID = new SelectBox<>(skin);
         in_mapID.setItems(mapIDs);
 
         String[] max_players = {"2", "3", "4", "5", "6"};
-        in_maxPlayers = new SelectBox(skin); in_maxPlayers.setItems(max_players);
+        in_maxPlayers = new SelectBox<>(skin); in_maxPlayers.setItems(max_players);
 
         exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
         exitToMainMenuBtn.addListener(new ChangeListener() {

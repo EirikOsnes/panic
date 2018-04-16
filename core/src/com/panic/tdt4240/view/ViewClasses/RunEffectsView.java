@@ -39,7 +39,7 @@ public class RunEffectsView extends AbstractView {
     private AnimationAdapter animator;
     private Actor emptyActor;
     private MapConnections mapConnections;
-    private ArrayList<AsteroidConnection> connection;
+    private ArrayList<AsteroidConnection> connections;
 
     public RunEffectsView(State state) {
         super(state);

@@ -23,7 +23,7 @@ import com.panic.tdt4240.states.MenuState;
 
 public class MenuView extends AbstractView {
 
-    private Stage stage;
+
     private Button createGameBtn, joinGameBtn, settingsBtn;
     private TextureAtlas buttonAtlas;
     private Skin skin;

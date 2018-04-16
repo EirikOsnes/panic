@@ -4,7 +4,9 @@ package com.panic.tdt4240.states;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.GameListView;
+import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
 
@@ -14,14 +16,14 @@ import java.util.ArrayList;
 
 public class GameListState extends State {
 
-    private GameListView view;
+    GameListView view;
+    ArrayList<String> lobbies;
     ArrayList<String[]> lobbyListData;
     private static String err_full_lobby = "Error: full lobby.";
     private static String err_lobby404 = "Error: lobby not found.";
 
     public GameListState(GameStateManager gsm){
         super(gsm);
-        updateLobbyList();
         lobbyListData = new ArrayList<>();
         view = new GameListView(this);
         updateLobbyList();
@@ -53,11 +55,11 @@ public class GameListState extends State {
             }
             try{    // error handling
                 if (o=="error:Full lobby"){
-                    view.popup(GameListView.error0);
+                    ((GameListView)view).popup(GameListView.error0);
                 }
                 //TODO: connect with actual Lobby objects instead - use
                 else if (o=="error: Missing lobby"){
-                    view.popup(GameListView.error1);
+                    ((GameListView)view).popup(GameListView.error1);
                 }
             } catch(Exception e){
                 e.printStackTrace();
@@ -70,10 +72,15 @@ public class GameListState extends State {
     public void update(float dt) { }
 
     @Override
-    public void render() { view.render(); }
+    public void render() { ((GameListView)view).render(); }
 
     @Override
-    public void dispose() { view.dispose(); }
+    public void dispose() { ((GameListView)view).dispose(); }
+
+    @Override
+    public AbstractView getView() {
+        return view;
+    }
 
     /**
      LobbyName1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN

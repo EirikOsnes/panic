@@ -3,22 +3,38 @@ package com.panic.tdt4240.states;
 import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
+import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventBus;
+import com.panic.tdt4240.events.EventFactory;
+import com.panic.tdt4240.events.EventListener;
+import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
+import com.panic.tdt4240.models.ModelHolder;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
+import com.panic.tdt4240.view.ViewClasses.PlayCardView;
+import com.panic.tdt4240.view.ViewClasses.RunEffectsView;
 
 import java.util.ArrayList;
+
+import javax.swing.text.View;
 
 /**
  * State for running through the cards gotten from the server.
  */
 
-public class RunEffectsState extends State {
+public class RunEffectsState extends State implements EventListener {
 
     private GameInstance gi;
+    private RunEffectsView runEffectsView;
 
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
         gi = GameInstance.getInstance();
-        Connection.getInstance().sendRunEffectsState();
+        EventBus.getInstance().addListener(this);
+        //Connection.getInstance().sendRunEffectsState();
+        runEffectsView = new RunEffectsView(this);
+        Card c = ModelHolder.getInstance().getCardById("MOVE");
+        EventFactory.postEventsFromCard(c, "A-003", "V-001");
     }
 
     @Override
@@ -33,17 +49,41 @@ public class RunEffectsState extends State {
 
     @Override
     public void render() {
-
+        runEffectsView.render();
     }
 
     @Override
     public void dispose() {
+        runEffectsView.dispose();
+        EventBus.getInstance().removeListener(this);
+    }
 
+    @Override
+    public AbstractView getView() {
+        return runEffectsView;
     }
 
     @Override
     protected void setUpAdapter() {
         callbackAdapter = new RunEffectsAdapter();
+    }
+
+    @Override
+    public void handleEvent(Event e) {
+        if (e.getT() == Event.Type.ATTACK) {
+            if (e.getTargetID().matches("A-\\d\\d\\d")) {
+                runEffectsView.attackAsteroid(e.getTargetID());
+            }
+            else if (e.getTargetID().matches("V-\\d\\d\\d")) {
+                runEffectsView.attackVehicle(e.getTargetID());
+            }
+        }
+        else if (e.getT() == Event.Type.MOVE) {
+            runEffectsView.moveVehicle(e.getInstigatorID(), e.getTargetID());
+        }
+        else if (e.getT() == Event.Type.DESTROYED) {
+            runEffectsView.destroyVehicle(e.getTargetID());
+        }
     }
 
     private class RunEffectsAdapter implements ICallbackAdapter {

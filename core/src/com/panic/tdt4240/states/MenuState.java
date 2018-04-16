@@ -9,7 +9,9 @@ import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.XMLParser;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.MenuView;
+import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -37,6 +39,8 @@ public class MenuState extends State {
 
     @Override
     public void handleInput(Object o) {
+        //startPlayCard();
+
         if (o == (Integer) 1) {
             gsm.push(new CreateGameState(gsm));
             System.out.println("Creating game...");
@@ -130,7 +134,8 @@ public class MenuState extends State {
         player.setVehicle(vehicles.get(0));
         instance.setPlayer(player);
         instance.setVehicles(vehicles);
-        gsm.set(new PlayCardState(gsm));
+        gsm.set(new RunEffectsState(gsm));
+        //gsm.set(new PlayCardState(gsm));
     }
 
     @Override
@@ -146,6 +151,11 @@ public class MenuState extends State {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    public AbstractView getView() {
+        return menuView;
     }
 
     @Override

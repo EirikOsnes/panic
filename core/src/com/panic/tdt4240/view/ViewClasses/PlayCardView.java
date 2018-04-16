@@ -23,6 +23,7 @@ import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.PlayCardState;
+import com.panic.tdt4240.util.MapMethods;
 import com.panic.tdt4240.view.Renderer;
 
 import java.util.ArrayList;
@@ -37,9 +38,7 @@ public class PlayCardView extends AbstractView{
     private Renderer renderer;
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
-    private Stage stage;
     private Table table;
-    //private Texture background;
     private TextButton cardInfo;
     private int amountCards;
     private Skin skin;
@@ -49,7 +48,6 @@ public class PlayCardView extends AbstractView{
     private TextButton finishedButton;
     private ArrayList<String[]> vehicleOnAsteroid;
     private GameInstance gameInstance;
-//    private ArrayList<Boolean> removeDialog;
 
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
@@ -59,12 +57,8 @@ public class PlayCardView extends AbstractView{
         sr = new ShapeRenderer();
         sr.setColor(1,1,1,0);
         sr.setAutoShapeType(true);
-        //background = new Texture("misc/background.png");
-        //cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         amountCards = gameInstance.getPlayer().getHand().size();
         cardButtons = new ArrayList<>(amountCards);
-//        removeDialog = new ArrayList<>(amountCards);
-        stage = new Stage();
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.input.setInputProcessor(stage);
         table = new Table();
@@ -89,7 +83,6 @@ public class PlayCardView extends AbstractView{
 
         //Create a button for each card
         for (int i = 0; i < amountCards; i++) {
-//            removeDialog.add(false);
             final TextButton.TextButtonStyle cardButtonStyle = new TextButton.TextButtonStyle();
             cardButtonStyle.font = font;
             //Images the button has in the normal up-position, and when it is pressed down
@@ -107,6 +100,7 @@ public class PlayCardView extends AbstractView{
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     if(!selectTarget){
+                        //Sets up cardInfo, the tooltip for the card
                         if(!(cardInfo == null)){
                             cardInfo.remove();
                         }
@@ -133,17 +127,14 @@ public class PlayCardView extends AbstractView{
                         cardInfo.addListener(new ChangeListener() {
                             @Override
                             public void changed(ChangeEvent event, Actor actor) {
-//                                removeDialog.set(index, false);
                                 cardInfo.remove();
                             }});
                         cardInfo.setPosition(SCREEN_WIDTH/4, SCREEN_HEIGHT/4);
                         cardInfo.setWidth(SCREEN_WIDTH/2);
                         cardInfo.setHeight(SCREEN_HEIGHT/2);
                         stage.addActor(cardInfo);
-//                        removeDialog.set(index, true);
                     }
                     else{
-//                        removeDialog.set(index, false);
                         cardInfo.remove();
                     }
                     state.handleInput(index);
@@ -224,7 +215,7 @@ public class PlayCardView extends AbstractView{
             Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
             Image vehicle = new Image(skin.getDrawable(activeVehicle.getColorCar()));
-            Vector2 position = ((PlayCardState) state).AsteroidPositions(asteroidPos.x, asteroidPos.y,
+            Vector2 position = MapMethods.asteroidPositions(asteroidPos.x, asteroidPos.y,
                     asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
                     activeVehicle.getColorCar());
             vehicle.setPosition(position.x, position.y);
@@ -264,18 +255,12 @@ public class PlayCardView extends AbstractView{
         }
         cardButtons.get(button).setStyle(buttonStyles.get(button));
     }
-
-    public boolean isSelectTarget() {
-        return selectTarget;
-    }
-
     public void setSelectTarget(boolean selectTarget) {
         this.selectTarget = selectTarget;
     }
-    public void setCardInfoText(String text){
-        //cardInfo.setText(text);
-    }
-
+    /**
+     * Renders connections between asteroids, then the stage
+     */
     public void render(){
         renderer.sb.setProjectionMatrix(cam.combined);
         sr.begin(ShapeRenderer.ShapeType.Filled);
@@ -290,7 +275,6 @@ public class PlayCardView extends AbstractView{
     public void dispose(){
         sr.dispose();
         stage.dispose();
-        //background.dispose();
         renderer.dispose();
     }
 //TODO Større tekst

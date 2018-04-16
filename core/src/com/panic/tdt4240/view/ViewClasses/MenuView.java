@@ -25,7 +25,6 @@ import com.panic.tdt4240.view.Renderer;
 public class MenuView extends AbstractView {
 
     private Renderer renderer;
-    private Stage stage;
     private Button createGameBtn, joinGameBtn, settingsBtn;
     private TextureAtlas buttonAtlas;
     private Skin skin;
@@ -38,7 +37,6 @@ public class MenuView extends AbstractView {
         super(menuState);
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,PanicGame.WIDTH,PanicGame.HEIGHT);
-        stage = new Stage();
         table = new Table();
         Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();

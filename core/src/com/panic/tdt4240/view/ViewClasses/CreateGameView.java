@@ -158,7 +158,7 @@ public class CreateGameView extends AbstractView {
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                cgState.handleInput(-1);
+                cgState.handleInput("-1");
 //                System.out.println("IS IT WORKING");
             }
         });

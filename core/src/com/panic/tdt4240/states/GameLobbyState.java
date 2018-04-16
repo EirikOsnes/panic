@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class GameLobbyState extends State {
 
-    // fields: player(s), numOfPlayers...
+
     GameLobbyView view;
     Lobby lobby;
 
@@ -26,6 +26,8 @@ public class GameLobbyState extends State {
         Connection.getInstance().updateLobby(lobbyID);
         view = new GameLobbyView(this);
     }
+
+    public Lobby getLobby(){return lobby;}
 
     public void launchGame(){
         gsm.push(new LoadGameState(gsm));
@@ -63,12 +65,10 @@ public class GameLobbyState extends State {
 
     @Override
     public void handleInput(Object o) {
-
-        if ((int) o ==  -1){
+        String s = (String) o;
+        if (s.equals("-1")){
             gsm.reset();
         }
-
-
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) gsm.reset();
 

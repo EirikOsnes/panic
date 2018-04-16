@@ -40,7 +40,7 @@ public class MenuState extends State {
     @Override
     public void handleInput(Object o) {
         //startPlayCard();
-
+        //FIXME revert this file when committing
         if (o == (Integer) 1) {
             gsm.push(new CreateGameState(gsm));
             System.out.println("Creating game...");

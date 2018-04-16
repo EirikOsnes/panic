@@ -2,6 +2,7 @@ package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -10,19 +11,19 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
-import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.connection.Connection;
+import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.states.GameLobbyState;
 import com.panic.tdt4240.util.PlayerNameGenerator;
-
 import java.util.ArrayList;
-import java.util.Stack;
 
 /**
  * Created by victor on 12.03.2018.
@@ -36,11 +37,14 @@ public class GameLobbyView extends AbstractView {
     private Skin skin;
     private BitmapFont font;
 
-    private ArrayList<String> usedNames;
+    private Lobby lobby;
 
+    private ArrayList<String> usedNames;
     private ArrayList<TextButton> textBtns;
-    private Button playerBtn, exitBtn, launchGameBtn;
+    private Button playerBtn, exitBtn, launchGameBtn, readyBtn;
     private TextButton.TextButtonStyle playerBtnStyle, exitBtnStyle;
+    private SelectBox<String> carSelectBox;
+    private SelectBox.SelectBoxStyle boxStyle;
 
     private ArrayList<Player> players;
 
@@ -49,15 +53,37 @@ public class GameLobbyView extends AbstractView {
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         table = new Table();
+        // Data container
+        lobby = lobbyState.getLobby();
 
         font = new BitmapFont();
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
             font.getData().scale(SCREEN_HEIGHT/ SCREEN_WIDTH * 1.5f);
         }
+        //
 
         textBtns = new ArrayList<>();
-        buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
+        buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), buttonAtlas);
+
+        // FIXME
+        String[] carTypes = {"Eddison"};
+
+        carSelectBox = new SelectBox<>(skin);
+        carSelectBox.setName("Select vehicle");
+        carSelectBox.setItems(carTypes);
+        carSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // FIXME
+
+            }
+        });
+        carSelectBox.scaleBy(1.3f);
+        carSelectBox.pack();
+        table.add(carSelectBox);
+
+        table.add(carSelectBox);
 
         playerBtnStyle = new TextButton.TextButtonStyle();
         playerBtnStyle.font = font;
@@ -70,62 +96,59 @@ public class GameLobbyView extends AbstractView {
         exitBtnStyle.down = skin.getDrawable("button-down");
 
         playerBtn = new TextButton("", playerBtnStyle);
-        launchGameBtn = new TextButton("", exitBtnStyle);
-        exitBtn = new TextButton("", exitBtnStyle);
+        launchGameBtn = new TextButton("Launch game", exitBtnStyle);
+        exitBtn = new TextButton("Exit lobby", exitBtnStyle);
 
         playerBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                lobbyState.handleInput( 0);
+                lobbyState.handleInput( "0");
             }
         });
         launchGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                lobbyState.handleInput( 1);
+                lobbyState.handleInput( "1");
             }
         });
         exitBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                lobbyState.handleInput( -1);
+                lobbyState.handleInput( "-1");
             }
         });
 
         /** testing tools: initialised localUser, players */
 
-        // TODO: some server-side code must be completed prior to completion...
+        // TODO: make this fit the state-code
 
-        // For shitty testing
         usedNames = new ArrayList<>();
         players = new ArrayList<>();
-        players.add(new Player(new Stack<Card>()));
-        players.add(new Player(new Stack<Card>()));
-        players.add(new Player(new Stack<Card>()));
-        players.add(new Player(new Stack<Card>()));
-        players.add(new Player(new Stack<Card>()));
-        players.add(new Player(new Stack<Card>()));
+
         preparePlayerList();
 
         table.background(new TextureRegionDrawable(new TextureRegion(bg)));
 
         table.setFillParent(true);
         table.row().center();
-        table.add(new Label(PanicGame.TITLE, skin)).top().padBottom(10);
-        table.row().center();
-        table.add(new Label(PanicGame.FULL_TITLE, skin));
+        table.add(new Label(PanicGame.TITLE, skin)).top().padBottom(10).row();
         for (TextButton tb : textBtns){
-            table.row().center();
             table.add(tb).width(200).height(50).pad(10);
+            table.row();
         }
+        table.add(exitBtn);
         table.pack();
-
         stage.addActor(table);
     }
 
-    public void playerJoined(Player p){
+    public void updateView(){
+
+    }
+
+    public void playerJoined(Integer id){
         // add more buttons for each player who joins
-        players.add(p);
+        lobby.getPlayerIDs().add(id);
+        updateView();
     }
 
 
@@ -133,27 +156,27 @@ public class GameLobbyView extends AbstractView {
         stage.draw();
     }
 
-    public void dispose(){
-        font.dispose();
-        stage.dispose();
-    }
-
+    // TODO: adapt for actually connecting to the server...?
     private void preparePlayerList(){
-        int counted = 0;
         String name;
-        while (true){
-            if (counted >= players.size()) break;
+        for (Integer playerID : lobby.getPlayerIDs()){
             double seed = Math.floor(Math.random() * PlayerNameGenerator.getCount());
             name = PlayerNameGenerator.getName((int) seed);
+            if (playerID == Connection.getInstance().getConnectionID()){
+                name = name + " (me)";
+            }
             if (! usedNames.contains(name)) {
                 TextButton button = new TextButton(
                         name, playerBtnStyle);
                 textBtns.add(button);
-                counted++;
                 usedNames.add(name);
-                System.out.println(counted);
             }
         }
 
+    }
+
+    public void dispose(){
+        font.dispose();
+        stage.dispose();
     }
 }

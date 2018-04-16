@@ -2,6 +2,7 @@ package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
@@ -9,6 +10,7 @@ import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.models.Vehicle;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
@@ -40,7 +42,10 @@ public class PlayCardState extends State {
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
     private GameInstance gameInstance;
+    private boolean isLockedIn = false;
+
 //TODO Når kort deselectes bør rekkefølge respekteres: fjern position of Integer
+
     public PlayCardState(GameStateManager gsm) {
         super(gsm);
         gameInstance = GameInstance.getInstance();
@@ -59,6 +64,8 @@ public class PlayCardState extends State {
             selectedCard.add(i, false);
         }
         playView = new PlayCardView(this);
+        readyForNewTurn();
+
     }
 
     /**
@@ -92,13 +99,6 @@ public class PlayCardState extends State {
                 selectedCard.set(handIndex, false);
 
                 numPlayedCards--;
-                //Sets the tooltip text to the most recently pressed card, or to an empty string
-                if (numPlayedCards > 0) {
-                    playView.setCardInfoText(hand.get(playedCardsList.get(numPlayedCards-1)).getTooltip());
-                }
-                else {
-                    playView.setCardInfoText("");
-                }
                 playView.clickedButton(handIndex, 0);
             }
             //Checks if the max amount of cards already have been played
@@ -107,7 +107,6 @@ public class PlayCardState extends State {
                     justClicked = handIndex;
                     playedCardsList.add(handIndex);
                     selectedCard.set(handIndex, true);
-                    playView.setCardInfoText(hand.get(handIndex).getTooltip());
                     playView.clickedButton(handIndex, 1);
                     numPlayedCards++;
                     playView.setSelectTarget(true);
@@ -126,7 +125,6 @@ public class PlayCardState extends State {
      *          add the target as the target of the most recently selected card
      *          reset the justClicked index, allowing us to select a new card and target
      */
-    //FIXME Click on valid target asteroid should end select target phase
     private void selectTarget(String s){
         s = s.toLowerCase();
         String firstTarget;
@@ -246,8 +244,8 @@ public class PlayCardState extends State {
      */
     public void finishRound(){
         ArrayList<String[]> result = getCardsAndTargets();
-        //TODO Avslutt viewet, bytt til neste, send videre result ...
-        //return result;
+        isLockedIn = true;
+        Connection.getInstance().sendTurn(result);
     }
 
     /**
@@ -293,28 +291,9 @@ public class PlayCardState extends State {
         playView.dispose();
     }
 
-    /**
-     * For an asteroid, gives coordinates within asteroid for each car type
-     * Positions are clockwise from lower left section
-     * Position of the lower left corner of each section
-     */
-    public Vector2 AsteroidPositions(float posX, float posY, float width, float height, String colorCar){
-        Vector2 position = new Vector2(posX + width/9, posY);
-        switch (colorCar){
-            case "red_car":
-                position.add(0,0);
-                break;
-            case "green_car":
-                position.add(0, height/2);
-                break;
-            case "yellow_car":
-                position.add(width/2, height/2);
-                break;
-            case "blue_car":
-                position.add(width/2, 0);
-                break;
-        }
-        return position;
+    @Override
+    public AbstractView getView() {
+        return playView;
     }
 
     /**
@@ -334,6 +313,13 @@ public class PlayCardState extends State {
         }
     }
 
+    /**
+     * Tell the server that you are ready to start a new turn
+     */
+    private void readyForNewTurn(){
+        Connection.getInstance().sendPlayCardState();
+    }
+
     @Override
     protected void setUpAdapter() {
         callbackAdapter = new PlayCardAdapter();
@@ -343,7 +329,21 @@ public class PlayCardState extends State {
 
         @Override
         public void onMessage(String message) {
+            String[] strings = message.split(":");
 
+            switch (strings[0]){
+                case "TURN_END":
+                    if(!isLockedIn){
+                        finishRound();
+                    }
+                    gsm.push(new RunEffectsState(gsm));
+                    break;
+                case "BEGIN_TURN":
+                    //setTimeLeft(Float.parse(strings[1]));
+                    //TODO: Start the timer
+                    break;
+
+            }
         }
     }
 

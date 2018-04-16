@@ -33,7 +33,6 @@ public class GameLobbyView extends AbstractView {
     private TextureAtlas buttonAtlas;
     private Texture bg;
     private Skin skin;
-    private Stage stage;
     private BitmapFont font;
 
     private ArrayList<String> usedNames;
@@ -48,7 +47,6 @@ public class GameLobbyView extends AbstractView {
         super(lobbyState);
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
-        stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         table = new Table();
 

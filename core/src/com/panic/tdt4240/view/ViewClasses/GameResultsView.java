@@ -28,7 +28,6 @@ import java.util.ArrayList;
 public class GameResultsView extends AbstractView {
 
     private ArrayList<TextButton> textBtns;
-    private Stage stage;
     private Skin skin;
     TextButton.TextButtonStyle btnStyle, rankingStyle;
     private TextureAtlas btnAtlas;
@@ -43,7 +42,6 @@ public class GameResultsView extends AbstractView {
 
         bg = new Texture("misc/background.png");
         textBtns = new ArrayList<>(deadPlayers.size());
-        stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
         table = new Table();

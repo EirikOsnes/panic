@@ -2,7 +2,8 @@ package com.panic.tdt4240.states;
 
 
 import com.panic.tdt4240.connection.Connection;
-import com.panic.tdt4240.models.Lobby;
+import com.panic.tdt4240.connection.ICallbackAdapter;
+import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.GameListView;
 
 import java.util.ArrayList;
@@ -13,9 +14,9 @@ import java.util.ArrayList;
 
 public class GameListState extends State {
 
-    private GameListView view;
-    ArrayList<String[]> lobbyListData;
+    GameListView view;
     ArrayList<String> lobbies;
+    ArrayList<String[]> lobbyListData;
     private static String err_full_lobby = "Error: full lobby.";
     private static String err_lobby404 = "Error: lobby not found.";
 
@@ -24,28 +25,12 @@ public class GameListState extends State {
         updateLobbyList();
         lobbyListData = new ArrayList<>();
         view = new GameListView(this);
-        lobbies = new ArrayList<>();
-       
-        // load available games from master server - can be done with updateLobbyList
-        /** TESTING {LobbyName, playerCount, maxPlayers, lobbyID} */
-//        String[] data = {"testing", "1", "4", "0"};
-//        lobbyListData.add(data);
         updateLobbyList();
-        System.out.println(lobbies.size());
-        System.out.println(lobbyListData.size());
-/*        Lobby l1 = new Lobby(2, "ENGLISH", 0, "TEST");
-        Lobby l2 = new Lobby(3, "MOTHERFUCKER", 1, "TEST");
-        Lobby l3 = new Lobby(4, "DO YOU SPEAK IT?!", 2, "TEST");
-/**/
-        view = new GameListView(this);
+        // load available games from master server - can be done with updateLobbyList
     }
 
     public ArrayList<String[]> getLobbies(){return lobbyListData;}
 
-    @Override
-    protected void setUpAdapter() {
-
-    }
 
     private void updateLobbyList(){
         Connection.getInstance().getAllLobbies();
@@ -63,7 +48,7 @@ public class GameListState extends State {
             if ((int) o == -1) gsm.reset();  // exit to main menu
         }
         if ( o.getClass() == String.class){  // lobbyID is still a string
-            if ((Integer) o >= (Integer) 0){ // lobbyID entered
+            if ((int) o >= 0){ // lobbyID entered
                 Connection.getInstance().connectToLobby((int) o);
             }
             try{    // error handling
@@ -90,9 +75,12 @@ public class GameListState extends State {
     @Override
     public void dispose() { view.dispose(); }
 
+    @Override
+    public AbstractView getView() {
+        return view;
+    }
+
     /**
-     * FIXME: Note to self (vww): do NOT touch. No touchies. Bad.
-     *
      GET_LOBBIES:LobbyName1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
      ':'    - remove
      '&'    - separate lobbies
@@ -103,8 +91,8 @@ public class GameListState extends State {
          { LobbyName \t   playerCount/maxPlayers, lobbyID}
      */
     public boolean readLobbyData(String s){
-        String[] untagged = s.split(":"); // removes the first separator
-        String[] full_list = untagged[1].split("&");
+//legacy version
+        String[] full_list = s.split("&");
         for (String lobby : full_list){
             String[] lobby_data = lobby.split(",");
             String[] cleaned_data = {lobby_data[0] + "\tSlots: " + lobby_data[1]
@@ -115,15 +103,32 @@ public class GameListState extends State {
     }
 
 
-    private void connectToLobby(Lobby lobby){
-        if(Connection.getInstance().connectToLobby(lobby.getLobbyID())){
-            gsm.push(new GameLobbyState(gsm,lobby));
-        }
-        else{
-            //TODO: Cannot join the lobby - it might be full. Maybe give a error pop-up, and refresh the lobby list with updateLobbyList()?
-            if (lobby.getMaxPlayers() == lobby.getPlayerIDs().size()) {
-                handleInput("Error: full lobby");
-                updateLobbyList();
+    private void connectToLobby(int lobbyID){
+        Connection.getInstance().connectToLobby(lobbyID);
+    }
+
+    @Override
+    protected void setUpAdapter() {
+        callbackAdapter = new GameListAdapter();
+    }
+
+    private class GameListAdapter implements ICallbackAdapter {
+
+        @Override
+        public void onMessage(String message) {
+            String[] strings = message.split(":");
+
+            switch (strings[0]){
+                case "GET_LOBBIES":
+                    readLobbyData(strings[1]);
+                    break;
+                case "LOBBY_SUCCESSFUL":
+                    gsm.push(new GameLobbyState(gsm,Integer.parseInt(strings[1])));
+                    break;
+                case "LOBBY_FAILED":
+                    //TODO: Pop-up error? Lobby was full or deleted.
+                    updateLobbyList();
+                    break;
             }
         }
     }

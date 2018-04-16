@@ -41,7 +41,6 @@ public class RunEffectsView extends AbstractView {
     private HashMap<String, Image> asteroidImages;
     private AnimationAdapter animator;
     private MapConnections mapConnections;
-    private ArrayList<AsteroidConnection> connections;
     private final Explosion explosion;
 
     public RunEffectsView(State state) {

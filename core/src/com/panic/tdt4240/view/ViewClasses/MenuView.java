@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.MenuState;
@@ -77,24 +79,24 @@ public class MenuView extends AbstractView {
         table.background(new TextureRegionDrawable(new TextureRegion(background)));
         table.pack();
 
-        createGameBtn.addListener(new ChangeListener() {
+        createGameBtn.addListener(new ClickListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void clicked(InputEvent event, float x, float y) {
                 menuState.handleInput( 1);
             }
         });
 
-        joinGameBtn.addListener(new ChangeListener() {
+        joinGameBtn.addListener(new ClickListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                menuState.handleInput(2);
+            public void clicked(InputEvent event, float x, float y) {
+                menuState.handleInput( 2);
             }
         });
 
-        settingsBtn.addListener(new ChangeListener() {
+        settingsBtn.addListener(new ClickListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                menuState.handleInput(3);
+            public void clicked(InputEvent event, float x, float y) {
+                menuState.handleInput( 3);
             }
         });
         stage.addActor(table);

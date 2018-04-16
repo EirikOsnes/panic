@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 
 
 /**
+ * Global variables for the game
  * Created by Hermann on 09.03.2018.
  */
 
@@ -17,9 +18,10 @@ public class GlobalConstants {
     //Max number of players for a map, might not be needed
     public static final int MAX_PLAYERS = 4;
 
-    //public static final float TEXT_SCALE = Gdx.graphics.getHeight()/Gdx.graphics.getWidth()*1.5f;
-
-    //Scaling factor for android devices
+    /**
+     * Text scale factor for android devices
+     * @return scale factor
+     */
     public static float GET_TEXT_SCALE(){
         if(Gdx.app.getType() == Application.ApplicationType.Android){
             return Gdx.graphics.getHeight()/Gdx.graphics.getWidth()*1.5f;

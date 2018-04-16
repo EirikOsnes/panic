@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.GameListState;
-import com.panic.tdt4240.view.Renderer;
 
 /**
  * Created by victor on 12.03.2018.
@@ -27,9 +26,7 @@ import com.panic.tdt4240.view.Renderer;
 
 public class GameListView extends AbstractView {
 
-    private Renderer renderer;
     private ScrollPane scroller;
-    private Stage stage;
     private TextureAtlas btnAtlas;
     private Skin skin;
     private BitmapFont font;
@@ -43,13 +40,9 @@ public class GameListView extends AbstractView {
 
     public GameListView(final GameListState listState) {
         super(listState);
-        renderer = Renderer.getInstance();
-
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
-        stage = new Stage();
         table = new Table();
-        Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
@@ -80,7 +73,7 @@ public class GameListView extends AbstractView {
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput(-1);
+                listState.handleInput(-1);
             }
         });
 
@@ -108,17 +101,12 @@ public class GameListView extends AbstractView {
     }
 
     public void render(){
-        renderer.sb.setProjectionMatrix(cam.combined);
-        renderer.sb.begin();
-        renderer.sb.draw(bg, 0, 0, PanicGame.WIDTH, PanicGame.HEIGHT);
         stage.act(); // this allows the scroller to have any effect, supposedly.
         stage.draw();
-        renderer.sb.end();
     }
 
 
     public void dispose(){
-        renderer.dispose();
         stage.dispose();
         bg.dispose();
         font.dispose();

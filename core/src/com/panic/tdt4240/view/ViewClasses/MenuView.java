@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.MenuState;
-import com.panic.tdt4240.view.Renderer;
 
 /**
  * Created by victor on 05.03.2018.
@@ -24,7 +23,7 @@ import com.panic.tdt4240.view.Renderer;
 
 public class MenuView extends AbstractView {
 
-    private Renderer renderer;
+
     private Button createGameBtn, joinGameBtn, settingsBtn;
     private TextureAtlas buttonAtlas;
     private Skin skin;
@@ -33,12 +32,11 @@ public class MenuView extends AbstractView {
     private Table table;
     private Texture background;
 
-    public MenuView(MenuState menuState) {
+    public MenuView(final MenuState menuState) {
         super(menuState);
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,PanicGame.WIDTH,PanicGame.HEIGHT);
         table = new Table();
-        Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
@@ -72,26 +70,25 @@ public class MenuView extends AbstractView {
         createGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput( 1);
+                menuState.handleInput( 1);
             }
         });
 
         joinGameBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput(2);
+                menuState.handleInput(2);
             }
         });
 
         settingsBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                state.handleInput(3);
+                menuState.handleInput(3);
             }
         });
         stage.addActor(table);
 
-        renderer = Renderer.getInstance();
     }
 
     /**
@@ -108,16 +105,11 @@ public class MenuView extends AbstractView {
 
     // TODO: legge inn input
     public void render() {
-        renderer.sb.setProjectionMatrix(cam.combined);
-        renderer.sb.begin();
-        renderer.sb.draw(background,0,0,PanicGame.WIDTH,PanicGame.HEIGHT);
         stage.draw();
-        renderer.sb.end();
     }
 
 
     public void dispose(){
-        renderer.dispose();
         font.dispose();
         stage.dispose();
     }

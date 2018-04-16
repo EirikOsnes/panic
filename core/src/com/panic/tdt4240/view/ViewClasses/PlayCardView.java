@@ -32,6 +32,7 @@ public class PlayCardView extends AbstractView{
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Table table;
+    //private Texture background;
     private TextButton cardInfo;
     private Skin skin;
     private boolean selectTarget = false;
@@ -45,6 +46,8 @@ public class PlayCardView extends AbstractView{
 
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
+        gameInstance = GameInstance.getInstance();
+        map = gameInstance.getMap();
         sr = new ShapeRenderer();
         sr.setColor(1,1,1,0);
         sr.setAutoShapeType(true);
@@ -52,7 +55,6 @@ public class PlayCardView extends AbstractView{
         checked = new ArrayList<>();
         cardButtons = new ArrayList<>(amountCards);
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        Gdx.input.setInputProcessor(stage);
         table = new Table();
 
         table.setWidth(Gdx.graphics.getWidth());

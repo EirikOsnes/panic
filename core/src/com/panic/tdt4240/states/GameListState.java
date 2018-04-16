@@ -3,10 +3,8 @@ package com.panic.tdt4240.states;
 
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
-import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.GameListView;
-import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
 
@@ -24,13 +22,15 @@ public class GameListState extends State {
 
     public GameListState(GameStateManager gsm){
         super(gsm);
+        updateLobbyList();
         lobbyListData = new ArrayList<>();
         view = new GameListView(this);
         updateLobbyList();
         // load available games from master server - can be done with updateLobbyList
-        // ... maybe with ping?
-
     }
+
+    public ArrayList<String[]> getLobbies(){return lobbyListData;}
+
 
     private void updateLobbyList(){
         Connection.getInstance().getAllLobbies();
@@ -39,10 +39,8 @@ public class GameListState extends State {
         // https://stackoverflow.com/questions/15484077/libgdx-and-scrollpane-with-multiple-widgets
     }
 
-    public ArrayList<String[]> getLobbies() {
-        return lobbyListData;
-    }
-
+    /** @param o: what to do, what to do...
+     * */
     @Override
     public void handleInput(Object o) {
         // when a lobby is clicked, enter it.
@@ -55,11 +53,11 @@ public class GameListState extends State {
             }
             try{    // error handling
                 if (o=="error:Full lobby"){
-                    ((GameListView)view).popup(GameListView.error0);
+                    view.popup(GameListView.error0);
                 }
                 //TODO: connect with actual Lobby objects instead - use
                 else if (o=="error: Missing lobby"){
-                    ((GameListView)view).popup(GameListView.error1);
+                    view.popup(GameListView.error1);
                 }
             } catch(Exception e){
                 e.printStackTrace();
@@ -72,10 +70,10 @@ public class GameListState extends State {
     public void update(float dt) { }
 
     @Override
-    public void render() { ((GameListView)view).render(); }
+    public void render() { view.render(); }
 
     @Override
-    public void dispose() { ((GameListView)view).dispose(); }
+    public void dispose() { view.dispose(); }
 
     @Override
     public AbstractView getView() {
@@ -83,7 +81,8 @@ public class GameListState extends State {
     }
 
     /**
-     LobbyName1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
+     GET_LOBBIES:LobbyName1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
+     ':'    - remove
      '&'    - separate lobbies
      ','    - lobby data separators
      Result: String[], {LobbyName, playerCount, maxPlayers, lobbyID}
@@ -92,6 +91,7 @@ public class GameListState extends State {
          { LobbyName \t   playerCount/maxPlayers, lobbyID}
      */
     public boolean readLobbyData(String s){
+//legacy version
         String[] full_list = s.split("&");
         for (String lobby : full_list){
             String[] lobby_data = lobby.split(",");
@@ -131,7 +131,6 @@ public class GameListState extends State {
                     break;
             }
         }
-
     }
 
 }

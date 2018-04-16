@@ -63,6 +63,13 @@ public class GameLobbyState extends State {
 
     @Override
     public void handleInput(Object o) {
+
+        if ((int) o ==  -1){
+            gsm.reset();
+        }
+
+
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) gsm.reset();
 
     }

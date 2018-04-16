@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -24,7 +23,6 @@ import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.PlayCardState;
 import com.panic.tdt4240.util.MapMethods;
-import com.panic.tdt4240.view.Renderer;
 
 import java.util.ArrayList;
 
@@ -35,10 +33,10 @@ import java.util.ArrayList;
 
 public class PlayCardView extends AbstractView{
 
-    private Renderer renderer;
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Table table;
+    //private Texture background;
     private TextButton cardInfo;
     private int amountCards;
     private Skin skin;
@@ -53,7 +51,6 @@ public class PlayCardView extends AbstractView{
         super(playCardState);
         gameInstance = GameInstance.getInstance();
         map = gameInstance.getMap();
-        renderer = Renderer.getInstance();
         sr = new ShapeRenderer();
         sr.setColor(1,1,1,0);
         sr.setAutoShapeType(true);
@@ -262,7 +259,6 @@ public class PlayCardView extends AbstractView{
      * Renders connections between asteroids, then the stage
      */
     public void render(){
-        renderer.sb.setProjectionMatrix(cam.combined);
         sr.begin(ShapeRenderer.ShapeType.Filled);
         ArrayList<Vector2[]> lines = ((PlayCardState) state).getConnections();
         for(Vector2[] points : lines){
@@ -275,7 +271,6 @@ public class PlayCardView extends AbstractView{
     public void dispose(){
         sr.dispose();
         stage.dispose();
-        renderer.dispose();
     }
 //TODO Større tekst
 

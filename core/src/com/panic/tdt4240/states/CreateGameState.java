@@ -40,7 +40,7 @@ public class CreateGameState extends State {
         this.name = name;
     }
 
-    private void createButtonClick(){
+    public void createButtonClick(){
         //TODO: Actually set the maxPlayerCount, mapID and name parameters.
         connection.createLobby(maxPlayerCount,mapID,name);
     }

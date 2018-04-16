@@ -84,31 +84,28 @@ public class Connection extends WebSocketClient{
 
         String message = "CREATE//" + mapID + "//" + maxPlayerCount + "//" + name;
         this.send(message);
-        //TODO: Create and return the Lobby with the designated parameters, and the creator already added.
 
     }
 
     /**
      * Get all the Lobbies available
      * Returns an ArrayList of all available Lobbies as a string on the form:
+
+     * GET_LOBBIES: {4 fields} & {4 fields} & ... repeating. '&' = lobby separator
+
      * GET_LOBBIES:ID1,Lobbyname1,CurrentPlayerNum1,MaxPlayers1&ID2,LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN
+
      */
     public void getAllLobbies(){
-
         this.send("GET_LOBBIES");
-        //TODO: Return a list of all available lobbies.
     }
 
     /**
-     * Connect to the given Lobby if this returns true.
+     * Connect to the given Lobby if it is possible.
      * @param lobbyID The ID of the Lobby you wish to connect to
-     * @return Returns true if added on the server, false if it was non-successful.
      */
-    public boolean connectToLobby(int lobbyID){
-
-        //TODO: Try to connect to the given Lobby. Should return true if it was successful.
-
-        return false;
+    public void connectToLobby(int lobbyID){
+        this.send("ENTER//"+lobbyID);
     }
 
 
@@ -118,7 +115,7 @@ public class Connection extends WebSocketClient{
      */
     public void leaveLobby(int lobbyID){
 
-        //TODO: Remove me from the lobby.
+        this.send("TOGAME//" + lobbyID + "//LEAVE_GAME");
 
     }
 
@@ -141,9 +138,7 @@ public class Connection extends WebSocketClient{
      * @param lobbyID
      */
     public void chooseVehicleType(String vehicleType, int lobbyID){
-
-        //TODO: Set my vehicle in the Lobby to tbe given vehicle type
-
+        this.send("TOGAME//" + lobbyID + "//VEHICLE_SET//" + vehicleType + "//" + connectionID);
     }
 
     /**
@@ -153,6 +148,7 @@ public class Connection extends WebSocketClient{
     public void setReady(int lobbyID){
 
         //TODO: Set me to ready
+        //FOR NOW THIS IS NOT TO BE USED
 
     }
 
@@ -160,23 +156,18 @@ public class Connection extends WebSocketClient{
      * Return on the form GAME_INFO:VehicleType1,VehicleID1,Color1&VehicleType2,...ColorN:MapID:MyVehicleID
      */
     public void getGameInfo(){
-        //TODO: Send request to server
+        this.send("GAME_INFO");
     }
 
-    /**
-     * Tell the server that runEffectsState is done animating, so the next turn can begin.
-     */
-    public void sendDoneAnimating(){
-
-        //TODO: Actually send this info to the server.
-
+    public void sendPlayCardState(){
+        this.send("BEGIN_TURN");
     }
 
     /**
      * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
      */
     public void sendRunEffectsState(){
-        //TODO: Send info
+        this.send("ENTERED_RUN_EFFECT_STATE");
     }
 
     /**
@@ -185,6 +176,7 @@ public class Connection extends WebSocketClient{
      */
     public void getLog(){
         //TODO: send a getAllTurns command
+        //FOR NOW THIS IS NOT TO BE USED
     }
 
 
@@ -192,17 +184,17 @@ public class Connection extends WebSocketClient{
     /**
      * Generates a String to be sent to server containing cardID, senderID, targetID and priority. The String will be formatted such that the Server can process it.
      * @param moves An arrayList of the moves to be executed
-     * @return The formatted string
+     * Sends a round of cards on the format SEND_CARDS//CardID1&SenderID1&TargetID1&Priority1//...&TargetIDN&PriorityN//
      */
-    public String createCardString(ArrayList<String[]> moves) {
-        String returnString = "";
+    public void sendTurn(ArrayList<String[]> moves) {
+        String returnString = "SEND_CARDS//";
         ModelHolder mh = ModelHolder.getInstance();
         for (String[] move : moves) {
             Card card = mh.getCardById(move[0]);
             String priority = Integer.toString(card.getPriority());
             returnString = returnString + move[0] + "&" + move[2] + "&" + move[1] + "&" + priority + "//";
         }
-        return returnString;
+        this.send(returnString);
     }
 
     @Override

@@ -18,11 +18,14 @@ public class GameListState extends State {
 
     GameListView view;
     ArrayList<String> lobbies;
+    ArrayList<String[]> lobbyListData;
+    private static String err_full_lobby = "Error: full lobby.";
+    private static String err_lobby404 = "Error: lobby not found.";
 
     public GameListState(GameStateManager gsm){
         super(gsm);
+        lobbyListData = new ArrayList<>();
         view = new GameListView(this);
-        lobbies = new ArrayList<>();
         updateLobbyList();
         // load available games from master server - can be done with updateLobbyList
         // ... maybe with ping?
@@ -31,41 +34,48 @@ public class GameListState extends State {
 
     private void updateLobbyList(){
         Connection.getInstance().getAllLobbies();
-        //TODO: Actually visualize this list.
+        //TODO: Actually visualize this list. Use ScrollPane
+        // import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+        // https://stackoverflow.com/questions/15484077/libgdx-and-scrollpane-with-multiple-widgets
     }
 
-    public void setLobbies(ArrayList<String> lobbies){
-        this.lobbies = lobbies;
+    public ArrayList<String[]> getLobbies() {
+        return lobbyListData;
     }
 
     @Override
     public void handleInput(Object o) {
         // when a lobby is clicked, enter it.
-        if ( o.getClass() == String.class){
-            try{
+        if (o.getClass()==Integer.class){
+            if ((int) o == -1) gsm.reset();  // exit to main menu
+        }
+        if ( o.getClass() == String.class){  // lobbyID is still a string
+            if ((int) o >= 0){ // lobbyID entered
+                Connection.getInstance().connectToLobby((int) o);
+            }
+            try{    // error handling
+                if (o=="error:Full lobby"){
+                    ((GameListView)view).popup(GameListView.error0);
+                }
                 //TODO: connect with actual Lobby objects instead - use
-
+                else if (o=="error: Missing lobby"){
+                    ((GameListView)view).popup(GameListView.error1);
+                }
             } catch(Exception e){
-
+                e.printStackTrace();
             }
         }
 
     }
 
     @Override
-    public void update(float dt) {
-
-    }
+    public void update(float dt) { }
 
     @Override
-    public void render() {
-        view.render();
-    }
+    public void render() { ((GameListView)view).render(); }
 
     @Override
-    public void dispose() {
-
-    }
+    public void dispose() { ((GameListView)view).dispose(); }
 
     @Override
     public AbstractView getView() {
@@ -73,16 +83,28 @@ public class GameListState extends State {
     }
 
     /**
-     * Connect to the lobby designated - if allowed
-     * @param lobby The lobby you wish to connect to
+     LobbyName1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
+     '&'    - separate lobbies
+     ','    - lobby data separators
+     Result: String[], {LobbyName, playerCount, maxPlayers, lobbyID}
+
+     @return 1. Data is added to the arrayList in the format:
+         { LobbyName \t   playerCount/maxPlayers, lobbyID}
      */
-    private void connectToLobby(Lobby lobby){
-        if(Connection.getInstance().connectToLobby(lobby.getLobbyID())){
-            gsm.push(new GameLobbyState(gsm,lobby));
+    public boolean readLobbyData(String s){
+        String[] full_list = s.split("&");
+        for (String lobby : full_list){
+            String[] lobby_data = lobby.split(",");
+            String[] cleaned_data = {lobby_data[0] + "\tSlots: " + lobby_data[1]
+                    + "/" + lobby_data[2], lobby_data[3]};
+            lobbyListData.add(cleaned_data);
         }
-        else{
-            //TODO: Cannot join the lobby - it might be full. Maybe give a error pop-up, and refresh the lobby list with updateLobbyList()?
-        }
+        return full_list.length == lobbyListData.size() ; // simple validity check
+    }
+
+
+    private void connectToLobby(int lobbyID){
+        Connection.getInstance().connectToLobby(lobbyID);
     }
 
     @Override
@@ -98,21 +120,18 @@ public class GameListState extends State {
 
             switch (strings[0]){
                 case "GET_LOBBIES":
-                    parseLobbies(strings);
+                    readLobbyData(strings[1]);
+                    break;
+                case "LOBBY_SUCCESSFUL":
+                    gsm.push(new GameLobbyState(gsm,Integer.parseInt(strings[1])));
+                    break;
+                case "LOBBY_FAILED":
+                    //TODO: Pop-up error? Lobby was full or deleted.
+                    updateLobbyList();
                     break;
             }
         }
 
-        private void parseLobbies(String[] strings){
-            String[] lobbystrings = strings[1].split("&");
-            ArrayList<String> stringArrayList = new ArrayList<>();
-            for (String string :
-                    lobbystrings) {
-                stringArrayList.add(string);
-            }
-
-            setLobbies(stringArrayList);
-        }
     }
 
 }

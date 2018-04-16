@@ -2,6 +2,7 @@ package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
@@ -41,6 +42,10 @@ public class PlayCardState extends State {
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
     private GameInstance gameInstance;
+    private boolean isLockedIn = false;
+
+//TODO Når kort deselectes bør rekkefølge respekteres: fjern position of Integer
+
     public PlayCardState(GameStateManager gsm) {
         super(gsm);
         gameInstance = GameInstance.getInstance();
@@ -59,6 +64,8 @@ public class PlayCardState extends State {
             selectedCard.add(i, false);
         }
         playView = new PlayCardView(this);
+        readyForNewTurn();
+
     }
 
     /**
@@ -237,8 +244,8 @@ public class PlayCardState extends State {
      */
     public void finishRound(){
         ArrayList<String[]> result = getCardsAndTargets();
-        //TODO Avslutt viewet, bytt til neste, send videre result ...
-        //return result;
+        isLockedIn = true;
+        Connection.getInstance().sendTurn(result);
     }
 
     /**
@@ -306,6 +313,13 @@ public class PlayCardState extends State {
         }
     }
 
+    /**
+     * Tell the server that you are ready to start a new turn
+     */
+    private void readyForNewTurn(){
+        Connection.getInstance().sendPlayCardState();
+    }
+
     @Override
     protected void setUpAdapter() {
         callbackAdapter = new PlayCardAdapter();
@@ -315,7 +329,21 @@ public class PlayCardState extends State {
 
         @Override
         public void onMessage(String message) {
+            String[] strings = message.split(":");
 
+            switch (strings[0]){
+                case "TURN_END":
+                    if(!isLockedIn){
+                        finishRound();
+                    }
+                    gsm.push(new RunEffectsState(gsm));
+                    break;
+                case "BEGIN_TURN":
+                    //setTimeLeft(Float.parse(strings[1]));
+                    //TODO: Start the timer
+                    break;
+
+            }
         }
     }
 

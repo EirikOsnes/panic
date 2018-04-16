@@ -10,7 +10,6 @@ import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.util.MapConnections;
-import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
@@ -44,8 +43,6 @@ public class PlayCardState extends State {
     private GameInstance gameInstance;
     private boolean isLockedIn = false;
 
-//TODO Når kort deselectes bør rekkefølge respekteres: fjern position of Integer
-
     private MapConnections mapConnections;
     private float timeLeft;
     private boolean enableTimer;
@@ -70,7 +67,6 @@ public class PlayCardState extends State {
         mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         playView = new PlayCardView(this);
         readyForNewTurn();
-
     }
 
     /**
@@ -86,42 +82,44 @@ public class PlayCardState extends State {
     @Override
     public void handleInput(Object o) {
         System.out.println(o.toString());
-        if (o instanceof Integer) {
-            Integer handIndex = (Integer) o;
+        if(!isLockedIn){
+            if (o instanceof Integer) {
+                Integer handIndex = (Integer) o;
 
-            //Checks if the user wants to deselect an already selected card
-            if (selectedCard.get(handIndex)) {
-                //Removes the card and its target from arrays
-                int index = playedCardsList.indexOf(handIndex);
-                playedCardsList.remove(index);
-                //If the card is still selected, i.e target is about to be selected
-                if (justClicked.equals(handIndex)) {
-                    playView.setSelectTarget(false);
-                    justClicked = -1;
-                } else {
-                    targets.remove(index);
-                }
-                selectedCard.set(handIndex, false);
+                //Checks if the user wants to deselect an already selected card
+                if (selectedCard.get(handIndex)) {
+                    //Removes the card and its target from arrays
+                    int index = playedCardsList.indexOf(handIndex);
+                    playedCardsList.remove(index);
+                    //If the card is still selected, i.e target is about to be selected
+                    if (justClicked.equals(handIndex)) {
+                        playView.setSelectTarget(false);
+                        justClicked = -1;
+                    } else {
+                        targets.remove(index);
+                    }
+                    selectedCard.set(handIndex, false);
 
-                numPlayedCards--;
-                playView.clickedButton(handIndex, 0);
-            }
-            //Checks if the max amount of cards already have been played
-            else if (numPlayedCards < player.getAmountPlayedCards()) {
-                if (justClicked == -1) {
-                    justClicked = handIndex;
-                    playedCardsList.add(handIndex);
-                    selectedCard.set(handIndex, true);
-                    playView.clickedButton(handIndex, 1);
-                    numPlayedCards++;
-                    playView.setSelectTarget(true);
+                    numPlayedCards--;
+                    playView.clickedButton(handIndex, 0);
                 }
+                //Checks if the max amount of cards already have been played
+                else if (numPlayedCards < player.getAmountPlayedCards()) {
+                    if (justClicked == -1) {
+                        justClicked = handIndex;
+                        playedCardsList.add(handIndex);
+                        selectedCard.set(handIndex, true);
+                        playView.clickedButton(handIndex, 1);
+                        numPlayedCards++;
+                        playView.setSelectTarget(true);
+                    }
+                }
+            } else if (o instanceof String) {
+                vehicleTarget = false;
+                selectTarget((String) o);
             }
-        } else if (o instanceof String) {
-            vehicleTarget = false;
-            selectTarget((String) o);
+            System.out.println(playedCardsList);
         }
-        System.out.println(playedCardsList);
     }
 
     /**
@@ -219,10 +217,9 @@ public class PlayCardState extends State {
      * Should be called when the card selection is done
      */
     public void finishRound() {
+        isLockedIn = true;
         ArrayList<String[]> result = getCardsAndTargets();
         //TODO Finish the view, change to the next state, send the result...
-        //return result;
-        isLockedIn = true;
         Connection.getInstance().sendTurn(result);
     }
 
@@ -259,7 +256,7 @@ public class PlayCardState extends State {
     public void setTimeLeft(float timeLeft){
         this.timeLeft = timeLeft;
         enableTimer = true;
-        playView.setElapsedTime(timeLeft);
+        playView.setTimeLeft(timeLeft);
     }
     /**
      * Converts the list of cards and targets to a list of actions by the player
@@ -280,8 +277,10 @@ public class PlayCardState extends State {
     @Override
     public void update(float dt) {
         if(enableTimer){
-            //elapsedTime -= dt;
-            playView.update(dt);
+            if(timeLeft > 0){
+                timeLeft -= dt;
+                playView.update(dt);
+            }
         }
     }
 
@@ -326,8 +325,7 @@ public class PlayCardState extends State {
                     gsm.push(new RunEffectsState(gsm));
                     break;
                 case "BEGIN_TURN":
-                    //setTimeLeft(Float.parse(strings[1]));
-                    //TODO: Start the timer
+                    setTimeLeft(Float.parseFloat(strings[1]));
                     break;
 
             }

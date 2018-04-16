@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -43,6 +42,8 @@ public class PlayCardView extends AbstractView{
     private ArrayList<String[]> vehicleOnAsteroid;
     private TextField timer;
     private Label invalidTarget;
+    private BitmapFont font;
+    private TextureAtlas textureAtlas;
 
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
@@ -58,20 +59,20 @@ public class PlayCardView extends AbstractView{
 
         table.setWidth(Gdx.graphics.getWidth());
         table.left().bottom();
-        final BitmapFont font = new BitmapFont();
+        font = new BitmapFont();
         float textScale = 0;
         if(Gdx.app.getType() == Application.ApplicationType.Android){
             textScale = GlobalConstants.TEXT_SCALE;
         }
         font.getData().scale(textScale);
         skin = new Skin();
-        TextureAtlas buttonAtlas = new TextureAtlas("cards/card_textures.atlas");
-        skin.addRegions(buttonAtlas);
+        textureAtlas = new TextureAtlas("cards/card_textures.atlas");
+        skin.addRegions(textureAtlas);
         buttonStyles = new ArrayList<>();
 
-        buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
-        Skin finishedSkin = new Skin();
-        finishedSkin.addRegions(buttonAtlas);
+        textureAtlas = new TextureAtlas("skins/uiskin.atlas");
+        skin.addRegions(textureAtlas);
+
         final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
 
@@ -146,8 +147,9 @@ public class PlayCardView extends AbstractView{
         stage.addActor(table);
 
         //Images the button has in the normal up-position, and when it is pressed down
-        buttonStyle.up = finishedSkin.getDrawable("button-up");
-        buttonStyle.down = finishedSkin.getDrawable("button-down");
+        buttonStyle.up = skin.getDrawable("button-up");
+        buttonStyle.down = skin.getDrawable("button-down");
+
         TextButton finishedButton = new TextButton("Finish Turn", buttonStyle);
         finishedButton.setWidth(Gdx.graphics.getWidth()/5);
         finishedButton.setHeight(Gdx.graphics.getWidth()/10);
@@ -162,18 +164,17 @@ public class PlayCardView extends AbstractView{
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.font = font;
         style.fontColor = Color.WHITE;
-        timer = new TextField(elapsedTime + "", style);
+        timer = new TextField(timeLeft + "", style);
         timer.setPosition(0, Gdx.graphics.getHeight() - timer.getHeight());
         stage.addActor(timer);
 
-
-        invalidTarget = new Label("Default", new Label.LabelStyle(font, Color.WHITE));
+        invalidTarget = new Label("Default", new Label.LabelStyle(font, Color.RED));
         invalidTarget.setPosition(0, table.getHeight() + invalidTarget.getHeight());
         stage.addActor(invalidTarget);
         invalidTarget.setVisible(false);
+
         setUpMap();
     }
-
     /**
      * Method for setting up the map with listeners on each asteroid and vehicle
      */
@@ -183,8 +184,8 @@ public class PlayCardView extends AbstractView{
         ArrayList<Vector2> asteroidPositions = new ArrayList<>();
         ArrayList<Vector2> asteroidDimensions = new ArrayList<>();
 
-        TextureAtlas carsAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
-        Skin skin = new Skin(carsAtlas);
+        textureAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
+        skin.addRegions(textureAtlas);
         for (int i = 0; i < asteroids.size(); i++) {
             for(int j = 0; j < asteroids.get(i).getVehicles().size(); j++){
                 String[] onAsteroid = new String[3];
@@ -193,9 +194,8 @@ public class PlayCardView extends AbstractView{
                 onAsteroid[2] = i + "";
                 vehicleOnAsteroid.add(onAsteroid);
             }
-            Texture texture = new Texture("asteroids/" + asteroids.get(i).getTexture() + ".png");
 
-            Image asteroid = new Image(texture);
+            Image asteroid = new Image(new Texture("asteroids/" + asteroids.get(i).getTexture() + ".png"));
             asteroid.setSize(Gdx.graphics.getWidth()/5, Gdx.graphics.getWidth()/5);
             asteroidDimensions.add(i, new Vector2(asteroid.getWidth(), asteroid.getHeight()));
             asteroid.setPosition(
@@ -241,6 +241,7 @@ public class PlayCardView extends AbstractView{
             });
             stage.addActor(vehicle);
         }
+
     }
 
     /**
@@ -281,14 +282,14 @@ public class PlayCardView extends AbstractView{
         this.selectTarget = selectTarget;
     }
 
-    private float elapsedTime;
-    public void setElapsedTime(float elapsedTime){
-        this.elapsedTime = elapsedTime;
+    private float timeLeft;
+    public void setTimeLeft(float timeLeft){
+        this.timeLeft = timeLeft;
     }
 
     public void update(float dt){
-        elapsedTime-= dt;
-        timer.setText(Math.round(elapsedTime) + "");
+        timeLeft -= dt;
+        timer.setText(Math.round(timeLeft) + "");
         if(duration > 0){
             duration -= dt;
         }
@@ -310,6 +311,8 @@ public class PlayCardView extends AbstractView{
     }
     public void dispose(){
         stage.dispose();
+        font.dispose();
         skin.dispose();
+        textureAtlas.dispose();
     }
 }

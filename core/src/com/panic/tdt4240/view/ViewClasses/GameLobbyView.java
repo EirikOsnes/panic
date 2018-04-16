@@ -2,7 +2,6 @@ package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -36,9 +35,7 @@ public class GameLobbyView extends AbstractView {
     private Texture bg;
     private Skin skin;
     private BitmapFont font;
-
     private Lobby lobby;
-
     private ArrayList<String> usedNames;
     private ArrayList<TextButton> textBtns;
     private Button playerBtn, exitBtn, launchGameBtn, readyBtn;
@@ -46,15 +43,17 @@ public class GameLobbyView extends AbstractView {
     private SelectBox<String> carSelectBox;
     private SelectBox.SelectBoxStyle boxStyle;
 
-    private ArrayList<Player> players;
-
+    /** Lobby is retrieved after some time. Anything that is dependent on information
+     * from the lobby object, must be generated in updateView().
+     * */
     public GameLobbyView(final GameLobbyState lobbyState) {
         super(lobbyState);
+        // INIT SETUP
+        //
+        usedNames = new ArrayList<>();
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         table = new Table();
-        // Data container
-        lobby = lobbyState.getLobby();
 
         font = new BitmapFont();
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
@@ -67,23 +66,6 @@ public class GameLobbyView extends AbstractView {
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), buttonAtlas);
 
         // FIXME
-        String[] carTypes = {"Eddison"};
-
-        carSelectBox = new SelectBox<>(skin);
-        carSelectBox.setName("Select vehicle");
-        carSelectBox.setItems(carTypes);
-        carSelectBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                // FIXME
-
-            }
-        });
-        carSelectBox.scaleBy(1.3f);
-        carSelectBox.pack();
-        table.add(carSelectBox);
-
-        table.add(carSelectBox);
 
         playerBtnStyle = new TextButton.TextButtonStyle();
         playerBtnStyle.font = font;
@@ -121,10 +103,6 @@ public class GameLobbyView extends AbstractView {
         /** testing tools: initialised localUser, players */
 
         // TODO: make this fit the state-code
-
-        usedNames = new ArrayList<>();
-        players = new ArrayList<>();
-
         preparePlayerList();
 
         table.background(new TextureRegionDrawable(new TextureRegion(bg)));
@@ -142,13 +120,25 @@ public class GameLobbyView extends AbstractView {
     }
 
     public void updateView(){
+        stage.dispose();
+        table = new Table();
+        stage = new Stage();
+        // FIXME: FETCH DATA PROPERLY. Wherever this is supposed to come from...
+        String[] carTypes = {"Eddison"};
+        carSelectBox = new SelectBox<>(skin);
+        carSelectBox.setName("Select vehicle");
+        carSelectBox.setItems(carTypes);
+        carSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // FIXME
 
-    }
+            }
+        });
+        carSelectBox.scaleBy(1.3f);
+        carSelectBox.pack();
+        table.add(carSelectBox);
 
-    public void playerJoined(Integer id){
-        // add more buttons for each player who joins
-        lobby.getPlayerIDs().add(id);
-        updateView();
     }
 
 
@@ -174,6 +164,7 @@ public class GameLobbyView extends AbstractView {
         }
 
     }
+
 
     public void dispose(){
         font.dispose();

@@ -38,6 +38,7 @@ public class GameLobbyState extends State {
      */
     private void updateLobby(){
         Connection.getInstance().updateLobby(lobby.getLobbyID());
+        view.updateView();
     }
 
     /**

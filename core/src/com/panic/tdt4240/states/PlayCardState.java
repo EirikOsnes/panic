@@ -253,7 +253,7 @@ public class PlayCardState extends State {
         return hand.get(i).getName();
     }
 
-    public void setTimeLeft(float timeLeft){
+    private void setTimeLeft(float timeLeft){
         this.timeLeft = timeLeft;
         enableTimer = true;
         playView.setTimeLeft(timeLeft);

@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -16,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.states.PlayCardState;
@@ -29,7 +27,6 @@ import java.util.ArrayList;
  * Created by victor on 05.03.2018.
  * View for selecting cards and targets
  */
-
 public class PlayCardView extends AbstractView{
 
     private ArrayList<TextButton> cardButtons;
@@ -44,6 +41,7 @@ public class PlayCardView extends AbstractView{
     private Label invalidTarget;
     private BitmapFont font;
     private TextureAtlas textureAtlas;
+    private ArrayList<Boolean> checked;
 
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
@@ -51,7 +49,7 @@ public class PlayCardView extends AbstractView{
         sr.setColor(1,1,1,0);
         sr.setAutoShapeType(true);
         int amountCards = ((PlayCardState) state).getHandSize();
-
+        checked = new ArrayList<>();
         cardButtons = new ArrayList<>(amountCards);
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.input.setInputProcessor(stage);
@@ -78,6 +76,7 @@ public class PlayCardView extends AbstractView{
 
         //Create a button for each card
         for (int i = 0; i < amountCards; i++) {
+            checked.add(false);
             final TextButton.TextButtonStyle cardButtonStyle = new TextButton.TextButtonStyle();
             cardButtonStyle.font = font;
             //Images the button has in the normal up-position, and when it is pressed down
@@ -91,9 +90,9 @@ public class PlayCardView extends AbstractView{
             cardButtons.add(i, button);
 
             final int index = i;
-            cardButtons.get(index).addListener(new ChangeListener() {
+            cardButtons.get(index).addListener(new ClickListener(){
                 @Override
-                public void changed(ChangeEvent event, Actor actor) {
+                public void clicked(InputEvent event, float x, float y){
                     if(!selectTarget){
                         //Sets up cardInfo, the tooltip for the card
                         if(!(cardInfo == null)){
@@ -121,20 +120,24 @@ public class PlayCardView extends AbstractView{
                         String targetType = ((PlayCardState)state).getTargetType(index);
                         tooltip = tooltip.concat("\n\nCan effect: " + allowedTarget);
                         tooltip = tooltip.concat("\nCan be aimed at: " + targetType);
-
-                        cardInfo = new TextButton(tooltip, cardInfoStyle);
-                        cardInfo.addListener(new ChangeListener() {
-                            @Override
-                            public void changed(ChangeEvent event, Actor actor) {
-                                cardInfo.remove();
-                            }});
-                        cardInfo.setPosition(Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/4);
-                        cardInfo.setWidth(Gdx.graphics.getWidth()/2);
-                        cardInfo.setHeight(Gdx.graphics.getHeight()/2);
-                        stage.addActor(cardInfo);
+                        if(!checked.get(index)) {
+                            cardInfo = new TextButton(tooltip, cardInfoStyle);
+                            cardInfo.addListener(new ClickListener() {
+                                @Override
+                                public void clicked(InputEvent event, float x, float y) {
+                                    cardInfo.remove();
+                                }
+                            });
+                            cardInfo.setPosition(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4);
+                            cardInfo.setWidth(Gdx.graphics.getWidth() / 2);
+                            cardInfo.setHeight(Gdx.graphics.getHeight() / 2);
+                            stage.addActor(cardInfo);
+                        }
+                        checked.set(index, !checked.get(index));
                     }
                     else{
                         cardInfo.remove();
+                        checked.set(index, false);
                     }
                     state.handleInput(index);
                     System.out.println(selectTarget);
@@ -154,11 +157,12 @@ public class PlayCardView extends AbstractView{
         finishedButton.setWidth(Gdx.graphics.getWidth()/5);
         finishedButton.setHeight(Gdx.graphics.getWidth()/10);
         finishedButton.setPosition(4*Gdx.graphics.getWidth()/5, table.getHeight());
-        finishedButton.addListener(new ChangeListener() {
+        finishedButton.addListener(new ClickListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void clicked(InputEvent event, float x, float y) {
                 ((PlayCardState) state).finishRound();
             }
+
         });
         stage.addActor(finishedButton);
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();

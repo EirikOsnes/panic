@@ -39,11 +39,11 @@ public class MenuState extends State {
 
     @Override
     public void handleInput(Object o) {
-        //startPlayCard();
 
         if (o == (Integer) 1) {
             gsm.push(new CreateGameState(gsm));
             System.out.println("Creating game...");
+            //startPlayCard();
         } else if (o == (Integer) 2) {
             gsm.push(new GameListState(gsm));
             System.out.println("Listing lobbies...");
@@ -91,7 +91,7 @@ public class MenuState extends State {
             Card card = new Card(i + "");
             card.setTooltip("Shoot a laser guided missile. Will only hit if target is marked with laser_pointer, but will always hit if it is the case. Dealing 30 damage");
             card.setName("Glue shot");
-            card.setTargetType(Card.TargetType.ASTEROID);
+            card.setTargetType(Card.TargetType.VEHICLE);
             card.setAllowedTarget(Card.AllowedTarget.ENEMY);
             if(i == 9){
                 card.setCardType(Card.CardType.ATTACK);
@@ -134,8 +134,8 @@ public class MenuState extends State {
         player.setVehicle(vehicles.get(0));
         instance.setPlayer(player);
         instance.setVehicles(vehicles);
-        gsm.set(new RunEffectsState(gsm));
-        //gsm.set(new PlayCardState(gsm));
+        //gsm.push(new RunEffectsState(gsm));
+        gsm.push(new PlayCardState(gsm));
     }
 
     @Override

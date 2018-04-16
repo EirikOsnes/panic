@@ -132,6 +132,10 @@ public class GameLobbyView extends AbstractView {
     public void dispose(){
         font.dispose();
         stage.dispose();
+        bg.dispose();
+        font.dispose();
+        skin.dispose();
+        buttonAtlas.dispose();
     }
 
     private void preparePlayerList(){

@@ -108,7 +108,10 @@ public class GameListView extends AbstractView {
 
     public void dispose(){
         stage.dispose();
+        bg.dispose();
         font.dispose();
+        skin.dispose();
+        btnAtlas.dispose();
     }
 }
 

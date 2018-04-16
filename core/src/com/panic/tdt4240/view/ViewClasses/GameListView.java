@@ -27,7 +27,6 @@ import com.panic.tdt4240.states.GameListState;
 public class GameListView extends AbstractView {
 
     private ScrollPane scroller;
-    private Stage stage;
     private TextureAtlas btnAtlas;
     private Skin skin;
     private BitmapFont font;

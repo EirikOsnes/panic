@@ -11,28 +11,28 @@ explosion.png
         index: 16
     expl-15
         rotate: false
-        xy: 1, 65
+        xy: 65, 1
         size: 64, 64
         orig: 64, 64
         offset: 0, 0
         index: 15
     expl-14
         rotate: false
-        xy: 1, 129
+        xy: 129, 1
         size: 64, 64
         orig: 64, 64
         offset: 0, 0
         index: 14
     expl-13
         rotate: false
-        xy: 1, 193
+        xy: 193, 1
         size: 64, 64
         orig: 64, 64
         offset: 0, 0
         index: 13
     expl-12
         rotate: false
-        xy: 65, 1
+        xy: 1, 65
         size: 64, 64
         orig: 64, 64
         offset: 0, 0
@@ -46,28 +46,28 @@ explosion.png
         index: 11
     expl-10
         rotate: false
-        xy: 65, 129
+        xy: 129, 65
         size: 64, 64
         orig: 64, 64
         offset: 0, 0
         index: 10
     expl-9
         rotate: false
-        xy: 65, 193
+        xy: 193, 65
         size: 64, 64
         orig: 64, 64
         offset: 0, 0
         index: 9
     expl-8
         rotate: false
-        xy: 129, 1
+        xy: 1, 129
         size: 64, 64
         orig: 64, 64
         offset: 0, 0
         index: 8
     expl-7
         rotate: false
-        xy: 129, 65
+        xy: 65, 129
         size: 64, 64
         orig: 64, 64
         offset: 0, 0
@@ -81,28 +81,28 @@ explosion.png
         index: 6
     expl-5
         rotate: false
-        xy: 129, 193
+        xy: 193, 129
         size: 64, 64
         orig: 64, 64
         offset: 0, 0
-        index: 15
+        index: 5
     expl-4
         rotate: false
-        xy: 193, 1
+        xy: 1, 193
         size: 64, 64
         orig: 64, 64
         offset: 0, 0
         index: 4
     expl-3
         rotate: false
-        xy: 193, 65
+        xy: 65, 193
         size: 64, 64
         orig: 64, 64
         offset: 0, 0
-        index: 13
+        index: 3
     expl-2
         rotate: false
-        xy: 193, 129
+        xy: 129, 193
         size: 64, 64
         orig: 64, 64
         offset: 0, 0

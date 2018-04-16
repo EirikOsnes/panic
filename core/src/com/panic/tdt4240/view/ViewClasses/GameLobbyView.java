@@ -1,5 +1,6 @@
 package com.panic.tdt4240.view.ViewClasses;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -50,8 +51,11 @@ public class GameLobbyView extends AbstractView {
         table = new Table();
 
         font = new BitmapFont();
-        textBtns = new ArrayList<>();
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            font.getData().scale(SCREEN_HEIGHT/ SCREEN_WIDTH * 1.5f);
+        }
 
+        textBtns = new ArrayList<>();
         buttonAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), buttonAtlas);
 

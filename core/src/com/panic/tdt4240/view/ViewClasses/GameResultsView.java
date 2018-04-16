@@ -1,5 +1,6 @@
 package com.panic.tdt4240.view.ViewClasses;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -53,6 +54,10 @@ public class GameResultsView extends AbstractView {
 
         skin.addRegions(btnAtlas);
         font = new BitmapFont();
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            font.getData().scale(SCREEN_HEIGHT/ SCREEN_WIDTH * 1.5f);
+        }
+
         btnStyle = new TextButton.TextButtonStyle();
         rankingStyle = new TextButton.TextButtonStyle();
 

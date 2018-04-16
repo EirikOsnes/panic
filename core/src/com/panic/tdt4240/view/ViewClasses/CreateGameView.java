@@ -54,7 +54,6 @@ public class CreateGameView extends AbstractView {
         btnStyle.font = font;
         btnStyle.up = skin.getDrawable("button-up");
         btnStyle.down = skin.getDrawable("button-up");
-
         btnStyle2 = new TextButton.TextButtonStyle();
         btnStyle2.font=font;
         btnStyle2.up = skin.getDrawable("button-up");
@@ -128,6 +127,8 @@ public class CreateGameView extends AbstractView {
             }
         });
         in_maxPlayers.pack();
+
+        in_maxPlayers = new SelectBox<>(skin); in_maxPlayers.setItems(max_players);
 
         createLobbyBtn = new TextButton("Create lobby", btnStyle2);
         createLobbyBtn.addListener(new ClickListener(){

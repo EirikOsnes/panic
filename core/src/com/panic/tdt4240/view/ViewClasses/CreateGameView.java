@@ -128,7 +128,6 @@ public class CreateGameView extends AbstractView {
         });
         in_maxPlayers.pack();
 
-        String[] max_players = {"2", "3", "4", "5", "6"};
         in_maxPlayers = new SelectBox<>(skin); in_maxPlayers.setItems(max_players);
 
         createLobbyBtn = new TextButton("Create lobby", btnStyle2);

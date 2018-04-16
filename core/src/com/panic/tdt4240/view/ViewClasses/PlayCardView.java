@@ -249,18 +249,6 @@ public class PlayCardView extends AbstractView{
         }
 
     }
-    //TODO Should show: cannot target this asteroid/this vehicle
-    public void showInvalidTarget(String targetID){
-        String target = "You cannot target this ";
-        if(targetID.substring(0,1).equals("a")){
-            target = target.concat("asteroid");
-        }
-        else{
-            target = target.concat("vehicle");
-        }
-        invalidTarget.setText(target);
-        stage.addActor(invalidTarget);
-    }
 
     /**
      * Creates a short text onscreen saying the target is invalid

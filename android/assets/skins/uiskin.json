@@ -1,6 +1,6 @@
 {
   com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    default_font: {
+    default-font: {
       file: default.fnt
     }
   },
@@ -12,15 +12,15 @@
   },
   com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
     default: {
-      down: button_down,
-      up: button_up,
+      down: button-down,
+      up: button-up,
     },
   },
   com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
     default: {
-      down: button_down,
-      up: button_up,
-      font: default_font,
+      down: button-down,
+      up: button-up,
+      font: default-font,
       fontColor: white
     },
   }
@@ -40,10 +40,6 @@
   com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
     default-vertical: { handle: default-splitpane-vertical },
     default-horizontal: { handle: default-splitpane }
-  },
-  com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-    default: { titleFont: default-font, background: default-window, titleFontColor: white },
-    dialog: { titleFont: default-font, background: default-window, titleFontColor: white, stageBackground: dialogDim }
   },
   com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
     default-horizontal: { background: default-slider, knob: default-slider-knob }

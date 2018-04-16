@@ -6,9 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -18,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.CreateGameState;
-import com.panic.tdt4240.view.Renderer;
 /**
  * Created by victor on 12.03.2018.
  */
@@ -45,12 +42,12 @@ public class CreateGameView extends AbstractView {
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         table = new Table();
         font = new BitmapFont();
-        btnAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
+        btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         btnStyle = new TextButton.TextButtonStyle();
         btnStyle.font = font;
-        btnStyle.up = skin.getDrawable("button_up");
-        btnStyle.down = skin.getDrawable("button_up");
+        btnStyle.up = skin.getDrawable("button-up");
+        btnStyle.down = skin.getDrawable("button-up");
 
         table.setFillParent(true);
         table.center();

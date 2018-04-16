@@ -9,8 +9,12 @@ import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
+<<<<<<< HEAD
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
+=======
+import com.panic.tdt4240.util.MapConnections;
+>>>>>>> origin/magnus/explosions
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
@@ -22,6 +26,7 @@ import static com.panic.tdt4240.models.Card.TargetType.VEHICLE;
 
 /**
  * Created by Hermann on 12.03.2018.
+ * State for keeping track of played cards and targets
  */
 
 public class PlayCardState extends State {
@@ -37,32 +42,36 @@ public class PlayCardState extends State {
     private int numPlayedCards;
     private ArrayList<Card> hand;
     private ArrayList<Boolean> selectedCard;
-    private ArrayList<AsteroidConnection> connections;
-    private ArrayList<Vehicle> vehicles;
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
     private GameInstance gameInstance;
+<<<<<<< HEAD
     private boolean isLockedIn = false;
 
 //TODO Når kort deselectes bør rekkefølge respekteres: fjern position of Integer
+=======
+    private MapConnections mapConnections;
+    private float elapsedTime;
+    private boolean enableTimer;
+>>>>>>> origin/magnus/explosions
 
     public PlayCardState(GameStateManager gsm) {
         super(gsm);
         gameInstance = GameInstance.getInstance();
+        enableTimer = false;
 
         player = gameInstance.getPlayer();
         map = gameInstance.getMap();
-        vehicles = gameInstance.getVehicles();
 
         playedCardsList = new ArrayList<>();
         targets = new ArrayList<>();
-        connections = new ArrayList<>();
 
         hand = player.playCards();
         selectedCard = new ArrayList<>(hand.size());
         for (int i = 0; i < hand.size(); i++) {
             selectedCard.add(i, false);
         }
+        mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         playView = new PlayCardView(this);
         readyForNewTurn();
 
@@ -154,6 +163,7 @@ public class PlayCardState extends State {
             }
             else{
                 //TODO Should show 'not valid targed' in PlayCardView
+                playView.showInvalidTarget(firstTarget);
             }
         }
     }
@@ -193,50 +203,14 @@ public class PlayCardState extends State {
      * @param tableHeight height of table, for calculating buffer height
      */
     public void addConnection(Asteroid start, Asteroid end, float asteroidWidth, float asteroidHeight, float tableHeight){
-        if(notConnected(start.getId(), end.getId())){
-            AsteroidConnection connection = new AsteroidConnection(
-                    //Calculation of center point of the asteroids, see setUpMap() in PlayCardView
-                    new Vector2(start.getPosition().x *(Gdx.graphics.getWidth() - asteroidWidth) + asteroidWidth/2,
-                            start.getPosition().y *(Gdx.graphics.getHeight() - tableHeight - asteroidHeight) + tableHeight
-                                    + asteroidHeight/2),
-                    new Vector2(end.getPosition().x *(Gdx.graphics.getWidth() - asteroidWidth) + asteroidWidth/2,
-                            end.getPosition().y *(Gdx.graphics.getHeight() - tableHeight - asteroidHeight) + tableHeight
-                                    + asteroidHeight/2),
-                    start.getId(), end.getId());
-            connections.add(connection);
-        }
-    }
-
-    /**
-     * Checks if an equivalent connection has already been added
-     * @param startID start asteroid
-     * @param endID end asteroid
-     * @return whether this connection already exists
-     */
-    private boolean notConnected(String startID, String endID){
-        for(AsteroidConnection connection: connections){
-            if(connection.startID.equals(endID) && connection.endID.equals(startID)){
-                return false;
-            }
-            else if(connection.startID.equals(startID) && connection.endID.equals(endID)){
-                return false;
-            }
-        }
-        return true;
+        mapConnections.addConnection(start, end,asteroidWidth, asteroidHeight, tableHeight);
     }
 
     /**
      * @return array of start and endpoints of connecting lines between asteroids
      */
     public ArrayList<Vector2[]> getConnections(){
-        ArrayList<Vector2[]> lines = new ArrayList<>();
-        for(AsteroidConnection connection : connections){
-            Vector2[] line = new Vector2[2];
-            line[0] = connection.start;
-            line[1] = connection.end;
-            lines.add(line);
-        }
-        return lines;
+        return mapConnections.getConnections();
     }
 
     /**
@@ -244,22 +218,51 @@ public class PlayCardState extends State {
      */
     public void finishRound(){
         ArrayList<String[]> result = getCardsAndTargets();
+<<<<<<< HEAD
         isLockedIn = true;
         Connection.getInstance().sendTurn(result);
+=======
+        //TODO Finish the view, change to the next state, send the result...
+        //return result;
+>>>>>>> origin/magnus/explosions
     }
 
     /**
-     * Converts enum cardtype to string, ATTACK -> "attack"
+     * Converts enum cardType to string, ATTACK -> "attack"
      * @param i cardID
-     * @return lowercase string of cardtype
+     * @return lowercase string of cardType
      */
     public String getCardType(int i){
         return hand.get(i).getCardType().name().toLowerCase();
     }
-    public Card getCard(int pos){
-        return hand.get(pos);
+    public String[] getCardToolTip(int i){
+        return hand.get(i).getTooltip().split(" ");
     }
-
+    public int getHandSize(){
+        return hand.size();
+    }
+    public Map getMap(){
+        return map;
+    }
+    public String getColorCar(String id){
+        return gameInstance.getVehicleById(id).getColorCar();
+    }
+    public String getAllowedTarget(int i){
+        return hand.get(i).getAllowedTarget().name().toLowerCase();
+    }
+    public String getTargetType(int i){
+        return hand.get(i).getTargetType().name().toLowerCase();
+    }
+    public String getCardName(int i){
+        return hand.get(i).getName();
+    }
+    public float getElapsedTime(){
+        return elapsedTime;
+    }
+    public void setTimeLeft(float timeLeft){
+        elapsedTime = timeLeft;
+        enableTimer = true;
+    }
     /**
      * Converts the list of cards and targets to a list of actions by the player
      * @return ArrayList with card, target id and id of vehicle that played the card
@@ -278,7 +281,10 @@ public class PlayCardState extends State {
 
     @Override
     public void update(float dt) {
-
+        if(enableTimer){
+        elapsedTime -= dt;
+        playView.update(elapsedTime);
+        }
     }
 
     @Override
@@ -291,6 +297,7 @@ public class PlayCardState extends State {
         playView.dispose();
     }
 
+<<<<<<< HEAD
     @Override
     public AbstractView getView() {
         return playView;
@@ -320,6 +327,8 @@ public class PlayCardState extends State {
         Connection.getInstance().sendPlayCardState();
     }
 
+=======
+>>>>>>> origin/magnus/explosions
     @Override
     protected void setUpAdapter() {
         callbackAdapter = new PlayCardAdapter();

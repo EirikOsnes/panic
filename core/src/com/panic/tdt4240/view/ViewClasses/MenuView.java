@@ -45,8 +45,8 @@ public class MenuView extends AbstractView {
         ButtonStyle = new TextButton.TextButtonStyle();
 
         ButtonStyle.font = font;
-        ButtonStyle.up = skin.getDrawable("button_up");
-        ButtonStyle.down = skin.getDrawable("button_down");
+        ButtonStyle.up = skin.getDrawable("button-up");
+        ButtonStyle.down = skin.getDrawable("button-down");
 
         createGameBtn = new TextButton("Create New Game", ButtonStyle);
         joinGameBtn = new TextButton("Join Game", ButtonStyle);

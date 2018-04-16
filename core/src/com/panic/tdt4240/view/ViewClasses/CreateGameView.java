@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.states.CreateGameState;
 
 /**
@@ -25,14 +26,13 @@ import com.panic.tdt4240.states.CreateGameState;
 
 public class CreateGameView extends AbstractView {
 
-    private Stage stage;
     private TextureAtlas btnAtlas;
     private Skin skin;
     private BitmapFont font;
     private TextButton.TextButtonStyle btnStyle;
     private Table table;
     private Texture bg;
-    private TextButton exitToMainMenuBtn;
+    private TextButton createLobbyBtn, exitToMainMenuBtn;
 
     private TextField in_LobbyName;
     private SelectBox<String> in_mapID;
@@ -43,9 +43,7 @@ public class CreateGameView extends AbstractView {
 
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH, PanicGame.HEIGHT);
-        stage = new Stage();
         table = new Table();
-        Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
@@ -121,6 +119,18 @@ public class CreateGameView extends AbstractView {
         });
         in_maxPlayers.pack();
 
+        createLobbyBtn = new TextButton("Create lobby", btnStyle);
+        createLobbyBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Connection.getInstance().createLobby(
+                        Integer.valueOf(in_maxPlayers.getSelected()),
+                        in_mapID.getSelected(),
+                        in_LobbyName.getText());
+            }
+        });
+        createLobbyBtn.pack();
+
 
         exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
         exitToMainMenuBtn.addListener(new ChangeListener() {
@@ -137,7 +147,7 @@ public class CreateGameView extends AbstractView {
         table.add(in_maxPlayers).padTop(PanicGame.HEIGHT / 16).row();
 
         // TODO: a button for text input and direct connection to a game lobby?
-
+        table.add(createLobbyBtn).pad(30).row();
         table.add(exitToMainMenuBtn).pad(30).row();
 
         table.pack();

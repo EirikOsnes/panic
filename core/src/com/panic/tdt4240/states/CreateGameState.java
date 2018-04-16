@@ -5,7 +5,6 @@ import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.CreateGameView;
-import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 /**
  * Created by magnus on 12.03.2018.

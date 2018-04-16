@@ -43,9 +43,7 @@ public class GameListView extends AbstractView {
         super(listState);
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
-        stage = new Stage();
         table = new Table();
-        Gdx.input.setInputProcessor(stage);
         font = new BitmapFont();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);

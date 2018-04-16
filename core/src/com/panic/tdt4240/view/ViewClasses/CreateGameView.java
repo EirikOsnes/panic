@@ -113,9 +113,10 @@ public class CreateGameView extends AbstractView {
 
     public void dispose(){
         stage.dispose();
-        btnAtlas.dispose();
+        bg.dispose();
         font.dispose();
         skin.dispose();
+        btnAtlas.dispose();
     }
 
     public class MyTextInputListener implements Input.TextInputListener {

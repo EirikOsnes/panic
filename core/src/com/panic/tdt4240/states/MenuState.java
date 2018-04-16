@@ -41,9 +41,9 @@ public class MenuState extends State {
     public void handleInput(Object o) {
 
         if (o == (Integer) 1) {
-            //gsm.push(new CreateGameState(gsm));
-            //System.out.println("Creating game...");
-            startPlayCard();
+            gsm.push(new CreateGameState(gsm));
+            System.out.println("Creating game...");
+            //startPlayCard();
         } else if (o == (Integer) 2) {
             gsm.push(new GameListState(gsm));
             System.out.println("Listing lobbies...");

@@ -44,7 +44,6 @@ public class PlayCardView extends AbstractView{
     private TextField timer;
     private Label invalidTarget;
 
-    //TODO Make the player vehicle more visible
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
         sr = new ShapeRenderer();
@@ -310,7 +309,7 @@ public class PlayCardView extends AbstractView{
         stage.draw();
     }
     public void dispose(){
-        sr.dispose();
         stage.dispose();
+        skin.dispose();
     }
 }

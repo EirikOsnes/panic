@@ -75,10 +75,11 @@ public class PlayCardState extends State {
 
     /**
      * Method to handle input from the PlayCardView
+     *
      * @param o ID of the card that has been clicked, if string it is target-ID
-     *      if the card already has been selected:
+     *          if the card already has been selected:
      *          it is deselected and its effect is reverted
-     *      else if less than the max number of cards has been selected:
+     *          else if less than the max number of cards has been selected:
      *          if we should select a target for another card(justClicked != -1), nothing is done
      *          else we set the clicked card to the active card, and wait for its target to be selected
      */
@@ -97,8 +98,7 @@ public class PlayCardState extends State {
                 if (justClicked.equals(handIndex)) {
                     playView.setSelectTarget(false);
                     justClicked = -1;
-                }
-                else {
+                } else {
                     targets.remove(index);
                 }
                 selectedCard.set(handIndex, false);
@@ -117,79 +117,78 @@ public class PlayCardState extends State {
                     playView.setSelectTarget(true);
                 }
             }
-        }
-        else if(o instanceof String){
+        } else if (o instanceof String) {
             vehicleTarget = false;
             selectTarget((String) o);
         }
         System.out.println(playedCardsList);
     }
+
     /**
      * Saves the target of a card, if a target is waiting to be selected
+     *
      * @param s ID of target that has been clicked
-     *      if we have selected a card:
+     *          if we have selected a card:
      *          add the target as the target of the most recently selected card
      *          reset the justClicked index, allowing us to select a new card and target
      */
-    private void selectTarget(String s){
+    private void selectTarget(String s) {
         s = s.toLowerCase();
         String firstTarget;
         String potentialTarget;
         int targetID = s.indexOf("a");
-        if(targetID > 0){
+        if (targetID > 0) {
             //Targets vehicle, but can potentially target asteroid instead
             firstTarget = s.substring(0, targetID);
             potentialTarget = s.substring(targetID);
-        }
-        else{
+        } else {
             //Targets asteroid
             firstTarget = s;
             potentialTarget = "";
         }
         //If the first target is valid
-        if(justClicked > -1 && validTarget(firstTarget)){
+        if (justClicked > -1 && validTarget(firstTarget)) {
             targets.add(firstTarget);
             playView.clickedButton(justClicked, -1);
             justClicked = -1;
             playView.setSelectTarget(false);
-        }
-        else{
+        } else {
             //Checks whether we can target the asteroid instead
-            if(potentialTarget.length() > 0){
+            if (potentialTarget.length() > 0) {
                 selectTarget(potentialTarget);
-            }
-            else{
-                if(vehicleTarget){
+            } else {
+                if (vehicleTarget) {
                     playView.showInvalidTarget("vehicle");
-                }
-                else{
+                } else {
                     playView.showInvalidTarget("asteroid");
                 }
             }
         }
     }
+
     /**
      * Method for determining validity of target
+     *
      * @param targetID asteroid or vehicle id of the target
      * @return whether the target is a valid target
      */
-    private boolean validTarget(String targetID){
+    private boolean validTarget(String targetID) {
         System.out.println(targetID);
         //If the target is an asteroid
-        if(targetID.substring(0, 1).equals("a")){
-            return hand.get(playedCardsList.get(numPlayedCards-1)).getTargetType().equals(ASTEROID);
+        if (targetID.substring(0, 1).equals("a")) {
+            return hand.get(playedCardsList.get(numPlayedCards - 1)).getTargetType().equals(ASTEROID);
         }
         //If the target is a vehicle
-        else if(targetID.substring(0, 1).equals("v")){
+        else if (targetID.substring(0, 1).equals("v")) {
             vehicleTarget = true;
             //If the player can target a vehicle
-            if(hand.get(playedCardsList.get(numPlayedCards-1)).getTargetType().equals(VEHICLE)){
+            if (hand.get(playedCardsList.get(numPlayedCards - 1)).getTargetType().equals(VEHICLE)) {
                 //If the player targets themselves
-                if(player.getVehicle().getVehicleID().toLowerCase().equals(targetID)){
-                    return !hand.get(playedCardsList.get(numPlayedCards-1)).getAllowedTarget().equals(ENEMY);
+                if (player.getVehicle().getVehicleID().toLowerCase().equals(targetID)) {
+                    return !hand.get(playedCardsList.get(numPlayedCards - 1)).getAllowedTarget().equals(ENEMY);
                 }
                 //The player targets someone else
-                return !hand.get(playedCardsList.get(numPlayedCards-1)).getAllowedTarget().equals(PLAYER);
+                return !hand.get(playedCardsList.get(numPlayedCards - 1)).getAllowedTarget().equals(PLAYER);
             }
             return false;
         }
@@ -198,27 +197,28 @@ public class PlayCardState extends State {
 
     /**
      * Adds connection between two asteroids on the map, if it doesn't already exist
-     * @param start asteroid id
-     * @param end asteroid id
-     * @param asteroidWidth width of sprite, for calculating center
+     *
+     * @param start          asteroid id
+     * @param end            asteroid id
+     * @param asteroidWidth  width of sprite, for calculating center
      * @param asteroidHeight height of sprite, for calculating center
-     * @param tableHeight height of table, for calculating buffer height
+     * @param tableHeight    height of table, for calculating buffer height
      */
-    public void addConnection(Asteroid start, Asteroid end, float asteroidWidth, float asteroidHeight, float tableHeight){
-        mapConnections.addConnection(start, end,asteroidWidth, asteroidHeight, tableHeight);
+    public void addConnection(Asteroid start, Asteroid end, float asteroidWidth, float asteroidHeight, float tableHeight) {
+        mapConnections.addConnection(start, end, asteroidWidth, asteroidHeight, tableHeight);
     }
 
     /**
      * @return array of start and endpoints of connecting lines between asteroids
      */
-    public ArrayList<Vector2[]> getConnections(){
+    public ArrayList<Vector2[]> getConnections() {
         return mapConnections.getConnections();
     }
 
     /**
      * Should be called when the card selection is done
      */
-    public void finishRound(){
+    public void finishRound() {
         ArrayList<String[]> result = getCardsAndTargets();
         //TODO Finish the view, change to the next state, send the result...
         //return result;
@@ -265,7 +265,7 @@ public class PlayCardState extends State {
      * Converts the list of cards and targets to a list of actions by the player
      * @return ArrayList with card, target id and id of vehicle that played the card
      */
-    public ArrayList<String[]> getCardsAndTargets(){
+    private ArrayList<String[]> getCardsAndTargets(){
         ArrayList<String[]> cardsAndTargets = new ArrayList<>();
         for (int i = 0; i < targets.size(); i++) {
             String[] playerActions = new String[3];

@@ -135,7 +135,10 @@ public class GameResultsView extends AbstractView {
 
     public void dispose(){
         renderer.dispose();
-        font.dispose();
         stage.dispose();
+        bg.dispose();
+        font.dispose();
+        skin.dispose();
+        btnAtlas.dispose();
     }
 }

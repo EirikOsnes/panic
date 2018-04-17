@@ -79,7 +79,7 @@ public class GameListView extends AbstractView {
                     state.handleInput(data[1]); // lobbyID
                 }
             });
-            table.add(button).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40); table.row();
+            table.add(button).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/80); table.row();
         }
         if (listState.getLobbyListData().size() != 0) {
             createExitToMainMenuBtn();

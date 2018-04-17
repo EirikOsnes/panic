@@ -25,9 +25,6 @@ public class CreateGameState extends State {
         view = new CreateGameView(this);
 
         // generic lobby setup
-        name = "generic lobby";
-        maxPlayerCount=2;
-        mapID="TEST";
     }
 
     /**

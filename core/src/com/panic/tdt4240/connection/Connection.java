@@ -234,7 +234,7 @@ public class Connection extends WebSocketClient{
     @Override
     public void onError(Exception ex) {
         Gdx.app.log("onError", ex.getMessage());
-        System.out.println("onError.....: " + ex.getMessage());
+        ex.printStackTrace();
     }
 
     public void setAdapter(ICallbackAdapter adapter) {

@@ -120,7 +120,9 @@ public class GameListState extends State {
 
             switch (strings[0]){
                 case "GET_LOBBIES":
-                    readLobbyData(strings[1]);
+                    if(strings.length>1) {
+                        readLobbyData(strings[1]);
+                    }
                     break;
                 case "LOBBY_SUCCESSFUL":
                     gsm.push(new GameLobbyState(gsm,Integer.parseInt(strings[1])));

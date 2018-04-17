@@ -146,6 +146,15 @@ public class GameLobbyView extends AbstractView {
 
     // TODO: adapt for actually connecting to the server...?
     /* CAN NOT RUN IN THE CONSTRUCTOR/**/
+    public void dispose(){
+        font.dispose();
+        stage.dispose();
+        bg.dispose();
+        font.dispose();
+        skin.dispose();
+        buttonAtlas.dispose();
+    }
+
     private void preparePlayerList(){
         String name;
         playerTxtFields = new ArrayList<>();

@@ -174,9 +174,4 @@ public class GameLobbyView extends AbstractView {
         }
     }
 
-
-    public void dispose(){
-        font.dispose();
-        stage.dispose();
-    }
 }

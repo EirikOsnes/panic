@@ -91,6 +91,9 @@ public class GameListView extends AbstractView {
             table.pack();
             stage.addActor(table);
             stage.addActor(exitTable);
+
+            // TODO: refresh button
+
         }
 //        scroller = new ScrollPane(table);
 //        scroller.setScrollingDisabled(true, false);
@@ -106,6 +109,7 @@ public class GameListView extends AbstractView {
                 state.handleInput("-1");
             }
         });
+
     }
 
     // should pop up with the appropriate error message and update lobbylist

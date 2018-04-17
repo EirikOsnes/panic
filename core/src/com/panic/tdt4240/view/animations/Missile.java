@@ -25,12 +25,14 @@ public class Missile extends AnimatedActor {
     @Override
     public void act(float dt){
         super.act(dt);
+        currentFrame = getCurrentFrame(dt,true);
         //TODO
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
+        batch.draw(currentFrame,getX(),getY());
         //TODO
     }
 }

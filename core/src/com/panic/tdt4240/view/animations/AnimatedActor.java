@@ -25,15 +25,20 @@ public class AnimatedActor extends Actor {
         this.frameCount = frameCount;
     }
 
-    void setAnimation(Array<TextureRegion> regions){
+    public void setAnimation(Array<TextureRegion> regions){
         animation = new Animation<>(maxFrameTime,regions);
     }
     public void startAnimation(float x, float y){
         if(animation==null){
-            throw new IllegalStateException("Animation is not defined");
+            throw new IllegalStateException("Animation is not yet defined");
         }
         currentFrameTime=0;
         setPosition(x,y);
+    }
+
+    public TextureRegion getCurrentFrame(float dt, boolean looping){
+        currentFrameTime+=dt;
+        return animation.getKeyFrame(currentFrameTime,looping);
     }
 
     public float getDuration() {

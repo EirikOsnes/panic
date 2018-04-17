@@ -75,7 +75,7 @@ public class Connection extends WebSocketClient{
 
     //Get a personal connectionID from the server
     public void findConnectionID(){
-        this.send("CONNECTION_ID");
+        this.send("CONNECTION_ID//0");
     }
 
     /**

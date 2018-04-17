@@ -9,6 +9,7 @@ import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.XMLParser;
+import com.panic.tdt4240.view.LoadGameView;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
@@ -24,12 +25,14 @@ public class LoadGameState extends State {
     private GameInstance gi;
     private Connection connection;
     private boolean isLoading; //Flag to use for rendering of a loading screen.
+    private LoadGameView view;
 
     protected LoadGameState(GameStateManager gsm) {
         super(gsm);
         gi = GameInstance.getInstance();
         connection = Connection.getInstance();
         setUpGameInstance();
+        view = new LoadGameView(this);
     }
 
     /**
@@ -82,18 +85,17 @@ public class LoadGameState extends State {
 
     @Override
     public void render() {
-
+        view.render();
     }
 
     @Override
     public void dispose() {
-
+        view.dispose();
     }
 
     @Override
     public AbstractView getView() {
-        return null;
-        //TODO: Return view when implemented!
+        return view;
     }
 
     @Override

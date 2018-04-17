@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
+import com.panic.tdt4240.models.ModelHolder;
+import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.CreateGameView;
 
@@ -22,11 +24,6 @@ public class CreateGameState extends State {
     public CreateGameState(GameStateManager gsm){
         super(gsm);
         view = new CreateGameView(this);
-
-        // generic lobby setup
-        name = "generic lobby";
-        maxPlayerCount=2;
-        mapID="M-001";
     }
 
     /**
@@ -49,7 +46,16 @@ public class CreateGameState extends State {
         //TODO: Actually set the maxPlayerCount, mapID and name parameters.
         Connection.getInstance().createLobby(maxPlayerCount,mapID,name);
     }
-
+    public String[] getMapIDs(){
+        return ModelHolder.getInstance().getMapIDs();
+    }
+    public String[] getMaxPlayers(){
+        String[] max_players = new String[GlobalConstants.MAX_PLAYERS-1];
+        for (Integer i = 0; i < GlobalConstants.MAX_PLAYERS-1; i++) {
+            max_players[i] = String.valueOf(i + 2);
+        }
+        return max_players;
+    }
 
     @Override
     public void handleInput(Object o) {

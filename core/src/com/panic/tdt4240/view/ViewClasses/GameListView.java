@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.GameListState;
+import com.panic.tdt4240.util.GlobalConstants;
 
 /**
  * Created by victor on 12.03.2018.
@@ -48,9 +49,8 @@ public class GameListView extends AbstractView {
 
         bg = new Texture("misc/background.png");
         font = new BitmapFont();
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            font.getData().scale(SCREEN_HEIGHT/ SCREEN_WIDTH * 1.5f);
-        }
+        float textScale = GlobalConstants.GET_TEXT_SCALE();
+        font.getData().scale(textScale);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         btnStyle = new TextButton.TextButtonStyle();
@@ -79,7 +79,7 @@ public class GameListView extends AbstractView {
                     state.handleInput(data[1]); // lobbyID
                 }
             });
-            table.add(button).width(300).pad(5); table.row();
+            table.add(button).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/80); table.row();
         }
         if (listState.getLobbyListData().size() != 0) {
             createExitToMainMenuBtn();
@@ -106,6 +106,19 @@ public class GameListView extends AbstractView {
                 state.handleInput("-1");
             }
         });
+
+        // TODO: a button for text input and direct connection to a game lobby?
+
+        table.add(exitToMainMenuBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
+
+        scroller = new ScrollPane(table);
+        scroller.setScrollingDisabled(true, false);
+        table.pack();
+
+//        table.add(scroller).fill().expand();
+//        stage.addActor(scroller);
+        stage.addActor(table);
+
     }
 
     // should pop up with the appropriate error message and update lobbylist

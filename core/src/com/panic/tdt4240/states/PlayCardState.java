@@ -11,6 +11,7 @@ import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
+import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ public class PlayCardState extends State {
     private float timeLeft;
     private boolean enableTimer;
     private boolean vehicleTarget;
+
 
     public PlayCardState(GameStateManager gsm) {
         super(gsm);
@@ -221,6 +223,8 @@ public class PlayCardState extends State {
         ArrayList<String[]> result = getCardsAndTargets();
         //TODO Finish the view, change to the next state, send the result...
         Connection.getInstance().sendTurn(result);
+        //TODO Finish the view, change to the next state, send the result...
+        //return result;
     }
 
     /**
@@ -258,6 +262,7 @@ public class PlayCardState extends State {
         enableTimer = true;
         playView.setTimeLeft(timeLeft);
     }
+  
     /**
      * Converts the list of cards and targets to a list of actions by the player
      * @return ArrayList with card, target id and id of vehicle that played the card

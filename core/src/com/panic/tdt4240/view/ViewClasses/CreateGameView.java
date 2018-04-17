@@ -8,9 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -48,13 +46,15 @@ public class CreateGameView extends AbstractView {
         cam.setToOrtho(false, PanicGame.WIDTH, PanicGame.HEIGHT);
         table = new Table();
         font = new BitmapFont();
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            font.getData().scale(SCREEN_HEIGHT/ SCREEN_WIDTH * 1.5f);
+        }
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         btnStyle = new TextButton.TextButtonStyle();
         btnStyle.font = font;
         btnStyle.up = skin.getDrawable("button-up");
         btnStyle.down = skin.getDrawable("button-up");
-
         btnStyle2 = new TextButton.TextButtonStyle();
         btnStyle2.font=font;
         btnStyle2.up = skin.getDrawable("button-up");
@@ -67,9 +67,6 @@ public class CreateGameView extends AbstractView {
 
         TextField.TextFieldStyle textStyle = new TextField.TextFieldStyle();
         textStyle.font = font;
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            textStyle.font.getData().scale(SCREEN_HEIGHT/ SCREEN_WIDTH * 1.5f);
-        }
         textStyle.fontColor = skin.getColor("white");
 
         in_LobbyName = new TextField("Set lobby name", textStyle);
@@ -129,6 +126,8 @@ public class CreateGameView extends AbstractView {
         });
         in_maxPlayers.pack();
 
+        in_maxPlayers = new SelectBox<>(skin); in_maxPlayers.setItems(max_players);
+
         createLobbyBtn = new TextButton("Create lobby", btnStyle2);
         createLobbyBtn.addListener(new ClickListener(){
             @Override
@@ -162,7 +161,7 @@ public class CreateGameView extends AbstractView {
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                cgState.handleInput(-1);
+                cgState.handleInput("-1");
 //                System.out.println("IS IT WORKING");
             }
         });

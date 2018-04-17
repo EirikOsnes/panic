@@ -44,7 +44,7 @@ public class PlayCardView extends AbstractView{
     private BitmapFont font;
     private TextureAtlas textureAtlas;
     private ArrayList<Boolean> checked;
-
+    private float timeLeft;
 
     //TODO Make the player vehicle more visible, inform if the targeting is wrong
     public PlayCardView(PlayCardState playCardState){
@@ -173,11 +173,10 @@ public class PlayCardView extends AbstractView{
         timer.setPosition(0, Gdx.graphics.getHeight() - timer.getHeight());
         stage.addActor(timer);
 
-        invalidTarget = new Label("Default", new Label.LabelStyle(font, Color.RED));
+        invalidTarget = new ToastMessage("Default", new Label.LabelStyle(font, Color.RED));
         invalidTarget.setPosition(0, table.getHeight() + invalidTarget.getHeight());
-        stage.addActor(invalidTarget);
-        invalidTarget.setVisible(false);
 
+        stage.addActor(invalidTarget);
         setUpMap();
     }
     /**
@@ -223,6 +222,7 @@ public class PlayCardView extends AbstractView{
                 ((PlayCardState) state).addConnection(asteroids.get(i), neighbour, asteroid.getWidth(), asteroid.getHeight(), table.getHeight());
             }
         }
+        //TODO By PlayerVehicle, add text or something
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
             int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
             String colorCar = ((PlayCardState) state).getColorCar(vehicleOnAsteroid.get(j)[0]);
@@ -255,10 +255,7 @@ public class PlayCardView extends AbstractView{
     public void showInvalidTarget(String targetType){
         String target = "You cannot target this " + targetType;
         invalidTarget.setText(target);
-        invalidTarget.setVisible(true);
-        duration = 2;
     }
-    private float duration = 0;
     /**
      * Method to change visuals of the buttons depending on if they're pressed down or not
      * @param button ID of the button/card that has been pressed
@@ -286,7 +283,6 @@ public class PlayCardView extends AbstractView{
         this.selectTarget = selectTarget;
     }
 
-    private float timeLeft;
     public void setTimeLeft(float timeLeft){
         this.timeLeft = timeLeft;
     }
@@ -294,12 +290,8 @@ public class PlayCardView extends AbstractView{
     public void update(float dt){
         timeLeft -= dt;
         timer.setText(Math.round(timeLeft) + "");
-        if(duration > 0){
-            duration -= dt;
-        }
-        else if(invalidTarget.isVisible()){
-            invalidTarget.setVisible(false);
-        }
+        invalidTarget.act(dt);
+
     }
     /**
      * Renders connections between asteroids, then the stage
@@ -319,4 +311,30 @@ public class PlayCardView extends AbstractView{
         skin.dispose();
         textureAtlas.dispose();
     }
+
+    private class ToastMessage extends Label{
+        private float duration;
+
+        private ToastMessage(CharSequence text, LabelStyle style) {
+            super(text, style);
+            duration = 0;
+            setVisible(false);
+        }
+        @Override
+        public void setText(CharSequence newText) {
+            duration = 2;
+            setVisible(true);
+            super.setText(newText);
+        }
+        @Override
+        public void act(float delta) {
+            if(duration > 0){
+                duration-= delta;
+            }
+            else {
+                setVisible(false);
+            }
+        }
+    }
+
 }

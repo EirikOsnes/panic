@@ -18,10 +18,16 @@ public class CreateGameState extends State {
     String mapID;
     String name;
 
+
     public CreateGameState(GameStateManager gsm){
         super(gsm);
         connection = Connection.getInstance();
         view = new CreateGameView(this);
+
+        // generic lobby setup
+        name = "generic lobby";
+        maxPlayerCount=2;
+        mapID="TEST";
     }
 
     /**
@@ -48,7 +54,8 @@ public class CreateGameState extends State {
 
     @Override
     public void handleInput(Object o) {
-        if ((int) o == -1){
+        String s = (String) o;
+        if (s.equals("-1")){
             gsm.reset();
         }
     }

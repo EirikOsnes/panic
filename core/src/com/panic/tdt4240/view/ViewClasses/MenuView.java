@@ -1,5 +1,6 @@
 package com.panic.tdt4240.view.ViewClasses;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -38,6 +39,9 @@ public class MenuView extends AbstractView {
         cam.setToOrtho(false,PanicGame.WIDTH,PanicGame.HEIGHT);
         table = new Table();
         font = new BitmapFont();
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            font.getData().scale(SCREEN_HEIGHT/ SCREEN_WIDTH * 1.5f);
+        }
         buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
 

@@ -32,6 +32,7 @@ public class Connection extends WebSocketClient{
                 URI uri = new URI("ws://panicserver.herokuapp.com");
                 ourInstance = new Connection(uri);
                 ourInstance.connectBlocking(); //FIXME: This returns a boolean - should it be used?
+                ourInstance.setConnectionLostTimeout(30);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -39,14 +40,7 @@ public class Connection extends WebSocketClient{
             }
         }
 
-        if(!ourInstance.getSocket().isConnected()){
-            try {
-                //ourInstance.connectBlocking();
-                ourInstance.reconnectBlocking();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        ourInstance.reconnectCall();
 
         return ourInstance;
     }
@@ -61,6 +55,18 @@ public class Connection extends WebSocketClient{
 
     public int getConnectionID() {
         return connectionID;
+    }
+
+    private void reconnectCall(){
+        if(!ourInstance.getSocket().isConnected()){
+            try {
+                ourInstance.connectBlocking();
+                ourInstance.send("RECONNECT//"+connectionID);
+                ourInstance.setConnectionLostTimeout(30);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void test(){
@@ -82,9 +88,17 @@ public class Connection extends WebSocketClient{
      */
     public void createLobby(int maxPlayerCount, @NonNull String mapID, String name){
 
-        String message = "CREATE//" + mapID + "//" + maxPlayerCount + "//" + name;
+        String message = "CREATE//" + mapID + "//" + maxPlayerCount + "//" + parseToServer(name);
         this.send(message);
 
+    }
+
+    private String parseToServer(String string){
+        return string.replaceAll("," , "§" ).replaceAll(":", "€").replaceAll("//", "£").replaceAll("&", "¤");
+    }
+
+    public String parseFromServer(String string){
+        return string.replaceAll("§", ",").replaceAll("€", ":").replaceAll("£", "//").replaceAll("¤","&");
     }
 
     /**
@@ -214,14 +228,13 @@ public class Connection extends WebSocketClient{
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        Gdx.app.log("", "onClose");
-        System.out.println("onClose");
+        Gdx.app.log("", "onClose! REASON: " + reason);
     }
 
     @Override
     public void onError(Exception ex) {
         Gdx.app.log("onError", ex.getMessage());
-        System.out.println("onError.....: " + ex.getMessage());
+        ex.printStackTrace();
     }
 
     public void setAdapter(ICallbackAdapter adapter) {

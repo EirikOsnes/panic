@@ -14,7 +14,7 @@ public class Lobby {
     private String lobbyname;
     private int lobbyID;
     private String mapID;
-    private ArrayList<Integer> playerIDs; //ConnectionIDs?
+    private ArrayList<Integer> playerIDs; // ConnectionIDs?
     private ArrayList<String> vehicleTypes;
 
     public Lobby(int maxPlayers, String lobbyname, int lobbyID, @NonNull String mapID) {

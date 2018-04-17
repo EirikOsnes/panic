@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class GameLobbyState extends State {
 
-    // fields: player(s), numOfPlayers...
+
     GameLobbyView view;
     Lobby lobby;
 
@@ -26,6 +26,8 @@ public class GameLobbyState extends State {
         Connection.getInstance().updateLobby(lobbyID);
         view = new GameLobbyView(this);
     }
+
+    public Lobby getLobby(){return lobby;}
 
     public void launchGame(){
         gsm.push(new LoadGameState(gsm));
@@ -36,6 +38,7 @@ public class GameLobbyState extends State {
      */
     private void updateLobby(){
         Connection.getInstance().updateLobby(lobby.getLobbyID());
+        view.updateView();
     }
 
     /**
@@ -63,12 +66,10 @@ public class GameLobbyState extends State {
 
     @Override
     public void handleInput(Object o) {
-
-        if ((int) o ==  -1){
+        String s = (String) o;
+        if (s.equals("-1")){
             gsm.reset();
         }
-
-
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) gsm.reset();
 
@@ -123,7 +124,7 @@ public class GameLobbyState extends State {
         }
 
         private void parseLobby(String[] strings){
-            Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),strings[2],Integer.parseInt(strings[3]),strings[4]);
+            Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),Connection.getInstance().parseFromServer(strings[2]),Integer.parseInt(strings[3]),strings[4]);
             String[] playerIDstrings = strings[5].split("&");
             String[] vehicleTypestrings = strings[6].split("&");
             ArrayList<Integer> playerIDs = new ArrayList<>();

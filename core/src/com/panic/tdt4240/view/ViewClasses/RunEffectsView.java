@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -21,6 +22,7 @@ import com.panic.tdt4240.states.RunEffectsState;
 import com.panic.tdt4240.states.State;
 import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.util.MapMethods;
+import com.panic.tdt4240.view.animations.Explosion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,36 +37,37 @@ public class RunEffectsView extends AbstractView {
 
     private GameInstance gameInstance;
     private ShapeRenderer sr;
-    private MapConnections mapConnections;
     private HashMap<String, Image> vehicleImages;
     private HashMap<String, Image> asteroidImages;
     private AnimationAdapter animator;
-    private Actor emptyActor;
-
+    private MapConnections mapConnections;
+    private final Explosion explosion;
 
     public RunEffectsView(State state) {
         super(state);
         sr = new ShapeRenderer();
-        sr.setColor(1,1,1,0);
+        sr.setColor(1, 1, 1, 0);
         sr.setAutoShapeType(true);
         gameInstance = GameInstance.getInstance();
         setUpMap();
         animator = new AnimationAdapter();
-        emptyActor = new Actor();
-        stage.addActor(emptyActor);
+        explosion = new Explosion();
+        stage.addActor(explosion);
         System.out.println(vehicleImages.keySet().toString());
         System.out.println(asteroidImages.keySet().toString());
     }
+
     private void setUpMap() {
         mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         asteroidImages = new HashMap<>();
         vehicleImages = new HashMap<>();
+        mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         ArrayList<Asteroid> asteroids = gameInstance.getMap().getAsteroids();
 
         ArrayList<String[]> vehicleOnAsteroid = new ArrayList<>();
         ArrayList<Vector2> asteroidPositions = new ArrayList<>();
         ArrayList<Vector2> asteroidDimensions = new ArrayList<>();
-        float table = SCREEN_HEIGHT/5;
+        float table = SCREEN_HEIGHT / 5;
         TextureAtlas carsAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
         Skin skin = new Skin(carsAtlas);
         for (int i = 0; i < asteroids.size(); i++) {
@@ -107,11 +110,12 @@ public class RunEffectsView extends AbstractView {
         }
     }
 
+
     @Override
     public void render() {
         sr.begin(ShapeRenderer.ShapeType.Filled);
         ArrayList<Vector2[]> lines = mapConnections.getConnections();
-        for(Vector2[] points : lines){
+        for(Vector2[] points : lines) {
             sr.rectLine(points[0], points[1], 5.0f);
         }
         sr.end();
@@ -122,7 +126,6 @@ public class RunEffectsView extends AbstractView {
     //TODO: All of the following methods should add animation to a stack
 
     public void moveVehicle(String vehicleID, String asteroidID) {
-        //TODO: Animate the moving of the vehicle
         Actor actor = vehicleImages.get(vehicleID);
         Image asteroid = asteroidImages.get(asteroidID);
         Vector2 vec = MapMethods.asteroidPositions(asteroid.getX(), asteroid.getY(), asteroid.getWidth(),
@@ -134,6 +137,15 @@ public class RunEffectsView extends AbstractView {
     public void attackVehicle(String vehicleID) {
         //TODO: Animate the attacking of a vehicle
 
+        final Image vehicle = vehicleImages.get(vehicleID);
+        Runnable explosionRunnable = new Runnable() {
+            @Override
+            public void run() {
+                explosion.startAnimation(vehicle.getX(), vehicle.getY());
+            }
+        };
+        Action action = Actions.sequence(Actions.run(explosionRunnable), Actions.delay(explosion.getDuration()));
+        animator.addAction(action, explosion);
     }
 
     public void attackAsteroid(String asteroidID) {
@@ -148,6 +160,7 @@ public class RunEffectsView extends AbstractView {
         stage.dispose();
         animator.dispose();
     }
+
 
     private class AnimationAdapter {
         private LinkedList<Actor> actors;

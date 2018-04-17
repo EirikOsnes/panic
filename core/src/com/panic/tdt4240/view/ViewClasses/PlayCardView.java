@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.states.PlayCardState;
@@ -44,6 +45,8 @@ public class PlayCardView extends AbstractView{
     private TextureAtlas textureAtlas;
     private ArrayList<Boolean> checked;
 
+
+    //TODO Make the player vehicle more visible, inform if the targeting is wrong
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
         sr = new ShapeRenderer();
@@ -196,7 +199,6 @@ public class PlayCardView extends AbstractView{
                 onAsteroid[2] = i + "";
                 vehicleOnAsteroid.add(onAsteroid);
             }
-
             Image asteroid = new Image(new Texture("asteroids/" + asteroids.get(i).getTexture() + ".png"));
             asteroid.setSize(Gdx.graphics.getWidth()/5, Gdx.graphics.getWidth()/5);
             asteroidDimensions.add(i, new Vector2(asteroid.getWidth(), asteroid.getHeight()));

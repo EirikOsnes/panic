@@ -1,5 +1,4 @@
 package com.panic.tdt4240.view.ViewClasses;
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -8,9 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -20,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
-import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.states.CreateGameState;
 import com.panic.tdt4240.util.GlobalConstants;
 
@@ -100,9 +96,9 @@ public class CreateGameView extends AbstractView {
         table.add(in_LobbyName).center().top().pad(30);
         table.row();
 
-        String[] mapIDs = {"test", "not a test"};
-
-        // FIXME
+        String[] mapIDs = ((CreateGameState)state).getMapIDs();
+        //First map in the array is the default value
+        cgState.setMapID(mapIDs[0]);
         SelectBox.SelectBoxStyle boxStyle = new SelectBox.SelectBoxStyle(skin.get(SelectBox.SelectBoxStyle.class));
         boxStyle.font = boxFont;
 
@@ -118,8 +114,10 @@ public class CreateGameView extends AbstractView {
             }
         });
         in_mapID.pack();
+        String[] max_players = ((CreateGameState)state).getMaxPlayers();
+        //First value in the array is the default value
+        cgState.setMaxPlayerCount(Integer.valueOf(max_players[0]));
 
-        String[] max_players = {"2", "3", "4", "5", "6", "7", "8"};
         in_maxPlayers = new SelectBox<>(skin);
         in_maxPlayers.setStyle(boxStyle);
         in_maxPlayers.setName("Max number of players");

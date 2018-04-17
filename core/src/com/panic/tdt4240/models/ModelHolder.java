@@ -52,6 +52,13 @@ public class ModelHolder {
 
         return null;
     }
+    public String[] getMapIDs(){
+        String[] mapIDs = new String[maps.size()];
+        for (int i = 0; i < maps.size(); i++) {
+            mapIDs[i] = maps.get(i).getId();
+        }
+        return mapIDs;
+    }
 
     public Vehicle getVehicleByName(String name) {
         for (int i = 0; i < vehicles.size(); i++) {

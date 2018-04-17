@@ -3,7 +3,6 @@ package com.panic.tdt4240.states;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Card;
-import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
@@ -11,7 +10,6 @@ import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.XMLParser;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.MenuView;
-import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
 import java.util.Stack;

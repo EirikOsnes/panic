@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.models.Lobby;
+import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.states.GameLobbyState;
 import com.panic.tdt4240.util.PlayerNameGenerator;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class GameLobbyView extends AbstractView {
 
     private Button exitBtn, readyBtn;
     private TextButton.TextButtonStyle exitBtnStyle;
+    private ArrayList<Player> players;
 
     private SelectBox<String> carSelectBox;
     private SelectBox.SelectBoxStyle boxStyle;
@@ -132,7 +134,7 @@ public class GameLobbyView extends AbstractView {
         preparePlayerList(); // generates playerTxtFields
 
         for (TextField tf : playerTxtFields){
-            table.add(tf).width(200).height(50).pad(10);
+            table.add(tf).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/80);
             table.row();
         }
         table.add(exitBtn);

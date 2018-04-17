@@ -1,0 +1,46 @@
+missiles.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+    green-1
+        rotate: true
+        xy: 18, 22
+        size: 18, 22
+        orig: 18, 22
+        offset: 0, 0
+        index: 1
+    green-2
+        rotate: true
+        xy: 18, 45
+        size: 18, 22
+        orig: 18, 22
+        offset: 0, 0
+        index: 2
+    green-3
+        rotate: true
+        xy: 18, 78
+        size: 18, 22
+        orig: 18, 22
+        offset: 0, 0
+        index: 3
+    red-1
+        rotate: true
+        xy: 18, 131
+        size: 18, 22
+        orig: 18, 22
+        offset: 0, 0
+        index: 4
+    red-2
+        rotate: true
+        xy: 18, 161
+        size: 18, 22
+        orig: 18, 22
+        offset: 0, 0
+        index: 5
+    red-3
+        rotate: true
+        xy: 18, 193
+        size: 18, 22
+        orig: 18, 22
+        offset: 0, 0
+        index: 6

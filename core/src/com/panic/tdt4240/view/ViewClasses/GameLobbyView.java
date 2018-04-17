@@ -14,12 +14,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.models.Lobby;
-import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.states.GameLobbyState;
 import com.panic.tdt4240.util.PlayerNameGenerator;
 import java.util.ArrayList;
@@ -35,19 +35,29 @@ public class GameLobbyView extends AbstractView {
     private Texture bg;
     private Skin skin;
     private BitmapFont font;
-    private Lobby lobby;
+
     private ArrayList<String> usedNames;
-    private ArrayList<TextButton> textBtns;
-    private Button playerBtn, exitBtn, launchGameBtn, readyBtn;
-    private TextButton.TextButtonStyle playerBtnStyle, exitBtnStyle;
+
+    private ArrayList<TextField> playerTxtFields;
+    private TextField.TextFieldStyle txtStyle;
+
+    private Button exitBtn, readyBtn;
+    private TextButton.TextButtonStyle exitBtnStyle;
+
     private SelectBox<String> carSelectBox;
     private SelectBox.SelectBoxStyle boxStyle;
 
+    private GameLobbyState lobbyState;
+
     /** Lobby is retrieved after some time. Anything that is dependent on information
      * from the lobby object, must be generated in updateView().
+     *
+     * The constructor is used to set up styling for text, buttons, etc...
+     * If changes are made post-release, they should mostly be here.
      * */
     public GameLobbyView(final GameLobbyState lobbyState) {
         super(lobbyState);
+        this.lobbyState=lobbyState;
         // INIT SETUP
         //
         usedNames = new ArrayList<>();
@@ -61,61 +71,32 @@ public class GameLobbyView extends AbstractView {
         }
         //
 
-        textBtns = new ArrayList<>();
         buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), buttonAtlas);
 
-        // FIXME
+        //
 
-        playerBtnStyle = new TextButton.TextButtonStyle();
-        playerBtnStyle.font = font;
-        playerBtnStyle.up = skin.getDrawable("button-up");
-        playerBtnStyle.down = skin.getDrawable("button-up");
+        playerTxtFields = new ArrayList<>();
+
+        txtStyle = new TextField.TextFieldStyle();
+        txtStyle.font = font;
+        txtStyle.background = skin.getDrawable("textfield");
 
         exitBtnStyle = new TextButton.TextButtonStyle();
         exitBtnStyle.font = font;
         exitBtnStyle.up = skin.getDrawable("button-up");
         exitBtnStyle.down = skin.getDrawable("button-down");
 
-        playerBtn = new TextButton("", playerBtnStyle);
-        launchGameBtn = new TextButton("Launch game", exitBtnStyle);
-        exitBtn = new TextButton("Exit lobby", exitBtnStyle);
-
-        playerBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                lobbyState.handleInput( "0");
-            }
-        });
-        launchGameBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                lobbyState.handleInput( "1");
-            }
-        });
-        exitBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                lobbyState.handleInput( "-1");
-            }
-        });
-
         /** testing tools: initialised localUser, players */
 
-        // TODO: make this fit the state-code
-        preparePlayerList();
+        // TODO: make this fit the state-code.
 
         table.background(new TextureRegionDrawable(new TextureRegion(bg)));
 
         table.setFillParent(true);
         table.row().center();
         table.add(new Label(PanicGame.TITLE, skin)).top().padBottom(10).row();
-        for (TextButton tb : textBtns){
-            table.add(tb).width(200).height(50).pad(10);
-            table.row();
-        }
-        table.add(exitBtn);
-        table.pack();
+
         stage.addActor(table);
     }
 
@@ -139,30 +120,49 @@ public class GameLobbyView extends AbstractView {
         carSelectBox.pack();
         table.add(carSelectBox);
 
-    }
+        exitBtn = new TextButton("Exit lobby", exitBtnStyle);
 
+        exitBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                state.handleInput( "-1");
+            }
+        });
+
+        preparePlayerList(); // generates playerTxtFields
+
+        for (TextField tf : playerTxtFields){
+            table.add(tf).width(200).height(50).pad(10);
+            table.row();
+        }
+        table.add(exitBtn);
+        table.pack();
+
+    }
 
     public void render(){
         stage.draw();
     }
 
     // TODO: adapt for actually connecting to the server...?
+    /* CAN NOT RUN IN THE CONSTRUCTOR/**/
     private void preparePlayerList(){
         String name;
-        for (Integer playerID : lobby.getPlayerIDs()){
+        playerTxtFields = new ArrayList<>();
+        for (Integer playerID : lobbyState.getLobby().getPlayerIDs()){
             double seed = Math.floor(Math.random() * PlayerNameGenerator.getCount());
             name = PlayerNameGenerator.getName((int) seed);
-            if (playerID == Connection.getInstance().getConnectionID()){
-                name = name + " (me)";
-            }
             if (! usedNames.contains(name)) {
-                TextButton button = new TextButton(
-                        name, playerBtnStyle);
-                textBtns.add(button);
+                // This should work so that each player can see (me) next to only
+                // one name at a time.
                 usedNames.add(name);
+                if (playerID == Connection.getInstance().getConnectionID()){
+                    name = name + " (me)";
+                }
+                TextField playerField = new TextField(name, txtStyle);
+                playerTxtFields.add(playerField);
             }
         }
-
     }
 
 

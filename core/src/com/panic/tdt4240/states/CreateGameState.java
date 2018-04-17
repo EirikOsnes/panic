@@ -18,6 +18,7 @@ public class CreateGameState extends State {
     String mapID;
     String name;
 
+
     public CreateGameState(GameStateManager gsm){
         super(gsm);
         connection = Connection.getInstance();

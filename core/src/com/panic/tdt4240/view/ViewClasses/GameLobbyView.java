@@ -107,12 +107,12 @@ public class GameLobbyView extends AbstractView {
 
         table.setFillParent(true);
         table.row().center();
-        table.add(new Label(PanicGame.TITLE, skin)).top().padBottom(10);
+        table.add(new Label(PanicGame.TITLE, skin)).top().pad(Gdx.graphics.getHeight()/80);
         table.row().center();
         table.add(new Label(PanicGame.FULL_TITLE, skin));
         for (TextButton tb : textBtns){
             table.row().center();
-            table.add(tb).width(200).height(50).pad(10);
+            table.add(tb).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40);
         }
         table.pack();
 

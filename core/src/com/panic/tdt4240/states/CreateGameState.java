@@ -13,7 +13,6 @@ import com.panic.tdt4240.view.ViewClasses.CreateGameView;
 public class CreateGameState extends State {
 
     CreateGameView view;
-    Connection connection;
     int maxPlayerCount;
     String mapID;
     String name;
@@ -21,7 +20,6 @@ public class CreateGameState extends State {
 
     public CreateGameState(GameStateManager gsm){
         super(gsm);
-        connection = Connection.getInstance();
         view = new CreateGameView(this);
 
         // generic lobby setup
@@ -48,7 +46,7 @@ public class CreateGameState extends State {
 
     public void createButtonClick(){
         //TODO: Actually set the maxPlayerCount, mapID and name parameters.
-        connection.createLobby(maxPlayerCount,mapID,name);
+        Connection.getInstance().createLobby(maxPlayerCount,mapID,name);
     }
 
 

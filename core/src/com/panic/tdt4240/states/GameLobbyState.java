@@ -124,7 +124,7 @@ public class GameLobbyState extends State {
         }
 
         private void parseLobby(String[] strings){
-            Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),strings[2],Integer.parseInt(strings[3]),strings[4]);
+            Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),Connection.getInstance().parseFromServer(strings[2]),Integer.parseInt(strings[3]),strings[4]);
             String[] playerIDstrings = strings[5].split("&");
             String[] vehicleTypestrings = strings[6].split("&");
             ArrayList<Integer> playerIDs = new ArrayList<>();

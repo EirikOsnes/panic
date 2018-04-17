@@ -17,7 +17,6 @@ public class GameStateManager {
 
     public void push(State state){
         states.push(state);
-        setAdapter();
         setInputProcessor();
     }
 

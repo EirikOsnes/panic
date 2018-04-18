@@ -86,18 +86,22 @@ public class GameListView extends AbstractView {
         ScrollPane.ScrollPaneStyle scrollStyle = new ScrollPane.ScrollPaneStyle();
         scrollStyle.background = skin.getDrawable("default-rect");
         scrollStyle.vScroll = skin.getDrawable("default-scroll");
+        scrollStyle.hScroll = skin.getDrawable("default-scroll");
         scrollStyle.vScrollKnob = skin.getDrawable("default-round-large");
-        scroller.setScrollingDisabled(true, false);
+        scrollStyle.hScrollKnob = skin.getDrawable("default-round-large");
         scroller.setStyle(scrollStyle);
+        scroller.setWidth(SCREEN_WIDTH*0.7f);
+        scroller.setHeight(SCREEN_HEIGHT*3/4);
+        scroller.setPosition(SCREEN_HEIGHT/10, SCREEN_WIDTH/10*3);
+
         stage.addActor(scroller);
 
         createExitToMainMenuBtn();
         exitTable = new Table();
         exitTable.setFillParent(true);
-        exitTable.bottom();
+        exitTable.center().bottom();
         exitTable.add(exitToMainMenuBtn).padTop(30).padBottom(30).bottom();
         exitTable.pack();
-        lobbyBtnTable.pack();
 
         stage.addActor(scroller);
         stage.addActor(exitTable);

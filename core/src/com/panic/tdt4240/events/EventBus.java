@@ -38,8 +38,7 @@ public class EventBus {
      */
     public void readyForRemove(){
         for (EventListener el : subs) {
-            if(el.getClass().isInstance(Asteroid.class)) {
-                System.out.println("ASTEROID FOUND");
+            if(el instanceof Asteroid) {
                 ((Asteroid) el).readyToRemove();
             }
         }

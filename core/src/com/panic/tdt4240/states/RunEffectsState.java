@@ -49,6 +49,7 @@ public class RunEffectsState extends State implements EventListener {
     public void update(float dt) {
         if(doneParsing){
             if (runEffectsView.isDoneAnimating()){
+                EventBus.getInstance().readyForRemove();
                 gsm.set(new PlayCardState(gsm));
             }
         }

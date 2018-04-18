@@ -24,9 +24,8 @@ public class GameListState extends State {
     public GameListState(GameStateManager gsm){
         super(gsm);
         lobbyListData = new ArrayList<>();
-        updateLobbyList();
-
         view = new GameListView(this);
+        updateLobbyList();
         // load available games from master server - can be done with updateLobbyList
     }
 

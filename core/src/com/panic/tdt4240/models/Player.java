@@ -52,6 +52,10 @@ public class Player implements EventListener {
         return vehicle;
     }
 
+    public boolean isAlive() {
+        return alive;
+    }
+
     @Override
     public void handleEvent(Event e) {
         if (e.getT() == Event.Type.DESTROYED && e.getInstigatorID().equals(vehicle.getVehicleID())) {

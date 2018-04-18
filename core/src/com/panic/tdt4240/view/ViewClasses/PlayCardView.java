@@ -247,10 +247,9 @@ public class PlayCardView extends AbstractView{
         Table playerTable = new Table();
         playerTable.setWidth(Gdx.graphics.getWidth()/10);
         playerTable.setHeight(Gdx.graphics.getWidth()/20);
-        //TODO health should get current health, maxhealth should get max health
         Vehicle playerVehicle = ((PlayCardState)state).getPlayerVehicle();
         int health = Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
-        int maxHealth =Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
+        int maxHealth =Math.round(playerVehicle.getStatusHandler().getStatusBaseValue("health"));
 
         Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
         player.rotateBy(270);

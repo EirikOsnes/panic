@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class GameLobbyState extends State {
 
-    // fields: player(s), numOfPlayers...
+
     GameLobbyView view;
     Lobby lobby;
 
@@ -27,8 +27,15 @@ public class GameLobbyState extends State {
         view = new GameLobbyView(this);
     }
 
+    public Lobby getLobby(){return lobby;}
+
     public void launchGame(){
-        gsm.push(new LoadGameState(gsm));
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                gsm.push(new LoadGameState(gsm, lobby.getLobbyID()));
+            }
+        });
     }
 
     /**
@@ -36,6 +43,7 @@ public class GameLobbyState extends State {
      */
     private void updateLobby(){
         Connection.getInstance().updateLobby(lobby.getLobbyID());
+        view.updateView();
     }
 
     /**
@@ -49,8 +57,8 @@ public class GameLobbyState extends State {
     /**
      * Set me to ready.
      */
-    private void setReady(){
-        Connection.getInstance().setReady(lobby.getLobbyID());
+    public void setReady(){
+        Connection.getInstance().chooseVehicleType("EDDISON",lobby.getLobbyID());
     }
 
     /**
@@ -63,12 +71,10 @@ public class GameLobbyState extends State {
 
     @Override
     public void handleInput(Object o) {
-
-        if ((int) o ==  -1){
+        String s = (String) o;
+        if (s.equals("-1")){
             gsm.reset();
         }
-
-
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) gsm.reset();
 
@@ -123,7 +129,7 @@ public class GameLobbyState extends State {
         }
 
         private void parseLobby(String[] strings){
-            Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),strings[2],Integer.parseInt(strings[3]),strings[4]);
+            Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),Connection.getInstance().parseFromServer(strings[2]),Integer.parseInt(strings[3]),strings[4]);
             String[] playerIDstrings = strings[5].split("&");
             String[] vehicleTypestrings = strings[6].split("&");
             ArrayList<Integer> playerIDs = new ArrayList<>();

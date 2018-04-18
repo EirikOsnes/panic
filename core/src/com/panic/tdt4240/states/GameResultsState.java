@@ -25,6 +25,7 @@ public class GameResultsState extends State {
 
     @Override
     public void handleInput(Object o) {
+        String s = (String) o;
         if (o == (Integer) 0) { // go back to lobby
             gsm.pop(); // to CardPlayState
             gsm.pop(); // to GameLobbyState

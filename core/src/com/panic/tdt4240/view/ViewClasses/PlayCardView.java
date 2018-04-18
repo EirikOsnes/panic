@@ -1,6 +1,5 @@
 package com.panic.tdt4240.view.ViewClasses;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,9 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.panic.tdt4240.models.Asteroid;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.PlayCardState;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.MapMethods;
@@ -33,7 +32,6 @@ public class PlayCardView extends AbstractView{
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Table table;
-    //private Texture background;
     private TextButton cardInfo;
     private Skin skin;
     private boolean selectTarget = false;
@@ -44,9 +42,8 @@ public class PlayCardView extends AbstractView{
     private BitmapFont font;
     private TextureAtlas textureAtlas;
     private ArrayList<Boolean> checked;
+    private float timeLeft;
 
-
-    //TODO Make the player vehicle more visible, inform if the targeting is wrong
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
         sr = new ShapeRenderer();
@@ -61,10 +58,8 @@ public class PlayCardView extends AbstractView{
         table.setWidth(Gdx.graphics.getWidth());
         table.left().bottom();
         font = new BitmapFont();
-        float textScale = 0;
-        if(Gdx.app.getType() == Application.ApplicationType.Android){
-            textScale = GlobalConstants.TEXT_SCALE;
-        }
+        float textScale = GlobalConstants.GET_TEXT_SCALE();
+
         font.getData().scale(textScale);
         skin = new Skin();
         textureAtlas = new TextureAtlas("cards/card_textures.atlas");
@@ -163,7 +158,10 @@ public class PlayCardView extends AbstractView{
         finishedButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((PlayCardState) state).finishRound();
+                if(!((PlayCardState) state).isLockedIn()) { //Only send the cards to the server if you have not already locked in.
+                    //TODO: Show a "Waiting for other players" message
+                    ((PlayCardState) state).finishRound();
+                }
             }
 
         });
@@ -171,15 +169,14 @@ public class PlayCardView extends AbstractView{
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.font = font;
         style.fontColor = Color.WHITE;
-        timer = new TextField(timeLeft + "", style);
+        timer = new TextField(String.valueOf(timeLeft), style);
         timer.setPosition(0, Gdx.graphics.getHeight() - timer.getHeight());
         stage.addActor(timer);
 
-        invalidTarget = new Label("Default", new Label.LabelStyle(font, Color.RED));
+        invalidTarget = new ToastMessage("Default", new Label.LabelStyle(font, Color.RED));
         invalidTarget.setPosition(0, table.getHeight() + invalidTarget.getHeight());
-        stage.addActor(invalidTarget);
-        invalidTarget.setVisible(false);
 
+        stage.addActor(invalidTarget);
         setUpMap();
     }
     /**
@@ -247,7 +244,23 @@ public class PlayCardView extends AbstractView{
             });
             stage.addActor(vehicle);
         }
+        Table playerTable = new Table();
+        playerTable.setWidth(Gdx.graphics.getWidth()/10);
+        playerTable.setHeight(Gdx.graphics.getWidth()/20);
+        Vehicle playerVehicle = ((PlayCardState)state).getPlayerVehicle();
+        int health = Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
+        int maxHealth =Math.round(playerVehicle.getStatusHandler().getStatusBaseValue("health"));
 
+        Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
+        player.rotateBy(270);
+        String hp = String.format("HP: %d/%d", health, maxHealth);
+        Label label = new Label(hp,new Label.LabelStyle(font, Color.RED));
+        playerTable.add(player).width(Gdx.graphics.getWidth()/20).height(Gdx.graphics.getWidth()/10).row();
+        playerTable.add(label).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
+        playerTable.pack();
+        playerTable.setPosition(Gdx.graphics.getWidth() - playerTable.getWidth()*2,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
+
+        stage.addActor(playerTable);
     }
 
     /**
@@ -257,10 +270,7 @@ public class PlayCardView extends AbstractView{
     public void showInvalidTarget(String targetType){
         String target = "You cannot target this " + targetType;
         invalidTarget.setText(target);
-        invalidTarget.setVisible(true);
-        duration = 2;
     }
-    private float duration = 0;
     /**
      * Method to change visuals of the buttons depending on if they're pressed down or not
      * @param button ID of the button/card that has been pressed
@@ -288,7 +298,6 @@ public class PlayCardView extends AbstractView{
         this.selectTarget = selectTarget;
     }
 
-    private float timeLeft;
     public void setTimeLeft(float timeLeft){
         this.timeLeft = timeLeft;
     }
@@ -296,12 +305,8 @@ public class PlayCardView extends AbstractView{
     public void update(float dt){
         timeLeft -= dt;
         timer.setText(Math.round(timeLeft) + "");
-        if(duration > 0){
-            duration -= dt;
-        }
-        else if(invalidTarget.isVisible()){
-            invalidTarget.setVisible(false);
-        }
+        invalidTarget.act(dt);
+
     }
     /**
      * Renders connections between asteroids, then the stage
@@ -321,4 +326,30 @@ public class PlayCardView extends AbstractView{
         skin.dispose();
         textureAtlas.dispose();
     }
+
+    private class ToastMessage extends Label{
+        private float duration;
+
+        private ToastMessage(CharSequence text, LabelStyle style) {
+            super(text, style);
+            duration = 0;
+            setVisible(false);
+        }
+        @Override
+        public void setText(CharSequence newText) {
+            duration = 2;
+            setVisible(true);
+            super.setText(newText);
+        }
+        @Override
+        public void act(float delta) {
+            if(duration > 0){
+                duration-= delta;
+            }
+            else {
+                setVisible(false);
+            }
+        }
+    }
+
 }

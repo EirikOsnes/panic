@@ -20,17 +20,16 @@ import java.util.ArrayList;
 
 public class RunEffectsState extends State implements EventListener {
 
-    private GameInstance gi;
     private RunEffectsView runEffectsView;
 
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
-        gi = GameInstance.getInstance();
         EventBus.getInstance().addListener(this);
         //Connection.getInstance().sendRunEffectsState();
         runEffectsView = new RunEffectsView(this);
         Card c = ModelHolder.getInstance().getCardById("MOVE");
         EventFactory.postEventsFromCard(c, "A-003", "V-001");
+        Connection.getInstance().sendRunEffectsState(GameInstance.getInstance().getID());
     }
 
     @Override

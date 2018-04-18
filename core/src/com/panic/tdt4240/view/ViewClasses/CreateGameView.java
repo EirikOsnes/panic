@@ -1,5 +1,4 @@
 package com.panic.tdt4240.view.ViewClasses;
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -8,9 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -20,8 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
-import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.states.CreateGameState;
+import com.panic.tdt4240.util.GlobalConstants;
 
 /**
  * Created by victor on 12.03.2018.
@@ -31,7 +28,7 @@ public class CreateGameView extends AbstractView {
 
     private TextureAtlas btnAtlas;
     private Skin skin;
-    private BitmapFont font;
+    private BitmapFont font, boxFont;
     private TextButton.TextButtonStyle btnStyle, btnStyle2;
     private Table table;
     private Texture bg;
@@ -40,6 +37,7 @@ public class CreateGameView extends AbstractView {
     private TextField in_LobbyName;
     private SelectBox<String> in_mapID;
     private SelectBox<String> in_maxPlayers;
+    private boolean haveSetName;
 
     public CreateGameView(final CreateGameState cgState) {
         super(cgState);
@@ -48,6 +46,11 @@ public class CreateGameView extends AbstractView {
         cam.setToOrtho(false, PanicGame.WIDTH, PanicGame.HEIGHT);
         table = new Table();
         font = new BitmapFont();
+        boxFont = new BitmapFont();
+        font.setColor(Color.WHITE);
+        float textScale = GlobalConstants.GET_TEXT_SCALE();
+        font.getData().scale(textScale);
+        boxFont.getData().scale(textScale*2);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         btnStyle = new TextButton.TextButtonStyle();
@@ -58,90 +61,97 @@ public class CreateGameView extends AbstractView {
         btnStyle2.font=font;
         btnStyle2.up = skin.getDrawable("button-up");
         btnStyle2.down = skin.getDrawable("button-down");
-        btnStyle.up = skin.getDrawable("button-up");
-        btnStyle.down = skin.getDrawable("button-up");
+        haveSetName = false;
 
         table.setFillParent(true);
         table.background(new TextureRegionDrawable(new TextureRegion(bg)));
 
         TextField.TextFieldStyle textStyle = new TextField.TextFieldStyle();
-        textStyle.font = font;
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            textStyle.font.getData().scale(SCREEN_HEIGHT/ SCREEN_WIDTH * 1.5f);
-        }
-        textStyle.fontColor = skin.getColor("white");
+        textStyle.font = boxFont;
+        textStyle.background = skin.getDrawable("textfield");
 
+        textStyle.fontColor = skin.getColor("white");
         in_LobbyName = new TextField("Set lobby name", textStyle);
-        in_LobbyName.setOnscreenKeyboard(new TextField.OnscreenKeyboard() {
+        final TextField.OnscreenKeyboard keyboard = new TextField.OnscreenKeyboard() {
             @Override
             public void show(boolean visible) {
-                //Gdx.input.setOnscreenKeyboardVisible(true);
                 Gdx.input.getTextInput(new Input.TextInputListener(){
-                    @Override
-                    public void input(String text){
-                        in_LobbyName.setText(text);
-                        cgState.setName(text);
-                        System.out.println(text);
-                    }
-                    @Override
-                    public void canceled(){
-                        System.out.println("Cancelled.");
-                    }
-                },
+                       @Override
+                       public void input(String text){
+                           if(text.length() > 0){
+                               in_LobbyName.setText(text);
+                               cgState.setName(text);
+                               System.out.println(text);
+                               haveSetName = true;
+                           }
+                       }
+                       @Override
+                       public void canceled(){
+                           System.out.println("Cancelled.");
+                       }
+                   },
                         "Set lobby name", "", "Set lobby name");
             }
-        });
+        };
+        in_LobbyName = new TextField("Set lobby name", textStyle);
+        in_LobbyName.setOnscreenKeyboard(keyboard);
+        keyboard.show(true);
 
         table.add(in_LobbyName).center().top().pad(30);
         table.row();
 
-        String[] mapIDs = {"test", "not a test"};
-
-        // FIXME
-        SelectBox.SelectBoxStyle boxStyle = new SelectBox.SelectBoxStyle();
-        boxStyle.font = font;
-        boxStyle.fontColor = new Color(1,1,1,0.75f);
+        String[] mapIDs = ((CreateGameState)state).getMapIDs();
+        SelectBox.SelectBoxStyle boxStyle = new SelectBox.SelectBoxStyle(skin.get(SelectBox.SelectBoxStyle.class));
+        boxStyle.font = boxFont;
 
         in_mapID = new SelectBox<>(skin);
+        in_mapID.setStyle(boxStyle);
         in_mapID.setName("Select map");
         in_mapID.setItems(mapIDs);
+        in_mapID.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE()*2);
+
         in_mapID.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 cgState.setMapID(in_mapID.getSelected());
             }
         });
-        in_mapID.scaleBy(1.3f);
+        //First map in the array is the default value
+        cgState.setMapID(mapIDs[0]);
         in_mapID.pack();
 
-        String[] max_players = {"2", "3", "4", "5", "6", "7", "8"};
+        String[] max_players = ((CreateGameState)state).getMaxPlayers();
         in_maxPlayers = new SelectBox<>(skin);
+        in_maxPlayers.setStyle(boxStyle);
         in_maxPlayers.setName("Max number of players");
-        in_maxPlayers.setScale(1.3f);
         in_maxPlayers.setItems(max_players);
+        in_maxPlayers.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE()*2);
+
         in_maxPlayers.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                cgState.setMaxPlayerCount(
-                        Integer.valueOf(in_maxPlayers.getSelected()));
+                cgState.setMaxPlayerCount(Integer.valueOf(in_maxPlayers.getSelected()));
             }
         });
+        //First value in the array is the default value
+        cgState.setMaxPlayerCount(Integer.valueOf(max_players[0]));
         in_maxPlayers.pack();
-
-        in_maxPlayers = new SelectBox<>(skin); in_maxPlayers.setItems(max_players);
 
         createLobbyBtn = new TextButton("Create lobby", btnStyle2);
         createLobbyBtn.addListener(new ClickListener(){
             @Override
-            public void clicked(InputEvent event,
-                                float x,
-                                float y){
-                System.out.println("shit is going on" + "\n"+x+"; "+y);
-/*                    Connection.getInstance().createLobby(
-                            Integer.valueOf(in_maxPlayers.getSelected()),
-                            in_mapID.getSelected(),
-                            in_LobbyName.getText()); /**/
-                cgState.createButtonClick();
+            public void clicked(InputEvent event, float x, float y){
+                if(haveSetName){
+                    System.out.println("shit is going on" + "\n"+x+"; "+y);
+    /*                    Connection.getInstance().createLobby(
+                                Integer.valueOf(in_maxPlayers.getSelected()),
+                                in_mapID.getSelected(),
+                                in_LobbyName.getText()); /**/
+                    cgState.createButtonClick();
+                }
+                else {
+                    keyboard.show(true);
+                }
             }
         });
 /*
@@ -163,19 +173,19 @@ public class CreateGameView extends AbstractView {
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                cgState.handleInput(-1);
+                cgState.handleInput("-1");
 //                System.out.println("IS IT WORKING");
             }
         });
         exitToMainMenuBtn.pack();
 
-        table.add(in_LobbyName).top().padTop(PanicGame.HEIGHT / 16).row();
-        table.add(in_mapID).padTop(PanicGame.HEIGHT / 16).row();
-        table.add(in_maxPlayers).padTop(PanicGame.HEIGHT / 16).row();
+        table.add(in_LobbyName).top().padTop(Gdx.graphics.getHeight() / 16f).width(Gdx.graphics.getWidth()/4).height(Gdx.graphics.getHeight()/20).row();
+        table.add(in_mapID).padTop(Gdx.graphics.getHeight() / 16f).width(Gdx.graphics.getWidth()/4).height(Gdx.graphics.getHeight()/20).row();
+        table.add(in_maxPlayers).padTop(Gdx.graphics.getHeight() / 16f).width(Gdx.graphics.getWidth()/8).height(Gdx.graphics.getHeight()/20).row();
 
         // TODO: a button for text input and direct connection to a game lobby?
-        table.add(createLobbyBtn).pad(30).row();
-        table.add(exitToMainMenuBtn).pad(30).row();
+        table.add(createLobbyBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
+        table.add(exitToMainMenuBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
 
         table.pack();
 
@@ -194,6 +204,7 @@ public class CreateGameView extends AbstractView {
         stage.dispose();
         bg.dispose();
         font.dispose();
+        boxFont.dispose();
         skin.dispose();
         btnAtlas.dispose();
     }

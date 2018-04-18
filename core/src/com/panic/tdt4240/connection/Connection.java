@@ -32,6 +32,7 @@ public class Connection extends WebSocketClient{
                 URI uri = new URI("ws://panicserver.herokuapp.com");
                 ourInstance = new Connection(uri);
                 ourInstance.connectBlocking(); //FIXME: This returns a boolean - should it be used?
+                ourInstance.setConnectionLostTimeout(30);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -39,14 +40,7 @@ public class Connection extends WebSocketClient{
             }
         }
 
-        if(!ourInstance.getSocket().isConnected()){
-            try {
-                //ourInstance.connectBlocking();
-                ourInstance.reconnectBlocking();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        ourInstance.reconnectCall();
 
         return ourInstance;
     }
@@ -63,13 +57,22 @@ public class Connection extends WebSocketClient{
         return connectionID;
     }
 
-    public void test(){
-        ourInstance.send("TEST");
+    private void reconnectCall(){
+        if(!ourInstance.getSocket().isConnected()){
+            try {
+                ourInstance.connectBlocking();
+                ourInstance.send("RECONNECT//"+connectionID);
+                ourInstance.setConnectionLostTimeout(30);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
+
 
     //Get a personal connectionID from the server
     public void findConnectionID(){
-        this.send("CONNECTION_ID");
+        this.send("CONNECTION_ID//"+connectionID);
     }
 
     /**
@@ -82,9 +85,17 @@ public class Connection extends WebSocketClient{
      */
     public void createLobby(int maxPlayerCount, @NonNull String mapID, String name){
 
-        String message = "CREATE//" + mapID + "//" + maxPlayerCount + "//" + name;
+        String message = "CREATE//" + mapID + "//" + maxPlayerCount + "//" + parseToServer(name);
         this.send(message);
 
+    }
+
+    private String parseToServer(String string){
+        return string.replaceAll("," , "§" ).replaceAll(":", "€").replaceAll("//", "£").replaceAll("&", "¤");
+    }
+
+    public String parseFromServer(String string){
+        return string.replaceAll("§", ",").replaceAll("€", ":").replaceAll("£", "//").replaceAll("¤","&");
     }
 
     /**
@@ -153,21 +164,21 @@ public class Connection extends WebSocketClient{
     }
 
     /**
-     * Return on the form GAME_INFO:VehicleType1,VehicleID1,Color1&VehicleType2,...ColorN:MapID:MyVehicleID
+     * Return on the form GAME_INFO:VehicleType1,VehicleID1,Color1&VehicleType2,...ColorN:MapID:MyVehicleID:Seed:Log
      */
-    public void getGameInfo(){
-        this.send("GAME_INFO");
+    public void getGameInfo(int lobbyID){
+        this.send("TOGAME//" + lobbyID + "//GAME_INFO");
     }
 
-    public void sendPlayCardState(){
-        this.send("BEGIN_TURN");
+    public void sendPlayCardState(int gameID){
+        this.send("TOGAME//" + gameID + "//BEGIN_TURN");
     }
 
     /**
      * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
      */
-    public void sendRunEffectsState(){
-        this.send("ENTERED_RUN_EFFECT_STATE");
+    public void sendRunEffectsState(int gameID){
+        this.send("TOGAME//" + gameID + "//ENTERED_RUN_EFFECT_STATE");
     }
 
     /**
@@ -186,8 +197,8 @@ public class Connection extends WebSocketClient{
      * @param moves An arrayList of the moves to be executed
      * Sends a round of cards on the format SEND_CARDS//CardID1&SenderID1&TargetID1&Priority1//...&TargetIDN&PriorityN//
      */
-    public void sendTurn(ArrayList<String[]> moves) {
-        String returnString = "SEND_CARDS//";
+    public void sendTurn(ArrayList<String[]> moves, int gameID) {
+        String returnString ="TOGAME//" + gameID + "//SEND_CARDS//";
         ModelHolder mh = ModelHolder.getInstance();
         for (String[] move : moves) {
             Card card = mh.getCardById(move[0]);
@@ -205,8 +216,7 @@ public class Connection extends WebSocketClient{
 
     @Override
     public void onMessage(String message){
-        Gdx.app.log("", message);
-        System.out.println("RECEIVED MESSAGE: " + message);
+        Gdx.app.log("RECEIVED MESSAGE", message);
         if (adapter != null) {
             adapter.onMessage(message);
         }
@@ -214,14 +224,13 @@ public class Connection extends WebSocketClient{
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        Gdx.app.log("", "onClose");
-        System.out.println("onClose");
+        Gdx.app.log("", "onClose! REASON: " + reason);
     }
 
     @Override
     public void onError(Exception ex) {
         Gdx.app.log("onError", ex.getMessage());
-        System.out.println("onError.....: " + ex.getMessage());
+        ex.printStackTrace();
     }
 
     public void setAdapter(ICallbackAdapter adapter) {

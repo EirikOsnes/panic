@@ -13,8 +13,6 @@ import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.XMLParser;
 import com.panic.tdt4240.view.LoadGameView;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
-import com.panic.tdt4240.view.ViewClasses.LoadGameView;
-import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -28,7 +26,6 @@ public class LoadGameState extends State {
 
     private Connection connection;
     private boolean isLoading; //Flag to use for rendering of a loading screen.
-    private LoadGameView view;
     private LoadGameView view;
     private int lobbyID;
 

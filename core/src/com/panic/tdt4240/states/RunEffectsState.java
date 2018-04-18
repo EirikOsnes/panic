@@ -1,7 +1,6 @@
 package com.panic.tdt4240.states;
 
 import com.badlogic.gdx.Gdx;
-import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.events.Event;
 import com.panic.tdt4240.events.EventBus;
@@ -11,12 +10,9 @@ import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
-import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 import com.panic.tdt4240.view.ViewClasses.RunEffectsView;
 
 import java.util.ArrayList;
-
-import javax.swing.text.View;
 
 /**
  * State for running through the cards gotten from the server.
@@ -75,7 +71,7 @@ public class RunEffectsState extends State implements EventListener {
                 runEffectsView.attackAsteroid(e.getTargetID());
             }
             else if (e.getTargetID().matches("V-\\d\\d\\d")) {
-                runEffectsView.attackVehicle(e.getTargetID());
+                runEffectsView.attackVehicle(e.getTargetID(),e.getInstigatorID());
             }
         }
         else if (e.getT() == Event.Type.MOVE) {

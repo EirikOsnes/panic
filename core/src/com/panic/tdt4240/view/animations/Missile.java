@@ -31,12 +31,6 @@ public class Missile extends AnimatedActor {
     public void act(float dt){
         super.act(dt);
         currentFrameTime+=dt;
-        if(currentFrame==null){
-            currentFrame = getCurrentFrame(dt,true);
-        }
-        if(!currentFrame.equals(getCurrentFrame(dt,true))){
-            System.out.println("frame changed");
-        }
         currentFrame = getCurrentFrame(dt,true);
         //TODO
     }

@@ -232,7 +232,7 @@ public class PlayCardView extends AbstractView{
                     asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
                     colorCar);
             vehicle.setPosition(position.x, position.y);
-            vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y*2/3);
+            vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
             final int vIndex = j;
             vehicle.addListener(new ClickListener(){
                 public void clicked(InputEvent event, float x, float y){

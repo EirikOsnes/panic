@@ -16,6 +16,7 @@ public class GameInstance {
     private ArrayList<Asteroid> asteroids;
     private Map map;
     private Player player;
+    private int ID;
 
     private GameInstance(){
         this.vehicles = new ArrayList<>();
@@ -34,6 +35,14 @@ public class GameInstance {
         this.map = map;
 
         setAsteroids(map.getAsteroids());
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public void addVehicle(Vehicle vehicle){
@@ -117,7 +126,7 @@ public class GameInstance {
         ArrayList<ArrayList<String[]>> result = new ArrayList<>();
         ArrayList<String[]> currentTurn = new ArrayList<>();
         for (String string : data){
-            if(string.equals("ENDTURN")){
+            if(string.equals("TURNEND")){
                 result.add(currentTurn);
                 currentTurn = new ArrayList<>();
             } else {

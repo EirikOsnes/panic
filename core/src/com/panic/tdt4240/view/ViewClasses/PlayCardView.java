@@ -61,10 +61,8 @@ public class PlayCardView extends AbstractView{
         table.setWidth(Gdx.graphics.getWidth());
         table.left().bottom();
         font = new BitmapFont();
-        float textScale = 0;
-        if(Gdx.app.getType() == Application.ApplicationType.Android){
-            textScale = GlobalConstants.TEXT_SCALE;
-        }
+        float textScale = GlobalConstants.GET_TEXT_SCALE();
+
         font.getData().scale(textScale);
         skin = new Skin();
         textureAtlas = new TextureAtlas("cards/card_textures.atlas");
@@ -163,7 +161,10 @@ public class PlayCardView extends AbstractView{
         finishedButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((PlayCardState) state).finishRound();
+                if(!((PlayCardState) state).isLockedIn()) { //Only send the cards to the server if you have not already locked in.
+                    //TODO: Show a "Waiting for other players" message
+                    ((PlayCardState) state).finishRound();
+                }
             }
 
         });

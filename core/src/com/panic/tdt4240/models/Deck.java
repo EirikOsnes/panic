@@ -16,6 +16,7 @@ public class Deck {
     public Deck(Stack<Card> cardDeck) {
         this.cardDeck = cardDeck;
         this.usedCards = new Stack<>();
+        shuffleDeck();
     }
     //Returns the complete cardDeck
     public Stack<Card> getFullDeck(){

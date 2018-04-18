@@ -35,7 +35,7 @@ public class Missile extends AnimatedActor {
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
-        batch.draw(currentFrame,getX(),getY());
+        batch.draw(currentFrame,getX(),getY(),getOriginX(),getOriginY(),currentFrame.getRegionWidth(),currentFrame.getRegionHeight(),1,1,getRotation());
         //TODO
     }
 }

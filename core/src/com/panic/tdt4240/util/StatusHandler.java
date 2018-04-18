@@ -62,6 +62,21 @@ public class StatusHandler {
     }
 
     /**
+     * Returns the base value of the chosen status
+     * @param statusName The name of the status.
+     * @return The base value set for this status. Returns 0 if the status is uninitiated (or if the base is 0).
+     */
+    public float getStatusBaseValue(String statusName){
+
+        if(!statuses.containsKey(statusName)){
+            return 0;
+        }
+
+        return statuses.get(statusName).getBaseValue();
+
+    }
+
+    /**
      * Returns a HashMap of all the base stats.
      * @return Returns a HashMap of all the base stats.
      */
@@ -355,6 +370,10 @@ public class StatusHandler {
          */
         float changeBase(float change){
             baseValue+=change;
+            return baseValue;
+        }
+
+        public float getBaseValue() {
             return baseValue;
         }
 

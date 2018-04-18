@@ -30,7 +30,12 @@ public class GameLobbyState extends State {
     public Lobby getLobby(){return lobby;}
 
     public void launchGame(){
-        gsm.push(new LoadGameState(gsm));
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                gsm.push(new LoadGameState(gsm, lobby.getLobbyID()));
+            }
+        });
     }
 
     /**
@@ -52,8 +57,8 @@ public class GameLobbyState extends State {
     /**
      * Set me to ready.
      */
-    private void setReady(){
-        Connection.getInstance().setReady(lobby.getLobbyID());
+    public void setReady(){
+        Connection.getInstance().chooseVehicleType("EDDISON",lobby.getLobbyID());
     }
 
     /**

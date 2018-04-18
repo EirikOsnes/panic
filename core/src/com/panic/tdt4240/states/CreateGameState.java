@@ -1,5 +1,6 @@
 package com.panic.tdt4240.states;
 
+import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
@@ -23,8 +24,6 @@ public class CreateGameState extends State {
     public CreateGameState(GameStateManager gsm){
         super(gsm);
         view = new CreateGameView(this);
-
-        // generic lobby setup
     }
 
     /**
@@ -109,7 +108,14 @@ public class CreateGameState extends State {
         private void parseLobby(String[] strings){
             Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),strings[2],Integer.parseInt(strings[3]),strings[4]);
             System.out.println("Lobby parsed: " + myLobby.toString());
-            gsm.push(new GameLobbyState(gsm,myLobby.getLobbyID()));
+            final int ID = myLobby.getLobbyID();
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    gsm.push(new GameLobbyState(gsm,ID));
+                }
+            });
+
         }
     }
 }

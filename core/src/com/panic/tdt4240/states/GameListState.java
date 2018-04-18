@@ -101,11 +101,6 @@ public class GameListState extends State {
         return full_list.length == lobbyListData.size() ; // simple validity check
     }
 
-
-    private void connectToLobby(int lobbyID){
-        Connection.getInstance().connectToLobby(lobbyID);
-    }
-
     @Override
     protected void setUpAdapter() {
         callbackAdapter = new GameListAdapter();

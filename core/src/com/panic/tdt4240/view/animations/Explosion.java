@@ -19,17 +19,11 @@ public class Explosion  extends AnimatedActor{
     public Explosion(float maxFrameTime, int frameCount){
         super(maxFrameTime,frameCount);
         TextureAtlas atlas = new TextureAtlas("animations/explosion.atlas");
-        Array<TextureAtlas.AtlasRegion> regions = atlas.findRegions("expl");
-        /*
-        Texture texture = new Texture("animations/explosions.png");
-        TextureRegion[][] tmp = TextureRegion.split(texture,DIM,DIM);
-        Array<TextureRegion> regions = new Array<>();
-        for(int i=0;i<tmp.length;i++){
-            for(int j=0;j<tmp[i].length;j++){
-                regions.add(tmp[i][j]);
-            }
+        Array<TextureAtlas.AtlasRegion> regions = new Array<>();
+        for(int i=0;i<frameCount;i++){
+            String regionName = "expl-" + (i+1);
+            regions.add(atlas.findRegion(regionName));
         }
-        */
         setAnimation(regions);
     }
 
@@ -37,7 +31,7 @@ public class Explosion  extends AnimatedActor{
     @Override
     public void act(float dt){
         super.act(dt);
-        currentFrame = getCurrentFrame(dt,false);
+        currentFrame = getCurrentFrame(dt,true);
     }
 
     @Override

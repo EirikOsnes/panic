@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.Array;
 public class AnimatedActor extends Actor {
     private Animation<TextureAtlas.AtlasRegion> animation;
 
+    private float rotation;
+
     protected TextureRegion currentFrame;
 
     protected float currentFrameTime;
@@ -33,7 +35,7 @@ public class AnimatedActor extends Actor {
      */
     public void setAnimation(Array<TextureAtlas.AtlasRegion> regions){
         animation = new Animation<>(maxFrameTime,regions);
-        setOrigin(regions.get(0).getRegionWidth(),regions.get(0).getRegionHeight());
+        setOrigin(regions.get(0).getRegionWidth()/2,regions.get(0).getRegionHeight()/2);
     }
 
     /**
@@ -58,7 +60,7 @@ public class AnimatedActor extends Actor {
      */
     public void startAnimation(float startX, float startY, float endX, float endY){
         startAnimation(startX,startY);
-        setRotation((float)Math.atan((double)((endY-startY)/(endX-startX))));
+        rotation = ((float)(Math.atan((double)((endY-startY)/(endX-startX)))*(180/Math.PI)));
     }
 
     /**
@@ -77,5 +79,10 @@ public class AnimatedActor extends Actor {
      */
     public float getDuration() {
         return animation.getAnimationDuration();
+    }
+
+    @Override
+    public float getRotation() {
+        return rotation;
     }
 }

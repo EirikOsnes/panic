@@ -16,7 +16,11 @@ public class Missile extends AnimatedActor {
     public Missile(float maxFrameTime, int frameCount, String color){
         super(maxFrameTime,frameCount);
         TextureAtlas atlas = new TextureAtlas("animations/missiles.atlas");
-        Array<TextureAtlas.AtlasRegion> regions = atlas.findRegions(color);
+        Array<TextureAtlas.AtlasRegion> regions = new Array<>();
+        for(int i=0;i<frameCount;i++){
+            String regionName = color.toLowerCase() + "-" + (i+1);
+            regions.add(atlas.findRegion(regionName));
+        }
         setAnimation(regions);
     }
 
@@ -27,6 +31,12 @@ public class Missile extends AnimatedActor {
     public void act(float dt){
         super.act(dt);
         currentFrameTime+=dt;
+        if(currentFrame==null){
+            currentFrame = getCurrentFrame(dt,true);
+        }
+        if(!currentFrame.equals(getCurrentFrame(dt,true))){
+            System.out.println("frame changed");
+        }
         currentFrame = getCurrentFrame(dt,true);
         //TODO
     }
@@ -34,6 +44,6 @@ public class Missile extends AnimatedActor {
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
-        batch.draw(currentFrame,getX(),getY(),getOriginX(),getOriginY(),currentFrame.getRegionWidth(),currentFrame.getRegionHeight(),1,1,getRotation());
+        batch.draw(currentFrame,getX(),getY(),getOriginX(),getOriginY(),currentFrame.getRegionWidth(),currentFrame.getRegionHeight(),1,1,getRotation(),true);
     }
 }

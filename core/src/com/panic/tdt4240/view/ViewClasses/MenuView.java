@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.MenuState;
 import com.panic.tdt4240.util.GlobalConstants;
-import com.panic.tdt4240.view.animations.Missile;
 
 /**
  * Created by victor on 05.03.2018.
@@ -35,11 +34,6 @@ public class MenuView extends AbstractView {
 
     public MenuView(final MenuState menuState) {
         super(menuState);
-
-        Missile missile = new Missile(Missile.COLOR_RED);
-        missile.startAnimation(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
-
-
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         table = new Table();
@@ -102,7 +96,6 @@ public class MenuView extends AbstractView {
             }
         });
         stage.addActor(table);
-        stage.addActor(missile);
 
     }
 

@@ -115,7 +115,7 @@ public class RunEffectsView extends AbstractView {
                     asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
                     activeVehicle.getColorCar());
             vehicle.setPosition(position.x, position.y);
-            vehicle.setSize(asteroidDimensions.get(asteroid).x / 3, asteroidDimensions.get(asteroid).y * 2 / 3);
+            vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
             vehicleImages.put(activeVehicle.getVehicleID(), vehicle);
             stage.addActor(vehicle);
         }

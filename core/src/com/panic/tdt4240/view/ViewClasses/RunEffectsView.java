@@ -9,11 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -22,17 +18,16 @@ import com.badlogic.gdx.utils.Pool;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
-import com.panic.tdt4240.states.RunEffectsState;
 import com.panic.tdt4240.states.State;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.util.MapMethods;
 import com.panic.tdt4240.view.animations.Explosion;
+import com.panic.tdt4240.view.animations.Missile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Queue;
 
 /**
  * Created by Hermann on 14.04.2018.
@@ -49,6 +44,8 @@ public class RunEffectsView extends AbstractView {
     private final Explosion explosion;
     private BitmapFont font;
     private Label label;
+    private final Missile missile;
+
 
     public RunEffectsView(State state) {
         super(state);
@@ -63,6 +60,7 @@ public class RunEffectsView extends AbstractView {
         setUpMap();
         animator = new AnimationAdapter();
         explosion = new Explosion();
+        missile = new Missile(Missile.COLOR_RED);
         stage.addActor(explosion);
         System.out.println(vehicleImages.keySet().toString());
         System.out.println(asteroidImages.keySet().toString());
@@ -163,18 +161,27 @@ public class RunEffectsView extends AbstractView {
         animator.addAction(action, actor);
     }
 
-    public void attackVehicle(String vehicleID) {
+    public void attackVehicle(String vehicleID, String instigatorID) {
         //TODO: Animate the attacking of a vehicle
 
+        final Image instigator = vehicleImages.get(instigatorID);
         final Image vehicle = vehicleImages.get(vehicleID);
+        Runnable missileRunnable = new Runnable() {
+            @Override
+            public void run() {
+                missile.startAnimation(instigator.getX(),instigator.getY(),vehicle.getX(),vehicle.getY());
+            }
+        };
         Runnable explosionRunnable = new Runnable() {
             @Override
             public void run() {
                 explosion.startAnimation(vehicle.getX(), vehicle.getY());
             }
         };
-        Action action = Actions.sequence(Actions.run(explosionRunnable), Actions.delay(explosion.getDuration()));
-        animator.addAction(action, explosion);
+        Action action1 = Actions.sequence(Actions.run(missileRunnable), Actions.moveTo(vehicle.getX(), vehicle.getY()));
+        animator.addAction(action1, missile);
+        Action action2 = Actions.sequence(Actions.run(explosionRunnable), Actions.delay(explosion.getDuration()));
+        animator.addAction(action2, explosion);
     }
 
     public void attackAsteroid(String asteroidID) {

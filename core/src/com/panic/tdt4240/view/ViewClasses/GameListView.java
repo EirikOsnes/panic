@@ -33,7 +33,7 @@ public class GameListView extends AbstractView {
     private Skin skin;
     private BitmapFont font;
     private TextButton.TextButtonStyle btnStyle;
-    private Table table, exitTable;
+    private Table lobbyBtnTable, exitTable;
     private Texture bg;
     private TextButton exitToMainMenuBtn;
 
@@ -65,10 +65,10 @@ public class GameListView extends AbstractView {
     }
 
     public void updateView(){
-        table = new Table();
-        table.setFillParent(true);
-        table.background(new TextureRegionDrawable(new TextureRegion(bg)));
-        table.center();
+        lobbyBtnTable = new Table();
+        lobbyBtnTable.setFillParent(true);
+        lobbyBtnTable.background(new TextureRegionDrawable(new TextureRegion(bg)));
+        lobbyBtnTable.center();
 
         for (int i = 0; i < listState.getLobbyListData().size(); i++){
             final String data[] = listState.getLobbyListData().get(i);
@@ -79,23 +79,32 @@ public class GameListView extends AbstractView {
                     state.handleInput(data[1]); // lobbyID
                 }
             });
-            table.add(button).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/80); table.row();
+            lobbyBtnTable.add(button).width(300).pad(5); lobbyBtnTable.row();
         }
-        if (listState.getLobbyListData().size() != 0) {
-            createExitToMainMenuBtn();
-            exitTable = new Table();
-            exitTable.setFillParent(true);
-            exitTable.bottom();
-            exitTable.add(exitToMainMenuBtn).padTop(30).padBottom(30).bottom();
-            exitTable.pack();
-            table.pack();
-            stage.addActor(table);
-            stage.addActor(exitTable);
-        }
-//        scroller = new ScrollPane(table);
-//        scroller.setScrollingDisabled(true, false);
-//        table.add(scroller).fill().expand();
-//        stage.addActor(scroller);
+        // scrolls child widgets.
+        scroller = new ScrollPane(lobbyBtnTable);
+        ScrollPane.ScrollPaneStyle scrollStyle = new ScrollPane.ScrollPaneStyle();
+        scrollStyle.background = skin.getDrawable("default-rect");
+        scrollStyle.vScroll = skin.getDrawable("default-scroll");
+        scrollStyle.hScroll = skin.getDrawable("default-scroll");
+        scrollStyle.vScrollKnob = skin.getDrawable("default-round-large");
+        scrollStyle.hScrollKnob = skin.getDrawable("default-round-large");
+        scroller.setStyle(scrollStyle);
+        scroller.setWidth(SCREEN_WIDTH*0.7f);
+        scroller.setHeight(SCREEN_HEIGHT*3/4);
+        scroller.setPosition(SCREEN_HEIGHT/10, SCREEN_WIDTH/10*3);
+
+        stage.addActor(scroller);
+
+        createExitToMainMenuBtn();
+        exitTable = new Table();
+        exitTable.setFillParent(true);
+        exitTable.center().bottom();
+        exitTable.add(exitToMainMenuBtn).padTop(30).padBottom(30).bottom();
+        exitTable.pack();
+
+        stage.addActor(scroller);
+        stage.addActor(exitTable);
     }
 
     private void createExitToMainMenuBtn(){
@@ -106,19 +115,6 @@ public class GameListView extends AbstractView {
                 state.handleInput("-1");
             }
         });
-
-        // TODO: a button for text input and direct connection to a game lobby?
-
-        table.add(exitToMainMenuBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
-
-        scroller = new ScrollPane(table);
-        scroller.setScrollingDisabled(true, false);
-        table.pack();
-
-//        table.add(scroller).fill().expand();
-//        stage.addActor(scroller);
-        stage.addActor(table);
-
     }
 
     // should pop up with the appropriate error message and update lobbylist

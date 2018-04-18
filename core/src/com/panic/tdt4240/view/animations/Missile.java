@@ -5,38 +5,39 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * Created by magnus on 15.04.2018.
+ * Created by magnus on 17.04.2018.
  */
 
-public class Explosion  extends AnimatedActor{
+public class Missile extends AnimatedActor {
 
-    private static final int DIM = 64;
+    public static final String COLOR_RED = "RED";
+    public static final String COLOR_GREEN = "GREEN";
 
-    public Explosion() {
-        this(1/20f, 16);
-    }
-
-    public Explosion(float maxFrameTime, int frameCount){
+    public Missile(float maxFrameTime, int frameCount, String color){
         super(maxFrameTime,frameCount);
-        TextureAtlas atlas = new TextureAtlas("animations/explosion.atlas");
+        TextureAtlas atlas = new TextureAtlas("animations/missiles.atlas");
         Array<TextureAtlas.AtlasRegion> regions = new Array<>();
         for(int i=0;i<frameCount;i++){
-            String regionName = "expl-" + (i+1);
+            String regionName = color.toLowerCase() + "-" + (i+1);
             regions.add(atlas.findRegion(regionName));
         }
         setAnimation(regions);
     }
 
-
+    public Missile(String color){
+        this(0.1f,3,color);
+    }
     @Override
     public void act(float dt){
         super.act(dt);
+        currentFrameTime+=dt;
         currentFrame = getCurrentFrame(dt,true);
+        //TODO
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
-        batch.draw(currentFrame, getX(), getY());
+        batch.draw(currentFrame,getX(),getY(),getOriginX(),getOriginY(),currentFrame.getRegionWidth(),currentFrame.getRegionHeight(),1,1,getRotation(),true);
     }
 }

@@ -1,6 +1,5 @@
 package com.panic.tdt4240.states;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.connection.Connection;

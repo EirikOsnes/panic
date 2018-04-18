@@ -48,7 +48,7 @@ public class LoadGameState extends State {
         connection.getGameInfo(lobbyID);
     }
 
-    private void setGIValues(ArrayList<Vehicle> vehicles, String mapID, String myVehicleID){
+    private void setGIValues(ArrayList<Vehicle> vehicles, String mapID, String myVehicleID, String seedString){
         Vehicle myVehicle = null;
         for (Vehicle v : vehicles) {
             if (v.getVehicleID().equals(myVehicleID))
@@ -61,6 +61,7 @@ public class LoadGameState extends State {
         GameInstance.getInstance().getPlayer().setVehicle(myVehicle);
         Map myMap = ModelHolder.getInstance().getMapById(mapID);
         GameInstance.getInstance().setMap(myMap);
+        GameInstance.getInstance().setSeed(Long.parseLong(seedString));
         isLoading = false;
     }
 
@@ -152,7 +153,6 @@ public class LoadGameState extends State {
                 String[] vehicleInfo = vehicleString.split(",");
                 Vehicle myVehicle = ModelHolder.getInstance().getVehicleByName(vehicleInfo[0]).cloneVehicleWithId(vehicleInfo[1]);
                 myVehicle.setColorCar(vehicleInfo[2].toLowerCase()+"_car");
-                //TODO: myVehicle.setColor(vehicleInfo[2]);
                 vehicles.add(myVehicle);
 
                 if(vehicleInfo[1].equalsIgnoreCase(strings[3])){
@@ -163,7 +163,7 @@ public class LoadGameState extends State {
 
             }
 
-            setGIValues(vehicles, strings[2], strings[3]);
+            setGIValues(vehicles, strings[2], strings[3],strings[4]);
 
             setUpVehiclePositions(vehicles,Long.parseLong(strings[4]));
 

@@ -35,6 +35,7 @@ public class GameLobbyState extends State {
         this.lobbyID=lobbyID;
 //        Connection.getInstance().updateLobby(lobbyID);
         // updateLobby() cannot run because data has not yet arrived
+        updateLobby();
     }
 
     public Lobby getLobby(){return lobby;}
@@ -52,7 +53,7 @@ public class GameLobbyState extends State {
      * Update the lobby - should be called every second maybe?
      */
     public void updateLobby(){
-        Connection.getInstance().updateLobby(lobby.getLobbyID());
+        Connection.getInstance().updateLobby(this.lobbyID);
         System.out.println("Thread check 3: " + Thread.currentThread().toString());
         Gdx.app.postRunnable(new Runnable() {
             @Override
@@ -133,6 +134,7 @@ public class GameLobbyState extends State {
         @Override
         public void onMessage(String message) {
             String[] strings = message.split(":");
+            System.out.println("is something happening now?");
 
             switch (strings[0]){
                 case "LOBBY_INFO":
@@ -141,7 +143,6 @@ public class GameLobbyState extends State {
                     System.out.println("Message: \n"+ strings[1]);
                     parseLobby(strings);
                     updateLobby();
-                    System.out.println("is something happening now?");
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {

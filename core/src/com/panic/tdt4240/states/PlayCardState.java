@@ -10,9 +10,9 @@ import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
-import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
@@ -132,10 +132,9 @@ public class PlayCardState extends State {
      *          reset the justClicked index, allowing us to select a new card and target
      */
     private void selectTarget(String s) {
-        s = s.toLowerCase();
         String firstTarget;
         String potentialTarget;
-        int targetID = s.indexOf("a");
+        int targetID = s.indexOf("A");
         if (targetID > 0) {
             //Targets vehicle, but can potentially target asteroid instead
             firstTarget = s.substring(0, targetID);
@@ -174,16 +173,16 @@ public class PlayCardState extends State {
     private boolean validTarget(String targetID) {
         System.out.println(targetID);
         //If the target is an asteroid
-        if (targetID.substring(0, 1).equals("a")) {
+        if (targetID.substring(0, 1).equals("A")) {
             return hand.get(playedCardsList.get(numPlayedCards - 1)).getTargetType().equals(ASTEROID);
         }
         //If the target is a vehicle
-        else if (targetID.substring(0, 1).equals("v")) {
+        else if (targetID.substring(0, 1).equals("V")) {
             vehicleTarget = true;
             //If the player can target a vehicle
             if (hand.get(playedCardsList.get(numPlayedCards - 1)).getTargetType().equals(VEHICLE)) {
                 //If the player targets themselves
-                if (player.getVehicle().getVehicleID().toLowerCase().equals(targetID)) {
+                if (player.getVehicle().getVehicleID().equals(targetID)) {
                     return !hand.get(playedCardsList.get(numPlayedCards - 1)).getAllowedTarget().equals(ENEMY);
                 }
                 //The player targets someone else
@@ -257,7 +256,9 @@ public class PlayCardState extends State {
     public String getCardName(int i){
         return hand.get(i).getName();
     }
-
+    public Vehicle getPlayerVehicle(){
+        return player.getVehicle();
+    }
     private void setTimeLeft(float timeLeft){
         this.timeLeft = timeLeft;
         enableTimer = true;

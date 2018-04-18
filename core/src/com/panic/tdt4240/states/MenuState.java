@@ -148,7 +148,7 @@ public class MenuState extends State {
 
     @Override
     public void dispose() {
-
+        menuView.dispose();
     }
 
     @Override

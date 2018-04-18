@@ -10,6 +10,7 @@ import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.ModelHolder;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 import com.panic.tdt4240.view.ViewClasses.RunEffectsView;
@@ -34,6 +35,9 @@ public class RunEffectsState extends State implements EventListener {
         Card c = ModelHolder.getInstance().getCardById("MOVE");
         EventFactory.postEventsFromCard(c, "A-003", "V-001");
         Connection.getInstance().sendRunEffectsState(GameInstance.getInstance().getID());
+    }
+    public Vehicle getPlayerVehicle(){
+        return GameInstance.getInstance().getPlayer().getVehicle();
     }
 
     @Override

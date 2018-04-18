@@ -249,7 +249,7 @@ public class PlayCardView extends AbstractView{
         playerTable.setHeight(Gdx.graphics.getWidth()/20);
         Vehicle playerVehicle = ((PlayCardState)state).getPlayerVehicle();
         int health = Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
-        int maxHealth =Math.round(playerVehicle.getStatusHandler().getStatusBaseValue("health"));
+        int maxHealth = Math.round(playerVehicle.getStatusHandler().getStatusBaseValue("health"));
 
         Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
         player.rotateBy(270);

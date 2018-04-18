@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
+import com.panic.tdt4240.events.EventBus;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
@@ -332,12 +333,13 @@ public class PlayCardState extends State {
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            gsm.push(new RunEffectsState(gsm));
+                            gsm.set(new RunEffectsState(gsm));
                         }
                     });
                     break;
                 case "BEGIN_TURN":
                     setTimeLeft(Float.parseFloat(strings[1]));
+                    EventBus.getInstance().readyForRemove();
                     break;
 
             }

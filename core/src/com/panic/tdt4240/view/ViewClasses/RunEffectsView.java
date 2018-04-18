@@ -185,9 +185,13 @@ public class RunEffectsView extends AbstractView {
         //TODO: Animate the destruction of a vehicle
     }
 
+    public boolean isDoneAnimating(){
+        return animator.isEmpty();
+    }
+
     public void dispose(){
         stage.dispose();
-        animator.dispose();
+        sr.dispose();
     }
 
 
@@ -202,10 +206,6 @@ public class RunEffectsView extends AbstractView {
                 }
             }
         };
-        public void dispose(){
-            sr.dispose();
-            stage.dispose();
-        }
 
         private boolean empty;
 
@@ -213,6 +213,10 @@ public class RunEffectsView extends AbstractView {
             actors = new LinkedList<>();
             actions = new LinkedList<>();
             empty = true;
+        }
+
+        public boolean isEmpty() {
+            return empty;
         }
 
         void addAction(Action action, Actor actor) {

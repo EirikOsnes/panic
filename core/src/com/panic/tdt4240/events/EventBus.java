@@ -1,5 +1,7 @@
 package com.panic.tdt4240.events;
 
+import com.panic.tdt4240.models.Asteroid;
+
 import java.util.ArrayList;
 
 /**
@@ -16,9 +18,11 @@ public class EventBus {
     }
 
     private ArrayList<EventListener> subs;
+    private ArrayList<EventListener> removeList;
 
     private EventBus() {
         this.subs = new ArrayList<>();
+        this.removeList = new ArrayList<>();
     }
 
     public void addListener(EventListener el) {
@@ -26,7 +30,21 @@ public class EventBus {
     }
 
     public void removeListener(EventListener el) {
-        subs.remove(el);
+        removeList.add(el);
+    }
+
+    /**
+     * Tell the EventBus that it is safe to remove listeners.
+     */
+    public void readyForRemove(){
+        for (EventListener el : subs) {
+            if(el.getClass().isInstance(Asteroid.class)) {
+                System.out.println("ASTEROID FOUND");
+                ((Asteroid) el).readyToRemove();
+            }
+        }
+        subs.removeAll(removeList);
+        removeList.clear();
     }
 
     public void postEvent(Event e) {

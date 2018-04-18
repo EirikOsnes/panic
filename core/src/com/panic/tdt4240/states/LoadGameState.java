@@ -154,13 +154,6 @@ public class LoadGameState extends State {
                 Vehicle myVehicle = ModelHolder.getInstance().getVehicleByName(vehicleInfo[0]).cloneVehicleWithId(vehicleInfo[1]);
                 myVehicle.setColorCar(vehicleInfo[2].toLowerCase()+"_car");
                 vehicles.add(myVehicle);
-
-                if(vehicleInfo[1].equalsIgnoreCase(strings[3])){
-                    XMLParser parser = new XMLParser();
-                    Player myPlayer = new Player(parser.parseCardStack(vehicleInfo[0]));
-                    GameInstance.getInstance().setPlayer(myPlayer);
-                }
-
             }
 
             setGIValues(vehicles, strings[2], strings[3],strings[4]);

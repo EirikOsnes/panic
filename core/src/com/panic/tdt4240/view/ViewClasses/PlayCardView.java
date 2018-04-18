@@ -1,6 +1,5 @@
 package com.panic.tdt4240.view.ViewClasses;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,9 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.panic.tdt4240.models.Asteroid;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.PlayCardState;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.MapMethods;
@@ -33,7 +32,6 @@ public class PlayCardView extends AbstractView{
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Table table;
-    //private Texture background;
     private TextButton cardInfo;
     private Skin skin;
     private boolean selectTarget = false;
@@ -46,7 +44,6 @@ public class PlayCardView extends AbstractView{
     private ArrayList<Boolean> checked;
     private float timeLeft;
 
-    //TODO Make the player vehicle more visible, inform if the targeting is wrong
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
         sr = new ShapeRenderer();
@@ -169,7 +166,7 @@ public class PlayCardView extends AbstractView{
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.font = font;
         style.fontColor = Color.WHITE;
-        timer = new TextField(timeLeft + "", style);
+        timer = new TextField(String.valueOf(timeLeft), style);
         timer.setPosition(0, Gdx.graphics.getHeight() - timer.getHeight());
         stage.addActor(timer);
 
@@ -222,7 +219,6 @@ public class PlayCardView extends AbstractView{
                 ((PlayCardState) state).addConnection(asteroids.get(i), neighbour, asteroid.getWidth(), asteroid.getHeight(), table.getHeight());
             }
         }
-        //TODO By PlayerVehicle, add text or something
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
             int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
             String colorCar = ((PlayCardState) state).getColorCar(vehicleOnAsteroid.get(j)[0]);
@@ -245,7 +241,24 @@ public class PlayCardView extends AbstractView{
             });
             stage.addActor(vehicle);
         }
+        Table playerTable = new Table();
+        playerTable.setWidth(Gdx.graphics.getWidth()/10);
+        playerTable.setHeight(Gdx.graphics.getWidth()/20);
+        //TODO health should get current health, maxhealth should get max health
+        Vehicle playerVehicle = ((PlayCardState)state).getPlayerVehicle();
+        int health = Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
+        int maxHealth =Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
 
+        Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
+        player.rotateBy(270);
+        String hp = String.format("HP: %d/%d", health, maxHealth);
+        Label label = new Label(hp,new Label.LabelStyle(font, Color.RED));
+        playerTable.add(player).width(Gdx.graphics.getWidth()/20).height(Gdx.graphics.getWidth()/10).row();
+        playerTable.add(label).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
+        playerTable.pack();
+        playerTable.setPosition(Gdx.graphics.getWidth() - playerTable.getWidth()*2,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
+
+        stage.addActor(playerTable);
     }
 
     /**

@@ -22,6 +22,9 @@ public class Missile extends AnimatedActor {
         animation = new Animation<TextureRegion>(maxFrameTime,regions);
     }
 
+    public Missile(String color){
+        this(0.1f,3,color);
+    }
     @Override
     public void act(float dt){
         super.act(dt);

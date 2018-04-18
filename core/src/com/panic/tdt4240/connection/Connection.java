@@ -1,7 +1,7 @@
 package com.panic.tdt4240.connection;
 
 import android.support.annotation.NonNull;
-
+import java.lang.Thread;
 import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.Lobby;
@@ -221,8 +221,6 @@ public class Connection extends WebSocketClient{
             adapter.onMessage(message);
         }
     }
-
-    @Override
     public void onClose(int code, String reason, boolean remote) {
         Gdx.app.log("", "onClose! REASON: " + reason);
     }

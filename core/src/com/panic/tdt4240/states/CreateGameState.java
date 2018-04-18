@@ -8,6 +8,7 @@ import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.CreateGameView;
+import java.lang.Thread;
 
 /**
  * Created by magnus on 12.03.2018.
@@ -24,6 +25,7 @@ public class CreateGameState extends State {
     public CreateGameState(GameStateManager gsm){
         super(gsm);
         view = new CreateGameView(this);
+        System.out.println("Thread check 2: " + Thread.currentThread().toString());
     }
 
     /**
@@ -99,10 +101,9 @@ public class CreateGameState extends State {
             switch (strings[0]){
                 case "LOBBY_INFO":
                     parseLobby(strings);
+                    // ENTERS LOBBY STATE
                     break;
             }
-
-
         }
 
         private void parseLobby(String[] strings){

@@ -22,6 +22,14 @@ import com.panic.tdt4240.util.GlobalConstants;
 
 /**
  * Created by victor on 12.03.2018.
+ *
+ * 18.04. NOTES: attempts to enter lobby from Create Game gives "Thread check" sequence:
+ *                  output: LWJGL
+ *                  order: 2, 4, 5
+ *               Game List sequence:
+ *                  output: LWJGL
+ *                  order:
+ *
  */
 
 public class CreateGameView extends AbstractView {
@@ -142,7 +150,7 @@ public class CreateGameView extends AbstractView {
             @Override
             public void clicked(InputEvent event, float x, float y){
                 if(haveSetName){
-                    System.out.println("shit is going on" + "\n"+x+"; "+y);
+                    System.out.println("Create btn pressed");
     /*                    Connection.getInstance().createLobby(
                                 Integer.valueOf(in_maxPlayers.getSelected()),
                                 in_mapID.getSelected(),

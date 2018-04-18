@@ -1,5 +1,6 @@
 package com.panic.tdt4240.states;
 
+import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Card;
@@ -43,7 +44,12 @@ public class MenuState extends State {
             System.out.println("Creating game...");
             //startPlayCard();
         } else if (o == (Integer) 2) {
-            gsm.push(new GameListState(gsm));
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    gsm.push(new GameListState(gsm));
+                }
+            });
             System.out.println("Listing lobbies...");
         } else if (o == (Integer) 3) {
             gsm.push(new SettingsState(gsm));

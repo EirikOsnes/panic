@@ -34,7 +34,7 @@ public class GameListView extends AbstractView {
     private TextButton.TextButtonStyle btnStyle;
     private Table table, exitTable;
     private Texture bg;
-    private TextButton exitToMainMenuBtn;
+    private TextButton exitToMainMenuBtn, refreshBtn;
 
     public static final String error0 = "Error: full lobby.";
     public static final String error1 = "Error: lobby not found.";
@@ -76,25 +76,21 @@ public class GameListView extends AbstractView {
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    state.handleInput(data[1]); // lobbyID
+                    listState.handleInput(data[1]); // lobbyID
                 }
             });
             table.add(button).width(300).pad(5); table.row();
         }
-        if (listState.getLobbyListData().size() != 0) {
-            createExitToMainMenuBtn();
-            exitTable = new Table();
-            exitTable.setFillParent(true);
-            exitTable.bottom();
-            exitTable.add(exitToMainMenuBtn).padTop(30).padBottom(30).bottom();
-            exitTable.pack();
-            table.pack();
-            stage.addActor(table);
-            stage.addActor(exitTable);
-
-            // TODO: refresh button
-
-        }
+        createExitToMainMenuBtn();
+        exitTable = new Table();
+        exitTable.setFillParent(true);
+        exitTable.bottom();
+        exitTable.add(refreshBtn).pad(10);
+        exitTable.add(exitToMainMenuBtn).pad(10);
+        exitTable.pack();
+        table.pack();
+        stage.addActor(table);
+        stage.addActor(exitTable);
 //        scroller = new ScrollPane(table);
 //        scroller.setScrollingDisabled(true, false);
 //        table.add(scroller).fill().expand();
@@ -109,6 +105,17 @@ public class GameListView extends AbstractView {
                 state.handleInput("-1");
             }
         });
+
+        refreshBtn = new TextButton(    "Refresh list", btnStyle);
+        refreshBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                listState.updateLobbyList();
+            }
+        });
+
+
+
 
     }
 

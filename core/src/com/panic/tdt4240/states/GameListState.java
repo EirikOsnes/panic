@@ -1,12 +1,15 @@
 package com.panic.tdt4240.states;
 
 
+import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.GameListView;
+import java.lang.Thread;
 
 import java.util.ArrayList;
+import java.lang.Thread;
 
 /**
  * Created by magnus on 12.03.2018.
@@ -42,12 +45,17 @@ public class GameListState extends State {
      * */
     @Override
     public void handleInput(Object o) {
-        String s = (String) o;
+        final String s = (String) o;
         // when a lobby is clicked, enter it.
         if (s.equals("-1")) gsm.reset();  // exit to main menu
         if (Integer.parseInt(s) >= 0) { // lobbyID entered
-            gsm.push(new GameLobbyState(gsm, 2)); // TESTING
-//            Connection.getInstance().connectToLobby(Integer.parseInt(s)); // ACTUAL CODE... i think.
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    connectToLobby(Integer.parseInt(s)); // ACTUAL CODE... i think.
+                    System.out.println("New lobby state SHOULD BE made");
+                }
+            });
         }
         try {    // error handling
             if (s.equals("error:Full lobby")) {
@@ -124,8 +132,20 @@ public class GameListState extends State {
                     }
 
                     break;
+                    // CLICKED ON A LOBBY, RECEIVING LOBBY DATA SOON
                 case "LOBBY_SUCCESSFUL":
-                    gsm.push(new GameLobbyState(gsm,Integer.parseInt(strings[1])));
+                    System.out.println("Thread check 1: " + Thread.activeCount());
+                    final String s = strings[1];
+/*                    gsm.push(new GameLobbyState(gsm,Integer.parseInt(s))); /**/
+
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println("Thread check postRunnable in listState onMessage: " +
+                                Thread.currentThread().toString());
+                            gsm.push(new GameLobbyState(gsm,Integer.parseInt(s))); /**/
+                        }
+                    }); /**/
                     break;
 
                 case "LOBBY_FAILED":

@@ -7,24 +7,34 @@ import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.GameLobbyView;
-import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
 
 /**
  * Created by victor on 12.03.2018.
- */
+ * SEQUENCE OF EVENTS MUST BE:
+ *      1. CREATE STATE, VIEW, BUT LET VIEW DO NOTHING
+ *      2. ENSURE ADAPTER IS CONNECTED;  onMessage() MUST RUN
+ *      3. UPDATE DATA FOUND IN STATE
+ *      4. UPDATE VIEW WITH DATA
+ *
+ *      */
 
 public class GameLobbyState extends State {
 
 
     GameLobbyView view;
     Lobby lobby;
+    int lobbyID;
 
     public GameLobbyState(GameStateManager gsm, int lobbyID){
         super(gsm);
-        Connection.getInstance().updateLobby(lobbyID);
+        System.out.println("Thread check 4: " + Thread.currentThread().toString() +
+                "New lobby state SUCCESSFULLY MADE");
         view = new GameLobbyView(this);
+        this.lobbyID=lobbyID;
+//        Connection.getInstance().updateLobby(lobbyID);
+        // updateLobby() cannot run because data has not yet arrived
     }
 
     public Lobby getLobby(){return lobby;}
@@ -41,8 +51,17 @@ public class GameLobbyState extends State {
     /**
      * Update the lobby - should be called every second maybe?
      */
-    private void updateLobby(){
+    public void updateLobby(){
         Connection.getInstance().updateLobby(lobby.getLobbyID());
+        System.out.println("Thread check 3: " + Thread.currentThread().toString());
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Attempting to update view from postRunnable");
+                view.updateView();
+            }
+        }); /**/
+        System.out.println("Attempting to update view");
         view.updateView();
     }
 
@@ -117,14 +136,25 @@ public class GameLobbyState extends State {
 
             switch (strings[0]){
                 case "LOBBY_INFO":
+                    // CURRENTLY:   - fails to run from Create Game sequence
+                    //              - does not run from Game List
+                    System.out.println("Message: \n"+ strings[1]);
                     parseLobby(strings);
+                    updateLobby();
+                    System.out.println("is something happening now?");
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println(getLobby().getLobbyname());
+                            view.updateView();
+                        }
+                    });
+                    //view!=null
                     break;
                 case "GAME_START":
                     launchGame();
                     break;
-
             }
-
 
         }
 
@@ -140,8 +170,9 @@ public class GameLobbyState extends State {
             }
             myLobby.setPlayerIDs(playerIDs);
             myLobby.setVehicleTypes(vehicleTypes);
-            System.out.println(myLobby.toString());
+            System.out.println("Lobby parsed \n\tData:" + myLobby.toString());
             lobby = myLobby;
+            view.updateView();
         }
     }
 

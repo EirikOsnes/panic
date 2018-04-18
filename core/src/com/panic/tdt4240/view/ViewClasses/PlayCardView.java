@@ -158,7 +158,10 @@ public class PlayCardView extends AbstractView{
         finishedButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((PlayCardState) state).finishRound();
+                if(!((PlayCardState) state).isLockedIn()) { //Only send the cards to the server if you have not already locked in.
+                    //TODO: Show a "Waiting for other players" message
+                    ((PlayCardState) state).finishRound();
+                }
             }
 
         });

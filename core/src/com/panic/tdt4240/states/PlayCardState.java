@@ -1,5 +1,6 @@
 package com.panic.tdt4240.states;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.connection.Connection;
@@ -41,7 +42,6 @@ public class PlayCardState extends State {
     private ArrayList<Boolean> selectedCard;
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
-    private GameInstance gameInstance;
     private boolean isLockedIn = false;
 
     private MapConnections mapConnections;
@@ -52,11 +52,10 @@ public class PlayCardState extends State {
 
     public PlayCardState(GameStateManager gsm) {
         super(gsm);
-        gameInstance = GameInstance.getInstance();
         enableTimer = false;
-
-        player = gameInstance.getPlayer();
-        map = gameInstance.getMap();
+        System.out.println("PlayCardState");
+        player = GameInstance.getInstance().getPlayer();
+        map = GameInstance.getInstance().getMap();
 
         playedCardsList = new ArrayList<>();
         targets = new ArrayList<>();
@@ -218,12 +217,14 @@ public class PlayCardState extends State {
      * Should be called when the card selection is done
      */
     public void finishRound() {
+
         isLockedIn = true;
         ArrayList<String[]> result = getCardsAndTargets();
-        //TODO Finish the view, change to the next state, send the result...
-        Connection.getInstance().sendTurn(result);
-        //TODO Finish the view, change to the next state, send the result...
-        //return result;
+        Connection.getInstance().sendTurn(result,GameInstance.getInstance().getID());
+    }
+
+    public boolean isLockedIn() {
+        return isLockedIn;
     }
 
     /**
@@ -244,7 +245,7 @@ public class PlayCardState extends State {
         return map;
     }
     public String getColorCar(String id){
-        return gameInstance.getVehicleById(id).getColorCar();
+        return GameInstance.getInstance().getVehicleById(id).getColorCar();
     }
     public String getAllowedTarget(int i){
         return hand.get(i).getAllowedTarget().name().toLowerCase();
@@ -309,7 +310,7 @@ public class PlayCardState extends State {
      * Tell the server that you are ready to start a new turn
      */
     private void readyForNewTurn(){
-        Connection.getInstance().sendPlayCardState();
+        Connection.getInstance().sendPlayCardState(GameInstance.getInstance().getID());
     }
 
     @Override
@@ -328,7 +329,12 @@ public class PlayCardState extends State {
                     if(!isLockedIn){
                         finishRound();
                     }
-                    gsm.push(new RunEffectsState(gsm));
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            gsm.push(new RunEffectsState(gsm));
+                        }
+                    });
                     break;
                 case "BEGIN_TURN":
                     setTimeLeft(Float.parseFloat(strings[1]));

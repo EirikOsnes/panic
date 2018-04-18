@@ -1,6 +1,8 @@
 package com.panic.tdt4240.states;
 
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
@@ -46,8 +48,8 @@ public class GameListState extends State {
         // when a lobby is clicked, enter it.
         if (s.equals("-1")) gsm.reset();  // exit to main menu
         if (Integer.parseInt(s) >= 0) { // lobbyID entered
-            gsm.push(new GameLobbyState(gsm, 2)); // TESTING
-//            Connection.getInstance().connectToLobby(Integer.parseInt(s)); // ACTUAL CODE... i think.
+            //gsm.push(new GameLobbyState(gsm, 2)); // TESTING
+            Connection.getInstance().connectToLobby(Integer.parseInt(s)); // ACTUAL CODE... i think.
         }
         try {    // error handling
             if (s.equals("error:Full lobby")) {
@@ -125,7 +127,15 @@ public class GameListState extends State {
 
                     break;
                 case "LOBBY_SUCCESSFUL":
-                    gsm.push(new GameLobbyState(gsm,Integer.parseInt(strings[1])));
+
+                    final String string = strings[1];
+
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            gsm.push(new GameLobbyState(gsm,Integer.parseInt(string)));
+                        }
+                    });
                     break;
 
                 case "LOBBY_FAILED":

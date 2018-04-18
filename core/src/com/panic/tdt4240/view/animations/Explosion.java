@@ -1,8 +1,7 @@
 package com.panic.tdt4240.view.animations;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -19,6 +18,9 @@ public class Explosion  extends AnimatedActor{
 
     public Explosion(float maxFrameTime, int frameCount){
         super(maxFrameTime,frameCount);
+        TextureAtlas atlas = new TextureAtlas("animations/explosion.atlas");
+        Array<TextureAtlas.AtlasRegion> regions = atlas.findRegions("expl");
+        /*
         Texture texture = new Texture("animations/explosions.png");
         TextureRegion[][] tmp = TextureRegion.split(texture,DIM,DIM);
         Array<TextureRegion> regions = new Array<>();
@@ -27,6 +29,7 @@ public class Explosion  extends AnimatedActor{
                 regions.add(tmp[i][j]);
             }
         }
+        */
         setAnimation(regions);
     }
 
@@ -40,12 +43,6 @@ public class Explosion  extends AnimatedActor{
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
-        if(animation==null){
-            throw new IllegalStateException("Animation not yet defined.");
-        }
-        if(!animation.isAnimationFinished(currentFrameTime)) {
-            batch.draw(currentFrame, getX(), getY());
-        }
-
+        batch.draw(currentFrame, getX(), getY());
     }
 }

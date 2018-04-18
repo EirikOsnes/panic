@@ -1,9 +1,7 @@
 package com.panic.tdt4240.view.animations;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -19,7 +17,7 @@ public class Missile extends AnimatedActor {
         super(maxFrameTime,frameCount);
         TextureAtlas atlas = new TextureAtlas("animations/missiles.atlas");
         Array<TextureAtlas.AtlasRegion> regions = atlas.findRegions(color);
-        animation = new Animation<TextureRegion>(maxFrameTime,regions);
+        setAnimation(regions);
     }
 
     public Missile(String color){
@@ -28,6 +26,7 @@ public class Missile extends AnimatedActor {
     @Override
     public void act(float dt){
         super.act(dt);
+        currentFrameTime+=dt;
         currentFrame = getCurrentFrame(dt,true);
         //TODO
     }
@@ -36,6 +35,5 @@ public class Missile extends AnimatedActor {
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
         batch.draw(currentFrame,getX(),getY(),getOriginX(),getOriginY(),currentFrame.getRegionWidth(),currentFrame.getRegionHeight(),1,1,getRotation());
-        //TODO
     }
 }

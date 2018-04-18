@@ -1,25 +1,22 @@
 package com.panic.tdt4240.view.ViewClasses;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.MenuState;
 import com.panic.tdt4240.util.GlobalConstants;
+import com.panic.tdt4240.view.animations.Missile;
 
 /**
  * Created by victor on 05.03.2018.
@@ -38,6 +35,11 @@ public class MenuView extends AbstractView {
 
     public MenuView(final MenuState menuState) {
         super(menuState);
+
+        Missile missile = new Missile(Missile.COLOR_RED);
+        missile.startAnimation(Gdx.graphics.getWidth()/2,Gdx.graphics.getHeight()/2);
+
+
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         table = new Table();
@@ -100,6 +102,7 @@ public class MenuView extends AbstractView {
             }
         });
         stage.addActor(table);
+        stage.addActor(missile);
 
     }
 
@@ -117,6 +120,7 @@ public class MenuView extends AbstractView {
 
     // TODO: legge inn input
     public void render() {
+        stage.act();
         stage.draw();
     }
 

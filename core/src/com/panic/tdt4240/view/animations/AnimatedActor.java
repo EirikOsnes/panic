@@ -1,6 +1,7 @@
 package com.panic.tdt4240.view.animations;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
@@ -10,7 +11,7 @@ import com.badlogic.gdx.utils.Array;
  */
 
 public class AnimatedActor extends Actor {
-    protected Animation<TextureRegion> animation;
+    private Animation<TextureAtlas.AtlasRegion> animation;
 
     protected TextureRegion currentFrame;
 
@@ -30,7 +31,7 @@ public class AnimatedActor extends Actor {
      * Sets the animation and defines the centre of the animation frames. All frames have to be of equal size
      * @param regions The textureRegions that make up the animation
      */
-    public void setAnimation(Array<TextureRegion> regions){
+    public void setAnimation(Array<TextureAtlas.AtlasRegion> regions){
         animation = new Animation<>(maxFrameTime,regions);
         setOrigin(regions.get(0).getRegionWidth(),regions.get(0).getRegionHeight());
     }

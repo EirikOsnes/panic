@@ -1,5 +1,6 @@
 package com.panic.tdt4240.states;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.connection.Connection;
@@ -9,9 +10,9 @@ import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.Player;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
-import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
@@ -41,7 +42,6 @@ public class PlayCardState extends State {
     private ArrayList<Boolean> selectedCard;
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
-    private GameInstance gameInstance;
     private boolean isLockedIn = false;
 
     private MapConnections mapConnections;
@@ -52,11 +52,10 @@ public class PlayCardState extends State {
 
     public PlayCardState(GameStateManager gsm) {
         super(gsm);
-        gameInstance = GameInstance.getInstance();
         enableTimer = false;
-
-        player = gameInstance.getPlayer();
-        map = gameInstance.getMap();
+        System.out.println("PlayCardState");
+        player = GameInstance.getInstance().getPlayer();
+        map = GameInstance.getInstance().getMap();
 
         playedCardsList = new ArrayList<>();
         targets = new ArrayList<>();
@@ -133,10 +132,9 @@ public class PlayCardState extends State {
      *          reset the justClicked index, allowing us to select a new card and target
      */
     private void selectTarget(String s) {
-        s = s.toLowerCase();
         String firstTarget;
         String potentialTarget;
-        int targetID = s.indexOf("a");
+        int targetID = s.indexOf("A");
         if (targetID > 0) {
             //Targets vehicle, but can potentially target asteroid instead
             firstTarget = s.substring(0, targetID);
@@ -175,16 +173,16 @@ public class PlayCardState extends State {
     private boolean validTarget(String targetID) {
         System.out.println(targetID);
         //If the target is an asteroid
-        if (targetID.substring(0, 1).equals("a")) {
+        if (targetID.substring(0, 1).equals("A")) {
             return hand.get(playedCardsList.get(numPlayedCards - 1)).getTargetType().equals(ASTEROID);
         }
         //If the target is a vehicle
-        else if (targetID.substring(0, 1).equals("v")) {
+        else if (targetID.substring(0, 1).equals("V")) {
             vehicleTarget = true;
             //If the player can target a vehicle
             if (hand.get(playedCardsList.get(numPlayedCards - 1)).getTargetType().equals(VEHICLE)) {
                 //If the player targets themselves
-                if (player.getVehicle().getVehicleID().toLowerCase().equals(targetID)) {
+                if (player.getVehicle().getVehicleID().equals(targetID)) {
                     return !hand.get(playedCardsList.get(numPlayedCards - 1)).getAllowedTarget().equals(ENEMY);
                 }
                 //The player targets someone else
@@ -219,12 +217,14 @@ public class PlayCardState extends State {
      * Should be called when the card selection is done
      */
     public void finishRound() {
+
         isLockedIn = true;
         ArrayList<String[]> result = getCardsAndTargets();
-        //TODO Finish the view, change to the next state, send the result...
-        Connection.getInstance().sendTurn(result);
-        //TODO Finish the view, change to the next state, send the result...
-        //return result;
+        Connection.getInstance().sendTurn(result,GameInstance.getInstance().getID());
+    }
+
+    public boolean isLockedIn() {
+        return isLockedIn;
     }
 
     /**
@@ -245,7 +245,7 @@ public class PlayCardState extends State {
         return map;
     }
     public String getColorCar(String id){
-        return gameInstance.getVehicleById(id).getColorCar();
+        return GameInstance.getInstance().getVehicleById(id).getColorCar();
     }
     public String getAllowedTarget(int i){
         return hand.get(i).getAllowedTarget().name().toLowerCase();
@@ -256,7 +256,9 @@ public class PlayCardState extends State {
     public String getCardName(int i){
         return hand.get(i).getName();
     }
-
+    public Vehicle getPlayerVehicle(){
+        return player.getVehicle();
+    }
     private void setTimeLeft(float timeLeft){
         this.timeLeft = timeLeft;
         enableTimer = true;
@@ -308,7 +310,7 @@ public class PlayCardState extends State {
      * Tell the server that you are ready to start a new turn
      */
     private void readyForNewTurn(){
-        Connection.getInstance().sendPlayCardState();
+        Connection.getInstance().sendPlayCardState(GameInstance.getInstance().getID());
     }
 
     @Override
@@ -327,7 +329,12 @@ public class PlayCardState extends State {
                     if(!isLockedIn){
                         finishRound();
                     }
-                    gsm.push(new RunEffectsState(gsm));
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            gsm.push(new RunEffectsState(gsm));
+                        }
+                    });
                     break;
                 case "BEGIN_TURN":
                     setTimeLeft(Float.parseFloat(strings[1]));

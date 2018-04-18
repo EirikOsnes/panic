@@ -50,6 +50,7 @@ public class GameLobbyView extends AbstractView {
 
     private SelectBox<String> carSelectBox;
     private SelectBox.SelectBoxStyle boxStyle;
+    private boolean lobbiesFetched;
 
     private GameLobbyState lobbyState;
 
@@ -63,6 +64,8 @@ public class GameLobbyView extends AbstractView {
         super(lobbyState);
         this.lobbyState=lobbyState;
         /** INIT SETUP */
+
+        lobbiesFetched=false;
         usedNames = new ArrayList<>();
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
@@ -124,7 +127,7 @@ public class GameLobbyView extends AbstractView {
         carSelectBox.scaleBy(1.3f);
 
         // DO NOT CREATE PLAYER LIST UNTIL LOBBY DATA EXISTS
-        if (lobbyState.getLobby() !=null || lobbyState.getLobby().getPlayerIDs().size()==0) {
+        if (lobbiesFetched) {
             System.out.println((lobbyState.getLobby()==null) + "Object 'lobby' not yet created");
             preparePlayerList(); // generates playerTxtFields
         }
@@ -150,7 +153,43 @@ public class GameLobbyView extends AbstractView {
         stage.addActor(table);
         stage.addActor(bottomTable);
         // table should already be in the stage; adding to
+    }
 
+
+    public void render(){
+        stage.draw();
+    }
+
+    /* CAN NOT RUN IN THE CONSTRUCTOR/**/
+    public void dispose(){
+        font.dispose();
+        stage.dispose();
+        bg.dispose();
+        font.dispose();
+        skin.dispose();
+        buttonAtlas.dispose();
+    }
+
+    // TODO: should server distribute generated names? If so, trigger updateLobby on player join
+    private void preparePlayerList(){
+
+        // DO NOT RUN UNTIL LOBBY HAS BEEN UPDATED
+        String name;
+        playerTxtFields = new ArrayList<>();
+        for (Integer playerID : lobbyState.getLobby().getPlayerIDs()){
+            double seed = Math.floor(Math.random() * PlayerNameGenerator.getCount());
+            name = PlayerNameGenerator.getName((int) seed);
+            if (! usedNames.contains(name)) {
+                // This should work so that each player can see (me) next to only
+                // one name at a time.
+                usedNames.add(name);
+                if (playerID == Connection.getInstance().getConnectionID()){
+                    name = name + " (me)";
+                }
+                TextField playerField = new TextField(name, txtStyle);
+                playerTxtFields.add(playerField);
+            }
+        }
     }
 
     private void createAndSetMenuBtns(){
@@ -176,41 +215,6 @@ public class GameLobbyView extends AbstractView {
         bottomTable.add(exitBtn).pad(10);
         bottomTable.row();
         stage.addActor(bottomTable);
-        System.out.println("menu buttons created");
-    }
-
-    public void render(){
-        stage.draw();
-    }
-
-    /* CAN NOT RUN IN THE CONSTRUCTOR/**/
-    public void dispose(){
-        font.dispose();
-        stage.dispose();
-        bg.dispose();
-        font.dispose();
-        skin.dispose();
-        buttonAtlas.dispose();
-    }
-
-    private void preparePlayerList(){
-        // DO NOT RUN UNTIL LOBBY HAS BEEN UPDATED
-        String name;
-        playerTxtFields = new ArrayList<>();
-        for (Integer playerID : lobbyState.getLobby().getPlayerIDs()){
-            double seed = Math.floor(Math.random() * PlayerNameGenerator.getCount());
-            name = PlayerNameGenerator.getName((int) seed);
-            if (! usedNames.contains(name)) {
-                // This should work so that each player can see (me) next to only
-                // one name at a time.
-                usedNames.add(name);
-                if (playerID == Connection.getInstance().getConnectionID()){
-                    name = name + " (me)";
-                }
-                TextField playerField = new TextField(name, txtStyle);
-                playerTxtFields.add(playerField);
-            }
-        }
     }
 
 }

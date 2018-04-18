@@ -11,6 +11,9 @@ import com.panic.tdt4240.view.ViewClasses.GameLobbyView;
 import java.util.ArrayList;
 
 /**
+ * IGNORE THREADS
+ *
+ *
  * Created by victor on 12.03.2018.
  * SEQUENCE OF EVENTS MUST BE:
  *      1. CREATE STATE, VIEW, BUT LET VIEW DO NOTHING
@@ -32,6 +35,7 @@ public class GameLobbyState extends State {
         System.out.println("Thread check 4: " + Thread.currentThread().toString() +
                 "New lobby state SUCCESSFULLY MADE");
         view = new GameLobbyView(this);
+//        view = new GameLobbyView(this);
         this.lobbyID=lobbyID;
 //        Connection.getInstance().updateLobby(lobbyID);
         // updateLobby() cannot run because data has not yet arrived
@@ -44,7 +48,7 @@ public class GameLobbyState extends State {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                gsm.push(new LoadGameState(gsm, lobby.getLobbyID()));
+                gsm.push(new LoadGameState(gsm, lobbyID));
             }
         });
     }
@@ -54,7 +58,10 @@ public class GameLobbyState extends State {
      */
     public void updateLobby(){
         Connection.getInstance().updateLobby(this.lobbyID);
-        System.out.println("Thread check 3: " + Thread.currentThread().toString());
+        System.out.println("---Messaged received---\n" +
+                "Thread check 3: " + Thread.currentThread().toString());
+
+        // DELEGATE VIEW UPDATE
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
@@ -62,8 +69,6 @@ public class GameLobbyState extends State {
                 view.updateView();
             }
         }); /**/
-        System.out.println("Attempting to update view");
-        view.updateView();
     }
 
     /**
@@ -134,15 +139,12 @@ public class GameLobbyState extends State {
         @Override
         public void onMessage(String message) {
             String[] strings = message.split(":");
-            System.out.println("is something happening now?");
-
             switch (strings[0]){
                 case "LOBBY_INFO":
-                    // CURRENTLY:   - fails to run from Create Game sequence
-                    //              - does not run from Game List
+                    // CURRENTLY:   runs from both sequences
+                    //  -problems:  IT FUCKING LOOPS/GOES RECURSIVE
                     System.out.println("Message: \n"+ strings[1]);
                     parseLobby(strings);
-                    updateLobby();
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
@@ -173,7 +175,6 @@ public class GameLobbyState extends State {
             myLobby.setVehicleTypes(vehicleTypes);
             System.out.println("Lobby parsed \n\tData:" + myLobby.toString());
             lobby = myLobby;
-            view.updateView();
         }
     }
 

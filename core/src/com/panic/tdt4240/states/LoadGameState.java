@@ -11,9 +11,8 @@ import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.XMLParser;
+import com.panic.tdt4240.view.LoadGameView;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
-import com.panic.tdt4240.view.ViewClasses.LoadGameView;
-import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -36,6 +35,7 @@ public class LoadGameState extends State {
         connection = Connection.getInstance();
         this.lobbyID = lobbyID;
         setUpGameInstance();
+        view = new LoadGameView(this);
     }
 
     /**
@@ -110,12 +110,12 @@ public class LoadGameState extends State {
 
     @Override
     public void render() {
-
+        view.render();
     }
 
     @Override
     public void dispose() {
-
+        view.dispose();
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -26,6 +27,7 @@ public class AnimatedActor extends Actor {
         this.currentFrameTime = 99f;
         this.maxFrameTime = maxFrameTime;
         this.frameCount = frameCount;
+        setOrigin(Align.center);
     }
 
 
@@ -35,7 +37,6 @@ public class AnimatedActor extends Actor {
      */
     public void setAnimation(Array<TextureAtlas.AtlasRegion> regions){
         animation = new Animation<>(maxFrameTime,regions);
-        setOrigin(regions.get(0).getRegionWidth()/2,regions.get(0).getRegionHeight()/2);
     }
 
     /**

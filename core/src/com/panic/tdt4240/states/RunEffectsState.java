@@ -21,6 +21,7 @@ public class RunEffectsState extends State implements EventListener {
 
     private RunEffectsView runEffectsView;
     private boolean doneParsing = false;
+    private boolean serverApproved = false;
 
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
@@ -43,8 +44,13 @@ public class RunEffectsState extends State implements EventListener {
     public void update(float dt) {
         if(doneParsing){
             if (runEffectsView.isDoneAnimating()){
-                EventBus.getInstance().readyForRemove();
-                gsm.set(new PlayCardState(gsm));
+                if(serverApproved){
+                    EventBus.getInstance().readyForRemove();
+                    gsm.set(new PlayCardState(gsm));
+                }else{
+                    Connection.getInstance().sendEndRunEffectsState(GameInstance.getInstance().getID());
+                }
+
             }
         }
 
@@ -85,6 +91,7 @@ public class RunEffectsState extends State implements EventListener {
             runEffectsView.moveVehicle(e.getInstigatorID(), e.getTargetID());
         }
         else if (e.getT() == Event.Type.DESTROYED) {
+            Connection.getInstance().sendDestroyed(GameInstance.getInstance().getID(),e.getTargetID());
             runEffectsView.destroyVehicle(e.getTargetID());
         }
     }
@@ -99,6 +106,23 @@ public class RunEffectsState extends State implements EventListener {
                 case "GET_TURN":
                     System.out.println("recieved getTurn");
                     playTurn(strings);
+                    break;
+                case "VALID_STATE":
+                    serverApproved = true;
+                    break;
+                case "RESYNC": //strings[1] = REASON
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            gsm.set(new LoadGameState(gsm, GameInstance.getInstance().getID()));
+                        }
+                    });
+                    break;
+                case "GAME_OVER": //string[1] = VICTORY/DEFEAT/DRAW
+                    //TODO: Handle this
+                    break;
+                case "RECONNECT_GAME":
+                    //TODO: Create a pop up, where you can choose to rejoin a game in progress.
                     break;
 
             }

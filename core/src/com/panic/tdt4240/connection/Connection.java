@@ -128,10 +128,18 @@ public class Connection extends WebSocketClient{
     }
 
     /**
+     * Remove the player from the given Game
+     * @param lobbyID The ID of the Game
+     */
+    public void leaveGame(int lobbyID){
+        leaveLobby(lobbyID);
+    }
+
+    /**
      * Get the latest state of the given Lobby - used to update the GameLobbyState
      * @param lobbyID The id of the lobby
      * Return the updated Lobby as a string on the form:
-     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN
+     * LOBBY_INFO:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN
      *
      */
     public void updateLobby(int lobbyID){
@@ -161,6 +169,17 @@ public class Connection extends WebSocketClient{
     }
 
     /**
+     * Vote for the destruction of a target
+     * @param gameID
+     * @param target
+     */
+    public void sendDestroyed(int gameID, String target){
+
+        this.send("TOGAME//" + gameID + "//DESTROY//" + target + "//" + connectionID);
+
+    }
+
+    /**
      * Return on the form GAME_INFO:VehicleType1,VehicleID1,Color1&VehicleType2,...ColorN:MapID:MyVehicleID:Seed:Log
      */
     public void getGameInfo(int lobbyID){
@@ -176,7 +195,11 @@ public class Connection extends WebSocketClient{
      */
     public void sendRunEffectsState(int gameID){
         System.out.println("sent runEffectState");
-        this.send("TOGAME//" + gameID + "//ENTERED_RUN_EFFECT_STATE");
+        this.send("TOGAME//" + gameID + "//ENTERED_RUN_EFFECTS_STATE");
+    }
+
+    public void sendEndRunEffectsState(int gameID){
+        this.send("TOGAME//" + gameID + "//END_RUN_EFFECTS_STATE");
     }
 
     /**

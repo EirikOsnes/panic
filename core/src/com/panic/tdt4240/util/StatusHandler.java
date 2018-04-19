@@ -223,7 +223,9 @@ public class StatusHandler {
     public HashMap<String,Float> getAllResultants(){
         HashMap<String,Float> result = new HashMap<>();
         for (String key : statuses.keySet()) {
-            result.put(key, statuses.get(key).getResultant());
+            if (statuses.get(key).getResultant()>0) {
+                result.put(key, statuses.get(key).getResultant());
+            }
         }
         return result;
     }

@@ -28,7 +28,6 @@ public class MenuView extends AbstractView {
     private TextureAtlas buttonAtlas;
     private Skin skin;
     private BitmapFont font;
-    private TextButton.TextButtonStyle ButtonStyle;
     private Table table;
     private Texture background;
 
@@ -44,19 +43,11 @@ public class MenuView extends AbstractView {
         buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
 
-        ButtonStyle = new TextButton.TextButtonStyle();
-
-        ButtonStyle.font = font;
-        ButtonStyle.up = skin.getDrawable("button-up");
-        ButtonStyle.down = skin.getDrawable("button-down");
-
-        createGameBtn = new TextButton("Create New Game", ButtonStyle);
-        joinGameBtn = new TextButton("Join Game", ButtonStyle);
-        settingsBtn = new TextButton("Settings", ButtonStyle);
-        Label.LabelStyle style = new Label.LabelStyle();
-        style.font = font;
-        Label title = new Label(PanicGame.TITLE,style);
-        Label fullTitle = new Label(PanicGame.FULL_TITLE,style);
+        createGameBtn = new TextButton("Create New Game", skin);
+        joinGameBtn = new TextButton("Join Game", skin);
+        settingsBtn = new TextButton("Settings", skin);
+        Label title = new Label(PanicGame.TITLE,skin);
+        Label fullTitle = new Label(PanicGame.FULL_TITLE,skin);
 
         float width = Gdx.graphics.getHeight()/2;
         float height = Gdx.graphics.getHeight()/15;

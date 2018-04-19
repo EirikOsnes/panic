@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -15,7 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.models.Asteroid;
+import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.PlayCardState;
 import com.panic.tdt4240.util.GlobalConstants;
@@ -43,6 +46,7 @@ public class PlayCardView extends AbstractView{
     private TextureAtlas textureAtlas;
     private ArrayList<Boolean> checked;
     private float timeLeft;
+    private boolean isLeaving = false;
 
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
@@ -56,13 +60,14 @@ public class PlayCardView extends AbstractView{
         table = new Table();
 
         table.setWidth(Gdx.graphics.getWidth());
+        table.setHeight(Gdx.graphics.getHeight() / 5);
         table.left().bottom();
         font = new BitmapFont();
         float textScale = GlobalConstants.GET_TEXT_SCALE();
 
         font.getData().scale(textScale);
-        skin = new Skin();
         textureAtlas = new TextureAtlas("cards/card_textures.atlas");
+        skin = new Skin();
         skin.addRegions(textureAtlas);
         buttonStyles = new ArrayList<>();
 
@@ -144,28 +149,59 @@ public class PlayCardView extends AbstractView{
             table.add(cardButtons.get(index)).width(Gdx.graphics.getWidth()/amountCards).height(Gdx.graphics.getHeight()/5);
         }
 
-        table.pack();
+        //table.pack();
         stage.addActor(table);
 
         //Images the button has in the normal up-position, and when it is pressed down
         buttonStyle.up = skin.getDrawable("button-up");
         buttonStyle.down = skin.getDrawable("button-down");
-
-        TextButton finishedButton = new TextButton("Finish Turn", buttonStyle);
+        TextButton finishedButton = new TextButton("", buttonStyle);
         finishedButton.setWidth(Gdx.graphics.getWidth()/5);
         finishedButton.setHeight(Gdx.graphics.getWidth()/10);
         finishedButton.setPosition(4*Gdx.graphics.getWidth()/5, table.getHeight());
-        finishedButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if(!((PlayCardState) state).isLockedIn()) { //Only send the cards to the server if you have not already locked in.
-                    //TODO: Show a "Waiting for other players" message
-                    ((PlayCardState) state).finishRound();
-                }
-            }
 
-        });
+        if(((PlayCardState)state).getPlayerAlive()){
+            finishedButton.setText("Finish Turn");
+            finishedButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if(!((PlayCardState) state).isLockedIn()) { //Only send the cards to the server if you have not already locked in.
+                        //TODO: Show a "Waiting for other players" message
+                        ((PlayCardState) state).finishRound();
+                    }
+                }
+            });
+        }
+        //If player is dead, set next turn automatically, create leave button with confirmation dialog
+        else{
+            ((PlayCardState) state).finishRound();
+            TextureAtlas btnAtlas = new TextureAtlas("skins/uiskin.atlas");
+            Skin dialogSkin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
+            TextButton.TextButtonStyle ButtonStyle = new TextButton.TextButtonStyle();
+            ButtonStyle.font = font;
+            ButtonStyle.up = dialogSkin.getDrawable("button-up");
+            ButtonStyle.down = dialogSkin.getDrawable("button-down");
+            final FinishDialog dialog = new FinishDialog("Leave", dialogSkin, "dialog");
+            Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+
+            dialog.text("Are you sure you want to leave?", labelStyle);
+            dialog.button("Yes",true, ButtonStyle);
+            dialog.button("Cancel", false, ButtonStyle);
+            dialog.hide();
+
+            finishedButton.setText("Leave");
+            finishedButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if(!isLeaving){
+                        stage.addActor(dialog);
+                        dialog.show(stage);
+                    }
+                }
+            });
+        }
         stage.addActor(finishedButton);
+
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.font = font;
         style.fontColor = Color.WHITE;
@@ -318,6 +354,7 @@ public class PlayCardView extends AbstractView{
             sr.rectLine(points[0], points[1], 5.0f);
         }
         sr.end();
+        stage.act();
         stage.draw();
     }
     public void dispose(){
@@ -348,6 +385,22 @@ public class PlayCardView extends AbstractView{
             }
             else {
                 setVisible(false);
+            }
+        }
+    }
+    private class FinishDialog extends Dialog {
+        private FinishDialog(String title, Skin skin, String windowStyleName) {
+            super(title, skin, windowStyleName);
+        }
+        @Override
+        protected void result(Object object) {
+            Boolean bool = (Boolean) object;
+            if(bool){
+                isLeaving = true;
+                ((PlayCardState)state).leaveGame();
+            }
+            else{
+                remove();
             }
         }
     }

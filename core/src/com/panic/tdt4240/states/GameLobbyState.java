@@ -95,7 +95,7 @@ public class GameLobbyState extends State {
      * Leave the Lobby
      */
     private void leaveLobby(){
-        Connection.getInstance().leaveLobby();
+        Connection.getInstance().leaveLobby(lobbyID);
         //        gsm.pop(); // sends you to EITHER lobby list or creategame, but we want the list.
         gsm.set(new GameListState(gsm));
     }

@@ -97,8 +97,17 @@ public class CreateGameState extends State {
             String[] strings = message.split(":");
 
             switch (strings[0]){
-                case "LOBBY_INFO":
-                    parseLobby(strings);
+                case "LOBBY_SUCCESSFUL":
+                    final String string = strings[1];
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            gsm.push(new GameLobbyState(gsm,Integer.parseInt(string)));
+                        }
+                    });
+                    break;
+                case "RECONNECT_GAME":
+                    //TODO: Create a pop up, where you can choose to rejoin a game in progress.
                     break;
             }
 
@@ -117,5 +126,6 @@ public class CreateGameState extends State {
             });
 
         }
+
     }
 }

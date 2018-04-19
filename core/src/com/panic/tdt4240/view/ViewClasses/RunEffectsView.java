@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Pool;
@@ -33,6 +34,8 @@ import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.util.MapMethods;
 import com.panic.tdt4240.view.animations.Explosion;
 import com.panic.tdt4240.view.animations.Missile;
+import com.panic.tdt4240.view.animations.MissileAction;
+import com.panic.tdt4240.view.animations.MoveVehicleAction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -157,6 +160,7 @@ public class RunEffectsView extends AbstractView {
             Texture texture = new Texture("asteroids/" + asteroids.get(i).getTexture() + ".png");
             Image asteroid = new Image(texture);
             asteroid.setSize(SCREEN_WIDTH / 5, SCREEN_WIDTH / 5);
+            asteroid.setOrigin(Align.center);
             asteroidDimensions.add(i, new Vector2(asteroid.getWidth(), asteroid.getHeight()));
             asteroid.setPosition(
                     //Image should be rendered inside the window and above the table
@@ -182,6 +186,7 @@ public class RunEffectsView extends AbstractView {
             vehicle.setPosition(position.x, position.y);
             vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
             vehicleImages.put(activeVehicle.getVehicleID(), vehicle);
+            vehicle.setOrigin(Align.center);
             stage.addActor(vehicle);
         }
         Table playerTable = new Table();
@@ -224,7 +229,7 @@ public class RunEffectsView extends AbstractView {
         Image asteroid = asteroidImages.get(asteroidID);
         Vector2 vec = MapMethods.asteroidPositions(asteroid.getX(), asteroid.getY(), asteroid.getWidth(),
                 asteroid.getHeight(), gameInstance.getVehicleById(vehicleID).getColorCar());
-        Action action = Actions.moveTo(vec.x, vec.y, 2);
+        Action action = new MoveVehicleAction(vec.x, vec.y);
         animator.addAction(action, actor);
     }
 
@@ -245,7 +250,8 @@ public class RunEffectsView extends AbstractView {
                 explosion.startAnimation(vehicle.getX(), vehicle.getY());
             }
         };
-        Action action1 = Actions.sequence(Actions.run(missileRunnable), Actions.moveTo(vehicle.getX(), vehicle.getY(), 2));
+
+        Action action1 = Actions.sequence(Actions.run(missileRunnable), new MissileAction(vehicle, instigator));
         animator.addAction(action1, missile);
         Action action2 = Actions.sequence(Actions.run(explosionRunnable), Actions.delay(explosion.getDuration()));
         animator.addAction(action2, explosion);

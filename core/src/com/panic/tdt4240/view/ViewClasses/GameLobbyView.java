@@ -52,6 +52,7 @@ public class GameLobbyView extends AbstractView {
     private SelectBox<String> carSelectBox;
     private SelectBox.SelectBoxStyle boxStyle;
 
+    Actor backgroundActor;
     private GameLobbyState lobbyState;
 
     /** Lobby is retrieved after some time. Anything that is dependent on information
@@ -85,31 +86,27 @@ public class GameLobbyView extends AbstractView {
         exitBtnStyle.up = skin.getDrawable("button-up");
         exitBtnStyle.down = skin.getDrawable("button-down");
 
-        Actor backgroundActor = new Image(new TextureRegion(bg));
+        backgroundActor = new Image(new TextureRegion(bg));
         backgroundActor.setZIndex(0);
         backgroundActor.setSize(stage.getWidth(), stage.getHeight());
         stage.addActor(backgroundActor);
-
-        // both sequences reach this point
-        System.out.println("Thread check 5: " + Thread.currentThread().toString());
 
         createAndSetMenuBtns();
 
         /** INIT SETUP END */
     }
 
-    /** SHOULD RUN AFTER LOBBY DATA HAS BEEN UPDATED
-     *  CURRENTLY DOES NOT RUN AT ALL
+    /** RUNS AFTER LOBBY DATA HAS BEEN UPDATED
      * */
     public void updateView(){
-
-        stage.clear(); // needs to run addActor(...) again
+        // actors are to be removed and re-added.
+        stage.clear();
+        stage.addActor(backgroundActor);
 
         // FIXME: FETCH carTypes PROPERLY. Wherever this is supposed to come from...
 
         // DO NOT CREATE PLAYER LIST UNTIL LOBBY DATA EXISTS
         if (lobbyState.getDataLoaded()) {
-            System.out.println(" Object 'lobby' should exist now");
             createAndSetPlayerList(); // generates playerTxtFields
         }
         else {
@@ -139,26 +136,24 @@ public class GameLobbyView extends AbstractView {
 
     private void createAndSetPlayerList(){
 
-        // RUNS ONLY WHEN lobbyState IS LOADED
-
         String name;
         playerTxtFields = new ArrayList<>();
+
         for (Integer playerID : lobbyState.getLobby().getPlayerIDs()){
             int seed = playerID * lobbyState.getLobbyID();
-            // modulo is used in the getName().
-            name = PlayerNameGenerator.getName(seed);
             int offset = 0;
-            while (usedNames.contains(name)){
+            while (true) {
+                // modulo is used in the getName().
                 name = PlayerNameGenerator.getName(seed+offset);
                 offset++;
                 if (! usedNames.contains(name)) {
                     usedNames.add(name);
+                    System.out.println(name + " selected");
                     if (playerID == Connection.getInstance().getConnectionID()){
                         name = name + " (me)";
-                        // TODO: ADD CAR SELECTION BOX
                     }
-                    TextField playerField = new TextField(name, txtStyle);
-                    playerTxtFields.add(playerField);
+                    playerTxtFields.add(new TextField(name, txtStyle));
+                    break;
                 }
             }
         }
@@ -168,14 +163,14 @@ public class GameLobbyView extends AbstractView {
         playerTxtTable.row().center();
         playerTxtTable.add(new Label(PanicGame.TITLE, skin)).top().pad(10).row();
 
-        String[] carTypes = {"Eddison"};
+        String[] carTypes = {"EDDISON"};
         carSelectBox = new SelectBox<>(skin);
         BitmapFont boxFont = new BitmapFont();
         boxStyle = new SelectBox.SelectBoxStyle(skin.get(SelectBox.SelectBoxStyle.class));
         boxStyle.font = boxFont;
         boxFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
         boxStyle.font = boxFont;
-        carSelectBox.setName("Select vehicle");
+        carSelectBox.setName("Select vehicle. ");
         carSelectBox.setItems(carTypes);
         carSelectBox.setSelectedIndex(0);
         carSelectBox.addListener(new ChangeListener() {
@@ -186,15 +181,15 @@ public class GameLobbyView extends AbstractView {
         });
         carSelectBox.scaleBy(1.3f);
 
-        // Fill with actual contents
+        // Fill table with actual contents
         for (TextField tf : playerTxtFields){
-            playerTxtTable.add(tf).pad(15);
-//            playerTxtTable.add(carSelectBox);
+            playerTxtTable.add(tf).pad(20).width(SCREEN_WIDTH*3/4);
+            // TODO: ADD CAR SELECTION BOX
+            // uhh.... wat do?
+            // playerTxtTable.add(carSelectBox);
             playerTxtTable.row();
         }
-
         stage.addActor(playerTxtTable);
-
 
     }
 

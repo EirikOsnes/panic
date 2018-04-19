@@ -190,10 +190,10 @@ public class GameLobbyState extends State {
                 playerIDs.add(Integer.parseInt(playerIDstrings[i]));
 
                 // TEST CODE
-//                vehicleTypes.add("EDDISON");
+                vehicleTypes.add("EDDISON");
 
                 //PROPER CODE
-                vehicleTypes.add((vehicleTypestrings[i].equals("NONE")) ? null : vehicleTypestrings[i]);
+//                vehicleTypes.add((vehicleTypestrings[i].equals("NONE")) ? null : vehicleTypestrings[i]);
             }
             myLobby.setPlayerIDs(playerIDs);
             myLobby.setVehicleTypes(vehicleTypes);

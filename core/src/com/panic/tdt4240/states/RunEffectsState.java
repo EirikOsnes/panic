@@ -22,6 +22,7 @@ public class RunEffectsState extends State implements EventListener {
     private RunEffectsView runEffectsView;
     private boolean doneParsing = false;
     private boolean serverApproved = false;
+    private boolean hasSentEndState = false;
 
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
@@ -52,9 +53,11 @@ public class RunEffectsState extends State implements EventListener {
             if (runEffectsView.isDoneAnimating()){
                 if(serverApproved){
                     EventBus.getInstance().readyForRemove();
+                    System.out.println("SERVER APPROVED");
                     gsm.set(new PlayCardState(gsm));
-                }else{
+                }else if(!hasSentEndState){
                     Connection.getInstance().sendEndRunEffectsState(GameInstance.getInstance().getID());
+                    hasSentEndState=true;
                 }
 
             }

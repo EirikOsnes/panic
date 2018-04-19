@@ -69,7 +69,8 @@ public class LoadGameState extends State {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                gsm.push(new PlayCardState(gsm));
+                gsm.pop();
+                gsm.set(new PlayCardState(gsm));
             }
         });
     }

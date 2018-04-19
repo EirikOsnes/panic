@@ -1,16 +1,20 @@
 package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
@@ -49,8 +53,6 @@ public class MenuView extends AbstractView {
         Label title = new Label(PanicGame.TITLE,skin);
         Label fullTitle = new Label(PanicGame.FULL_TITLE,skin);
 
-        float width = Gdx.graphics.getHeight()/2;
-        float height = Gdx.graphics.getHeight()/15;
         float padding = Gdx.graphics.getHeight()/40;
 
         table.setFillParent(true);
@@ -58,11 +60,11 @@ public class MenuView extends AbstractView {
         table.row().center(); table.add(fullTitle);
         table.center();
         table.row();
-        table.add(createGameBtn).width(width).height(height).pad(padding);
+        table.add(createGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
         table.row();
-        table.add(joinGameBtn).width(width).height(height).pad(padding);
+        table.add(joinGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
         table.row();
-        table.add(settingsBtn).width(width).height(height).pad(padding);
+        table.add(settingsBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
         table.background(new TextureRegionDrawable(new TextureRegion(background)));
         table.pack();
 

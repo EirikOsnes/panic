@@ -17,6 +17,10 @@ public class GlobalConstants {
     public static final int BASE_PLAY_CARDS = 3;
     //Max number of players for a map
     public static final int MAX_PLAYERS = 4;
+    //Horizontal scale factor for buttons
+    public static final float SCALE_WIDTH = Gdx.graphics.getWidth()/2;
+    //Vertical scale factor for buttons
+    public static final float SCALE_HEIGHT = Gdx.graphics.getHeight()/15;
 
     /**
      * Text scale factor for android devices

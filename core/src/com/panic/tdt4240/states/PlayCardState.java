@@ -246,6 +246,10 @@ public class PlayCardState extends State {
         }
         return hand.size();
     }
+    public boolean getPlayerAlive(){
+        return GameInstance.getInstance().getPlayer().isAlive();
+    }
+
     public Map getMap(){
         return map;
     }
@@ -284,6 +288,9 @@ public class PlayCardState extends State {
             cardsAndTargets.add(playerActions);
         }
         return cardsAndTargets;
+    }
+    public void leaveGame(){
+        //TODO
     }
 
     @Override
@@ -345,6 +352,7 @@ public class PlayCardState extends State {
                     //setTimeLeft(Float.parseFloat(strings[1]));
                     //EventBus.getInstance().readyForRemove();
                     break;
+
                 case "GAME_OVER": //strings[1] = VICTORY/DEFEAT/DRAW
                     //TODO: Handle this
                     break;

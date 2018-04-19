@@ -32,6 +32,12 @@ public class RunEffectsState extends State implements EventListener {
     public Vehicle getPlayerVehicle(){
         return GameInstance.getInstance().getPlayer().getVehicle();
     }
+    public boolean getPlayerAlive(){
+        return GameInstance.getInstance().getPlayer().isAlive();
+    }
+    public void leaveGame(){
+        //TODO
+    }
 
 
 

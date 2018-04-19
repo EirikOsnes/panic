@@ -37,6 +37,8 @@ public class AnimatedActor extends Actor {
      */
     public void setAnimation(Array<TextureAtlas.AtlasRegion> regions){
         animation = new Animation<>(maxFrameTime,regions);
+        //setOrigin(regions.get(0).getRegionWidth()/2,regions.get(0).getRegionHeight()/2);
+        this.setOrigin(Align.center);
     }
 
     /**

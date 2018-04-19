@@ -1,12 +1,10 @@
 package com.panic.tdt4240.connection;
 
 import android.support.annotation.NonNull;
-import java.lang.Thread;
+
 import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.models.Card;
-import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.ModelHolder;
-import com.panic.tdt4240.models.Vehicle;
 
 
 import org.java_websocket.client.WebSocketClient;
@@ -32,7 +30,7 @@ public class Connection extends WebSocketClient{
                 URI uri = new URI("ws://panicserver.herokuapp.com");
                 ourInstance = new Connection(uri);
                 ourInstance.connectBlocking(); //FIXME: This returns a boolean - should it be used?
-                ourInstance.setConnectionLostTimeout(30);
+                //ourInstance.setConnectionLostTimeout(30);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -101,11 +99,8 @@ public class Connection extends WebSocketClient{
     /**
      * Get all the Lobbies available
      * Returns an ArrayList of all available Lobbies as a string on the form:
-
      * GET_LOBBIES: {4 fields} & {4 fields} & ... repeating. '&' = lobby separator
-
-     * GET_LOBBIES:ID1,Lobbyname1,CurrentPlayerNum1,MaxPlayers1&ID2,LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN
-
+     * GET_LOBBIES:LobbyName1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
      */
     public void getAllLobbies(){
         this.send("GET_LOBBIES");
@@ -122,18 +117,20 @@ public class Connection extends WebSocketClient{
 
     /**
      * Remove the player from the given Lobby.
+     * @param lobbyID The ID of the Lobby
      */
-    public void leaveLobby(){
-        this.send("EXIT");
-    }
+    public void leaveLobby(int lobbyID){
 
+        this.send("EXIT");
+
+    }
 
     /**
      * Remove the player from the given Game
+     * @param lobbyID The ID of the Game
      */
     public void leaveGame(int lobbyID){
-
-        leaveLobby();
+        leaveLobby(lobbyID);
     }
 
     /**
@@ -242,6 +239,8 @@ public class Connection extends WebSocketClient{
             adapter.onMessage(message);
         }
     }
+
+    @Override
     public void onClose(int code, String reason, boolean remote) {
         Gdx.app.log("", "onClose! REASON: " + reason);
     }

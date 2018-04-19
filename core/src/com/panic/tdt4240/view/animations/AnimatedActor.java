@@ -3,7 +3,9 @@ package com.panic.tdt4240.view.animations;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -13,7 +15,6 @@ import com.badlogic.gdx.utils.Array;
 public class AnimatedActor extends Actor {
     private Animation<TextureAtlas.AtlasRegion> animation;
 
-    private float rotation;
 
     protected TextureRegion currentFrame;
 
@@ -34,8 +35,14 @@ public class AnimatedActor extends Actor {
      * @param regions The textureRegions that make up the animation
      */
     public void setAnimation(Array<TextureAtlas.AtlasRegion> regions){
-        animation = new Animation<>(maxFrameTime,regions);
-        setOrigin(regions.get(0).getRegionWidth()/2,regions.get(0).getRegionHeight()/2);
+        if(regions.size>0) {
+            setWidth(regions.get(0).getRegionWidth());
+            setHeight(regions.get(0).getRegionHeight());
+            animation = new Animation<>(maxFrameTime, regions);
+            setOrigin(regions.get(0).getRegionWidth() / 2, regions.get(0).getRegionHeight() / 2);
+        }
+        else throw new IllegalArgumentException("Animation must contain frames");
+        //this.setOrigin(Align.center);
     }
 
     /**
@@ -43,12 +50,12 @@ public class AnimatedActor extends Actor {
      * @param x coordinate of where to be drawn
      * @param y coordinate of where to be drawn
      */
-    public void startAnimation(float x, float y){
+    public void startAnimation(float x, float y, int alignment){
         if(animation==null){
             throw new IllegalStateException("Animation is not yet defined");
         }
         currentFrameTime=0;
-        setPosition(x,y);
+        setPosition(x,y, alignment);
     }
 
     /**
@@ -58,9 +65,12 @@ public class AnimatedActor extends Actor {
      * @param endX
      * @param endY
      */
-    public void startAnimation(float startX, float startY, float endX, float endY){
-        startAnimation(startX,startY);
-        rotation = ((float)(Math.atan((double)((endY-startY)/(endX-startX)))*(180/Math.PI)));
+    public void startAnimation(float startX, float startY, float endX, float endY, int alignment){
+        startAnimation(startX,startY, alignment);
+        float dx = endX - startX;
+        float dy = endY - startY;
+        Vector2 vec = new Vector2(dx, dy);
+        setRotation(vec.angle());
     }
 
     /**
@@ -79,10 +89,5 @@ public class AnimatedActor extends Actor {
      */
     public float getDuration() {
         return animation.getAnimationDuration();
-    }
-
-    @Override
-    public float getRotation() {
-        return rotation;
     }
 }

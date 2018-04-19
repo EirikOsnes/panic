@@ -97,7 +97,7 @@ public class XMLParser {
      * @return Returns an ArrayList of Cards.
      */
     public ArrayList<Card> parseCards(){
-        return parseCards("cards/card_test.xml");
+        return parseCards("cards/cards.xml");
     }
 
     /**
@@ -280,7 +280,7 @@ public class XMLParser {
      * @return Returns a Stack<Card> that is related to the given vehicle (will add all cards from all decks at this point)
      */
     public Stack<Card> parseCardStack(String vehicleType){
-        return parseCardStack("decks/deck_test.xml",vehicleType);
+        return parseCardStack("decks/decks.xml",vehicleType);
     }
 
 }

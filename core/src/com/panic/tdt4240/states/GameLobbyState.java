@@ -36,8 +36,7 @@ public class GameLobbyState extends State {
 
     public GameLobbyState(GameStateManager gsm, int lobbyID){
         super(gsm);
-        System.out.println("Thread check 4: " + Thread.currentThread().toString() +
-                "New lobby state SUCCESSFULLY MADE");
+        Connection.getInstance().updateLobby(lobbyID);
         view = new GameLobbyView(this);
         dataLoaded =false;
 //        view = new GameLobbyView(this);
@@ -159,7 +158,6 @@ public class GameLobbyState extends State {
             String[] strings = message.split(":");
             switch (strings[0]){
                 case "LOBBY_INFO":
-                    System.out.println("Message: \n"+ strings[1]);
                     parseLobby(strings);
                     // View update should trigger whenever server sends lobby info
                     // ... and server should send new info whenever a player joins.

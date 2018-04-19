@@ -25,6 +25,7 @@ public class RunEffectsState extends State implements EventListener {
     private RunEffectsView runEffectsView;
     private boolean doneParsing = false;
     private boolean serverApproved = false;
+    private boolean hasSentEndState = false;
 
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
@@ -34,6 +35,14 @@ public class RunEffectsState extends State implements EventListener {
     }
     public Vehicle getPlayerVehicle(){
         return GameInstance.getInstance().getPlayer().getVehicle();
+    }
+    public boolean getPlayerAlive(){
+        return GameInstance.getInstance().getPlayer().isAlive();
+    }
+    public void leaveGame(){
+        Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
+        //TODO: Send to GameResultState
+        gsm.reset();
     }
 
 
@@ -50,8 +59,9 @@ public class RunEffectsState extends State implements EventListener {
                 if(serverApproved){
                     EventBus.getInstance().readyForRemove();
                     gsm.set(new PlayCardState(gsm));
-                }else{
+                }else if(!hasSentEndState){
                     Connection.getInstance().sendEndRunEffectsState(GameInstance.getInstance().getID());
+                    hasSentEndState=true;
                 }
 
             }

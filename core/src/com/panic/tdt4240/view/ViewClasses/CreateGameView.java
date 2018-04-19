@@ -43,8 +43,7 @@ public class CreateGameView extends AbstractView {
     private TextButton createLobbyBtn, exitToMainMenuBtn;
 
     private TextField in_LobbyName;
-    private SelectBox<String> in_mapID;
-    private SelectBox<String> in_maxPlayers;
+    private SelectBox<String> in_mapID, in_maxPlayers;
     private boolean haveSetName;
 
     public CreateGameView(final CreateGameState cgState) {

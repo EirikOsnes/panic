@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<decks>
+    <deck vehicle_type = "EDDISON">
+        <cards>
+            <card>FIRE</card>
+            <card>FIRE</card>
+            <card>FIRE</card>
+            <card>FIRE</card>
+            <card>JUMP</card>
+            <card>JUMP</card>
+            <card>JUMP</card>
+            <card>JUMP</card>
+            <card>SHIELD</card>
+            <card>SHIELD</card>
+            <card>SHIELD</card>
+            <card>REPAIR</card>
+            <card>REPAIR</card>
+            <card>VOGON</card>
+            <card>LASER1</card>
+            <card>LASER1</card>
+            <card>LASER2</card>
+            <card>LASER2</card>
+            <card>GLUE</card>
+            <card>GLUE</card>
+            <card>GLUE</card>
+        </cards>
+    </deck>
+</decks>

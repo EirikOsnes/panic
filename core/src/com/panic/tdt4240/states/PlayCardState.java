@@ -1,6 +1,5 @@
 package com.panic.tdt4240.states;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.connection.Connection;
@@ -248,6 +247,10 @@ public class PlayCardState extends State {
         }
         return hand.size();
     }
+    public boolean getPlayerAlive(){
+        return GameInstance.getInstance().getPlayer().isAlive();
+    }
+
     public Map getMap(){
         return map;
     }
@@ -286,6 +289,11 @@ public class PlayCardState extends State {
             cardsAndTargets.add(playerActions);
         }
         return cardsAndTargets;
+    }
+    public void leaveGame(){
+        Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
+        //TODO: Send to GameResultState
+        gsm.reset();
     }
 
     @Override
@@ -347,6 +355,7 @@ public class PlayCardState extends State {
                     setTimeLeft(Float.parseFloat(strings[1]));
                     //EventBus.getInstance().readyForRemove();
                     break;
+
                 case "GAME_OVER": //strings[1] = VICTORY/DEFEAT/DRAW
                     //TODO: Handle this
                     break;

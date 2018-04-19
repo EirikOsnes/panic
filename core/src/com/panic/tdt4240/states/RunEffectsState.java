@@ -123,6 +123,9 @@ public class RunEffectsState extends State implements EventListener {
                 case "GAME_OVER": //string[1] = VICTORY/DEFEAT/DRAW
                     //TODO: Handle this
                     break;
+                case "RECONNECT_GAME":
+                    //TODO: Create a pop up, where you can choose to rejoin a game in progress.
+                    break;
 
             }
 

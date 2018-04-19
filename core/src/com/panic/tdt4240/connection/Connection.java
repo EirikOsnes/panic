@@ -142,7 +142,7 @@ public class Connection extends WebSocketClient{
      * Get the latest state of the given Lobby - used to update the GameLobbyState
      * @param lobbyID The id of the lobby
      * Return the updated Lobby as a string on the form:
-     * CREATE_LOBBY:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN
+     * LOBBY_INFO:MaxPlayers:LobbyName:LobbyID:MapID:PlayerID1&PlayerID2&...&PlayerIDN:VehicleType1&VehicleType2&...&VehicleTypeN
      *
      */
     public void updateLobby(int lobbyID){

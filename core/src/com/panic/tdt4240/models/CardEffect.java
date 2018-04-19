@@ -23,7 +23,7 @@ public class CardEffect {
     }
 
     CardEffect(String targetStatus, float value,int statusDuration, int splashRange, boolean friendlyFire, String requirementName, float requirementVal) {
-        new CardEffect(targetStatus,value,statusDuration,splashRange,friendlyFire);
+        this(targetStatus,value,statusDuration,splashRange,friendlyFire);
         this.requirementName = requirementName;
         this.requirementVal = requirementVal;
     }

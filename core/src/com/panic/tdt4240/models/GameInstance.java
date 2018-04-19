@@ -17,6 +17,7 @@ public class GameInstance {
     private Map map;
     private Player player;
     private int ID;
+    private long seed;
 
     private GameInstance(){
         this.vehicles = new ArrayList<>();
@@ -43,6 +44,10 @@ public class GameInstance {
 
     public void setID(int ID) {
         this.ID = ID;
+    }
+
+    public void setSeed(long seed){
+        this.seed = seed;
     }
 
     public void addVehicle(Vehicle vehicle){
@@ -148,10 +153,10 @@ public class GameInstance {
     public void playTurn(ArrayList<String[]> playedCards){
 
         EventFactory.postNewTurnEvent();
-        long seed = Long.parseLong(playedCards.get(0)[3]);
 
         Random random = new Random(seed);
         for (String[] s : playedCards) {
+            s[1] = s[1].toUpperCase();
             Card card = ModelHolder.getInstance().getCardById(s[0]);
             float multiplier = 1;
             if (card.getCardType() == Card.CardType.ATTACK){
@@ -163,12 +168,14 @@ public class GameInstance {
             }
             ArrayList<String> validTargets = getAllValidTargets(card, s[2]);
             if(validTargets.contains(s[1])){
-                EventFactory.postEventsFromCard(card,s[1],s[2],multiplier);
+                //EventFactory.postEventsFromCard(card,s[1],s[2],multiplier);
+                card.playCard(s[1],s[2]);
             }
             else {
                 if(validTargets.size()>0) {
                     int index = random.nextInt(validTargets.size());
-                    EventFactory.postEventsFromCard(card,validTargets.get(index),s[2],multiplier);
+                    card.playCard(validTargets.get(index),s[2]);
+                    //EventFactory.postEventsFromCard(card,validTargets.get(index),s[2],multiplier);
                 }
 
                 else{

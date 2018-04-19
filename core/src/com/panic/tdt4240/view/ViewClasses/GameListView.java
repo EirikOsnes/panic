@@ -31,13 +31,10 @@ import com.panic.tdt4240.util.GlobalConstants;
 
 public class GameListView extends AbstractView {
 
-    GameListState listState;
-    private ScrollPane scroller;
+    private GameListState listState;
     private TextureAtlas btnAtlas;
     private Skin skin;
     private BitmapFont font;
-    private TextButton.TextButtonStyle btnStyle;
-    private Table lobbyBtnTable, exitTable;
     private Texture bg;
     private TextButton exitToMainMenuBtn;
 
@@ -57,10 +54,6 @@ public class GameListView extends AbstractView {
         font.getData().scale(textScale);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
-        //btnStyle = new TextButton.TextButtonStyle();
-        //btnStyle.font = font;
-        //btnStyle.up = skin.getDrawable("button-up");
-        //btnStyle.down = skin.getDrawable("button-down");
 
         updateView();
 
@@ -69,13 +62,14 @@ public class GameListView extends AbstractView {
     }
 
     public void updateView(){
-        lobbyBtnTable = new Table(skin);
+        Table lobbyBtnTable = new Table(skin);
         //lobbyBtnTable.background(new TextureRegionDrawable(new TextureRegion(bg)));
         lobbyBtnTable.center();
 
 
         Actor backgroundActor = new Image(new TextureRegion(bg));
         backgroundActor.setZIndex(0);
+        backgroundActor.setSize(stage.getWidth(), stage.getHeight());
         stage.addActor(backgroundActor);
 
         for (int i = 0; i < listState.getLobbyListData().size(); i++){
@@ -91,7 +85,7 @@ public class GameListView extends AbstractView {
             lobbyBtnTable.add(button).width(300).pad(5); lobbyBtnTable.row();
         }
         // scrolls child widgets.
-        scroller = new ScrollPane(lobbyBtnTable, skin);
+        ScrollPane scroller = new ScrollPane(lobbyBtnTable, skin);
         scroller.setScrollingDisabled(true, false);
         scroller.setOverscroll(false, false);
         scroller.setWidth(SCREEN_WIDTH*0.7f);
@@ -100,7 +94,7 @@ public class GameListView extends AbstractView {
         stage.addActor(scroller);
 
         createExitToMainMenuBtn();
-        exitTable = new Table();
+        Table exitTable = new Table();
         exitTable.setFillParent(true);
         exitTable.center().bottom();
         exitTable.add(exitToMainMenuBtn).padTop(30).padBottom(30).bottom();

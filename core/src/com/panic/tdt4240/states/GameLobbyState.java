@@ -91,7 +91,7 @@ public class GameLobbyState extends State {
      * Leave the Lobby
      */
     private void leaveLobby(){
-        Connection.getInstance().leaveLobby(lobbyID);
+        Connection.getInstance().leaveLobby();
         gsm.pop();
     }
 

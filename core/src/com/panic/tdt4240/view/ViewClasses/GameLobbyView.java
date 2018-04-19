@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.states.GameLobbyState;
@@ -111,7 +110,7 @@ public class GameLobbyView extends AbstractView {
         // DO NOT CREATE PLAYER LIST UNTIL LOBBY DATA EXISTS
         if (lobbyState.getDataLoaded()) {
             System.out.println(" Object 'lobby' should exist now");
-            preparePlayerList(); // generates playerTxtFields
+            createAndSetPlayerList(); // generates playerTxtFields
         }
         else {
             System.out.println("Object 'lobby' not created yet ---");
@@ -137,24 +136,30 @@ public class GameLobbyView extends AbstractView {
     }
 
     // TODO: should server distribute generated names? If so, trigger updateLobby on player join
-    private void preparePlayerList(){
 
-        // DO NOT RUN UNTIL LOBBY HAS BEEN UPDATED
+    private void createAndSetPlayerList(){
+
+        // RUNS ONLY WHEN lobbyState IS LOADED
+
         String name;
         playerTxtFields = new ArrayList<>();
         for (Integer playerID : lobbyState.getLobby().getPlayerIDs()){
-            double seed = Math.floor(Math.random() * PlayerNameGenerator.getCount());
-            name = PlayerNameGenerator.getName((int) seed);
-            if (! usedNames.contains(name)) {
-                // This should work so that each player can see (me) next to only
-                // one name at a time.
-                usedNames.add(name);
-                if (playerID == Connection.getInstance().getConnectionID()){
-                    name = name + " (me)";
-                    // TODO: ADD CAR SELECTION BOX
+            int seed = playerID * lobbyState.getLobbyID();
+            // modulo is used in the getName().
+            name = PlayerNameGenerator.getName(seed);
+            int offset = 0;
+            while (usedNames.contains(name)){
+                name = PlayerNameGenerator.getName(seed+offset);
+                offset++;
+                if (! usedNames.contains(name)) {
+                    usedNames.add(name);
+                    if (playerID == Connection.getInstance().getConnectionID()){
+                        name = name + " (me)";
+                        // TODO: ADD CAR SELECTION BOX
+                    }
+                    TextField playerField = new TextField(name, txtStyle);
+                    playerTxtFields.add(playerField);
                 }
-                TextField playerField = new TextField(name, txtStyle);
-                playerTxtFields.add(playerField);
             }
         }
 

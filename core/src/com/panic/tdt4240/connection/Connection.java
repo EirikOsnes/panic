@@ -122,7 +122,6 @@ public class Connection extends WebSocketClient{
 
     /**
      * Remove the player from the given Lobby.
-     * @param lobbyID The ID of the Lobby
      */
     public void leaveLobby(){
         this.send("EXIT");

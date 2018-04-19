@@ -13,7 +13,6 @@ import java.util.ArrayList;
 /**
  * IGNORE THREADS
  *
- *
  * Created by victor on 12.03.2018.
  * SEQUENCE OF EVENTS MUST BE:
  *      1. CREATE STATE, VIEW, BUT LET VIEW DO NOTHING

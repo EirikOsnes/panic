@@ -164,6 +164,17 @@ public class Connection extends WebSocketClient{
     }
 
     /**
+     * Vote for the destruction of a target
+     * @param gameID
+     * @param target
+     */
+    public void sendDestroyed(int gameID, String target){
+
+        this.send("TOGAME//" + gameID + "//DESTROY//" + target + "//" + connectionID);
+
+    }
+
+    /**
      * Return on the form GAME_INFO:VehicleType1,VehicleID1,Color1&VehicleType2,...ColorN:MapID:MyVehicleID:Seed:Log
      */
     public void getGameInfo(int lobbyID){
@@ -178,7 +189,11 @@ public class Connection extends WebSocketClient{
      * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
      */
     public void sendRunEffectsState(int gameID){
-        this.send("TOGAME//" + gameID + "//ENTERED_RUN_EFFECT_STATE");
+        this.send("TOGAME//" + gameID + "//ENTERED_RUN_EFFECTS_STATE");
+    }
+
+    public void sendEndRunEffectsState(int gameID){
+        this.send("TOGAME//" + gameID + "//END_RUN_EFFECTS_STATE");
     }
 
     /**

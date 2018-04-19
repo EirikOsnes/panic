@@ -10,6 +10,7 @@ import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.ModelHolder;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.RunEffectsView;
 
@@ -22,16 +23,19 @@ import java.util.ArrayList;
 public class RunEffectsState extends State implements EventListener {
 
     private RunEffectsView runEffectsView;
+    private boolean doneParsing = false;
 
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
         EventBus.getInstance().addListener(this);
-        //Connection.getInstance().sendRunEffectsState();
         runEffectsView = new RunEffectsView(this);
-        Card c = ModelHolder.getInstance().getCardById("MOVE");
-        EventFactory.postEventsFromCard(c, "A-003", "V-001");
         Connection.getInstance().sendRunEffectsState(GameInstance.getInstance().getID());
     }
+    public Vehicle getPlayerVehicle(){
+        return GameInstance.getInstance().getPlayer().getVehicle();
+    }
+
+
 
     @Override
     public void handleInput(Object o) {
@@ -40,6 +44,12 @@ public class RunEffectsState extends State implements EventListener {
 
     @Override
     public void update(float dt) {
+        if(doneParsing){
+            if (runEffectsView.isDoneAnimating()){
+                EventBus.getInstance().readyForRemove();
+                gsm.set(new PlayCardState(gsm));
+            }
+        }
 
     }
 
@@ -86,18 +96,25 @@ public class RunEffectsState extends State implements EventListener {
 
         @Override
         public void onMessage(String message) {
-            String[] strings = message.split(":");
+            final String[] strings = message.split(":");
 
             switch (strings[0]){
                 case "GET_TURN":
-                    ArrayList<ArrayList<String[]>> turns = GameInstance.getInstance().readTurns(strings[1]);
-                    if(turns.size()>1){
-                        Gdx.app.error("MULTIPLETURN_ERROR", "Have received more than one turn in the RunEffectsState...");
-                    }
-                    GameInstance.getInstance().playTurn(turns.get(0));
+                    playTurn(strings);
                     break;
 
             }
+
+        }
+
+        private void playTurn(String[] strings){
+
+            ArrayList<ArrayList<String[]>> turns = GameInstance.getInstance().readTurns(strings[1]);
+            if(turns.size()>1){
+                Gdx.app.error("MULTIPLETURN_ERROR", "Have received more than one turn in the RunEffectsState...");
+            }
+            GameInstance.getInstance().playTurn(turns.get(0));
+            doneParsing=true;
         }
     }
 }

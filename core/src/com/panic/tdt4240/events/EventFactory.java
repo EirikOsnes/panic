@@ -74,6 +74,7 @@ public class EventFactory {
      * @return                  The Event that was posted, DO NOT REPOST, this is only used for testing
      */
     public static Event postDestroyedEvent(String targetID, String instigatorID) {
+        System.out.println("POSTING DESTROYED EVENT: " + targetID + " | " + instigatorID);
         EventFactory.checkIDs(targetID, instigatorID);
         Event e = new Event(Event.Type.DESTROYED, targetID, instigatorID);
         eb.postEvent(e);

@@ -30,6 +30,7 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
     private ArrayList<Asteroid> neighbours;
     private Vector2 position;
     private ArrayList<String> vehicleIDs;
+    private ArrayList<String> removeVehicle;
     private boolean isDestroyed = false;
 
 //TODO Asteroid should contain the string of the asteroid image, not the sprite
@@ -41,6 +42,7 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
         statusHandler = new StatusHandler(this);
         position = new Vector2();
         vehicleIDs = new ArrayList<>();
+        removeVehicle = new ArrayList<>();
     }
 
     /**
@@ -162,7 +164,7 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
 
         if(e.getT() == Event.Type.DESTROYED){
             if (this.vehicleIDs.contains(e.getTargetID())){
-                this.removeVehicle(e.getTargetID());
+                this.removeVehicle.add(e.getTargetID());
             }
         }
     }
@@ -171,6 +173,11 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
         isDestroyed = true;
         EventFactory.postDestroyedEvent(id,id);
         EventBus.getInstance().removeListener(this);
+    }
+
+    public void readyToRemove(){
+        vehicleIDs.removeAll(removeVehicle);
+        removeVehicle.clear();
     }
 
     @Override

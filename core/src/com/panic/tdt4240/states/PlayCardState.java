@@ -291,7 +291,9 @@ public class PlayCardState extends State {
         return cardsAndTargets;
     }
     public void leaveGame(){
-        //TODO
+        Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
+        //TODO: Send to GameResultState
+        gsm.reset();
     }
 
     @Override

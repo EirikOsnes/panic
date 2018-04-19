@@ -7,4 +7,5 @@ package com.panic.tdt4240.util;
 public interface IStatusAble {
 
     void destroy();
+    StatusHandler getStatusHandler();
 }

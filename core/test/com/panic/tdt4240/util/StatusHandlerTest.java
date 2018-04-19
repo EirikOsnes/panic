@@ -208,10 +208,10 @@ public class StatusHandlerTest {
 
         assertTrue(statusHandler.getAllResultants().containsKey("health"));
         assertTrue(statusHandler.getAllResultants().containsKey("damage_modifier"));
-        assertTrue(statusHandler.getAllResultants().containsKey("invulnerable"));
+        assertFalse(statusHandler.getAllResultants().containsKey("invulnerable"));
         assertEquals(100f,statusHandler.getAllResultants().get("health"),0.01);
         assertEquals(1f,statusHandler.getAllResultants().get("damage_modifier"),0.01);
-        assertEquals(0f,statusHandler.getAllResultants().get("invulnerable"),0.01);
+        assertNull(statusHandler.getAllResultants().get("invulnerable"));
     }
 
     @Test

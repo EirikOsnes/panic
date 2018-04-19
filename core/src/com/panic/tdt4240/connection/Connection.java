@@ -32,7 +32,7 @@ public class Connection extends WebSocketClient{
                 URI uri = new URI("ws://panicserver.herokuapp.com");
                 ourInstance = new Connection(uri);
                 ourInstance.connectBlocking(); //FIXME: This returns a boolean - should it be used?
-                ourInstance.setConnectionLostTimeout(30);
+                //ourInstance.setConnectionLostTimeout(30);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -101,11 +101,8 @@ public class Connection extends WebSocketClient{
     /**
      * Get all the Lobbies available
      * Returns an ArrayList of all available Lobbies as a string on the form:
-
      * GET_LOBBIES: {4 fields} & {4 fields} & ... repeating. '&' = lobby separator
-
-     * GET_LOBBIES:ID1,Lobbyname1,CurrentPlayerNum1,MaxPlayers1&ID2,LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN
-
+     * GET_LOBBIES:LobbyName1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
      */
     public void getAllLobbies(){
         this.send("GET_LOBBIES");
@@ -126,7 +123,7 @@ public class Connection extends WebSocketClient{
      */
     public void leaveLobby(int lobbyID){
 
-        this.send("TOGAME//" + lobbyID + "//LEAVE_GAME");
+        this.send("EXIT");
 
     }
 

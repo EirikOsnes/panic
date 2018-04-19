@@ -1,6 +1,7 @@
 package com.panic.tdt4240.models;
 
 import com.panic.tdt4240.events.EventFactory;
+import com.panic.tdt4240.util.IStatusAble;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -105,6 +106,16 @@ public class GameInstance {
         return null;
     }
 
+    public IStatusAble getStatusAble(String ID){
+        if (ID.charAt(0)=='A'){
+            return getAsteroidById(ID);
+        }
+        if (ID.charAt(0)=='V'){
+            return getVehicleById(ID);
+        }
+        return null;
+    }
+
 
     public void setVehicles(ArrayList<Vehicle> vehicles) {
         this.vehicles = vehicles;
@@ -158,24 +169,35 @@ public class GameInstance {
         for (String[] s : playedCards) {
             s[1] = s[1].toUpperCase();
             Card card = ModelHolder.getInstance().getCardById(s[0]);
-            float multiplier = 1;
-            if (card.getCardType() == Card.CardType.ATTACK){
-                if (s[2].charAt(0)=='A'){
-                    multiplier = getAsteroidById(s[2]).getStatusHandler().getDamageModifier();
-                }else if(s[2].charAt(0)=='V'){
-                    multiplier = getVehicleById(s[2]).getStatusHandler().getDamageModifier();
+            ArrayList<String> requirementNames = new ArrayList<>();
+            ArrayList<Float> requirementMinValue = new ArrayList<>();
+            for (CardEffect ce : card.getCardEffects()) {
+                if (!ce.getRequirementName().equalsIgnoreCase("none")){
+                    requirementNames.add(ce.getRequirementName());
+                    requirementMinValue.add(ce.getRequirementVal());
                 }
             }
+            float multiplier = 1;
+            if (card.getCardType() == Card.CardType.ATTACK){
+                multiplier = getStatusAble(s[2]).getStatusHandler().getDamageModifier();
+            }
             ArrayList<String> validTargets = getAllValidTargets(card, s[2]);
+            IStatusAble target;
             if(validTargets.contains(s[1])){
-                //EventFactory.postEventsFromCard(card,s[1],s[2],multiplier);
-                card.playCard(s[1],s[2]);
+                target = getStatusAble(s[1]);
+                if(target.getStatusHandler().allRequirementsMet(requirementNames,requirementMinValue)){
+                    card.playCard(s[1],s[2]);
+                    //EventFactory.postEventsFromCard(card,s[1],s[2],multiplier);
+                }
             }
             else {
                 if(validTargets.size()>0) {
                     int index = random.nextInt(validTargets.size());
-                    card.playCard(validTargets.get(index),s[2]);
-                    //EventFactory.postEventsFromCard(card,validTargets.get(index),s[2],multiplier);
+                    target = getStatusAble(validTargets.get(index));
+                    if(target.getStatusHandler().allRequirementsMet(requirementNames,requirementMinValue)){
+                        card.playCard(validTargets.get(index),s[2]);
+                        //EventFactory.postEventsFromCard(card,validTargets.get(index),s[2],multiplier);
+                    }
                 }
 
                 else{

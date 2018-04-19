@@ -156,7 +156,7 @@ public class PlayCardView extends AbstractView{
 
         buttonStyle.up = skin.getDrawable("button-up");
         buttonStyle.down = skin.getDrawable("button-down");
-        TextButton finishedButton = new TextButton("", buttonStyle);
+        final TextButton finishedButton = new TextButton("", buttonStyle);
         finishedButton.setWidth(Gdx.graphics.getWidth()/5);
         finishedButton.setHeight(Gdx.graphics.getWidth()/10);
         finishedButton.setPosition(4*Gdx.graphics.getWidth()/5, table.getHeight());
@@ -169,7 +169,12 @@ public class PlayCardView extends AbstractView{
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     if(!((PlayCardState) state).isLockedIn()) { //Only send the cards to the server if you have not already locked in.
-                        //TODO: Show a "Waiting for other players" message, confirmation that you are ready
+                        finishedButton.setColor(Color.GRAY);
+                        BitmapFont labelFont = new BitmapFont();
+                        labelFont.getData().scale(1 + GlobalConstants.GET_TEXT_SCALE());
+                        Label waitLabel = new Label("Waiting for other players",new Label.LabelStyle(labelFont, Color.GREEN));
+                        waitLabel.setPosition((Gdx.graphics.getWidth() - waitLabel.getWidth())/2, Gdx.graphics.getHeight()/2 + finishedButton.getHeight());
+                        stage.addActor(waitLabel);
                         ((PlayCardState) state).finishRound();
                     }
                 }

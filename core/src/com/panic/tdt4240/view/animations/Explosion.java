@@ -15,6 +15,7 @@ public class Explosion  extends AnimatedActor {
     public static final String POISON = "poison";
 
     public Explosion(float maxFrameTime, String cloudType) {
+        //TODO: fix rendering error with poison
         super(maxFrameTime);
         TextureAtlas atlas = new TextureAtlas("animations/" + cloudType +".atlas");
         Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();

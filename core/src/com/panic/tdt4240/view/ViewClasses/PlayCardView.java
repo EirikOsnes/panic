@@ -25,6 +25,7 @@ import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.MapMethods;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by victor on 05.03.2018.
@@ -36,14 +37,15 @@ public class PlayCardView extends AbstractView{
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Table table;
     private TextButton cardInfo;
-    private Skin skin;
+    private Skin skin, dialogSkin;
     private boolean selectTarget = false;
     private ShapeRenderer sr;
     private ArrayList<String[]> vehicleOnAsteroid;
     private TextField timer;
     private Label invalidTarget;
     private BitmapFont font;
-    private TextureAtlas textureAtlas;
+    private TextureAtlas textureAtlas, btnAtlas;
+    private TextButton.TextButtonStyle buttonStyle;
     private ArrayList<Boolean> checked;
     private float timeLeft;
     private boolean isLeaving = false;
@@ -73,9 +75,6 @@ public class PlayCardView extends AbstractView{
 
         textureAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin.addRegions(textureAtlas);
-
-        final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = font;
 
         //Create a button for each card
         for (int i = 0; i < amountCards; i++) {
@@ -152,7 +151,9 @@ public class PlayCardView extends AbstractView{
         //table.pack();
         stage.addActor(table);
 
-        //Images the button has in the normal up-position, and when it is pressed down
+        buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+
         buttonStyle.up = skin.getDrawable("button-up");
         buttonStyle.down = skin.getDrawable("button-down");
         TextButton finishedButton = new TextButton("", buttonStyle);
@@ -160,6 +161,8 @@ public class PlayCardView extends AbstractView{
         finishedButton.setHeight(Gdx.graphics.getWidth()/10);
         finishedButton.setPosition(4*Gdx.graphics.getWidth()/5, table.getHeight());
 
+        btnAtlas = new TextureAtlas("skins/uiskin.atlas");
+        dialogSkin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         if(((PlayCardState)state).getPlayerAlive()){
             finishedButton.setText("Finish Turn");
             finishedButton.addListener(new ClickListener() {
@@ -175,18 +178,12 @@ public class PlayCardView extends AbstractView{
         //If player is dead, set next turn automatically, create leave button with confirmation dialog
         else{
             ((PlayCardState) state).finishRound();
-            TextureAtlas btnAtlas = new TextureAtlas("skins/uiskin.atlas");
-            Skin dialogSkin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
-            TextButton.TextButtonStyle ButtonStyle = new TextButton.TextButtonStyle();
-            ButtonStyle.font = font;
-            ButtonStyle.up = dialogSkin.getDrawable("button-up");
-            ButtonStyle.down = dialogSkin.getDrawable("button-down");
             final FinishDialog dialog = new FinishDialog("Leave", dialogSkin, "dialog");
             Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
 
             dialog.text("Are you sure you want to leave?", labelStyle);
-            dialog.button("Yes",true, ButtonStyle);
-            dialog.button("Cancel", false, ButtonStyle);
+            dialog.button("Yes",true, buttonStyle);
+            dialog.button("Cancel", false, buttonStyle);
             dialog.hide();
 
             finishedButton.setText("Leave");
@@ -263,18 +260,38 @@ public class PlayCardView extends AbstractView{
             String colorCar = ((PlayCardState) state).getColorCar(vehicleOnAsteroid.get(j)[0]);
             Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
-            Image vehicle = new Image(skin.getDrawable(colorCar));
+
+            final Image vehicle = new Image(skin.getDrawable(colorCar));
             Vector2 position = MapMethods.asteroidPositions(asteroidPos.x, asteroidPos.y,
                     asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
                     colorCar);
             vehicle.setPosition(position.x, position.y);
             vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
             final int vIndex = j;
+
+            //TODO Click on a vehicle, get status in popup dialog
+            Vehicle vehicleV = GameInstance.getInstance().getVehicleById(vehicleOnAsteroid.get(j)[0]);
+            HashMap<String, Float> effectsMap =  vehicleV.getStatusHandler().getAllResultants();
+            String effects = "";
+            for(String key : effectsMap.keySet()){
+                effects = effects.concat(key + " = " + effectsMap.get(key)+ "\n");
+            }
+
+            final Dialog vehicleInfo = new Dialog("Info", dialogSkin, "dialog");
+            Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+
+            vehicleInfo.text(effects, labelStyle);
+            vehicleInfo.button("Ok",false, buttonStyle);
+
             vehicle.addListener(new ClickListener(){
                 public void clicked(InputEvent event, float x, float y){
                     if(selectTarget){
                         System.out.println("Clicked vehicle:" + vehicleOnAsteroid.get(vIndex)[0]);
                         state.handleInput(vehicleOnAsteroid.get(vIndex)[0].concat(vehicleOnAsteroid.get(vIndex)[1]));
+                    }
+                    else{
+                        stage.addActor(vehicleInfo);
+                        vehicleInfo.show(stage);
                     }
                 }
             });

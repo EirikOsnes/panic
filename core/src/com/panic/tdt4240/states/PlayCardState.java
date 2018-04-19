@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
+import com.panic.tdt4240.events.EventBus;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
@@ -67,6 +68,9 @@ public class PlayCardState extends State {
         mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         playView = new PlayCardView(this);
         readyForNewTurn();
+        if(!GameInstance.getInstance().getPlayer().isAlive()){
+            finishRound();
+        }
     }
 
     /**
@@ -238,10 +242,10 @@ public class PlayCardState extends State {
         return hand.get(i).getTooltip().split(" ");
     }
     public int getHandSize(){
-        if(player.isAlive()){
-            return hand.size();
+        if(!GameInstance.getInstance().getPlayer().isAlive()){
+            return 0;
         }
-        return 0;
+        return hand.size();
     }
     public boolean getPlayerAlive(){
         return player.isAlive();
@@ -300,7 +304,6 @@ public class PlayCardState extends State {
         }
     }
 
-
     @Override
     public void render() {
         playView.render();
@@ -348,6 +351,7 @@ public class PlayCardState extends State {
                     break;
                 case "BEGIN_TURN":
                     setTimeLeft(Float.parseFloat(strings[1]));
+                    //EventBus.getInstance().readyForRemove();
                     break;
             }
         }

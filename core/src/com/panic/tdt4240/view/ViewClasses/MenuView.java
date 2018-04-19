@@ -1,15 +1,12 @@
 package com.panic.tdt4240.view.ViewClasses;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -104,7 +101,6 @@ public class MenuView extends AbstractView {
 
     }
 
-
     /**
      * A method to be called from MenuState to tell the view that it's waiting for a connection.
      * @param isConnecting
@@ -119,6 +115,7 @@ public class MenuView extends AbstractView {
 
     // TODO: legge inn input
     public void render() {
+        stage.act();
         stage.draw();
     }
 

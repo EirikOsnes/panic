@@ -7,12 +7,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.GameListState;
@@ -27,13 +31,10 @@ import com.panic.tdt4240.util.GlobalConstants;
 
 public class GameListView extends AbstractView {
 
-    GameListState listState;
-    private ScrollPane scroller;
+    private GameListState listState;
     private TextureAtlas btnAtlas;
     private Skin skin;
     private BitmapFont font;
-    private TextButton.TextButtonStyle btnStyle;
-    private Table table, exitTable;
     private Texture bg;
     private TextButton exitToMainMenuBtn;
 
@@ -53,10 +54,6 @@ public class GameListView extends AbstractView {
         font.getData().scale(textScale);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
-        btnStyle = new TextButton.TextButtonStyle();
-        btnStyle.font = font;
-        btnStyle.up = skin.getDrawable("button-up");
-        btnStyle.down = skin.getDrawable("button-down");
 
         updateView();
 
@@ -65,60 +62,56 @@ public class GameListView extends AbstractView {
     }
 
     public void updateView(){
-        table = new Table();
-        table.setFillParent(true);
-        table.background(new TextureRegionDrawable(new TextureRegion(bg)));
-        table.center();
+        Table lobbyBtnTable = new Table(skin);
+        //lobbyBtnTable.background(new TextureRegionDrawable(new TextureRegion(bg)));
+        lobbyBtnTable.center();
+
+
+        Actor backgroundActor = new Image(new TextureRegion(bg));
+        backgroundActor.setZIndex(0);
+        backgroundActor.setSize(stage.getWidth(), stage.getHeight());
+        stage.addActor(backgroundActor);
 
         for (int i = 0; i < listState.getLobbyListData().size(); i++){
             final String data[] = listState.getLobbyListData().get(i);
-            TextButton button = new TextButton(data[0], btnStyle);
+            TextButton button = new TextButton(data[0], skin);
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    System.out.println(event.toString());
                     state.handleInput(data[1]); // lobbyID
                 }
             });
-            table.add(button).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/80); table.row();
+            lobbyBtnTable.add(button).width(300).pad(5); lobbyBtnTable.row();
         }
-        if (listState.getLobbyListData().size() != 0) {
-            createExitToMainMenuBtn();
-            exitTable = new Table();
-            exitTable.setFillParent(true);
-            exitTable.bottom();
-            exitTable.add(exitToMainMenuBtn).padTop(30).padBottom(30).bottom();
-            exitTable.pack();
-            table.pack();
-            stage.addActor(table);
-            stage.addActor(exitTable);
-        }
-//        scroller = new ScrollPane(table);
-//        scroller.setScrollingDisabled(true, false);
-//        table.add(scroller).fill().expand();
-//        stage.addActor(scroller);
+        // scrolls child widgets.
+        ScrollPane scroller = new ScrollPane(lobbyBtnTable, skin);
+        scroller.setScrollingDisabled(true, false);
+        scroller.setOverscroll(false, false);
+        scroller.setWidth(SCREEN_WIDTH*0.7f);
+        scroller.setHeight(SCREEN_HEIGHT*3/4f);
+        scroller.setPosition(SCREEN_HEIGHT/10f, SCREEN_WIDTH/10f*3f);
+        stage.addActor(scroller);
+
+        createExitToMainMenuBtn();
+        Table exitTable = new Table();
+        exitTable.setFillParent(true);
+        exitTable.center().bottom();
+        exitTable.add(exitToMainMenuBtn).padTop(30).padBottom(30).bottom();
+        exitTable.pack();
+
+        stage.addActor(scroller);
+        stage.addActor(exitTable);
     }
 
     private void createExitToMainMenuBtn(){
-        exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
+        exitToMainMenuBtn = new TextButton("Exit to main menu", skin);
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 state.handleInput("-1");
             }
         });
-
-        // TODO: a button for text input and direct connection to a game lobby?
-
-        table.add(exitToMainMenuBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
-
-        scroller = new ScrollPane(table);
-        scroller.setScrollingDisabled(true, false);
-        table.pack();
-
-//        table.add(scroller).fill().expand();
-//        stage.addActor(scroller);
-        stage.addActor(table);
-
     }
 
     // should pop up with the appropriate error message and update lobbylist

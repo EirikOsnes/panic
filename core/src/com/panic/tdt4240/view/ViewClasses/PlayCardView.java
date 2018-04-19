@@ -178,9 +178,8 @@ public class PlayCardView extends AbstractView{
         //If player is dead, set next turn automatically, create leave button with confirmation dialog
         else{
             ((PlayCardState) state).finishRound();
-            final FinishDialog dialog = new FinishDialog("Leave", dialogSkin, "dialog");
+            final FinishDialog dialog = new FinishDialog("", dialogSkin, "dialog");
             Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
-
             dialog.text("Are you sure you want to leave?", labelStyle);
             dialog.button("Yes",true, buttonStyle);
             dialog.button("Cancel", false, buttonStyle);
@@ -269,7 +268,6 @@ public class PlayCardView extends AbstractView{
             vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
             final int vIndex = j;
 
-            //TODO Click on a vehicle, get status in popup dialog
             Vehicle vehicleV = GameInstance.getInstance().getVehicleById(vehicleOnAsteroid.get(j)[0]);
             HashMap<String, Float> effectsMap =  vehicleV.getStatusHandler().getAllResultants();
             String effects = "";
@@ -277,9 +275,11 @@ public class PlayCardView extends AbstractView{
                 effects = effects.concat(key + " = " + effectsMap.get(key)+ "\n");
             }
 
-            final Dialog vehicleInfo = new Dialog("Info", dialogSkin, "dialog");
-            Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
 
+            final Dialog vehicleInfo = new Dialog("Info", dialogSkin, "dialog");
+            vehicleInfo.getTitleLabel().setFontScale(GlobalConstants.GET_TEXT_SCALE() + 1);
+
+            Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
             vehicleInfo.text(effects, labelStyle);
             vehicleInfo.button("Ok",false, buttonStyle);
 

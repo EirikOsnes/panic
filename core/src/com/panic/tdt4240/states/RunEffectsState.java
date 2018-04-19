@@ -5,11 +5,8 @@ import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.events.Event;
 import com.panic.tdt4240.events.EventBus;
-import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.events.EventListener;
-import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
-import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.RunEffectsView;
@@ -100,6 +97,7 @@ public class RunEffectsState extends State implements EventListener {
 
             switch (strings[0]){
                 case "GET_TURN":
+                    System.out.println("recieved getTurn");
                     playTurn(strings);
                     break;
 

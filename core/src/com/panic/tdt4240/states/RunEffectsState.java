@@ -56,6 +56,7 @@ public class RunEffectsState extends State implements EventListener {
             if (runEffectsView.isDoneAnimating()){
                 if(serverApproved){
                     EventBus.getInstance().readyForRemove();
+                    System.out.println("SERVER APPROVED");
                     gsm.set(new PlayCardState(gsm));
                 }else if(!hasSentEndState){
                     Connection.getInstance().sendEndRunEffectsState(GameInstance.getInstance().getID());

@@ -248,7 +248,7 @@ public class PlayCardState extends State {
         return hand.size();
     }
     public boolean getPlayerAlive(){
-        return player.isAlive();
+        return GameInstance.getInstance().getPlayer().isAlive();
     }
 
     public Map getMap(){

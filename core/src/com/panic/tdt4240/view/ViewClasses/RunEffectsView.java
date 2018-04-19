@@ -77,6 +77,7 @@ public class RunEffectsView extends AbstractView {
 
     //TODO: Call this method when a player dies to let them leave the game
     public void setUpLeaveButton(){
+
         final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
         buttonStyle.up = skin.getDrawable("button-up");
@@ -233,13 +234,13 @@ public class RunEffectsView extends AbstractView {
         Runnable missileRunnable = new Runnable() {
             @Override
             public void run() {
-                missile.startAnimation(instigator.getX(),instigator.getY(),vehicle.getX(),vehicle.getY());
+                missile.startAnimation(instigator.getX(Align.center),instigator.getY(Align.center),vehicle.getX(Align.center),vehicle.getY(Align.center), Align.center);
             }
         };
         Runnable explosionRunnable = new Runnable() {
             @Override
             public void run() {
-                explosion.startAnimation(vehicle.getX(), vehicle.getY());
+                explosion.startAnimation(vehicle.getX(Align.center), vehicle.getY(Align.center), Align.center);
             }
         };
         Action action1 = Actions.sequence(Actions.run(missileRunnable), new MissileAction(vehicle, instigator));

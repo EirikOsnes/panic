@@ -22,7 +22,6 @@ public class Missile extends AnimatedActor {
             String regionName = color.toLowerCase() + "-" + (i+1);
             regions.add(atlas.findRegion(regionName));
         }
-
         setAnimation(regions);
     }
 

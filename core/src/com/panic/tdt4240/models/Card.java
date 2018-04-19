@@ -121,6 +121,9 @@ public class Card {
         }
         else if (cardType == CardType.ATTACK) {
             EventFactory.postEventsFromCard(this, targetID, instigatorID);
+        } else{
+            //FIXME: Should this be specified further?
+            EventFactory.postEventsFromCard(this, targetID, instigatorID);
         }
     }
 }

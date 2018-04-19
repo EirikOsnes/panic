@@ -2,6 +2,7 @@ package com.panic.tdt4240.view.animations;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
+import com.badlogic.gdx.utils.Align;
 
 /**
  * Created by Choffa for panic on 19-Apr-18.
@@ -22,7 +23,7 @@ public class MissileAction extends MoveToAction {
 
     @Override
     protected void begin() {
-        target.setPosition(missileInstigator.getX(), missileInstigator.getY());
+        target.setPosition(missileInstigator.getX(Align.center), missileInstigator.getY(Align.center), Align.center);
         target.setVisible(true);
         missileInstigator.setRotation(target.getRotation() - 90f);
         super.begin();

@@ -23,7 +23,7 @@
     <card id = "JUMP">
         <name>Jump ship!</name>
         <priority>5</priority>
-        <type_id>MOVE</type_id>
+        <type_id>MOVEMENT</type_id>
         <target_type>ASTEROID</target_type>
         <allowed_targets>ALL</allowed_targets>
         <min_range>1</min_range>
@@ -59,7 +59,7 @@
     <card id = "REPAIR">
         <name>Repair kit</name>
         <priority>8</priority>
-        <type_id>STATUS</type_id>
+        <type_id>EFFECT</type_id>
         <target_type>VEHICLE</target_type>
         <allowed_targets>PLAYER</allowed_targets>
         <min_range>0</min_range>
@@ -77,7 +77,7 @@
     <card id = "HYPER">
         <name>Engage Hyperdrive</name>
         <priority>8</priority>
-        <type_id>STATUS</type_id>
+        <type_id>EFFECT</type_id>
         <target_type>VEHICLE</target_type>
         <allowed_targets>PLAYER</allowed_targets>
         <min_range>0</min_range>
@@ -100,10 +100,10 @@
         <allowed_targets>ALL</allowed_targets>
         <min_range>0</min_range>
         <max_range>0</max_range>
-        <tooltip>Tell a verse of Vogon poetry, dealing damage to all other players on your asteroid.</tooltip>
+        <tooltip>Tell a verse of Vogon poetry, dealing massive damage to all other players on your asteroid.</tooltip>
         <card_effect>
             <target_status>health</target_status>
-            <value>-40</value>
+            <value>-50</value>
             <status_duration>-1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>false</friendly_fire>
@@ -113,7 +113,7 @@
     <card id = "LASER1">
         <name>Laser pointer</name>
         <priority>6</priority>
-        <type_id>STATUS</type_id>
+        <type_id>EFFECT</type_id>
         <target_type>VEHICLE</target_type>
         <allowed_targets>ENEMY</allowed_targets>
         <min_range>0</min_range>
@@ -158,7 +158,7 @@
     <card id = "GLUE">
         <name>Glue shot</name>
         <priority>4</priority>
-        <type_id>STATUS</type_id>
+        <type_id>EFFECT</type_id>
         <target_type>ASTEROID</target_type>
         <allowed_targets>ALL</allowed_targets>
         <min_range>0</min_range>

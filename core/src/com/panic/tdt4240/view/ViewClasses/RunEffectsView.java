@@ -1,7 +1,9 @@
 package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -9,11 +11,16 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Pool;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.State;
+import com.panic.tdt4240.states.RunEffectsState;
+import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.util.MapMethods;
 import com.panic.tdt4240.view.animations.Explosion;
@@ -37,7 +44,10 @@ public class RunEffectsView extends AbstractView {
     private AnimationAdapter animator;
     private MapConnections mapConnections;
     private final Explosion explosion;
+    private BitmapFont font;
+    private Label label;
     private final Missile missile;
+
 
     public RunEffectsView(State state) {
         super(state);
@@ -45,11 +55,16 @@ public class RunEffectsView extends AbstractView {
         sr.setColor(1, 1, 1, 0);
         sr.setAutoShapeType(true);
         gameInstance = GameInstance.getInstance();
+        font = new BitmapFont();
+        float textScale = GlobalConstants.GET_TEXT_SCALE();
+        font.getData().scale(textScale);
+
         setUpMap();
         animator = new AnimationAdapter();
         explosion = new Explosion();
         missile = new Missile(Missile.COLOR_RED);
         stage.addActor(explosion);
+        stage.addActor(missile);
         System.out.println(vehicleImages.keySet().toString());
         System.out.println(asteroidImages.keySet().toString());
     }
@@ -105,6 +120,24 @@ public class RunEffectsView extends AbstractView {
             vehicleImages.put(activeVehicle.getVehicleID(), vehicle);
             stage.addActor(vehicle);
         }
+        Table playerTable = new Table();
+        playerTable.setWidth(Gdx.graphics.getWidth()/10);
+        playerTable.setHeight(Gdx.graphics.getWidth()/20);
+        Vehicle playerVehicle = ((RunEffectsState)state).getPlayerVehicle();
+        int health = Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
+        int maxHealth = Math.round(playerVehicle.getStatusHandler().getStatusBaseValue("health"));
+
+        Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
+        player.rotateBy(270);
+
+        String hp = String.format("HP: %d/%d", health, maxHealth);
+        label = new Label(hp,new Label.LabelStyle(font, Color.RED));
+        playerTable.add(player).width(Gdx.graphics.getWidth()/20).height(Gdx.graphics.getWidth()/10).row();
+        playerTable.add(label).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
+        playerTable.pack();
+        playerTable.setPosition(Gdx.graphics.getWidth() - playerTable.getWidth()*2,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
+
+        stage.addActor(playerTable);
     }
 
 
@@ -148,6 +181,7 @@ public class RunEffectsView extends AbstractView {
                 explosion.startAnimation(vehicle.getX(), vehicle.getY());
             }
         };
+
         Action action1 = Actions.sequence(Actions.run(missileRunnable), new MissileAction(vehicle, instigator));
         animator.addAction(action1, missile);
         Action action2 = Actions.sequence(Actions.run(explosionRunnable), Actions.delay(explosion.getDuration()));
@@ -162,9 +196,13 @@ public class RunEffectsView extends AbstractView {
         //TODO: Animate the destruction of a vehicle
     }
 
+    public boolean isDoneAnimating(){
+        return animator.isEmpty();
+    }
+
     public void dispose(){
         stage.dispose();
-        animator.dispose();
+        sr.dispose();
     }
 
 
@@ -179,10 +217,6 @@ public class RunEffectsView extends AbstractView {
                 }
             }
         };
-        public void dispose(){
-            sr.dispose();
-            stage.dispose();
-        }
 
         private boolean empty;
 
@@ -190,6 +224,10 @@ public class RunEffectsView extends AbstractView {
             actors = new LinkedList<>();
             actions = new LinkedList<>();
             empty = true;
+        }
+
+        public boolean isEmpty() {
+            return empty;
         }
 
         void addAction(Action action, Actor actor) {

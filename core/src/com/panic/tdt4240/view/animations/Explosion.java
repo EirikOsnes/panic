@@ -31,7 +31,7 @@ public class Explosion  extends AnimatedActor{
     @Override
     public void act(float dt){
         super.act(dt);
-        currentFrame = getCurrentFrame(dt,true);
+        currentFrame = getCurrentFrame(dt,false);
     }
 
     @Override

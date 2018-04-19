@@ -69,14 +69,12 @@ public class RunEffectsView extends AbstractView {
         font = new BitmapFont();
         font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
 
-        setUpMap();
         animator = new AnimationAdapter();
         explosion = new Explosion();
         missile = new Missile(Missile.COLOR_RED);
-        stage.addActor(explosion);
-        stage.addActor(missile);
-        System.out.println(vehicleImages.keySet().toString());
-        System.out.println(asteroidImages.keySet().toString());
+        setUpMap();
+        btnAtlas = new TextureAtlas("skins/uiskin.atlas");
+        skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         if(!((RunEffectsState)state).getPlayerAlive()){
             setUpLeaveButton();
         }
@@ -84,8 +82,6 @@ public class RunEffectsView extends AbstractView {
 
     //TODO: Call this method when a player dies to let them leave the game
     public void setUpLeaveButton(){
-        btnAtlas = new TextureAtlas("skins/uiskin.atlas");
-        skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
 
         final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
@@ -174,6 +170,7 @@ public class RunEffectsView extends AbstractView {
                 mapConnections.addConnection(asteroids.get(i), neighbour, asteroid.getWidth(), asteroid.getHeight(), table);
             }
         }
+        stage.addActor(missile);
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
             int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
             Vehicle activeVehicle = gameInstance.getVehicleById(vehicleOnAsteroid.get(j)[0]);
@@ -207,6 +204,7 @@ public class RunEffectsView extends AbstractView {
         playerTable.setPosition(Gdx.graphics.getWidth() - playerTable.getWidth()*2,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
 
         stage.addActor(playerTable);
+        stage.addActor(explosion);
     }
 
 
@@ -241,13 +239,13 @@ public class RunEffectsView extends AbstractView {
         Runnable missileRunnable = new Runnable() {
             @Override
             public void run() {
-                missile.startAnimation(instigator.getX(),instigator.getY(),vehicle.getX(),vehicle.getY());
+                missile.startAnimation(instigator.getX(Align.center),instigator.getY(Align.center),vehicle.getX(Align.center),vehicle.getY(Align.center), Align.center);
             }
         };
         Runnable explosionRunnable = new Runnable() {
             @Override
             public void run() {
-                explosion.startAnimation(vehicle.getX(), vehicle.getY());
+                explosion.startAnimation(vehicle.getX(Align.center), vehicle.getY(Align.center), Align.center);
             }
         };
 

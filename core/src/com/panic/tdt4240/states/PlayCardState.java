@@ -239,7 +239,6 @@ public class PlayCardState extends State {
     }
     public int getHandSize(){
         if(player.isAlive()){
-            //return 0;
             return hand.size();
         }
         return 0;
@@ -287,9 +286,8 @@ public class PlayCardState extends State {
         }
         return cardsAndTargets;
     }
-
-    private void returnToMenu(){
-        gsm.pop();
+    public void leaveGame(){
+        //TODO
     }
 
     @Override
@@ -351,7 +349,6 @@ public class PlayCardState extends State {
                 case "BEGIN_TURN":
                     setTimeLeft(Float.parseFloat(strings[1]));
                     break;
-                //TODO Switch case for leaving game, use: returnToMeny()
             }
         }
     }

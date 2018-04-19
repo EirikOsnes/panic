@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -45,6 +46,7 @@ public class PlayCardView extends AbstractView{
     private TextureAtlas textureAtlas;
     private ArrayList<Boolean> checked;
     private float timeLeft;
+    private boolean isLeaving = false;
 
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
@@ -64,8 +66,8 @@ public class PlayCardView extends AbstractView{
         float textScale = GlobalConstants.GET_TEXT_SCALE();
 
         font.getData().scale(textScale);
-        skin = new Skin();
         textureAtlas = new TextureAtlas("cards/card_textures.atlas");
+        skin = new Skin();
         skin.addRegions(textureAtlas);
         buttonStyles = new ArrayList<>();
 
@@ -170,14 +172,31 @@ public class PlayCardView extends AbstractView{
                 }
             });
         }
-        //TODO If player is dead, set next turn automatically, button should say "leave". Should get popup to confirm
+        //If player is dead, set next turn automatically, create leave button with confirmation dialog
         else{
             ((PlayCardState) state).finishRound();
+            TextureAtlas btnAtlas = new TextureAtlas("skins/uiskin.atlas");
+            Skin dialogSkin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
+            TextButton.TextButtonStyle ButtonStyle = new TextButton.TextButtonStyle();
+            ButtonStyle.font = font;
+            ButtonStyle.up = dialogSkin.getDrawable("button-up");
+            ButtonStyle.down = dialogSkin.getDrawable("button-down");
+            final FinishDialog dialog = new FinishDialog("Leave", dialogSkin, "dialog");
+            Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+
+            dialog.text("Are you sure you want to leave?", labelStyle);
+            dialog.button("Yes",true, ButtonStyle);
+            dialog.button("Cancel", false, ButtonStyle);
+            dialog.hide();
+
             finishedButton.setText("Leave");
             finishedButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    Connection.getInstance().leaveLobby(GameInstance.getInstance().getID());
+                    if(!isLeaving){
+                        stage.addActor(dialog);
+                        dialog.show(stage);
+                    }
                 }
             });
         }
@@ -335,6 +354,7 @@ public class PlayCardView extends AbstractView{
             sr.rectLine(points[0], points[1], 5.0f);
         }
         sr.end();
+        stage.act();
         stage.draw();
     }
     public void dispose(){
@@ -365,6 +385,22 @@ public class PlayCardView extends AbstractView{
             }
             else {
                 setVisible(false);
+            }
+        }
+    }
+    private class FinishDialog extends Dialog {
+        private FinishDialog(String title, Skin skin, String windowStyleName) {
+            super(title, skin, windowStyleName);
+        }
+        @Override
+        protected void result(Object object) {
+            Boolean bool = (Boolean) object;
+            if(bool){
+                isLeaving = true;
+                ((PlayCardState)state).leaveGame();
+            }
+            else{
+                remove();
             }
         }
     }

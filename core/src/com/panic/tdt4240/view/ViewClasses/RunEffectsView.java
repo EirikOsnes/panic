@@ -9,15 +9,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Pool;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.GameInstance;
@@ -48,7 +52,9 @@ public class RunEffectsView extends AbstractView {
     private MapConnections mapConnections;
     private final Explosion explosion;
     private BitmapFont font;
-    private Label label;
+    private Skin skin;
+    private boolean isLeaving = false;
+    private TextureAtlas btnAtlas;
 
     public RunEffectsView(State state) {
         super(state);
@@ -57,8 +63,7 @@ public class RunEffectsView extends AbstractView {
         sr.setAutoShapeType(true);
         gameInstance = GameInstance.getInstance();
         font = new BitmapFont();
-        float textScale = GlobalConstants.GET_TEXT_SCALE();
-        font.getData().scale(textScale);
+        font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
 
         setUpMap();
         animator = new AnimationAdapter();
@@ -66,6 +71,63 @@ public class RunEffectsView extends AbstractView {
         stage.addActor(explosion);
         System.out.println(vehicleImages.keySet().toString());
         System.out.println(asteroidImages.keySet().toString());
+        if(!((RunEffectsState)state).getPlayerAlive()){
+            setUpLeaveButton();
+        }
+    }
+
+    //TODO: Call this method when a player dies to let them leave the game
+    public void setUpLeaveButton(){
+        btnAtlas = new TextureAtlas("skins/uiskin.atlas");
+        skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
+
+        final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+        buttonStyle.up = skin.getDrawable("button-up");
+        buttonStyle.down = skin.getDrawable("button-down");
+        TextButton finishedButton = new TextButton("", buttonStyle);
+        finishedButton.setWidth(Gdx.graphics.getWidth()/5);
+        finishedButton.setHeight(Gdx.graphics.getWidth()/10);
+        finishedButton.setPosition(4*Gdx.graphics.getWidth()/5, Gdx.graphics.getHeight()/5);
+
+        TextButton.TextButtonStyle ButtonStyle = new TextButton.TextButtonStyle();
+        ButtonStyle.font = font;
+        ButtonStyle.up = skin.getDrawable("button-up");
+        ButtonStyle.down = skin.getDrawable("button-down");
+        final FinishDialog dialog = new FinishDialog("Leave", skin, "dialog");
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+
+        dialog.text("Are you sure you want to leave?", labelStyle);
+        dialog.button("Yes",true, ButtonStyle);
+        dialog.button("Cancel", false, ButtonStyle);
+
+        finishedButton.setText("Leave");
+        finishedButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(!isLeaving){
+                    stage.addActor(dialog);
+                    dialog.show(stage);
+                }
+            }
+        });
+        stage.addActor(finishedButton);
+    }
+    private class FinishDialog extends Dialog {
+        private FinishDialog(String title, Skin skin, String windowStyleName) {
+            super(title, skin, windowStyleName);
+        }
+        @Override
+        protected void result(Object object) {
+            Boolean bool = (Boolean) object;
+            if(bool){
+                isLeaving = true;
+                ((RunEffectsState)state).leaveGame();
+            }
+            else{
+                remove();
+            }
+        }
     }
 
     private void setUpMap() {
@@ -130,7 +192,7 @@ public class RunEffectsView extends AbstractView {
         player.rotateBy(270);
 
         String hp = String.format("HP: %d/%d", health, maxHealth);
-        label = new Label(hp,new Label.LabelStyle(font, Color.RED));
+        Label label = new Label(hp,new Label.LabelStyle(font, Color.RED));
         playerTable.add(player).width(Gdx.graphics.getWidth()/20).height(Gdx.graphics.getWidth()/10).row();
         playerTable.add(label).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
         playerTable.pack();
@@ -188,6 +250,8 @@ public class RunEffectsView extends AbstractView {
     public void dispose(){
         stage.dispose();
         animator.dispose();
+        skin.dispose();
+        btnAtlas.dispose();
     }
 
 

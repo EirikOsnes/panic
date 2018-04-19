@@ -169,7 +169,7 @@ public class PlayCardView extends AbstractView{
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     if(!((PlayCardState) state).isLockedIn()) { //Only send the cards to the server if you have not already locked in.
-                        //TODO: Show a "Waiting for other players" message
+                        //TODO: Show a "Waiting for other players" message, confirmation that you are ready
                         ((PlayCardState) state).finishRound();
                     }
                 }
@@ -272,9 +272,8 @@ public class PlayCardView extends AbstractView{
             HashMap<String, Float> effectsMap =  vehicleV.getStatusHandler().getAllResultants();
             String effects = "";
             for(String key : effectsMap.keySet()){
-                effects = effects.concat(key + " = " + effectsMap.get(key)+ "\n");
+                effects = effects.concat(String.format("%s = %.1f\n",key, effectsMap.get(key)));
             }
-
 
             final Dialog vehicleInfo = new Dialog("Info", dialogSkin, "dialog");
             vehicleInfo.getTitleLabel().setFontScale(GlobalConstants.GET_TEXT_SCALE() + 1);
@@ -301,12 +300,12 @@ public class PlayCardView extends AbstractView{
         playerTable.setWidth(Gdx.graphics.getWidth()/10);
         playerTable.setHeight(Gdx.graphics.getWidth()/20);
         Vehicle playerVehicle = ((PlayCardState)state).getPlayerVehicle();
-        int health = Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
-        int maxHealth = Math.round(playerVehicle.getStatusHandler().getStatusBaseValue("health"));
+        float health = Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
+        float maxHealth = Math.round(playerVehicle.getStatusHandler().getStatusBaseValue("health"));
 
         Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
         player.rotateBy(270);
-        String hp = String.format("HP: %d/%d", health, maxHealth);
+        String hp = String.format("HP: %.1f/%.1f", health, maxHealth);
         Label label = new Label(hp,new Label.LabelStyle(font, Color.RED));
         playerTable.add(player).width(Gdx.graphics.getWidth()/20).height(Gdx.graphics.getWidth()/10).row();
         playerTable.add(label).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();

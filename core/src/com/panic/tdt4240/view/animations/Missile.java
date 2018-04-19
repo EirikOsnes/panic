@@ -13,8 +13,14 @@ public class Missile extends AnimatedActor {
     public static final String COLOR_RED = "RED";
     public static final String COLOR_GREEN = "GREEN";
 
+    private float targetX;
+    private float targetY;
+
+    private float totalFrameTime;
+
     public Missile(float maxFrameTime, int frameCount, String color){
         super(maxFrameTime,frameCount);
+        totalFrameTime = 1;
         TextureAtlas atlas = new TextureAtlas("animations/missiles.atlas");
         Array<TextureAtlas.AtlasRegion> regions = new Array<>();
         for(int i=0;i<frameCount;i++){
@@ -27,6 +33,14 @@ public class Missile extends AnimatedActor {
     public Missile(String color){
         this(0.1f,3,color);
     }
+
+    @Override
+    public void startAnimation(float startX, float startY, float endX, float endY) {
+        super.startAnimation(startX, startY, endX, endY);
+        targetX = endX;
+        targetY = endY;
+    }
+
     @Override
     public void act(float dt){
         super.act(dt);
@@ -38,6 +52,8 @@ public class Missile extends AnimatedActor {
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
-        batch.draw(currentFrame,getX(),getY(),getOriginX(),getOriginY(),currentFrame.getRegionWidth(),currentFrame.getRegionHeight(),1,1,getRotation(),true);
+        if(currentFrameTime<totalFrameTime) {
+            batch.draw(currentFrame, getX() + (targetX - getX()) * currentFrameTime / totalFrameTime, getY() + (targetY - getY()) * currentFrameTime / totalFrameTime, getOriginX(), getOriginY(), currentFrame.getRegionWidth(), currentFrame.getRegionHeight(), 1, 1, getRotation(), true);
+        }
     }
 }

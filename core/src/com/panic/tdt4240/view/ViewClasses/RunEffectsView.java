@@ -147,7 +147,7 @@ public class RunEffectsView extends AbstractView {
                 explosion.startAnimation(vehicle.getX(), vehicle.getY());
             }
         };
-        Action action1 = Actions.sequence(Actions.run(missileRunnable), Actions.moveTo(vehicle.getX(), vehicle.getY()));
+        Action action1 = Actions.sequence(Actions.run(missileRunnable), Actions.delay(1));
         animator.addAction(action1, missile);
         Action action2 = Actions.sequence(Actions.run(explosionRunnable), Actions.delay(explosion.getDuration()));
         animator.addAction(action2, explosion);

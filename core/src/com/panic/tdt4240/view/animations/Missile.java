@@ -13,11 +13,6 @@ public class Missile extends AnimatedActor {
     public static final String COLOR_RED = "RED";
     public static final String COLOR_GREEN = "GREEN";
 
-    private float targetX;
-    private float targetY;
-
-    private float totalFrameTime;
-
     public Missile(float maxFrameTime, int frameCount, String color){
         super(maxFrameTime,frameCount);
         setVisible(false);
@@ -37,8 +32,6 @@ public class Missile extends AnimatedActor {
     @Override
     public void startAnimation(float startX, float startY, float endX, float endY) {
         super.startAnimation(startX, startY, endX, endY);
-        targetX = endX;
-        targetY = endY;
     }
 
     @Override

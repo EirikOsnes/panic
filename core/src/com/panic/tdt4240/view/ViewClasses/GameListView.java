@@ -7,12 +7,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.GameListState;
@@ -53,10 +57,10 @@ public class GameListView extends AbstractView {
         font.getData().scale(textScale);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
-        btnStyle = new TextButton.TextButtonStyle();
-        btnStyle.font = font;
-        btnStyle.up = skin.getDrawable("button-up");
-        btnStyle.down = skin.getDrawable("button-down");
+        //btnStyle = new TextButton.TextButtonStyle();
+        //btnStyle.font = font;
+        //btnStyle.up = skin.getDrawable("button-up");
+        //btnStyle.down = skin.getDrawable("button-down");
 
         updateView();
 
@@ -65,35 +69,34 @@ public class GameListView extends AbstractView {
     }
 
     public void updateView(){
-        lobbyBtnTable = new Table();
-        lobbyBtnTable.setFillParent(true);
-        lobbyBtnTable.background(new TextureRegionDrawable(new TextureRegion(bg)));
+        lobbyBtnTable = new Table(skin);
+        //lobbyBtnTable.background(new TextureRegionDrawable(new TextureRegion(bg)));
         lobbyBtnTable.center();
+
+
+        Actor backgroundActor = new Image(new TextureRegion(bg));
+        backgroundActor.setZIndex(0);
+        stage.addActor(backgroundActor);
 
         for (int i = 0; i < listState.getLobbyListData().size(); i++){
             final String data[] = listState.getLobbyListData().get(i);
-            TextButton button = new TextButton(data[0], btnStyle);
+            TextButton button = new TextButton(data[0], skin);
             button.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    System.out.println(event.toString());
                     state.handleInput(data[1]); // lobbyID
                 }
             });
             lobbyBtnTable.add(button).width(300).pad(5); lobbyBtnTable.row();
         }
         // scrolls child widgets.
-        scroller = new ScrollPane(lobbyBtnTable);
-        ScrollPane.ScrollPaneStyle scrollStyle = new ScrollPane.ScrollPaneStyle();
-        scrollStyle.background = skin.getDrawable("default-rect");
-        scrollStyle.vScroll = skin.getDrawable("default-scroll");
-        scrollStyle.hScroll = skin.getDrawable("default-scroll");
-        scrollStyle.vScrollKnob = skin.getDrawable("default-round-large");
-        scrollStyle.hScrollKnob = skin.getDrawable("default-round-large");
-        scroller.setStyle(scrollStyle);
+        scroller = new ScrollPane(lobbyBtnTable, skin);
+        scroller.setScrollingDisabled(true, false);
+        scroller.setOverscroll(false, false);
         scroller.setWidth(SCREEN_WIDTH*0.7f);
-        scroller.setHeight(SCREEN_HEIGHT*3/4);
-        scroller.setPosition(SCREEN_HEIGHT/10, SCREEN_WIDTH/10*3);
-
+        scroller.setHeight(SCREEN_HEIGHT*3/4f);
+        scroller.setPosition(SCREEN_HEIGHT/10f, SCREEN_WIDTH/10f*3f);
         stage.addActor(scroller);
 
         createExitToMainMenuBtn();
@@ -108,7 +111,7 @@ public class GameListView extends AbstractView {
     }
 
     private void createExitToMainMenuBtn(){
-        exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
+        exitToMainMenuBtn = new TextButton("Exit to main menu", skin);
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

@@ -24,6 +24,7 @@ public class MissileAction extends MoveToAction {
     protected void begin() {
         target.setPosition(missileInstigator.getX(), missileInstigator.getY());
         target.setVisible(true);
+        missileInstigator.setRotation(target.getRotation() - 90f);
         super.begin();
         super.setX(missileTarget.getX());
         super.setY(missileTarget.getY());
@@ -33,6 +34,7 @@ public class MissileAction extends MoveToAction {
     protected void end() {
         super.end();
         target.setVisible(false);
+        missileInstigator.setRotation(0.0f);
     }
 
     @Override

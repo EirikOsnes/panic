@@ -61,14 +61,10 @@ public class RunEffectsView extends AbstractView {
         float textScale = GlobalConstants.GET_TEXT_SCALE();
         font.getData().scale(textScale);
 
-        setUpMap();
         animator = new AnimationAdapter();
         explosion = new Explosion();
         missile = new Missile(Missile.COLOR_RED);
-        stage.addActor(explosion);
-        stage.addActor(missile);
-        System.out.println(vehicleImages.keySet().toString());
-        System.out.println(asteroidImages.keySet().toString());
+        setUpMap();
     }
 
     private void setUpMap() {
@@ -109,6 +105,7 @@ public class RunEffectsView extends AbstractView {
                 mapConnections.addConnection(asteroids.get(i), neighbour, asteroid.getWidth(), asteroid.getHeight(), table);
             }
         }
+        stage.addActor(missile);
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
             int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
             Vehicle activeVehicle = gameInstance.getVehicleById(vehicleOnAsteroid.get(j)[0]);
@@ -142,6 +139,7 @@ public class RunEffectsView extends AbstractView {
         playerTable.setPosition(Gdx.graphics.getWidth() - playerTable.getWidth()*2,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
 
         stage.addActor(playerTable);
+        stage.addActor(explosion);
     }
 
 

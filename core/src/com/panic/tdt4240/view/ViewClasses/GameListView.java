@@ -113,7 +113,7 @@ public class GameListView extends AbstractView {
             }
         });
 
-        refreshBtn = new TextButton(    "Refresh list", btnStyle);
+        refreshBtn = new TextButton(    "Refresh list", skin);
         refreshBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

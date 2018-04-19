@@ -39,9 +39,11 @@ public class GameListState extends State {
         // import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
         // https://stackoverflow.com/questions/15484077/libgdx-and-scrollpane-with-multiple-widgets
     }
+    
+    public void connectToLobby(int i){
+        Connection.getInstance().connectToLobby(i);
+    }
 
-    /** @param o: what to do, what to do...
-     * */
     @Override
     public void handleInput(Object o) {
         final String s = (String) o;

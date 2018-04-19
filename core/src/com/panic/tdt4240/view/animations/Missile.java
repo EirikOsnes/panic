@@ -29,14 +29,6 @@ public class Missile extends AnimatedActor {
         setAnimation(regions);
     }
 
-    @Override
-    public void startAnimation(float startX, float startY, float endX, float endY){
-        super.startAnimation(startX,startY,endX,endY);
-        //this.addAction(Actions.moveTo(endX, endY, 2));
-        //targetX=endX;
-        //targetY=endY;
-    }
-
     public Missile(String color){
         this(0.1f,3,color);
     }

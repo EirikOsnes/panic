@@ -78,7 +78,7 @@ public class RunEffectsView extends AbstractView {
         ArrayList<String[]> vehicleOnAsteroid = new ArrayList<>();
         ArrayList<Vector2> asteroidPositions = new ArrayList<>();
         ArrayList<Vector2> asteroidDimensions = new ArrayList<>();
-        float table = SCREEN_HEIGHT / 5;
+        float table = Gdx.graphics.getHeight() / 5;
         TextureAtlas carsAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
         Skin skin = new Skin(carsAtlas);
         for (int i = 0; i < asteroids.size(); i++) {

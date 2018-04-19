@@ -15,7 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.models.Asteroid;
+import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.PlayCardState;
 import com.panic.tdt4240.util.GlobalConstants;
@@ -56,6 +58,7 @@ public class PlayCardView extends AbstractView{
         table = new Table();
 
         table.setWidth(Gdx.graphics.getWidth());
+        table.setHeight(Gdx.graphics.getHeight() / 5);
         table.left().bottom();
         font = new BitmapFont();
         float textScale = GlobalConstants.GET_TEXT_SCALE();
@@ -144,28 +147,42 @@ public class PlayCardView extends AbstractView{
             table.add(cardButtons.get(index)).width(Gdx.graphics.getWidth()/amountCards).height(Gdx.graphics.getHeight()/5);
         }
 
-        table.pack();
+        //table.pack();
         stage.addActor(table);
 
         //Images the button has in the normal up-position, and when it is pressed down
         buttonStyle.up = skin.getDrawable("button-up");
         buttonStyle.down = skin.getDrawable("button-down");
-
-        TextButton finishedButton = new TextButton("Finish Turn", buttonStyle);
+        TextButton finishedButton = new TextButton("", buttonStyle);
         finishedButton.setWidth(Gdx.graphics.getWidth()/5);
         finishedButton.setHeight(Gdx.graphics.getWidth()/10);
         finishedButton.setPosition(4*Gdx.graphics.getWidth()/5, table.getHeight());
-        finishedButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if(!((PlayCardState) state).isLockedIn()) { //Only send the cards to the server if you have not already locked in.
-                    //TODO: Show a "Waiting for other players" message
-                    ((PlayCardState) state).finishRound();
-                }
-            }
 
-        });
+        if(((PlayCardState)state).getPlayerAlive()){
+            finishedButton.setText("Finish Turn");
+            finishedButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if(!((PlayCardState) state).isLockedIn()) { //Only send the cards to the server if you have not already locked in.
+                        //TODO: Show a "Waiting for other players" message
+                        ((PlayCardState) state).finishRound();
+                    }
+                }
+            });
+        }
+        //TODO If player is dead, set next turn automatically, button should say "leave". Should get popup to confirm
+        else{
+            ((PlayCardState) state).finishRound();
+            finishedButton.setText("Leave");
+            finishedButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Connection.getInstance().leaveLobby(GameInstance.getInstance().getID());
+                }
+            });
+        }
         stage.addActor(finishedButton);
+
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.font = font;
         style.fontColor = Color.WHITE;

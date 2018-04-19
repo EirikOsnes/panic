@@ -112,7 +112,7 @@ public class CreateGameState extends State {
             Gdx.app.postRunnable(new Runnable() {
                 @Override
                 public void run() {
-                    gsm.push(new GameLobbyState(gsm,ID));
+                    gsm.set(new GameLobbyState(gsm,ID));
                 }
             });
 

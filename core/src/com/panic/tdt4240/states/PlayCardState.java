@@ -238,8 +238,16 @@ public class PlayCardState extends State {
         return hand.get(i).getTooltip().split(" ");
     }
     public int getHandSize(){
-        return hand.size();
+        if(player.isAlive()){
+            //return 0;
+            return hand.size();
+        }
+        return 0;
     }
+    public boolean getPlayerAlive(){
+        return player.isAlive();
+    }
+
     public Map getMap(){
         return map;
     }
@@ -280,6 +288,10 @@ public class PlayCardState extends State {
         return cardsAndTargets;
     }
 
+    private void returnToMenu(){
+        gsm.pop();
+    }
+
     @Override
     public void update(float dt) {
         if(enableTimer){
@@ -289,6 +301,7 @@ public class PlayCardState extends State {
             }
         }
     }
+
 
     @Override
     public void render() {
@@ -331,14 +344,14 @@ public class PlayCardState extends State {
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            gsm.push(new RunEffectsState(gsm));
+                            gsm.set(new RunEffectsState(gsm));
                         }
                     });
                     break;
                 case "BEGIN_TURN":
                     setTimeLeft(Float.parseFloat(strings[1]));
                     break;
-
+                //TODO Switch case for leaving game, use: returnToMeny()
             }
         }
     }

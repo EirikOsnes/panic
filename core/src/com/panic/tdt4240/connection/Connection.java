@@ -130,10 +130,10 @@ public class Connection extends WebSocketClient{
 
     /**
      * Remove the player from the given Game
-     * @param lobbyID The ID of the Game
      */
     public void leaveGame(int lobbyID){
-        leaveLobby(lobbyID);
+
+        leaveLobby();
     }
 
     /**

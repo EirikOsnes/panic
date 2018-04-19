@@ -123,7 +123,7 @@ public class Connection extends WebSocketClient{
      */
     public void leaveLobby(int lobbyID){
 
-        this.send("TOGAME//" + lobbyID + "//LEAVE_GAME");
+        this.send("EXIT");
 
     }
 

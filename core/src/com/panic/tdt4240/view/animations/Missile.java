@@ -42,7 +42,7 @@ public class Missile extends AnimatedActor {
     @Override
     public void act(float dt){
         super.act(dt);
-        System.out.printf("Current pos: [%f, %f]\n", getX(), getY());
+        //System.out.printf("Current pos: [%f, %f]\n", getX(), getY());
         //setPosition(getX()+(targetX-getX())*dt,getY()+(targetY-getY())*dt);
         currentFrameTime+=dt;
         currentFrame = getCurrentFrame(dt,true);

@@ -181,7 +181,9 @@ public class MenuState extends State {
                         menuView.isConnecting(false);
                     }
                     break;
-
+                case "RECONNECT_GAME":
+                    //TODO: Create a pop up, where you can choose to rejoin a game in progress.
+                    break;
             }
         }
     }

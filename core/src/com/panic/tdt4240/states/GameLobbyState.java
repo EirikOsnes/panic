@@ -156,6 +156,10 @@ public class GameLobbyState extends State {
                 case "GAME_START":
                     launchGame();
                     break;
+                case "RECONNECT_GAME":
+                    //TODO: Create a pop up, where you can choose to rejoin a game in progress.
+                    break;
+
             }
 
         }

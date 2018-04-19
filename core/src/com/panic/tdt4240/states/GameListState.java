@@ -148,6 +148,9 @@ public class GameListState extends State {
                     //TODO: Pop-up error? Lobby was full or deleted.
                     updateLobbyList();
                     break;
+                case "RECONNECT_GAME":
+                    //TODO: Create a pop up, where you can choose to rejoin a game in progress.
+                    break;
             }
         }
     }

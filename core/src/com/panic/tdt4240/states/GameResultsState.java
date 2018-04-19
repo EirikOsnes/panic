@@ -70,7 +70,13 @@ public class GameResultsState extends State {
 
         @Override
         public void onMessage(String message) {
+            final String[] strings = message.split(":");
 
+            switch (strings[0]){
+                case "RECONNECT_GAME":
+                    //TODO: Create a pop up, where you can choose to rejoin a game in progress.
+                    break;
+            }
         }
     }
 }

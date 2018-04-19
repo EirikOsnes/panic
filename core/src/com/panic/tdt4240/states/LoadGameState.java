@@ -141,6 +141,9 @@ public class LoadGameState extends State {
                 case "GET_LOG":
                     GameInstance.getInstance().playTurns(strings[1]);
                     break;
+                case "RECONNECT_GAME":
+                    //TODO: Create a pop up, where you can choose to rejoin a game in progress.
+                    break;
 
             }
 

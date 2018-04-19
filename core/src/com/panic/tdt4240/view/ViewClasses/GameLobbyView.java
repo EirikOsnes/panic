@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -18,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.connection.Connection;
+import com.panic.tdt4240.models.ModelHolder;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.GameLobbyState;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.PlayerNameGenerator;
@@ -40,14 +41,16 @@ public class GameLobbyView extends AbstractView {
     private Texture bg;
     private Skin skin;
     private BitmapFont font;
+    private boolean isReady;
 
     private ArrayList<String> usedNames;
 
+    private TextField waitingTxt;
     private ArrayList<TextField> playerTxtFields;
     private TextField.TextFieldStyle txtStyle;
 
     private Button exitBtn, readyBtn;
-    private TextButton.TextButtonStyle exitBtnStyle;
+    private TextButton.TextButtonStyle btnStyle;
 
     private SelectBox<String> carSelectBox;
     private SelectBox.SelectBoxStyle boxStyle;
@@ -66,7 +69,7 @@ public class GameLobbyView extends AbstractView {
         this.lobbyState=lobbyState;
         /** INIT SETUP */
 
-        usedNames = new ArrayList<>();
+        isReady=false;
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         font = new BitmapFont();
@@ -81,17 +84,17 @@ public class GameLobbyView extends AbstractView {
         txtStyle.fontColor = Color.WHITE;
         txtStyle.background = skin.getDrawable("textfield");
 
-        exitBtnStyle = new TextButton.TextButtonStyle();
-        exitBtnStyle.font = font;
-        exitBtnStyle.up = skin.getDrawable("button-up");
-        exitBtnStyle.down = skin.getDrawable("button-down");
+        btnStyle = new TextButton.TextButtonStyle();
+        btnStyle.font = font;
+        btnStyle.up = skin.getDrawable("button-up");
+        btnStyle.down = skin.getDrawable("button-down");
 
         backgroundActor = new Image(new TextureRegion(bg));
         backgroundActor.setZIndex(0);
         backgroundActor.setSize(stage.getWidth(), stage.getHeight());
         stage.addActor(backgroundActor);
 
-        createAndSetMenuBtns();
+        prepareMenuButtons();
 
         /** INIT SETUP END */
     }
@@ -103,25 +106,29 @@ public class GameLobbyView extends AbstractView {
         stage.clear();
         stage.addActor(backgroundActor);
 
-        // FIXME: FETCH carTypes PROPERLY. Wherever this is supposed to come from...
 
         // DO NOT CREATE PLAYER LIST UNTIL LOBBY DATA EXISTS
         if (lobbyState.getDataLoaded()) {
-            createAndSetPlayerList(); // generates playerTxtFields
+            preparePlayerListDisplay(); // generates playerTxtFields
+            prepareSelectVehicleDisplay();
         }
         else {
             System.out.println("Object 'lobby' not created yet ---");
         }
 
-        createAndSetMenuBtns();
+        prepareMenuButtons();
 
-        // playerTxtTable should already be in the stage; adding to
+        if (isReady) generateWaitingForOtherPlayers();
+
     }
 
 
     public void render(){
+        stage.act();
         stage.draw();
     }
+
+
 
     /* CAN NOT RUN IN THE CONSTRUCTOR/**/
     public void dispose(){
@@ -134,10 +141,11 @@ public class GameLobbyView extends AbstractView {
 
     // TODO: should server distribute generated names? If so, trigger updateLobby on player join
 
-    private void createAndSetPlayerList(){
+    private void preparePlayerListDisplay(){
 
         String name;
         playerTxtFields = new ArrayList<>();
+        usedNames = new ArrayList<>();
 
         for (Integer playerID : lobbyState.getLobby().getPlayerIDs()){
             int seed = playerID * lobbyState.getLobbyID();
@@ -149,9 +157,7 @@ public class GameLobbyView extends AbstractView {
                 if (! usedNames.contains(name)) {
                     usedNames.add(name);
                     System.out.println(name + " selected");
-                    if (playerID == Connection.getInstance().getConnectionID()){
-                        name = name + " (me)";
-                    }
+                    if (playerID == Connection.getInstance().getConnectionID()) name = name + " (me)";
                     playerTxtFields.add(new TextField(name, txtStyle));
                     break;
                 }
@@ -160,50 +166,64 @@ public class GameLobbyView extends AbstractView {
 
         playerTxtTable = new Table();
         playerTxtTable.setFillParent(true);
-        playerTxtTable.row().center();
-        playerTxtTable.add(new Label(PanicGame.TITLE, skin)).top().pad(10).row();
 
-        String[] carTypes = {"EDDISON"};
-        carSelectBox = new SelectBox<>(skin);
-        BitmapFont boxFont = new BitmapFont();
-        boxStyle = new SelectBox.SelectBoxStyle(skin.get(SelectBox.SelectBoxStyle.class));
-        boxStyle.font = boxFont;
-        boxFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
-        boxStyle.font = boxFont;
-        carSelectBox.setName("Select vehicle. ");
-        carSelectBox.setItems(carTypes);
-        carSelectBox.setSelectedIndex(0);
-        carSelectBox.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Connection.getInstance().chooseVehicleType(carSelectBox.getSelected(), lobbyState.getLobbyID());
-            }
-        });
-        carSelectBox.scaleBy(1.3f);
+        // positioning
+        playerTxtTable.center();
+
+        playerTxtTable.row().width(SCREEN_WIDTH/15);
 
         // Fill table with actual contents
         for (TextField tf : playerTxtFields){
-            playerTxtTable.add(tf).pad(20).width(SCREEN_WIDTH*3/4);
-            // TODO: ADD CAR SELECTION BOX
-            // uhh.... wat do?
-            // playerTxtTable.add(carSelectBox);
+            playerTxtTable.add(tf).padBottom(20).width(SCREEN_WIDTH*3/4);
             playerTxtTable.row();
         }
         stage.addActor(playerTxtTable);
 
     }
 
-    private void createAndSetMenuBtns(){
-        readyBtn = new TextButton("Ready up", exitBtnStyle);
+    private void prepareSelectVehicleDisplay(){
+        String[] carTypes = getVehicleNames();
+        carSelectBox = new SelectBox<>(skin);
+        BitmapFont boxFont = new BitmapFont();
+        boxFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
+
+        SelectBox.SelectBoxStyle boxStyle = new SelectBox.SelectBoxStyle(skin.get(SelectBox.SelectBoxStyle.class));
+        boxStyle.font = boxFont;
+        boxFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
+
+        carSelectBox.setStyle(boxStyle);
+        carSelectBox.setSize(SCREEN_WIDTH/3, SCREEN_HEIGHT/16);
+        String[] vehicleTypes = getVehicleNames();
+//        String[] s = {"HURR", "DURR", "HERP", "DERP"}; // background is still gone
+        carSelectBox.setItems(vehicleTypes);
+        carSelectBox.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE()*2);
+        carSelectBox.setSelectedIndex(0); // default value
+        carSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+            }
+        });
+        carSelectBox.scaleBy(GlobalConstants.GET_TEXT_SCALE()*2);
+        carSelectBox.setPosition(SCREEN_WIDTH/2 - carSelectBox.getWidth()/2, SCREEN_HEIGHT/10 * 2);
+
+        stage.addActor(carSelectBox);
+
+    }
+
+    private void prepareMenuButtons(){
+        readyBtn = new TextButton("Ready up", btnStyle);
         readyBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                lobbyState.setReady();
+                if (isReady) return; // nothing happens if the button is already pressed.
+                generateWaitingForOtherPlayers();
+                isReady=true;
+                lobbyState.handleInput("-2");
+//                Connection.getInstance().chooseVehicleType(carSelectBox.getSelected(), lobbyState.getLobbyID());
             }
         });
 
-        exitBtn = new TextButton("Exit lobby", exitBtnStyle);
-
+        exitBtn = new TextButton("Exit lobby", btnStyle);
         exitBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -211,11 +231,33 @@ public class GameLobbyView extends AbstractView {
             }
         });
         bottomTable = new Table();
-        bottomTable.center().bottom();
+        bottomTable.center();
         bottomTable.add(readyBtn).pad(20);
         bottomTable.add(exitBtn).pad(20);
         bottomTable.row();
+        bottomTable.setPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/10);
         stage.addActor(bottomTable);
+    }
+
+    private void generateWaitingForOtherPlayers() {
+        waitingTxt =  new TextField("Waiting for other players...", txtStyle);
+        waitingTxt.getStyle().font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * 3f);
+        waitingTxt.setPosition(SCREEN_WIDTH /2 - waitingTxt.getWidth()/2, SCREEN_HEIGHT*8/10);
+        waitingTxt.pack();
+        stage.addActor(waitingTxt);
+    }
+
+    private String[] getVehicleNames(){
+        ArrayList<Vehicle> v = ModelHolder.getInstance().getAllVehicles();
+        String[] s = new String[v.size()];
+        for (int i = 0; i < v.size(); i++) {
+            s[i] = v.get(i).getVehicleType();
+        }
+        return s;
+    }
+
+    public String getSelectedVehicle(){
+        return carSelectBox.getSelected();
     }
 
 }

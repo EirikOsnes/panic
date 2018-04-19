@@ -5,29 +5,33 @@ import com.badlogic.gdx.Input;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
+import com.panic.tdt4240.models.ModelHolder;
+import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.GameLobbyView;
 
 import java.util.ArrayList;
 
 /**
- * IGNORE THREADS
  *
  * Created by victor on 12.03.2018.
- * SEQUENCE OF EVENTS MUST BE:
- *      1. CREATE STATE, VIEW, BUT LET VIEW DO NOTHING
- *      2. ENSURE ADAPTER IS CONNECTED;  onMessage() MUST RUN
- *      3. UPDATE DATA FOUND IN STATE
- *      4. UPDATE VIEW WITH DATA
  *
- *      */
+ * NO MORE THREAD PROBLEMS AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH
+ *
+ * Sequence to implement:
+ *      1. Select vehicle   -- done
+ *      2. Ready up         -- done
+ *      3. Indicate the player is waiting -- done
+ *
+ *  "Problems": if the lobby creator leaves, shit goes real bad.
+ **/
 
 public class GameLobbyState extends State {
 
 
     GameLobbyView view;
-    Lobby lobby;
-    int lobbyID;
+    private Lobby lobby;
+    private int lobbyID;
     private boolean dataLoaded;
 
     public GameLobbyState(GameStateManager gsm, int lobbyID){
@@ -74,6 +78,7 @@ public class GameLobbyState extends State {
 
     /**
      * Use this method to change/choose vehicle type (i.e. EDDISON)
+     * This method is fired when 'Ready' button is pressed.
      * @param vehicleType The vehicle type.
      */
     private void setVehicleType(String vehicleType){
@@ -81,7 +86,7 @@ public class GameLobbyState extends State {
     }
 
     /**
-     * Set me to ready.
+     *
      */
     public void setReady(){
         Connection.getInstance().chooseVehicleType("EDDISON",lobby.getLobbyID());
@@ -92,16 +97,17 @@ public class GameLobbyState extends State {
      */
     private void leaveLobby(){
         Connection.getInstance().leaveLobby();
-        gsm.pop();
+        //        gsm.pop(); // sends you to EITHER lobby list or creategame, but we want the list.
+        gsm.set(new GameListState(gsm));
     }
 
     @Override
     public void handleInput(Object o) {
         String s = (String) o;
-        if (s.equals("-1")){
+        if ( s.equals("-2")) Connection.getInstance().chooseVehicleType(view.getSelectedVehicle(), lobbyID);
+        else if (s.equals("-1")){
             leaveLobby();
         }
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) gsm.reset();
 
     }
@@ -153,10 +159,10 @@ public class GameLobbyState extends State {
             String[] strings = message.split(":");
             switch (strings[0]){
                 case "LOBBY_INFO":
-                    // CURRENTLY:   runs from both sequences
-                    //  -problems:  IT FUCKING LOOPS/GOES RECURSIVE
                     System.out.println("Message: \n"+ strings[1]);
                     parseLobby(strings);
+                    // View update should trigger whenever server sends lobby info
+                    // ... and server should send new info whenever a player joins.
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {

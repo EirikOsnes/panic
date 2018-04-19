@@ -347,6 +347,9 @@ public class PlayCardState extends State {
                     setTimeLeft(Float.parseFloat(strings[1]));
                     //EventBus.getInstance().readyForRemove();
                     break;
+                case "GAME_OVER": //strings[1] = VICTORY/DEFEAT/DRAW
+                    //TODO: Handle this
+                    break;
 
             }
         }

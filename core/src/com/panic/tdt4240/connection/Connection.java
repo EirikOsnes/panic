@@ -131,6 +131,14 @@ public class Connection extends WebSocketClient{
     }
 
     /**
+     * Remove the player from the given Game
+     * @param lobbyID The ID of the Game
+     */
+    public void leaveGame(int lobbyID){
+        leaveLobby(lobbyID);
+    }
+
+    /**
      * Get the latest state of the given Lobby - used to update the GameLobbyState
      * @param lobbyID The id of the lobby
      * Return the updated Lobby as a string on the form:

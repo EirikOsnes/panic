@@ -119,6 +119,22 @@ public class StatusHandler {
         return false;
     }
 
+    public boolean allRequirementsMet(ArrayList<String> reqNames, ArrayList<Float> reqVals){
+
+        if(reqNames.size()!=reqVals.size()){
+            Gdx.app.error("SIZE_DIFF" , "reqNames and reqVals are of different size in allRequirementsMet");
+            return false;
+        }
+
+        for (int i = 0; i < reqNames.size(); i++) {
+            if(!isRequirementsMet(reqNames.get(i),reqVals.get(i))){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Should ONLY be used when initiating an object from XML file - or if you wish to override an existing status (as it will be wiped).
      * ONLY use if you know what you are doing.

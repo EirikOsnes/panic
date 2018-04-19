@@ -28,12 +28,14 @@ public class GameLobbyState extends State {
     GameLobbyView view;
     Lobby lobby;
     int lobbyID;
+    private boolean dataLoaded;
 
     public GameLobbyState(GameStateManager gsm, int lobbyID){
         super(gsm);
         System.out.println("Thread check 4: " + Thread.currentThread().toString() +
                 "New lobby state SUCCESSFULLY MADE");
         view = new GameLobbyView(this);
+        dataLoaded =false;
 //        view = new GameLobbyView(this);
         this.lobbyID=lobbyID;
 //        Connection.getInstance().updateLobby(lobbyID);
@@ -89,7 +91,7 @@ public class GameLobbyState extends State {
      * Leave the Lobby
      */
     private void leaveLobby(){
-        Connection.getInstance().leaveLobby(lobby.getLobbyID());
+        Connection.getInstance().leaveLobby(lobbyID);
         gsm.pop();
     }
 
@@ -97,7 +99,7 @@ public class GameLobbyState extends State {
     public void handleInput(Object o) {
         String s = (String) o;
         if (s.equals("-1")){
-            gsm.reset();
+            leaveLobby();
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) gsm.reset();
@@ -132,6 +134,17 @@ public class GameLobbyState extends State {
     protected void setUpAdapter() {
         callbackAdapter = new GameLobbyAdapter();
     }
+
+    public boolean getDataLoaded() {
+        return dataLoaded;
+    }
+
+    public void setDataLoaded(boolean b) {
+        this.dataLoaded = b;
+    }
+
+    public int getLobbyID(){return lobbyID;}
+
 
     private class GameLobbyAdapter implements ICallbackAdapter {
 
@@ -171,14 +184,33 @@ public class GameLobbyState extends State {
             ArrayList<Integer> playerIDs = new ArrayList<>();
             ArrayList<String> vehicleTypes = new ArrayList<>();
             for (int i = 0; i < playerIDstrings.length; i++) { //Assuming proper set up here - the same amount of values.
+/*                System.out.println("Parsing slot: " + i);
+                System.out.println(playerIDstrings[i]);
+                System.out.println(vehicleTypestrings[i]);/**/
                 playerIDs.add(Integer.parseInt(playerIDstrings[i]));
+
+                // TEST CODE
+//                vehicleTypes.add("EDDISON");
+
+                //PROPER CODE
                 vehicleTypes.add((vehicleTypestrings[i].equals("NONE")) ? null : vehicleTypestrings[i]);
             }
             myLobby.setPlayerIDs(playerIDs);
             myLobby.setVehicleTypes(vehicleTypes);
             System.out.println("Lobby parsed \n\tData:" + myLobby.toString());
             lobby = myLobby;
+            System.out.println("lobby object created");
+            setDataLoaded(true);
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    view.updateView();
+
+                }
+            });
+
         }
+
     }
 
 }

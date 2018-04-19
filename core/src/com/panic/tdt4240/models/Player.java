@@ -16,7 +16,7 @@ public class Player implements EventListener {
 
     private Deck deck;
     private Hand hand;
-    private Vehicle vehicle;
+    private Vehicle vehicle; //TODO: Make this ID only?
     private boolean alive = true;
     //Any draw cards modifiers
     private int MODIFIED_DRAWN_CARDS = 0;
@@ -50,6 +50,10 @@ public class Player implements EventListener {
     }
     public Vehicle getVehicle(){
         return vehicle;
+    }
+
+    public boolean isAlive() {
+        return alive;
     }
 
     @Override

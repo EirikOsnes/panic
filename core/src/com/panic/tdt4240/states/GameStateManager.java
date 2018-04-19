@@ -29,7 +29,6 @@ public class GameStateManager {
     public void set(State state){
         states.pop().dispose();
         states.push(state);
-        setAdapter();
         setInputProcessor();
     }
 

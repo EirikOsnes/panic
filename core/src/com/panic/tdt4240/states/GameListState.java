@@ -25,9 +25,8 @@ public class GameListState extends State {
     public GameListState(GameStateManager gsm){
         super(gsm);
         lobbyListData = new ArrayList<>();
-        updateLobbyList();
-
         view = new GameListView(this);
+        updateLobbyList();
         // load available games from master server - can be done with updateLobbyList
     }
 
@@ -106,11 +105,6 @@ public class GameListState extends State {
         }
 //        System.out.println("done");
         return full_list.length == lobbyListData.size() ; // simple validity check
-    }
-
-
-    private void connectToLobby(int lobbyID){
-        Connection.getInstance().connectToLobby(lobbyID);
     }
 
     @Override

@@ -1,11 +1,13 @@
 package com.panic.tdt4240.view.ViewClasses;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -17,6 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.connection.Connection;
+import com.panic.tdt4240.models.Lobby;
+import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.states.GameLobbyState;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.PlayerNameGenerator;
@@ -122,6 +126,8 @@ public class GameLobbyView extends AbstractView {
         carSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                // FIXME
+
             }
         });
         carSelectBox.scaleBy(1.3f);
@@ -156,7 +162,14 @@ public class GameLobbyView extends AbstractView {
     }
 
 
+    public void handleInput(){
+        if(Gdx.input.justTouched()){
+            lobbyState.setReady();
+        }
+    }
+
     public void render(){
+//        handleInput();
         stage.draw();
     }
 

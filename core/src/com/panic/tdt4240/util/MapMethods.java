@@ -20,10 +20,10 @@ public class MapMethods {
                 position.add(0,0);
                 break;
             case "green_car":
-                position.add(0, height/2);
+                position.add(0, height/2+ width/16);
                 break;
             case "yellow_car":
-                position.add(width/2, height/2);
+                position.add(width/2, height/2 + width/16);
                 break;
             case "blue_car":
                 position.add(width/2, 0);

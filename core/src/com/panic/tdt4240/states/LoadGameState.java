@@ -11,9 +11,8 @@ import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.XMLParser;
+import com.panic.tdt4240.view.LoadGameView;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
-import com.panic.tdt4240.view.ViewClasses.LoadGameView;
-import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -36,6 +35,7 @@ public class LoadGameState extends State {
         connection = Connection.getInstance();
         this.lobbyID = lobbyID;
         setUpGameInstance();
+        view = new LoadGameView(this);
     }
 
     /**
@@ -48,7 +48,7 @@ public class LoadGameState extends State {
         connection.getGameInfo(lobbyID);
     }
 
-    private void setGIValues(ArrayList<Vehicle> vehicles, String mapID, String myVehicleID){
+    private void setGIValues(ArrayList<Vehicle> vehicles, String mapID, String myVehicleID, String seedString){
         Vehicle myVehicle = null;
         for (Vehicle v : vehicles) {
             if (v.getVehicleID().equals(myVehicleID))
@@ -61,6 +61,7 @@ public class LoadGameState extends State {
         GameInstance.getInstance().getPlayer().setVehicle(myVehicle);
         Map myMap = ModelHolder.getInstance().getMapById(mapID);
         GameInstance.getInstance().setMap(myMap);
+        GameInstance.getInstance().setSeed(Long.parseLong(seedString));
         isLoading = false;
     }
 
@@ -109,12 +110,12 @@ public class LoadGameState extends State {
 
     @Override
     public void render() {
-
+        view.render();
     }
 
     @Override
     public void dispose() {
-
+        view.dispose();
     }
 
     @Override
@@ -152,18 +153,10 @@ public class LoadGameState extends State {
                 String[] vehicleInfo = vehicleString.split(",");
                 Vehicle myVehicle = ModelHolder.getInstance().getVehicleByName(vehicleInfo[0]).cloneVehicleWithId(vehicleInfo[1]);
                 myVehicle.setColorCar(vehicleInfo[2].toLowerCase()+"_car");
-                //TODO: myVehicle.setColor(vehicleInfo[2]);
                 vehicles.add(myVehicle);
-
-                if(vehicleInfo[1].equalsIgnoreCase(strings[3])){
-                    XMLParser parser = new XMLParser();
-                    Player myPlayer = new Player(parser.parseCardStack(vehicleInfo[0]));
-                    GameInstance.getInstance().setPlayer(myPlayer);
-                }
-
             }
 
-            setGIValues(vehicles, strings[2], strings[3]);
+            setGIValues(vehicles, strings[2], strings[3],strings[4]);
 
             setUpVehiclePositions(vehicles,Long.parseLong(strings[4]));
 

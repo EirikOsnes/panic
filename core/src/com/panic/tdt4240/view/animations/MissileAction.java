@@ -23,9 +23,16 @@ public class MissileAction extends MoveToAction {
     @Override
     protected void begin() {
         target.setPosition(missileInstigator.getX(), missileInstigator.getY());
+        target.setVisible(true);
         super.begin();
         super.setX(missileTarget.getX());
         super.setY(missileTarget.getY());
+    }
+
+    @Override
+    protected void end() {
+        super.end();
+        target.setVisible(false);
     }
 
     @Override

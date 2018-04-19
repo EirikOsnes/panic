@@ -347,6 +347,12 @@ public class PlayCardState extends State {
                     setTimeLeft(Float.parseFloat(strings[1]));
                     //EventBus.getInstance().readyForRemove();
                     break;
+                case "GAME_OVER": //strings[1] = VICTORY/DEFEAT/DRAW
+                    //TODO: Handle this
+                    break;
+                case "RECONNECT_GAME":
+                    //TODO: Create a pop up, where you can choose to rejoin a game in progress.
+                    break;
 
             }
         }

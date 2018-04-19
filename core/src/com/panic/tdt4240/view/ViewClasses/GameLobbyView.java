@@ -142,7 +142,14 @@ public class GameLobbyView extends AbstractView {
 
     }
 
+    public void handleInput(){
+        if(Gdx.input.justTouched()){
+            lobbyState.setReady();
+        }
+    }
+
     public void render(){
+        handleInput();
         stage.draw();
     }
 

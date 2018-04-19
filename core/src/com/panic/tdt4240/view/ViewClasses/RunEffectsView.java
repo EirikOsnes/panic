@@ -10,20 +10,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Align;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
@@ -69,14 +64,10 @@ public class RunEffectsView extends AbstractView {
         font = new BitmapFont();
         font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
 
-        setUpMap();
         animator = new AnimationAdapter();
-        explosion = new Explosion();
+        explosion = new Explosion(0.1f, Explosion.EXPLOSION);
         missile = new Missile(Missile.COLOR_RED);
-        stage.addActor(explosion);
-        stage.addActor(missile);
-        System.out.println(vehicleImages.keySet().toString());
-        System.out.println(asteroidImages.keySet().toString());
+        setUpMap();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         if(!((RunEffectsState)state).getPlayerAlive()){
@@ -173,6 +164,7 @@ public class RunEffectsView extends AbstractView {
                 mapConnections.addConnection(asteroids.get(i), neighbour, asteroid.getWidth(), asteroid.getHeight(), table);
             }
         }
+        stage.addActor(missile);
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
             int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
             Vehicle activeVehicle = gameInstance.getVehicleById(vehicleOnAsteroid.get(j)[0]);
@@ -206,6 +198,7 @@ public class RunEffectsView extends AbstractView {
         playerTable.setPosition(Gdx.graphics.getWidth() - playerTable.getWidth()*2,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
 
         stage.addActor(playerTable);
+        stage.addActor(explosion);
     }
 
 

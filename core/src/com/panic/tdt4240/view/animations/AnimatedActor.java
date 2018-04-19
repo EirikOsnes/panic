@@ -3,6 +3,7 @@ package com.panic.tdt4240.view.animations;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
@@ -14,7 +15,6 @@ import com.badlogic.gdx.utils.Array;
 public class AnimatedActor extends Actor {
     private Animation<TextureAtlas.AtlasRegion> animation;
 
-    private float rotation;
 
     protected TextureRegion currentFrame;
 
@@ -23,10 +23,9 @@ public class AnimatedActor extends Actor {
 
     protected int frameCount;
 
-    public AnimatedActor(float maxFrameTime,int frameCount){
+    public AnimatedActor(float maxFrameTime){
         this.currentFrameTime = 99f;
         this.maxFrameTime = maxFrameTime;
-        this.frameCount = frameCount;
         setOrigin(Align.center);
     }
 
@@ -37,8 +36,11 @@ public class AnimatedActor extends Actor {
      */
     public void setAnimation(Array<TextureAtlas.AtlasRegion> regions){
         animation = new Animation<>(maxFrameTime,regions);
-        //setOrigin(regions.get(0).getRegionWidth()/2,regions.get(0).getRegionHeight()/2);
-        this.setOrigin(Align.center);
+        setOrigin(regions.get(0).getRegionWidth()/2,regions.get(0).getRegionHeight()/2);
+        setWidth(regions.get(0).getRegionWidth());
+        setHeight(regions.get(0).getRegionHeight());
+        frameCount = regions.size;
+        //this.setOrigin(Align.center);
     }
 
     /**
@@ -63,7 +65,10 @@ public class AnimatedActor extends Actor {
      */
     public void startAnimation(float startX, float startY, float endX, float endY){
         startAnimation(startX,startY);
-        rotation = ((float)(Math.atan((double)((endY-startY)/(endX-startX)))*(180/Math.PI)));
+        float dx = endX - startX;
+        float dy = endY - startY;
+        Vector2 vec = new Vector2(dx, dy);
+        setRotation(vec.angle());
     }
 
     /**
@@ -82,10 +87,5 @@ public class AnimatedActor extends Actor {
      */
     public float getDuration() {
         return animation.getAnimationDuration();
-    }
-
-    @Override
-    public float getRotation() {
-        return rotation;
     }
 }

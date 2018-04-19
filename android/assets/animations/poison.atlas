@@ -1,0 +1,74 @@
+poison.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+poison-1
+    rotate: false
+    xy: 1,1
+    size: 194, 192
+    orig: 194, 192
+    offset: 0,0
+    index: 1
+poison-2
+    rotate: false
+    xy: 195,1
+    size: 194, 192
+    orig: 194, 192
+    offset: 0,0
+    index: 1
+poison-3
+    rotate: false
+    xy: 389,1
+    size: 194, 192
+    orig: 194, 192
+    offset: 0,0
+    index: 1
+poison-4
+    rotate: false
+    xy: 583,1
+    size: 194, 192
+    orig: 194, 192
+    offset: 0,0
+    index: 1
+posion-5
+    rotate: false
+    xy: 777,1
+    size: 194, 192
+    orig: 194, 192
+    offset: 0,0
+    index: 1
+poison-6
+    rotate: false
+    xy: 971,1
+    size: 194, 192
+    orig: 194, 192
+    offset: 0,0
+    index: 1
+poison-7
+    rotate: false
+    xy: 1165,1
+    size: 194, 192
+    orig: 194, 192
+    offset: 0,0
+    index: 1
+poison-8
+    rotate: false
+    xy: 1359,1
+    size: 194, 192
+    orig: 194, 192
+    offset: 0,0
+    index: 1
+poison-9
+    rotate: false
+    xy: 1553,1
+    size: 194, 192
+    orig: 194, 192
+    offset: 0,0
+    index: 1
+poison-10
+    rotate: false
+    xy: 1747,1
+    size: 194, 192
+    orig: 194, 192
+    offset: 0,0
+    index: 1

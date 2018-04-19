@@ -1,5 +1,6 @@
 package com.panic.tdt4240.view.animations;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
@@ -8,22 +9,15 @@ import com.badlogic.gdx.utils.Array;
  * Created by magnus on 15.04.2018.
  */
 
-public class Explosion  extends AnimatedActor{
+public class Explosion  extends AnimatedActor {
 
-    private static final int DIM = 64;
+    public static final String EXPLOSION = "explosion";
+    public static final String POISON = "poison";
 
-    public Explosion() {
-        this(1/20f, 16);
-    }
-
-    public Explosion(float maxFrameTime, int frameCount){
-        super(maxFrameTime,frameCount);
-        TextureAtlas atlas = new TextureAtlas("animations/explosion.atlas");
-        Array<TextureAtlas.AtlasRegion> regions = new Array<>();
-        for(int i=0;i<frameCount;i++){
-            String regionName = "expl-" + (i+1);
-            regions.add(atlas.findRegion(regionName));
-        }
+    public Explosion(float maxFrameTime, String cloudType) {
+        super(maxFrameTime);
+        TextureAtlas atlas = new TextureAtlas("animations/" + cloudType +".atlas");
+        Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();
         setAnimation(regions);
     }
 
@@ -37,6 +31,6 @@ public class Explosion  extends AnimatedActor{
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
-        batch.draw(currentFrame, getX(), getY());
+        batch.draw(currentFrame, getX(), getY(),getOriginX(),getOriginY(),getWidth(),getHeight(), (Gdx.graphics.getWidth()/6)/getWidth(),(Gdx.graphics.getWidth()/6)/getWidth(),0);
     }
 }

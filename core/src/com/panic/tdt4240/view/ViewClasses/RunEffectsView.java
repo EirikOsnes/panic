@@ -73,6 +73,8 @@ public class RunEffectsView extends AbstractView {
         explosion = new Explosion();
         missile = new Missile(Missile.COLOR_RED);
         setUpMap();
+        btnAtlas = new TextureAtlas("skins/uiskin.atlas");
+        skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         if(!((RunEffectsState)state).getPlayerAlive()){
             setUpLeaveButton();
         }
@@ -80,8 +82,6 @@ public class RunEffectsView extends AbstractView {
 
     //TODO: Call this method when a player dies to let them leave the game
     public void setUpLeaveButton(){
-        btnAtlas = new TextureAtlas("skins/uiskin.atlas");
-        skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
 
         final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
@@ -239,13 +239,13 @@ public class RunEffectsView extends AbstractView {
         Runnable missileRunnable = new Runnable() {
             @Override
             public void run() {
-                missile.startAnimation(instigator.getX(),instigator.getY(),vehicle.getX(),vehicle.getY());
+                missile.startAnimation(instigator.getX(Align.center),instigator.getY(Align.center),vehicle.getX(Align.center),vehicle.getY(Align.center), Align.center);
             }
         };
         Runnable explosionRunnable = new Runnable() {
             @Override
             public void run() {
-                explosion.startAnimation(vehicle.getX(), vehicle.getY());
+                explosion.startAnimation(vehicle.getX(Align.center), vehicle.getY(Align.center), Align.center);
             }
         };
 

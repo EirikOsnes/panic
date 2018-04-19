@@ -65,7 +65,7 @@ public class RunEffectsView extends AbstractView {
         font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
 
         animator = new AnimationAdapter();
-        explosion = new Explosion(0.1f, Explosion.EXPLOSION);
+        explosion = new Explosion(0.1f, Explosion.POISON);
         missile = new Missile(Missile.COLOR_RED);
         setUpMap();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");

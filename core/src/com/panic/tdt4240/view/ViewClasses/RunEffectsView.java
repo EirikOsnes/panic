@@ -63,6 +63,7 @@ public class RunEffectsView extends AbstractView {
         explosion = new Explosion();
         missile = new Missile(Missile.COLOR_RED);
         stage.addActor(explosion);
+        stage.addActor(missile);
         System.out.println(vehicleImages.keySet().toString());
         System.out.println(asteroidImages.keySet().toString());
     }
@@ -179,7 +180,7 @@ public class RunEffectsView extends AbstractView {
                 explosion.startAnimation(vehicle.getX(), vehicle.getY());
             }
         };
-        Action action1 = Actions.sequence(Actions.run(missileRunnable), Actions.moveTo(vehicle.getX(), vehicle.getY()));
+        Action action1 = Actions.sequence(Actions.run(missileRunnable), Actions.moveTo(vehicle.getX(), vehicle.getY(), 2));
         animator.addAction(action1, missile);
         Action action2 = Actions.sequence(Actions.run(explosionRunnable), Actions.delay(explosion.getDuration()));
         animator.addAction(action2, explosion);

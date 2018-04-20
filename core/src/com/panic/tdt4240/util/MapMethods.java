@@ -1,6 +1,9 @@
 package com.panic.tdt4240.util;
 
 import com.badlogic.gdx.math.Vector2;
+import com.panic.tdt4240.models.Asteroid;
+
+import java.util.ArrayList;
 
 /**
  * Created by Hermann on 14.04.2018.
@@ -30,6 +33,24 @@ public class MapMethods {
                 break;
         }
         return position;
+    }
+
+    /**
+     *
+     * @param asteroid asteroid we find vehicles on
+     * @param index asteroid index
+     * @return array with vehicle, asteroid id and asteroid index
+     */
+    public static ArrayList<String[]> getVehiclesOnAsteroid(Asteroid asteroid, int index){
+        ArrayList<String[]> vehicleOnAsteroid = new ArrayList<>();
+        for (int j = 0; j < asteroid.getVehicles().size(); j++) {
+            String[] onAsteroid = new String[3];
+            onAsteroid[0] = asteroid.getVehicles().get(j);
+            onAsteroid[1] = asteroid.getId();
+            onAsteroid[2] = index + "";
+            vehicleOnAsteroid.add(onAsteroid);
+        }
+        return vehicleOnAsteroid;
     }
 
 }

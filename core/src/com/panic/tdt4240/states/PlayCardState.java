@@ -112,9 +112,17 @@ public class PlayCardState extends State {
                     justClicked = handIndex;
                     playedCardsList.add(handIndex);
                     selectedCards.set(handIndex, true);
-                    playView.clickedButton(handIndex, 1);
                     numPlayedCards++;
-                    playView.setSelectTarget(true);
+
+                    if(hand.get(playedCardsList.get(numPlayedCards-1)).getAllowedTarget().equals(PLAYER)){
+                        playView.clickedButton(handIndex, -1);
+                        playView.setSelectTarget(false);
+                        selectTarget(GameInstance.getInstance().getPlayer().getVehicle().getVehicleID());
+                    }
+                    else{
+                        playView.clickedButton(handIndex, 1);
+                        playView.setSelectTarget(true);
+                    }
                 }
             } else if (o instanceof String) {
                 vehicleTarget = false;
@@ -178,20 +186,27 @@ public class PlayCardState extends State {
     private boolean validTarget(String targetID) {
         System.out.println(targetID);
         //If the target is an asteroid
-        if (targetID.substring(0, 1).equals("A")) {
-            return hand.get(playedCardsList.get(numPlayedCards - 1)).getTargetType().equals(ASTEROID);
+        if(targetID.length() > 0){
+            return validAsteroidTarget(targetID, numPlayedCards - 1) || validVehicleTarget(targetID, numPlayedCards - 1);
         }
-        //If the target is a vehicle
-        else if (targetID.substring(0, 1).equals("V")) {
+        return false;
+    }
+    private boolean validAsteroidTarget(String targetID, int index){
+        if(targetID.substring(0, 1).equals("A")){
+            return hand.get(playedCardsList.get(index)).getTargetType().equals(ASTEROID);
+        }
+        return false;
+    }
+    private boolean validVehicleTarget(String targetID, int index){
+        if(targetID.substring(0, 1).equals("V")){
             vehicleTarget = true;
-            //If the player can target a vehicle
-            if (hand.get(playedCardsList.get(numPlayedCards - 1)).getTargetType().equals(VEHICLE)) {
+            if (hand.get(playedCardsList.get(index)).getTargetType().equals(VEHICLE)) {
                 //If the player targets themselves
                 if (player.getVehicle().getVehicleID().equals(targetID)) {
-                    return !hand.get(playedCardsList.get(numPlayedCards - 1)).getAllowedTarget().equals(ENEMY);
+                    return !hand.get(playedCardsList.get(index)).getAllowedTarget().equals(ENEMY);
                 }
                 //The player targets someone else
-                return !hand.get(playedCardsList.get(numPlayedCards - 1)).getAllowedTarget().equals(PLAYER);
+                return !hand.get(playedCardsList.get(index)).getAllowedTarget().equals(PLAYER);
             }
             return false;
         }

@@ -9,7 +9,6 @@ import com.panic.tdt4240.view.ViewClasses.GameListView;
 import java.lang.Thread;
 
 import java.util.ArrayList;
-import java.lang.Thread;
 
 /**
  * Created by magnus on 12.03.2018.
@@ -21,9 +20,12 @@ public class GameListState extends State {
     ArrayList<String[]> lobbyListData;
     private static String err_full_lobby = "Error: full lobby.";
     private static String err_lobby404 = "Error: lobby not found.";
+    boolean triedToEnterLobby;
+    boolean failedToEnterLobby;
 
     public GameListState(GameStateManager gsm){
         super(gsm);
+        triedToEnterLobby = false; failedToEnterLobby = false;
         lobbyListData = new ArrayList<>();
         view = new GameListView(this);
         updateLobbyList();
@@ -49,27 +51,34 @@ public class GameListState extends State {
         final String s = (String) o;
         // when a lobby is clicked, enter it.
         if (s.equals("-1")) gsm.reset();  // exit to main menu
-        if (Integer.parseInt(s) >= 0) { // lobbyID entered
+        else {
             Gdx.app.postRunnable(new Runnable() {
                 @Override
                 public void run() {
                     connectToLobby(Integer.parseInt(s)); // ACTUAL CODE... i think.
                     System.out.println("New lobby state SHOULD BE made");
+                    updateLobbyList();
                 }
             });
+/*            if (failedToEnterLobby) {
+                updateLobbyList();
+                System.out.println("Check 2; if this ever triggers then you fucked up bigtime");
+            } else if (triedToEnterLobby) {
+                failedToEnterLobby = true;
+                System.out.println("Check 1");
+                updateLobbyList();
+            } // nothing has gone wrong*/
         }
         try {    // error handling
             if (s.equals("error:Full lobby")) {
                 view.popup(GameListView.error0);
             }
-            //TODO: connect with actual Lobby objects instead - use
+            //
             else if (s.equals("error: Missing lobby")) {
                 view.popup(GameListView.error1);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            }
-        }
+        } catch (Exception e) { e.printStackTrace(); }
+    }
 
     @Override
     public void update(float dt) { }
@@ -124,6 +133,10 @@ public class GameListState extends State {
                 case "GET_LOBBIES":
                     if(strings.length>1) {
                         readLobbyData(strings[1]);
+                        view.updateView();
+                    }
+                    else {
+                        lobbyListData = new ArrayList<>();
                         view.updateView();
                     }
 

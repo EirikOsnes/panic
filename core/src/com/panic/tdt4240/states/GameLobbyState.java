@@ -5,8 +5,6 @@ import com.badlogic.gdx.Input;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Lobby;
-import com.panic.tdt4240.models.ModelHolder;
-import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.GameLobbyView;
 
@@ -33,6 +31,8 @@ public class GameLobbyState extends State {
     private Lobby lobby;
     private int lobbyID;
     private boolean dataLoaded;
+    int currentPlayerCount;
+    private boolean isPlayerReady;
 
     public GameLobbyState(GameStateManager gsm, int lobbyID){
         super(gsm);
@@ -75,8 +75,26 @@ public class GameLobbyState extends State {
         }); /**/
     }
 
+    public boolean isPlayerReady(){return isPlayerReady; }
+
+    public void setPlayerReady(boolean r){ isPlayerReady = r; }
+
+    @Override
+    public void handleInput(Object o) {
+        String s = (String) o;
+        if ( s.equals("-2")) Connection.getInstance().chooseVehicleType(view.getSelectedVehicle(), lobbyID);
+        else if (s.equals("-1")){
+            leaveLobby();
+            view.updateView();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) gsm.reset();
+
+    }
+
     /**
-     * Use this method to change/choose vehicle type (i.e. EDDISON)
+     * [OLD COMMENT] Use this method to change/choose vehicle type (i.e. EDDISON)
+     *
+     * [New comment]
      * This method is fired when 'Ready' button is pressed.
      * @param vehicleType The vehicle type.
      */
@@ -98,17 +116,6 @@ public class GameLobbyState extends State {
         Connection.getInstance().leaveLobby(lobbyID);
         //        gsm.pop(); // sends you to EITHER lobby list or creategame, but we want the list.
         gsm.set(new GameListState(gsm));
-    }
-
-    @Override
-    public void handleInput(Object o) {
-        String s = (String) o;
-        if ( s.equals("-2")) Connection.getInstance().chooseVehicleType(view.getSelectedVehicle(), lobbyID);
-        else if (s.equals("-1")){
-            leaveLobby();
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) gsm.reset();
-
     }
 
     @Override
@@ -140,7 +147,7 @@ public class GameLobbyState extends State {
         callbackAdapter = new GameLobbyAdapter();
     }
 
-    public boolean getDataLoaded() {
+    public boolean isDataLoaded() {
         return dataLoaded;
     }
 
@@ -164,7 +171,6 @@ public class GameLobbyState extends State {
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            System.out.println(getLobby().getLobbyname());
                             view.updateView();
                         }
                     });
@@ -183,8 +189,9 @@ public class GameLobbyState extends State {
 
         private void parseLobby(String[] strings){
             Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),Connection.getInstance().parseFromServer(strings[2]),Integer.parseInt(strings[3]),strings[4]);
+            System.out.println(strings);
             String[] playerIDstrings = strings[5].split("&");
-            String[] vehicleTypestrings = strings[6].split("&");
+            String[] vehicleTypestrings = strings[6].split("&");    //
             ArrayList<Integer> playerIDs = new ArrayList<>();
             ArrayList<String> vehicleTypes = new ArrayList<>();
             for (int i = 0; i < playerIDstrings.length; i++) { //Assuming proper set up here - the same amount of values.
@@ -197,23 +204,31 @@ public class GameLobbyState extends State {
                 vehicleTypes.add("EDDISON");
 
                 //PROPER CODE
-//                vehicleTypes.add((vehicleTypestrings[i].equals("NONE")) ? null : vehicleTypestrings[i]);
+                vehicleTypes.add((vehicleTypestrings[i].equals("NONE")) ? null : vehicleTypestrings[i]);
             }
+            // when players come and go, undo "Ready up" button's functions.
+            if (currentPlayerCount != playerIDs.size()){
+                setPlayerReady(false);
+                runPostRunnable();
+            }
+            currentPlayerCount = playerIDs.size();
             myLobby.setPlayerIDs(playerIDs);
             myLobby.setVehicleTypes(vehicleTypes);
-            System.out.println("Lobby parsed \n\tData:" + myLobby.toString());
             lobby = myLobby;
-            System.out.println("lobby object created");
             setDataLoaded(true);
-            Gdx.app.postRunnable(new Runnable() {
-                @Override
-                public void run() {
-                    view.updateView();
-
-                }
-            });
+            runPostRunnable();
 
         }
+
+        public void runPostRunnable(){
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                view.updateView();
+            }
+        });
+        }
+
 
     }
 

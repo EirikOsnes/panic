@@ -36,16 +36,16 @@ import java.util.ArrayList;
 
 public class GameLobbyView extends AbstractView {
 
-    private Table playerTxtTable, bottomTable;
+    private Table playerTxtTable, bottomTable, topTable;
     private TextureAtlas buttonAtlas;
     private Texture bg;
     private Skin skin;
     private BitmapFont font;
-    private boolean isReady;
+    private String lobbyName;
 
     private ArrayList<String> usedNames;
 
-    private TextField waitingTxt;
+    private TextField waitingTxt, lobbyNameField;
     private ArrayList<TextField> playerTxtFields;
     private TextField.TextFieldStyle txtStyle;
 
@@ -66,10 +66,10 @@ public class GameLobbyView extends AbstractView {
      * */
     public GameLobbyView(final GameLobbyState lobbyState) {
         super(lobbyState);
+        lobbyName="";
         this.lobbyState=lobbyState;
         /** INIT SETUP */
 
-        isReady=false;
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         font = new BitmapFont();
@@ -106,19 +106,17 @@ public class GameLobbyView extends AbstractView {
         stage.clear();
         stage.addActor(backgroundActor);
 
-
-        // DO NOT CREATE PLAYER LIST UNTIL LOBBY DATA EXISTS
-        if (lobbyState.getDataLoaded()) {
+        // Draw things when data is loaded
+        if (lobbyState.isDataLoaded()) {
             preparePlayerListDisplay(); // generates playerTxtFields
             prepareSelectVehicleDisplay();
+            lobbyName=lobbyState.getLobby().getLobbyname();
         }
         else {
             System.out.println("Object 'lobby' not created yet ---");
         }
-
         prepareMenuButtons();
-
-        if (isReady) generateWaitingForOtherPlayers();
+        generateTextItems();
 
     }
 
@@ -139,10 +137,7 @@ public class GameLobbyView extends AbstractView {
         buttonAtlas.dispose();
     }
 
-    // TODO: should server distribute generated names? If so, trigger updateLobby on player join
-
     private void preparePlayerListDisplay(){
-
         String name;
         playerTxtFields = new ArrayList<>();
         usedNames = new ArrayList<>();
@@ -156,22 +151,16 @@ public class GameLobbyView extends AbstractView {
                 offset++;
                 if (! usedNames.contains(name)) {
                     usedNames.add(name);
-                    System.out.println(name + " selected");
                     if (playerID == Connection.getInstance().getConnectionID()) name = name + " (me)";
                     playerTxtFields.add(new TextField(name, txtStyle));
                     break;
-                }
-            }
-        }
+        }}}
 
         playerTxtTable = new Table();
         playerTxtTable.setFillParent(true);
 
         // positioning
         playerTxtTable.center();
-
-        playerTxtTable.row().width(SCREEN_WIDTH/15);
-
         // Fill table with actual contents
         for (TextField tf : playerTxtFields){
             playerTxtTable.add(tf).padBottom(20).width(SCREEN_WIDTH*3/4);
@@ -183,6 +172,7 @@ public class GameLobbyView extends AbstractView {
 
     private void prepareSelectVehicleDisplay(){
         String[] carTypes = getVehicleNames();
+//        String[] carTypes = {"HURR", "DURR", "HERP", "DERP"}; // USED FOR TESTING
         carSelectBox = new SelectBox<>(skin);
         BitmapFont boxFont = new BitmapFont();
         boxFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
@@ -193,9 +183,7 @@ public class GameLobbyView extends AbstractView {
 
         carSelectBox.setStyle(boxStyle);
         carSelectBox.setSize(SCREEN_WIDTH/3, SCREEN_HEIGHT/16);
-        String[] vehicleTypes = getVehicleNames();
-//        String[] s = {"HURR", "DURR", "HERP", "DERP"}; // background is still gone
-        carSelectBox.setItems(vehicleTypes);
+        carSelectBox.setItems(carTypes);
         carSelectBox.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE()*2);
         carSelectBox.setSelectedIndex(0); // default value
         carSelectBox.addListener(new ChangeListener() {
@@ -212,13 +200,19 @@ public class GameLobbyView extends AbstractView {
 
     private void prepareMenuButtons(){
         readyBtn = new TextButton("Ready up", btnStyle);
+        if (lobbyState.isPlayerReady()) readyBtn.setColor(Color.GRAY);
         readyBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (isReady) return; // nothing happens if the button is already pressed.
-                generateWaitingForOtherPlayers();
-                isReady=true;
-                lobbyState.handleInput("-2");
+            if (lobbyState.isPlayerReady()) {
+                System.out.println("'Ready' set to " + lobbyState.isPlayerReady());
+                return;
+            }
+            // else
+            generateWaitingText();
+            lobbyState.setPlayerReady(true);
+            readyBtn.setColor(Color.GRAY);
+            lobbyState.handleInput("-2");
 //                Connection.getInstance().chooseVehicleType(carSelectBox.getSelected(), lobbyState.getLobbyID());
             }
         });
@@ -236,15 +230,35 @@ public class GameLobbyView extends AbstractView {
         bottomTable.add(exitBtn).pad(20);
         bottomTable.row();
         bottomTable.setPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/10);
+
         stage.addActor(bottomTable);
     }
 
-    private void generateWaitingForOtherPlayers() {
+    private void generateTextItems(){
+        lobbyNameField = new TextField("Lobby name: " + lobbyName, txtStyle);
+        lobbyNameField.setPosition(SCREEN_WIDTH/2- lobbyNameField.getWidth()/2,
+                SCREEN_HEIGHT * 9/10);
+        lobbyNameField.setScale(GlobalConstants.GET_TEXT_SCALE());
+        lobbyNameField.setWidth(300);
+        lobbyNameField.setPosition(SCREEN_WIDTH/2 - lobbyNameField.getWidth()/2,
+                SCREEN_HEIGHT*9/10);
+        stage.addActor(lobbyNameField);
+        if (lobbyState.isPlayerReady()) generateWaitingText();
+
+//        topTable = new Table().center().top();
+//        topTable.add(lobbyNameField).width(SCREEN_WIDTH);
+//        topTable.row();
+//        stage.addActor(topTable);
+
+    }
+
+    private void generateWaitingText() {
         waitingTxt =  new TextField("Waiting for other players...", txtStyle);
         waitingTxt.getStyle().font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * 3f);
-        waitingTxt.setPosition(SCREEN_WIDTH /2 - waitingTxt.getWidth()/2, SCREEN_HEIGHT*8/10);
-        waitingTxt.pack();
+        waitingTxt.setWidth(180);
+        waitingTxt.setPosition(SCREEN_WIDTH /2 - waitingTxt.getWidth()/2, SCREEN_HEIGHT*7.5f/10);
         stage.addActor(waitingTxt);
+//        topTable.add(waitingTxt).width(SCREEN_WIDTH);
     }
 
     private String[] getVehicleNames(){
@@ -259,5 +273,6 @@ public class GameLobbyView extends AbstractView {
     public String getSelectedVehicle(){
         return carSelectBox.getSelected();
     }
+
 
 }

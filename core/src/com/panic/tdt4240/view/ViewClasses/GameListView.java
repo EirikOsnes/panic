@@ -1,6 +1,5 @@
 package com.panic.tdt4240.view.ViewClasses;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,6 +32,7 @@ public class GameListView extends AbstractView {
     private BitmapFont font;
     private Texture bg;
     private TextButton exitToMainMenuBtn, refreshBtn;
+    private Table lobbyBtnTable;
 
     public static final String error0 = "Error: full lobby.";
     public static final String error1 = "Error: lobby not found.";
@@ -58,29 +58,41 @@ public class GameListView extends AbstractView {
     }
 
     public void updateView(){
-        Table lobbyBtnTable = new Table(skin);
-        //lobbyBtnTable.background(new TextureRegionDrawable(new TextureRegion(bg)));
-        lobbyBtnTable.center();
+        stage.clear();
 
-
+        // background
         Actor backgroundActor = new Image(new TextureRegion(bg));
         backgroundActor.setZIndex(0);
         backgroundActor.setSize(stage.getWidth(), stage.getHeight());
         stage.addActor(backgroundActor);
 
-        for (int i = 0; i < listState.getLobbyListData().size(); i++){
-            final String data[] = listState.getLobbyListData().get(i);
-            TextButton button = new TextButton(data[0], skin);
-            button.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    System.out.println(event.toString());
-                    state.handleInput(data[1]); // lobbyID
-                }
-            });
-            lobbyBtnTable.add(button).width(300).pad(5); lobbyBtnTable.row();
+        createLobbyList();
+        generateMenuBtns();
+
+    }
+
+    private void createLobbyList(){
+        lobbyBtnTable = new Table(skin);
+        lobbyBtnTable.center();
+
+        if (! listState.getLobbyListData().isEmpty()){
+            for (int i = 0; i < listState.getLobbyListData().size(); i++) {
+                final String data[] = listState.getLobbyListData().get(i);
+                TextButton button = new TextButton(data[0], skin);
+                button.addListener(new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        System.out.println("Lobby clicked; attempting to enter");
+                        state.handleInput(data[1]); // lobbyID
+                    }
+                });
+                lobbyBtnTable.add(button).width(300).pad(5);
+                lobbyBtnTable.row();
+            }
         }
+
         lobbyBtnTable.row();
+
         // scrolls child widgets.
         ScrollPane scroller = new ScrollPane(lobbyBtnTable, skin);
         scroller.setScrollingDisabled(true, false);
@@ -89,22 +101,10 @@ public class GameListView extends AbstractView {
         scroller.setHeight(SCREEN_HEIGHT*3/4f);
         scroller.setPosition(SCREEN_HEIGHT/10f, SCREEN_WIDTH/10f*3f);
         stage.addActor(scroller);
-
-        createExitToMainMenuBtn();
-        Table exitTable = new Table();
-        exitTable.setFillParent(true);
-        exitTable.bottom();
-        exitTable.add(refreshBtn).pad(10);
-        exitTable.add(exitToMainMenuBtn).pad(10);
-        exitTable.pack();
-        stage.addActor(exitTable);
-//        scroller = new ScrollPane(table);
-//        scroller.setScrollingDisabled(true, false);
-//        table.add(scroller).fill().expand();
-//        stage.addActor(scroller);
     }
 
-    private void createExitToMainMenuBtn(){
+
+    private void generateMenuBtns(){
         exitToMainMenuBtn = new TextButton("Exit to main menu", skin);
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
@@ -121,7 +121,13 @@ public class GameListView extends AbstractView {
             }
         });
 
-
+        Table exitTable = new Table();
+        exitTable.setFillParent(true);
+        exitTable.bottom();
+        exitTable.add(refreshBtn).pad(10);
+        exitTable.add(exitToMainMenuBtn).pad(10);
+        exitTable.pack();
+        stage.addActor(exitTable);
 
 
     }

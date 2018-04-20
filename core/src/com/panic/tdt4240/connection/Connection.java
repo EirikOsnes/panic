@@ -171,7 +171,6 @@ public class Connection extends WebSocketClient{
      * @param target
      */
     public void sendDestroyed(int gameID, String target){
-
         this.send("TOGAME//" + gameID + "//DESTROY//" + target + "//" + connectionID);
 
     }
@@ -200,6 +199,10 @@ public class Connection extends WebSocketClient{
         this.send("TOGAME//" + gameID + "//END_RUN_EFFECTS_STATE");
     }
 
+    public void sendResyncFinished(int gameID){
+        this.send("TOGAME//" + gameID + "//RESYNC_FINISHED");
+    }
+
     /**
      * The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
      * with "ENDTURN//".
@@ -225,6 +228,10 @@ public class Connection extends WebSocketClient{
             returnString = returnString + move[0] + "&" + move[2] + "&" + move[1] + "&" + priority + "//";
         }
         this.send(returnString);
+    }
+
+    public void gameOverInfo(int gameID){
+        this.send("TOGAME//" + gameID + "//GAME_OVER_INFO");
     }
 
     @Override

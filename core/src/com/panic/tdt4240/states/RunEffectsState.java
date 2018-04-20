@@ -144,6 +144,7 @@ public class RunEffectsState extends State implements EventListener {
                 case "GAME_OVER": //string[1] = VICTORY/DEFEAT/DRAW
                     if (strings[1].equalsIgnoreCase("DEFEAT")){
                         defeatedFlag = true;
+                        GameInstance.getInstance().getPlayer().setAlive(false);
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {

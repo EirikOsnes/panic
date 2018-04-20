@@ -65,7 +65,7 @@ public class RunEffectsView extends AbstractView {
         font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
 
         animator = new AnimationAdapter();
-        cloudAnimation = new CloudAnimation(0.1f, CloudAnimation.AnimationType.GREENCLOUD);
+        cloudAnimation = new CloudAnimation(0.1f, CloudAnimation.AnimationType.SHIELD);
         missile = new Missile(Missile.MissileType.RED);
         setUpMap();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");

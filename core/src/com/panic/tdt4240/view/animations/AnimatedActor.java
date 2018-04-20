@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Array;
  */
 
 public class AnimatedActor extends Actor {
-    private Animation<TextureAtlas.AtlasRegion> animation;
+    protected Animation<TextureAtlas.AtlasRegion> animation;
 
 
     protected TextureRegion currentFrame;
@@ -23,10 +23,10 @@ public class AnimatedActor extends Actor {
 
     protected int frameCount;
 
-    public AnimatedActor(float maxFrameTime,int frameCount){
+    public AnimatedActor(float maxFrameTime){
         this.currentFrameTime = 99f;
         this.maxFrameTime = maxFrameTime;
-        this.frameCount = frameCount;
+        setOrigin(Align.center);
     }
 
 
@@ -34,12 +34,13 @@ public class AnimatedActor extends Actor {
      * Sets the animation and defines the centre of the animation frames. All frames have to be of equal size
      * @param regions The textureRegions that make up the animation
      */
-    public void setAnimation(Array<TextureAtlas.AtlasRegion> regions){
+    void setAnimation(Array<TextureAtlas.AtlasRegion> regions){
         if(regions.size>0) {
             setWidth(regions.get(0).getRegionWidth());
             setHeight(regions.get(0).getRegionHeight());
             animation = new Animation<>(maxFrameTime, regions);
             setOrigin(regions.get(0).getRegionWidth() / 2, regions.get(0).getRegionHeight() / 2);
+            frameCount = regions.size;
         }
         else throw new IllegalArgumentException("Animation must contain frames");
         //this.setOrigin(Align.center);
@@ -79,9 +80,9 @@ public class AnimatedActor extends Actor {
      * @param looping Whether the animation should repeat itself
      * @return The frame to be drawn
      */
-    public TextureRegion getCurrentFrame(float dt, boolean looping){
+    public TextureRegion getCurrentFrame(float dt){
         currentFrameTime+=dt;
-        return animation.getKeyFrame(currentFrameTime,looping);
+        return animation.getKeyFrame(currentFrameTime);
     }
 
     /**

@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.ModelHolder;
 
-
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -172,7 +171,6 @@ public class Connection extends WebSocketClient{
      * @param target
      */
     public void sendDestroyed(int gameID, String target){
-
         this.send("TOGAME//" + gameID + "//DESTROY//" + target + "//" + connectionID);
 
     }
@@ -193,11 +191,16 @@ public class Connection extends WebSocketClient{
      * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
      */
     public void sendRunEffectsState(int gameID){
+        System.out.println("sent runEffectState");
         this.send("TOGAME//" + gameID + "//ENTERED_RUN_EFFECTS_STATE");
     }
 
     public void sendEndRunEffectsState(int gameID){
         this.send("TOGAME//" + gameID + "//END_RUN_EFFECTS_STATE");
+    }
+
+    public void sendResyncFinished(int gameID){
+        this.send("TOGAME//" + gameID + "//RESYNC_FINISHED");
     }
 
     /**
@@ -225,6 +228,10 @@ public class Connection extends WebSocketClient{
             returnString = returnString + move[0] + "&" + move[2] + "&" + move[1] + "&" + priority + "//";
         }
         this.send(returnString);
+    }
+
+    public void gameOverInfo(int gameID){
+        this.send("TOGAME//" + gameID + "//GAME_OVER_INFO");
     }
 
     @Override

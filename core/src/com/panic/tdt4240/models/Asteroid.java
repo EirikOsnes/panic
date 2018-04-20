@@ -35,7 +35,6 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
 
 //TODO Asteroid should contain the string of the asteroid image, not the sprite
     public Asteroid(String path, String id) {
-        EventBus.getInstance().addListener(this);
         this.texture = path;
         this.id = id;
         neighbours = new ArrayList<>();
@@ -170,14 +169,22 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
     }
 
     public void destroy(){
-        isDestroyed = true;
-        EventFactory.postDestroyedEvent(id,id);
-        EventBus.getInstance().removeListener(this);
+        if(!isDestroyed) {
+            isDestroyed = true;
+            EventFactory.postDestroyedEvent(id, id);
+            EventBus.getInstance().removeListener(this);
+        }
     }
 
     public void readyToRemove(){
         vehicleIDs.removeAll(removeVehicle);
         removeVehicle.clear();
+    }
+
+    public void reset(){
+        vehicleIDs = new ArrayList<>();
+        removeVehicle = new ArrayList<>();
+        statusHandler = new StatusHandler(this);
     }
 
     @Override

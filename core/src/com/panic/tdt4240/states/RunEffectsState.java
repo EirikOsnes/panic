@@ -5,14 +5,15 @@ import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.events.Event;
 import com.panic.tdt4240.events.EventBus;
-import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.events.EventListener;
-import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
-import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.RunEffectsView;
+import com.panic.tdt4240.view.animations.CloudAnimation;
+import com.panic.tdt4240.view.animations.CloudAnimation.AnimationType;
+import com.panic.tdt4240.view.animations.Missile;
+import com.panic.tdt4240.view.animations.Missile.MissileType;
 
 import java.util.ArrayList;
 
@@ -39,10 +40,11 @@ public class RunEffectsState extends State implements EventListener {
     public boolean getPlayerAlive(){
         return GameInstance.getInstance().getPlayer().isAlive();
     }
+
     public void leaveGame(){
-        Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
-        //TODO: Send to GameResultState
-        gsm.reset();
+        //Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
+        gsm.set(new GameResultsState(gsm));
+        //gsm.reset();
     }
 
 
@@ -92,20 +94,21 @@ public class RunEffectsState extends State implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
-        if (e.getT() == Event.Type.ATTACK) {
-            if (e.getTargetID().matches("A-\\d\\d\\d")) {
-                runEffectsView.attackAsteroid(e.getTargetID());
-            }
-            else if (e.getTargetID().matches("V-\\d\\d\\d")) {
-                runEffectsView.attackVehicle(e.getTargetID(),e.getInstigatorID());
-            }
-        }
-        else if (e.getT() == Event.Type.MOVE) {
+        if (e.getT() == Event.Type.MOVE) {
             runEffectsView.moveVehicle(e.getInstigatorID(), e.getTargetID());
         }
+
         else if (e.getT() == Event.Type.DESTROYED) {
+            System.out.println("Sending destroy from RunEffectsState");
             Connection.getInstance().sendDestroyed(GameInstance.getInstance().getID(),e.getTargetID());
-            runEffectsView.destroyVehicle(e.getTargetID());
+        }
+
+        if (e.getMissileType() != MissileType.NONE) {
+            runEffectsView.addMissileAnimation(e.getTargetID(), e.getInstigatorID(), e.getMissileType());
+        }
+        if (e.getCloudType() != AnimationType.NONE) {
+            runEffectsView.addCloudAnimation(e.getTargetID(), e.getCloudType());
+
         }
     }
 
@@ -117,6 +120,7 @@ public class RunEffectsState extends State implements EventListener {
 
             switch (strings[0]){
                 case "GET_TURN":
+                    System.out.println("recieved getTurn");
                     playTurn(strings);
                     break;
                 case "VALID_STATE":
@@ -126,12 +130,27 @@ public class RunEffectsState extends State implements EventListener {
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            gsm.set(new LoadGameState(gsm, GameInstance.getInstance().getID()));
+                            gsm.set(new LoadGameState(gsm, GameInstance.getInstance().getID(),true));
                         }
                     });
                     break;
                 case "GAME_OVER": //string[1] = VICTORY/DEFEAT/DRAW
-                    //TODO: Handle this
+                    if (strings[1].equalsIgnoreCase("DEFEAT")){
+                        //TODO: Do you wish to spectate? For now, you're sent to GameResultState.
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                leaveGame();
+                            }
+                        });
+                    }else{
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                leaveGame();
+                            }
+                        });
+                    }
                     break;
                 case "RECONNECT_GAME":
                     //TODO: Create a pop up, where you can choose to rejoin a game in progress.

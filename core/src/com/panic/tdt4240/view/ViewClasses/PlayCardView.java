@@ -360,6 +360,7 @@ public class PlayCardView extends AbstractView{
         String target = "You cannot target this " + targetType;
         invalidTarget.setText(target);
     }
+
     /**
      * Method to change visuals of the buttons depending on if they're pressed down or not
      * @param button ID of the button/card that has been pressed
@@ -400,6 +401,7 @@ public class PlayCardView extends AbstractView{
         invalidTarget.act(dt);
 
     }
+
     /**
      * Renders connections between asteroids, then the stage
      */
@@ -413,6 +415,7 @@ public class PlayCardView extends AbstractView{
         stage.act();
         stage.draw();
     }
+
     public void dispose(){
         stage.dispose();
         sr.dispose();
@@ -447,6 +450,4 @@ public class PlayCardView extends AbstractView{
             }
         }
     }
-
-
 }

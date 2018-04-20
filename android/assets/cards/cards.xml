@@ -17,7 +17,7 @@
             <status_duration>-1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>true</friendly_fire>
-            <missile_type>red</missile_type>
+            <missile_type>RED</missile_type>
             <animation_type>EXPLOSION</animation_type>
         </card_effect>
     </card>
@@ -48,7 +48,7 @@
             <status_duration>1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>true</friendly_fire>
-            <missile_type>none</missile_type>
+            <missile_type>NONE</missile_type>
             <!--<animation_type></animation_type> -->
         </card_effect>
     </card>
@@ -68,8 +68,8 @@
             <status_duration>-1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>true</friendly_fire>
-            <missile_type>none</missile_type>
-            <!-- <animation_type></animation_type> -->
+            <missile_type>NONE</missile_type>
+            <animation_type>HEALING</animation_type>
         </card_effect>
     </card>
 
@@ -169,6 +169,8 @@
             <status_duration>1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>true</friendly_fire>
+            <missile_type>YELLOW</missile_type>
+            <animation_type>DEBUFF</animation_type>
         </card_effect>
     </card>
 
@@ -187,8 +189,8 @@
             <status_duration>3</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>false</friendly_fire>
-            <missile_type>green</missile_type>
-            <animation_type>POISON</animation_type>
+            <missile_type>GREEN</missile_type>
+            <animation_type>GREENCLOUD</animation_type>
         </card_effect>
     </card>
 
@@ -207,7 +209,7 @@
             <status_duration>-1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>false</friendly_fire>
-            <missile_type>red</missile_type>
+            <missile_type>RED</missile_type>
             <animation_type>EXPLOSION</animation_type>
         </card_effect>
     </card>

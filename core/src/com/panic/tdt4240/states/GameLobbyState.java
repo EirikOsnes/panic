@@ -52,7 +52,8 @@ public class GameLobbyState extends State {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                gsm.push(new LoadGameState(gsm, lobbyID));
+                gsm.push(new LoadGameState(gsm, lobby.getLobbyID(),false));
+
             }
         });
     }

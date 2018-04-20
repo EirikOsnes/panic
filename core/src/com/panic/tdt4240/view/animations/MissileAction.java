@@ -3,6 +3,7 @@ package com.panic.tdt4240.view.animations;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.utils.Align;
+import com.panic.tdt4240.view.animations.Missile.MissileType;
 
 /**
  * Created by Choffa for panic on 19-Apr-18.
@@ -23,12 +24,13 @@ public class MissileAction extends MoveToAction {
 
     @Override
     protected void begin() {
-        target.setPosition(missileInstigator.getX(Align.center), missileInstigator.getY(Align.center), Align.center);
+        target.setPosition(missileInstigator.getX(Align.center), missileInstigator.getY(Align.center));
         target.setVisible(true);
         missileInstigator.setRotation(target.getRotation() - 90f);
         super.begin();
-        super.setX(missileTarget.getX());
-        super.setY(missileTarget.getY());
+        super.setAlignment(Align.center);
+        super.setX(missileTarget.getX(Align.center));
+        super.setY(missileTarget.getY(Align.center));
     }
 
     @Override

@@ -4,10 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.models.Card;
-import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.ModelHolder;
-import com.panic.tdt4240.models.Vehicle;
-
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -101,11 +98,8 @@ public class Connection extends WebSocketClient{
     /**
      * Get all the Lobbies available
      * Returns an ArrayList of all available Lobbies as a string on the form:
-
      * GET_LOBBIES: {4 fields} & {4 fields} & ... repeating. '&' = lobby separator
-
-     * GET_LOBBIES:ID1,Lobbyname1,CurrentPlayerNum1,MaxPlayers1&ID2,LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN
-
+     * GET_LOBBIES:LobbyName1,CurrentPlayerNum1,MaxPlayers1,ID1&LobbyName2,CurrentPlayerNum2,...,MaxPlayerNumN, IDN
      */
     public void getAllLobbies(){
         this.send("GET_LOBBIES");
@@ -126,7 +120,7 @@ public class Connection extends WebSocketClient{
      */
     public void leaveLobby(int lobbyID){
 
-        this.send("TOGAME//" + lobbyID + "//LEAVE_GAME");
+        this.send("EXIT");
 
     }
 
@@ -190,6 +184,7 @@ public class Connection extends WebSocketClient{
     }
 
     public void sendPlayCardState(int gameID){
+        System.out.println("Sending BEGIN_TURN");
         this.send("TOGAME//" + gameID + "//BEGIN_TURN");
     }
 
@@ -197,6 +192,7 @@ public class Connection extends WebSocketClient{
      * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
      */
     public void sendRunEffectsState(int gameID){
+        System.out.println("sent runEffectState");
         this.send("TOGAME//" + gameID + "//ENTERED_RUN_EFFECTS_STATE");
     }
 

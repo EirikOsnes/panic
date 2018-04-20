@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
-import com.panic.tdt4240.events.EventBus;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
@@ -39,7 +38,7 @@ public class PlayCardState extends State {
     //Number of cards we have played up to this point
     private int numPlayedCards;
     private ArrayList<Card> hand;
-    private ArrayList<Boolean> selectedCard;
+    private ArrayList<Boolean> selectedCards;
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
     private boolean isLockedIn = false;
@@ -61,9 +60,9 @@ public class PlayCardState extends State {
         targets = new ArrayList<>();
 
         hand = player.playCards();
-        selectedCard = new ArrayList<>(hand.size());
+        selectedCards = new ArrayList<>(hand.size());
         for (int i = 0; i < hand.size(); i++) {
-            selectedCard.add(i, false);
+            selectedCards.add(i, false);
         }
         mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         playView = new PlayCardView(this);
@@ -91,7 +90,7 @@ public class PlayCardState extends State {
                 Integer handIndex = (Integer) o;
 
                 //Checks if the user wants to deselect an already selected card
-                if (selectedCard.get(handIndex)) {
+                if (selectedCards.get(handIndex)) {
                     //Removes the card and its target from arrays
                     int index = playedCardsList.indexOf(handIndex);
                     playedCardsList.remove(index);
@@ -99,24 +98,23 @@ public class PlayCardState extends State {
                     if (justClicked.equals(handIndex)) {
                         playView.setSelectTarget(false);
                         justClicked = -1;
-                    } else {
+                    }
+                    else {
                         targets.remove(index);
                     }
-                    selectedCard.set(handIndex, false);
-
+                    selectedCards.set(handIndex, false);
+                    playView.resetCurrentButton();
                     numPlayedCards--;
                     playView.clickedButton(handIndex, 0);
                 }
                 //Checks if the max amount of cards already have been played
-                else if (numPlayedCards < player.getAmountPlayedCards()) {
-                    if (justClicked == -1) {
-                        justClicked = handIndex;
-                        playedCardsList.add(handIndex);
-                        selectedCard.set(handIndex, true);
-                        playView.clickedButton(handIndex, 1);
-                        numPlayedCards++;
-                        playView.setSelectTarget(true);
-                    }
+                else if (numPlayedCards < GameInstance.getInstance().getPlayer().getAmountPlayedCards()) {
+                    justClicked = handIndex;
+                    playedCardsList.add(handIndex);
+                    selectedCards.set(handIndex, true);
+                    playView.clickedButton(handIndex, 1);
+                    numPlayedCards++;
+                    playView.setSelectTarget(true);
                 }
             } else if (o instanceof String) {
                 vehicleTarget = false;
@@ -152,6 +150,7 @@ public class PlayCardState extends State {
             targets.add(firstTarget);
             playView.clickedButton(justClicked, -1);
             justClicked = -1;
+            playView.resetCurrentButton();
             playView.setSelectTarget(false);
         } else {
             //Checks whether we can target the asteroid instead
@@ -165,6 +164,9 @@ public class PlayCardState extends State {
                 }
             }
         }
+    }
+    public boolean isCardSelected(int index){
+        return selectedCards.get(index);
     }
 
     /**
@@ -257,14 +259,8 @@ public class PlayCardState extends State {
     public String getColorCar(String id){
         return GameInstance.getInstance().getVehicleById(id).getColorCar();
     }
-    public String getAllowedTarget(int i){
-        return hand.get(i).getAllowedTarget().name().toLowerCase();
-    }
-    public String getTargetType(int i){
-        return hand.get(i).getTargetType().name().toLowerCase();
-    }
-    public String getCardName(int i){
-        return hand.get(i).getName();
+    public Card getCard(int index){
+        return GameInstance.getInstance().getPlayer().getHand().get(index);
     }
     public Vehicle getPlayerVehicle(){
         return player.getVehicle();
@@ -291,7 +287,9 @@ public class PlayCardState extends State {
         return cardsAndTargets;
     }
     public void leaveGame(){
-        //TODO
+        Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
+        //TODO: Send to GameResultState
+        gsm.reset();
     }
 
     @Override
@@ -350,7 +348,7 @@ public class PlayCardState extends State {
                     });
                     break;
                 case "BEGIN_TURN":
-                    setTimeLeft(Float.parseFloat(strings[1]));
+                    //setTimeLeft(Float.parseFloat(strings[1]));
                     //EventBus.getInstance().readyForRemove();
                     break;
 

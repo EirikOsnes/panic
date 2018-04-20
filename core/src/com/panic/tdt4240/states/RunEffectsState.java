@@ -5,14 +5,15 @@ import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.events.Event;
 import com.panic.tdt4240.events.EventBus;
-import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.events.EventListener;
-import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
-import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.RunEffectsView;
+import com.panic.tdt4240.view.animations.CloudAnimation;
+import com.panic.tdt4240.view.animations.CloudAnimation.AnimationType;
+import com.panic.tdt4240.view.animations.Missile;
+import com.panic.tdt4240.view.animations.Missile.MissileType;
 
 import java.util.ArrayList;
 
@@ -25,6 +26,7 @@ public class RunEffectsState extends State implements EventListener {
     private RunEffectsView runEffectsView;
     private boolean doneParsing = false;
     private boolean serverApproved = false;
+    private boolean hasSentEndState = false;
 
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
@@ -39,7 +41,9 @@ public class RunEffectsState extends State implements EventListener {
         return GameInstance.getInstance().getPlayer().isAlive();
     }
     public void leaveGame(){
-        //TODO
+        Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
+        //TODO: Send to GameResultState
+        gsm.reset();
     }
 
 
@@ -56,8 +60,9 @@ public class RunEffectsState extends State implements EventListener {
                 if(serverApproved){
                     EventBus.getInstance().readyForRemove();
                     gsm.set(new PlayCardState(gsm));
-                }else{
+                }else if(!hasSentEndState){
                     Connection.getInstance().sendEndRunEffectsState(GameInstance.getInstance().getID());
+                    hasSentEndState=true;
                 }
 
             }
@@ -88,20 +93,14 @@ public class RunEffectsState extends State implements EventListener {
 
     @Override
     public void handleEvent(Event e) {
-        if (e.getT() == Event.Type.ATTACK) {
-            if (e.getTargetID().matches("A-\\d\\d\\d")) {
-                runEffectsView.attackAsteroid(e.getTargetID());
-            }
-            else if (e.getTargetID().matches("V-\\d\\d\\d")) {
-                runEffectsView.attackVehicle(e.getTargetID(),e.getInstigatorID());
-            }
-        }
-        else if (e.getT() == Event.Type.MOVE) {
+        if (e.getT() == Event.Type.MOVE) {
             runEffectsView.moveVehicle(e.getInstigatorID(), e.getTargetID());
         }
-        else if (e.getT() == Event.Type.DESTROYED) {
-            Connection.getInstance().sendDestroyed(GameInstance.getInstance().getID(),e.getTargetID());
-            runEffectsView.destroyVehicle(e.getTargetID());
+        if (e.getMissileType() != MissileType.NONE) {
+            runEffectsView.addMissileAnimation(e.getTargetID(), e.getInstigatorID(), e.getMissileType());
+        }
+        if (e.getCloudType() != AnimationType.NONE) {
+            runEffectsView.addCloudAnimation(e.getTargetID(), e.getCloudType());
         }
     }
 
@@ -113,6 +112,7 @@ public class RunEffectsState extends State implements EventListener {
 
             switch (strings[0]){
                 case "GET_TURN":
+                    System.out.println("recieved getTurn");
                     playTurn(strings);
                     break;
                 case "VALID_STATE":

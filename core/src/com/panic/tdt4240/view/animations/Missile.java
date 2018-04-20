@@ -1,6 +1,5 @@
 package com.panic.tdt4240.view.animations;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
@@ -11,7 +10,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Missile extends AnimatedActor {
 
-    public enum MissileType {NONE, RED, GREEN}
+    public enum MissileType {NONE, RED, GREEN, CYAN, YELLOW}
 
     public Missile(float maxFrameTime, MissileType color){
         super(maxFrameTime);
@@ -25,6 +24,11 @@ public class Missile extends AnimatedActor {
         setAnimation(regions);
     }
 
+    @Override
+    void setAnimation(Array<TextureAtlas.AtlasRegion> regions) {
+        super.setAnimation(regions);
+    }
+
     public Missile(MissileType color){
         this(0.1f, color);
     }
@@ -32,16 +36,14 @@ public class Missile extends AnimatedActor {
     @Override
     public void act(float dt){
         super.act(dt);
-        currentFrameTime+=dt;
         currentFrame = getCurrentFrame(dt);
-        //TODO
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
         if (isVisible()) {
-            batch.draw(currentFrame,getX(),getY(),getOriginX(),getOriginY(),currentFrame.getRegionWidth(),currentFrame.getRegionHeight(), (Gdx.graphics.getWidth()/20)/getWidth(), (Gdx.graphics.getWidth()/20)/getHeight(),getRotation(),true);
+            batch.draw(currentFrame,getX(),getY(),getOriginX(),getOriginY(),currentFrame.getRegionWidth(),currentFrame.getRegionHeight(), 1, 1,getRotation(),true);
         }
     }
 }

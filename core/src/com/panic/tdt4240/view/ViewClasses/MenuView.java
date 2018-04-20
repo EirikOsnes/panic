@@ -49,17 +49,15 @@ public class MenuView extends AbstractView {
         Label title = new Label(PanicGame.TITLE,labelStyle);
         Label fullTitle = new Label(PanicGame.FULL_TITLE,labelStyle);
 
-        float padding = Gdx.graphics.getHeight()/40;
-
         table.setFillParent(true);
-        table.add(title).top().padBottom(padding);
+        table.add(title).top().padBottom(GlobalConstants.PADDING);
         table.row().center();
-        table.add(fullTitle).padBottom(padding);
+        table.add(fullTitle).padBottom(GlobalConstants.PADDING);
         table.center();
         table.row();
-        table.add(createGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
+        table.add(createGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
         table.row();
-        table.add(joinGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
+        table.add(joinGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
         table.row();
 //        table.add(settingsBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
 

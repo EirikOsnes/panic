@@ -91,6 +91,9 @@ public class MenuState extends State {
             card.setName("Glue shot");
             card.setTargetType(Card.TargetType.ASTEROID);
             card.setAllowedTarget(Card.AllowedTarget.ENEMY);
+            card.setMaxRange(4);
+            card.setMinRange(1);
+            card.setPriority(2);
             if(i == 9){
                 card.setCardType(Card.CardType.ATTACK);
             }

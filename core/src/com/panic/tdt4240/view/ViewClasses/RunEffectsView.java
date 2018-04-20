@@ -40,6 +40,7 @@ import com.panic.tdt4240.view.animations.MoveVehicleAction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
 
 /**
  * Created by Hermann on 14.04.2018.
@@ -199,7 +200,7 @@ public class RunEffectsView extends AbstractView {
         Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
         player.rotateBy(270);
 
-        String hp = String.format("HP: %.1f/%.1f", health, maxHealth);
+        String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.1f", health, maxHealth);
         hpLabel = new Label(hp,new Label.LabelStyle(font, Color.RED));
         playerTable.add(player).width(Gdx.graphics.getWidth()/20).height(Gdx.graphics.getWidth()/10).row();
         playerTable.add(hpLabel).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
@@ -213,7 +214,7 @@ public class RunEffectsView extends AbstractView {
     private void updateHealth(){
         //TODO Call this method when an animation is finished
         health = ((RunEffectsState)state).getPlayerVehicle().getStatusHandler().getStatusResultant("health");
-        String hp = String.format("HP: %.1f/%.1f", health, maxHealth);
+        String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.1f", health, maxHealth);
         hpLabel.setText(hp);
     }
 

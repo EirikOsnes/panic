@@ -166,6 +166,9 @@ public class PlayCardState extends State {
             }
         }
     }
+    public boolean isCardSelected(int index){
+        return selectedCards.get(index);
+    }
 
     /**
      * Method for determining validity of target
@@ -257,14 +260,8 @@ public class PlayCardState extends State {
     public String getColorCar(String id){
         return GameInstance.getInstance().getVehicleById(id).getColorCar();
     }
-    public String getAllowedTarget(int i){
-        return hand.get(i).getAllowedTarget().name().toLowerCase();
-    }
-    public String getTargetType(int i){
-        return hand.get(i).getTargetType().name().toLowerCase();
-    }
-    public String getCardName(int i){
-        return hand.get(i).getName();
+    public Card getCard(int index){
+        return GameInstance.getInstance().getPlayer().getHand().get(index);
     }
     public Vehicle getPlayerVehicle(){
         return player.getVehicle();

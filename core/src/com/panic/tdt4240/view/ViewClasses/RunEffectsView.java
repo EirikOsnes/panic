@@ -57,6 +57,7 @@ public class RunEffectsView extends AbstractView {
     private final Explosion explosion;
     private BitmapFont font;
     private Skin skin;
+    private Skin carSkin;
     private boolean isLeaving = false;
     private TextureAtlas btnAtlas;
     private final Missile missile;
@@ -147,15 +148,10 @@ public class RunEffectsView extends AbstractView {
         ArrayList<Vector2> asteroidDimensions = new ArrayList<>();
         float table = Gdx.graphics.getHeight() / 5;
         TextureAtlas carsAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
-        Skin skin = new Skin(carsAtlas);
+        carSkin = new Skin(carsAtlas);
         for (int i = 0; i < asteroids.size(); i++) {
-            for (int j = 0; j < asteroids.get(i).getVehicles().size(); j++) {
-                String[] onAsteroid = new String[3];
-                onAsteroid[0] = asteroids.get(i).getVehicles().get(j);
-                onAsteroid[1] = asteroids.get(i).getId();
-                onAsteroid[2] = i + "";
-                vehicleOnAsteroid.add(onAsteroid);
-            }
+            vehicleOnAsteroid.addAll(MapMethods.getVehiclesOnAsteroid(asteroids.get(i), i));
+
             Texture texture = new Texture("asteroids/" + asteroids.get(i).getTexture() + ".png");
             Image asteroid = new Image(texture);
             asteroid.setSize(SCREEN_WIDTH / 5, SCREEN_WIDTH / 5);
@@ -179,7 +175,7 @@ public class RunEffectsView extends AbstractView {
             Vehicle activeVehicle = gameInstance.getVehicleById(vehicleOnAsteroid.get(j)[0]);
             Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
-            Image vehicle = new Image(skin.getDrawable(activeVehicle.getColorCar()));
+            Image vehicle = new Image(carSkin.getDrawable(activeVehicle.getColorCar()));
             Vector2 position = MapMethods.asteroidPositions(asteroidPos.x, asteroidPos.y,
                     asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
                     activeVehicle.getColorCar());
@@ -197,8 +193,8 @@ public class RunEffectsView extends AbstractView {
         Vehicle playerVehicle = ((RunEffectsState)state).getPlayerVehicle();
         health = playerVehicle.getStatusHandler().getStatusResultant("health");
         maxHealth = playerVehicle.getStatusHandler().getStatusBaseValue("health");
-
-        Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
+        System.out.println(playerVehicle.getColorCar());
+        Image player = new Image(carSkin.getDrawable(playerVehicle.getColorCar()));
         player.rotateBy(270);
         String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.0f", health, maxHealth);
         hpLabel = new Label(hp,new Label.LabelStyle(font, Color.RED));
@@ -288,6 +284,7 @@ public class RunEffectsView extends AbstractView {
         sr.dispose();
         font.dispose();
         skin.dispose();
+        carSkin.dispose();
         btnAtlas.dispose();
     }
 

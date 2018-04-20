@@ -242,13 +242,8 @@ public class PlayCardView extends AbstractView{
         textureAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
         skin.addRegions(textureAtlas);
         for (int i = 0; i < asteroids.size(); i++) {
-            for(int j = 0; j < asteroids.get(i).getVehicles().size(); j++){
-                String[] onAsteroid = new String[3];
-                onAsteroid[0] = asteroids.get(i).getVehicles().get(j);
-                onAsteroid[1] = asteroids.get(i).getId();
-                onAsteroid[2] = i + "";
-                vehicleOnAsteroid.add(onAsteroid);
-            }
+            vehicleOnAsteroid.addAll(MapMethods.getVehiclesOnAsteroid(asteroids.get(i), i));
+
             Image asteroid = new Image(new Texture("asteroids/" + asteroids.get(i).getTexture() + ".png"));
             asteroid.setSize(Gdx.graphics.getWidth()/5, Gdx.graphics.getWidth()/5);
             asteroidDimensions.add(i, new Vector2(asteroid.getWidth(), asteroid.getHeight()));

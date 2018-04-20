@@ -38,6 +38,7 @@ import com.panic.tdt4240.view.animations.ShieldAnimation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
 
 /**
  * Created by Hermann on 14.04.2018.
@@ -57,6 +58,9 @@ public class RunEffectsView extends AbstractView {
     private boolean isLeaving = false;
     private TextureAtlas btnAtlas;
     private final Missile redMissile, greenMissile, cyanMissile, yellowMissile;
+    private Label hpLabel;
+    private float health;
+    private float maxHealth;
 
     public RunEffectsView(State state) {
         super(state);
@@ -197,18 +201,19 @@ public class RunEffectsView extends AbstractView {
         playerTable.setWidth(Gdx.graphics.getWidth()/10);
         playerTable.setHeight(Gdx.graphics.getWidth()/20);
         Vehicle playerVehicle = ((RunEffectsState)state).getPlayerVehicle();
-        int health = Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
-        int maxHealth = Math.round(playerVehicle.getStatusHandler().getStatusBaseValue("health"));
+        health = playerVehicle.getStatusHandler().getStatusResultant("health");
+        maxHealth = playerVehicle.getStatusHandler().getStatusBaseValue("health");
 
         Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
         player.rotateBy(270);
 
-        String hp = String.format("HP: %d/%d", health, maxHealth);
-        Label label = new Label(hp,new Label.LabelStyle(font, Color.RED));
+        String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.0f", health, maxHealth);
+        hpLabel = new Label(hp,new Label.LabelStyle(font, Color.RED));
+        float width = hpLabel.getWidth();
         playerTable.add(player).width(Gdx.graphics.getWidth()/20).height(Gdx.graphics.getWidth()/10).row();
-        playerTable.add(label).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
+        playerTable.add(hpLabel).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
         playerTable.pack();
-        playerTable.setPosition(Gdx.graphics.getWidth() - playerTable.getWidth()*2,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
+        playerTable.setPosition(Gdx.graphics.getWidth() - width,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
 
         stage.addActor(playerTable);
         stage.addActor(explosion);
@@ -218,6 +223,12 @@ public class RunEffectsView extends AbstractView {
         stage.addActor(debuff);
     }
 
+    private void updateHealth(){
+        //TODO Call this method when an animation is finished
+        health = ((RunEffectsState)state).getPlayerVehicle().getStatusHandler().getStatusResultant("health");
+        String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.0f", health, maxHealth);
+        hpLabel.setText(hp);
+    }
 
     @Override
     public void render() {
@@ -227,6 +238,7 @@ public class RunEffectsView extends AbstractView {
             sr.rectLine(points[0], points[1], 5.0f);
         }
         sr.end();
+
         stage.act();
         stage.draw();
     }

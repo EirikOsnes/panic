@@ -64,7 +64,8 @@ public class MenuView extends AbstractView {
         table.row();
         table.add(joinGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
         table.row();
-        table.add(settingsBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
+//        table.add(settingsBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
+
         table.background(new TextureRegionDrawable(new TextureRegion(background)));
         table.pack();
 

@@ -13,13 +13,14 @@ public class CloudAnimation extends AnimatedActor {
 
     public enum AnimationType {NONE, EXPLOSION, GREENCLOUD, HEALING, SHIELD}
 
+
     public CloudAnimation(AnimationType cloudType){
         this(0.1f, cloudType);
     }
 
     public CloudAnimation(float maxFrameTime, AnimationType cloudType) {
-        //TODO: fix rendering error with poison
         super(maxFrameTime);
+
         TextureAtlas atlas = new TextureAtlas("animations/" + cloudType.name().toLowerCase() +".atlas");
         Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();
         setAnimation(regions);

@@ -272,8 +272,12 @@ public class RunEffectsView extends AbstractView {
             cloud = explosion;
         } else if (at == AnimationType.GREENCLOUD) {
             cloud = poison;
+        } else if (at == AnimationType.HEALING) {
+            cloud = healing;
+        } else if (at == AnimationType.SHIELD){
+            cloud = shield;
         } else {
-            throw new IllegalArgumentException("Only explosion and green cloud implemented");
+            throw new IllegalArgumentException("Invalid AnimationType");
         }
 
         Runnable explosionRunnable = new Runnable() {

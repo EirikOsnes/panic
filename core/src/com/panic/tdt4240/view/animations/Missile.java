@@ -10,10 +10,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Missile extends AnimatedActor {
 
-    public static final String COLOR_RED = "RED";
-    public static final String COLOR_GREEN = "GREEN";
-
-    public enum MissileType {RED, GREEN}
+    public enum MissileType {NONE, RED, GREEN}
 
     public Missile(float maxFrameTime, MissileType color){
         super(maxFrameTime);

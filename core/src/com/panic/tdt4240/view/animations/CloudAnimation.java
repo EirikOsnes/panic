@@ -11,7 +11,11 @@ import com.badlogic.gdx.utils.Array;
 
 public class CloudAnimation extends AnimatedActor {
 
-    public enum AnimationType {EXPLOSION, GREENCLOUD, REDCLOUD}
+    public enum AnimationType {NONE, EXPLOSION, GREENCLOUD}
+
+    public CloudAnimation(AnimationType cloudType){
+        this(0.1f, cloudType);
+    }
 
     public CloudAnimation(float maxFrameTime, AnimationType cloudType) {
         //TODO: fix rendering error with poison

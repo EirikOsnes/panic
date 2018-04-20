@@ -216,6 +216,7 @@ public class PlayCardView extends AbstractView{
         stage.addActor(invalidTarget);
         setUpMap();
     }
+
     /**
      * Method for setting up the map with listeners on each asteroid and vehicle
      */
@@ -328,6 +329,7 @@ public class PlayCardView extends AbstractView{
         String target = "You cannot target this " + targetType;
         invalidTarget.setText(target);
     }
+
     /**
      * Method to change visuals of the buttons depending on if they're pressed down or not
      * @param button ID of the button/card that has been pressed
@@ -365,6 +367,7 @@ public class PlayCardView extends AbstractView{
         invalidTarget.act(dt);
 
     }
+
     /**
      * Renders connections between asteroids, then the stage
      */
@@ -378,6 +381,7 @@ public class PlayCardView extends AbstractView{
         stage.act();
         stage.draw();
     }
+
     public void dispose(){
         stage.dispose();
         font.dispose();
@@ -409,6 +413,7 @@ public class PlayCardView extends AbstractView{
             }
         }
     }
+
     private class FinishDialog extends Dialog {
         private FinishDialog(String title, Skin skin, String windowStyleName) {
             super(title, skin, windowStyleName);

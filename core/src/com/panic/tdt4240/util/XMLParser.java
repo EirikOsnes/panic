@@ -79,13 +79,9 @@ public class XMLParser {
                                     );
                             if(effectElement.getElementsByTagName("missile_type").getLength()>0) {
                                 cardEffect.setMissileType(effectElement.getElementsByTagName("missile_type").item(0).getTextContent());
-                            }else{
-                                cardEffect.setMissileType(myCard.getCardType().toString());
                             }
                             if(effectElement.getElementsByTagName("animation_type").getLength()>0) {
                                 cardEffect.setAnimationType(effectElement.getElementsByTagName("animation_type").item(0).getTextContent());
-                            }else{
-                                cardEffect.setAnimationType(myCard.getCardType().toString());
                             }
                             myCard.addCardEffect(cardEffect);
                         }

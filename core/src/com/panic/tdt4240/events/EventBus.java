@@ -3,6 +3,9 @@ package com.panic.tdt4240.events;
 import com.panic.tdt4240.models.Asteroid;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Queue;
+import java.util.Stack;
 
 /**
  * Created by Choffa for testJava on 25-Feb-18.
@@ -19,9 +22,11 @@ public class EventBus {
 
     private ArrayList<EventListener> subs;
     private ArrayList<EventListener> removeList;
+    private ArrayList<Event> events;
 
     private EventBus() {
         this.subs = new ArrayList<>();
+        this.events = new ArrayList<>();
         this.removeList = new ArrayList<>();
     }
 
@@ -47,8 +52,8 @@ public class EventBus {
     }
 
     public void postEvent(Event e) {
-        for (EventListener el : subs) {
-            el.handleEvent(e);
+        for (EventListener sub : subs) {
+            sub.handleEvent(e);
         }
     }
 

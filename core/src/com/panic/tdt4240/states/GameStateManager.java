@@ -1,6 +1,7 @@
 package com.panic.tdt4240.states;
 
 import com.panic.tdt4240.connection.Connection;
+import com.panic.tdt4240.events.EventBus;
 
 import java.util.Stack;
 
@@ -55,6 +56,7 @@ public class GameStateManager {
     }
 
     private void setInputProcessor() {
+
         states.peek().getView().setInputProcessor();
     }
 

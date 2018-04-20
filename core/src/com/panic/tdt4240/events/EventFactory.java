@@ -40,6 +40,9 @@ public class EventFactory {
             e.setStatus(ce.getTargetStatus());
             e.setRequirementName(ce.getRequirementName());
             e.setRequirementVal(ce.getRequirementVal());
+            e.setSplashRange(ce.getSplashRange());
+            e.setCloudType(ce.getAnimationType());
+            e.setMissileType(ce.getMissileType());
             eb.postEvent(e);
             events.add(e);
         }

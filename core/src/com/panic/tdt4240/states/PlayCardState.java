@@ -39,7 +39,7 @@ public class PlayCardState extends State {
     //Number of cards we have played up to this point
     private int numPlayedCards;
     private ArrayList<Card> hand;
-    private ArrayList<Boolean> selectedCard;
+    private ArrayList<Boolean> selectedCards;
     //ID of the button we clicked most recently
     private Integer justClicked = -1;
     private boolean isLockedIn = false;
@@ -61,9 +61,9 @@ public class PlayCardState extends State {
         targets = new ArrayList<>();
 
         hand = player.playCards();
-        selectedCard = new ArrayList<>(hand.size());
+        selectedCards = new ArrayList<>(hand.size());
         for (int i = 0; i < hand.size(); i++) {
-            selectedCard.add(i, false);
+            selectedCards.add(i, false);
         }
         mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         playView = new PlayCardView(this);
@@ -91,7 +91,7 @@ public class PlayCardState extends State {
                 Integer handIndex = (Integer) o;
 
                 //Checks if the user wants to deselect an already selected card
-                if (selectedCard.get(handIndex)) {
+                if (selectedCards.get(handIndex)) {
                     //Removes the card and its target from arrays
                     int index = playedCardsList.indexOf(handIndex);
                     playedCardsList.remove(index);
@@ -99,24 +99,23 @@ public class PlayCardState extends State {
                     if (justClicked.equals(handIndex)) {
                         playView.setSelectTarget(false);
                         justClicked = -1;
-                    } else {
+                    }
+                    else {
                         targets.remove(index);
                     }
-                    selectedCard.set(handIndex, false);
-
+                    selectedCards.set(handIndex, false);
+                    playView.resetCurrentButton();
                     numPlayedCards--;
                     playView.clickedButton(handIndex, 0);
                 }
                 //Checks if the max amount of cards already have been played
-                else if (numPlayedCards < player.getAmountPlayedCards()) {
-                    if (justClicked == -1) {
-                        justClicked = handIndex;
-                        playedCardsList.add(handIndex);
-                        selectedCard.set(handIndex, true);
-                        playView.clickedButton(handIndex, 1);
-                        numPlayedCards++;
-                        playView.setSelectTarget(true);
-                    }
+                else if (numPlayedCards < GameInstance.getInstance().getPlayer().getAmountPlayedCards()) {
+                    justClicked = handIndex;
+                    playedCardsList.add(handIndex);
+                    selectedCards.set(handIndex, true);
+                    playView.clickedButton(handIndex, 1);
+                    numPlayedCards++;
+                    playView.setSelectTarget(true);
                 }
             } else if (o instanceof String) {
                 vehicleTarget = false;
@@ -152,6 +151,7 @@ public class PlayCardState extends State {
             targets.add(firstTarget);
             playView.clickedButton(justClicked, -1);
             justClicked = -1;
+            playView.resetCurrentButton();
             playView.setSelectTarget(false);
         } else {
             //Checks whether we can target the asteroid instead

@@ -89,7 +89,7 @@ public class MenuState extends State {
             Card card = new Card(i + "");
             card.setTooltip("Shoot a laser guided missile. Will only hit if target is marked with laser_pointer, but will always hit if it is the case. Dealing 30 damage");
             card.setName("Glue shot");
-            card.setTargetType(Card.TargetType.VEHICLE);
+            card.setTargetType(Card.TargetType.ASTEROID);
             card.setAllowedTarget(Card.AllowedTarget.ENEMY);
             if(i == 9){
                 card.setCardType(Card.CardType.ATTACK);

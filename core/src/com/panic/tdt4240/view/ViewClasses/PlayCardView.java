@@ -46,9 +46,9 @@ public class PlayCardView extends AbstractView{
     private BitmapFont font;
     private TextureAtlas textureAtlas, btnAtlas;
     private TextButton.TextButtonStyle buttonStyle;
-    private ArrayList<Boolean> checked;
     private float timeLeft;
     private boolean isLeaving = false;
+    private int currentButton;
 
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
@@ -56,7 +56,6 @@ public class PlayCardView extends AbstractView{
         sr.setColor(1,1,1,0);
         sr.setAutoShapeType(true);
         int amountCards = ((PlayCardState) state).getHandSize();
-        checked = new ArrayList<>();
         cardButtons = new ArrayList<>(amountCards);
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         table = new Table();
@@ -76,9 +75,25 @@ public class PlayCardView extends AbstractView{
         textureAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin.addRegions(textureAtlas);
 
+        currentButton = -1;
+
+        //Setup cardInfo button, it is removed when clicked
+        final TextButton.TextButtonStyle cardInfoStyle = new TextButton.TextButtonStyle();
+        cardInfoStyle.font = font;
+        cardInfoStyle.fontColor = Color.BLACK;
+        cardInfo = new TextButton("", cardInfoStyle);
+        cardInfo.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                cardInfo.remove();
+            }
+        });
+        cardInfo.setPosition(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4);
+        cardInfo.setWidth(Gdx.graphics.getWidth() / 2);
+        cardInfo.setHeight(Gdx.graphics.getHeight() / 2);
+
         //Create a button for each card
         for (int i = 0; i < amountCards; i++) {
-            checked.add(false);
             final TextButton.TextButtonStyle cardButtonStyle = new TextButton.TextButtonStyle();
             cardButtonStyle.font = font;
             //Images the button has in the normal up-position, and when it is pressed down
@@ -91,58 +106,49 @@ public class PlayCardView extends AbstractView{
             TextButton button = new TextButton("", cardButtonStyle);
             cardButtons.add(i, button);
 
+    //FIXME: When card is deselected, cardInfo should not be shown
             final int index = i;
             cardButtons.get(index).addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    if(!selectTarget){
-                        //Sets up cardInfo, the tooltip for the card
-                        if(!(cardInfo == null)){
-                            cardInfo.remove();
+                    cardInfo.remove();
+                    /**
+                     * Currentbutton == -1, a brand new card can be selected
+                     * Currentbutton == index, the currently selected button should be deselected
+                     * Currentbutton != index or -1, we want to deselect the previous button and select
+                     * a new one
+                     */
+                    if(currentButton != index) {
+                        //Checks if current button should be deselected
+                        if(currentButton != -1){
+                            state.handleInput(currentButton);
                         }
-                        TextButton.TextButtonStyle cardInfoStyle = new TextButton.TextButtonStyle();
-                        cardInfoStyle.font = font;
-                        cardInfoStyle.fontColor = Color.BLACK;
-                        cardInfoStyle.up = skin.getDrawable(((PlayCardState) state).getCardType(index));
+                        currentButton = index;
 
+                        //Setup for the tooltip
                         String[] words = ((PlayCardState) state).getCardToolTip(index);
-                        String tooltip = ((PlayCardState) state).getCardName(index) + "\n\n";
+                        String tooltip = String.format("%s\n\n", ((PlayCardState) state).getCardName(index));
+
                         int length = 0;
-                        for(String string : words){
+                        for (String string : words) {
                             length = length + string.length() + 1;
-                            if(length > 20){
+                            if (length > 20) {
                                 length = 0;
-                                tooltip = tooltip.concat("\n" + string + " ");
-                            }
-                            else{
-                                tooltip = tooltip.concat(string + " ");
+                                tooltip = tooltip.concat(String.format("\n%s ", string));
+                            } else {
+                                tooltip = tooltip.concat(String.format("%s ", string));
                             }
                         }
-                        String allowedTarget = ((PlayCardState)state).getAllowedTarget(index);
-                        String targetType = ((PlayCardState)state).getTargetType(index);
-                        tooltip = tooltip.concat("\n\nCan effect: " + allowedTarget);
-                        tooltip = tooltip.concat("\nCan be aimed at: " + targetType);
-                        if(!checked.get(index)) {
-                            cardInfo = new TextButton(tooltip, cardInfoStyle);
-                            cardInfo.addListener(new ClickListener() {
-                                @Override
-                                public void clicked(InputEvent event, float x, float y) {
-                                    cardInfo.remove();
-                                }
-                            });
-                            cardInfo.setPosition(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4);
-                            cardInfo.setWidth(Gdx.graphics.getWidth() / 2);
-                            cardInfo.setHeight(Gdx.graphics.getHeight() / 2);
-                            stage.addActor(cardInfo);
-                        }
-                        checked.set(index, !checked.get(index));
-                    }
-                    else{
-                        cardInfo.remove();
-                        checked.set(index, false);
+                        String allowedTarget = ((PlayCardState) state).getAllowedTarget(index);
+                        String targetType = ((PlayCardState) state).getTargetType(index);
+                        tooltip = tooltip.concat(String.format("\n\nCan effect: %s", allowedTarget));
+                        tooltip = tooltip.concat(String.format("\nCan be aimed at: %s", targetType));
+
+                        cardInfo.getStyle().up = skin.getDrawable(((PlayCardState) state).getCardType(index));
+                        cardInfo.setText(tooltip);
+                        stage.addActor(cardInfo);
                     }
                     state.handleInput(index);
-                    System.out.println(selectTarget);
                 }
             });
             table.add(cardButtons.get(index)).width(Gdx.graphics.getWidth()/amountCards).height(Gdx.graphics.getHeight()/5);
@@ -216,6 +222,10 @@ public class PlayCardView extends AbstractView{
         stage.addActor(invalidTarget);
         setUpMap();
     }
+    public void resetCurrentButton(){
+        currentButton = -1;
+    }
+
     /**
      * Method for setting up the map with listeners on each asteroid and vehicle
      */
@@ -279,7 +289,7 @@ public class PlayCardView extends AbstractView{
             for(String key : effectsMap.keySet()){
                 effects = effects.concat(String.format("%s = %.1f\n",key, effectsMap.get(key)));
             }
-
+//TODO Increase size of popup text
             final Dialog vehicleInfo = new Dialog("Info", dialogSkin, "dialog");
             vehicleInfo.getTitleLabel().setFontScale(GlobalConstants.GET_TEXT_SCALE() + 1);
 
@@ -361,7 +371,10 @@ public class PlayCardView extends AbstractView{
 
     public void update(float dt){
         timeLeft -= dt;
-        timer.setText(Math.round(timeLeft) + "");
+        if(timeLeft < 0){
+            timeLeft = 0;
+        }
+        timer.setText(String.format("%.1f", timeLeft));
         invalidTarget.act(dt);
 
     }

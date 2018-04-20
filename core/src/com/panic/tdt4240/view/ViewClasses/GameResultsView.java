@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.panic.tdt4240.util.GlobalConstants;
 
 import java.util.ArrayList;
 
@@ -28,106 +30,69 @@ import java.util.ArrayList;
 
 public class GameResultsView extends AbstractView {
 
-    private ArrayList<TextButton> textBtns;
     private Skin skin;
-    TextButton.TextButtonStyle btnStyle, rankingStyle;
+    TextButton.TextButtonStyle btnStyle;
     private TextureAtlas btnAtlas;
     private Texture bg;
     private Table table;
-    private BitmapFont font;
-    TextButton exitToLobbyBtn, exitToMainMenuBtn;
+    private BitmapFont font, labelFont;
+    TextButton exitToMainMenuBtn;
+    Label label;
+    int counter = 0;
 
-    public GameResultsView(final GameResultsState resultsState, ArrayList<Player> deadPlayers) {
+    public GameResultsView(final GameResultsState resultsState) {
         super(resultsState);
-        Gdx.gl.glClearColor(0,0,0,0);
-
         bg = new Texture("misc/background.png");
-        textBtns = new ArrayList<>(deadPlayers.size());
-
         table = new Table();
-        table.setWidth(SCREEN_WIDTH/2);
-        table.center();
-        btnAtlas = new TextureAtlas("start_menu_buttons/button.atlas");
+        font = new BitmapFont();
+        Label.LabelStyle style = new Label.LabelStyle();
+        labelFont = new BitmapFont();
+        labelFont.getData().scale(2.0f);
+        style.font = labelFont;
+        label = new Label("LOADING",style);
+        btnAtlas = new TextureAtlas("skins/uiskin.atlas");
 
-        skin = new Skin();
-//        skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
+        skin = new Skin(Gdx.files.internal("skins/uiskin.json"),btnAtlas);
 
         skin.addRegions(btnAtlas);
-        font = new BitmapFont();
+
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            font.getData().scale(SCREEN_HEIGHT/ SCREEN_WIDTH * 1.5f);
+            font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
+            labelFont.getData().scale(GlobalConstants.GET_TEXT_SCALE());
         }
 
         btnStyle = new TextButton.TextButtonStyle();
-        rankingStyle = new TextButton.TextButtonStyle();
-
-        /* TODO: maybe make a special button for the winner?
-        fancy schmancy visuals... needs another style for this. /**/
-
-/*        TextButton button = new TextButton("1.  "
-                + deadPlayers.get(deadPlayers.size()-1), btnStyle);
-        textBtns.add(button);
-        table.add(textBtns.get(0)).width(SCREEN_WIDTH);
- /**/
-
-        // different styling for results and buttons. ranking buttons
-        // don't need different looks when pressed
-        rankingStyle.font = font;
-        rankingStyle.up = skin.getDrawable("button-up");
-        rankingStyle.down = skin.getDrawable("button-down");
-
         btnStyle.font = font;
         btnStyle.up = skin.getDrawable("button-up");
         btnStyle.down = skin.getDrawable("button-down");
 
 
-        for (int i = 0; i < Math.floor(deadPlayers.size()/2); i++){
-            TextButton button = new TextButton(""
-                    + (i+1) + ". Player " +
-                    (i+1), rankingStyle);
-            textBtns.add(button);
-        }
-
-        exitToLobbyBtn = new TextButton("Exit to lobby", btnStyle);
         exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
 
-        exitToLobbyBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                // state type: State.java... runs GameResultsState.handleInput()
-                resultsState.handleInput( 0);
-            }
-        });
+        table.setFillParent(true);
+        table.add(label).top();
+        table.center();
+        table.row().center().padTop(50);
+        table.add(exitToMainMenuBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).bottom();
+        table.background(new TextureRegionDrawable(new TextureRegion(bg)));
 
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 resultsState.handleInput(-1);
-                // insert whatever should happen
-
             }
         });
-
-        table.setFillParent(true);
-        table.center();
-        for (int i = 0; i < textBtns.size(); i++){
-            table.row().center();
-            table.add(textBtns.get(i)).width(300).height(40).pad(20).width(PanicGame.WIDTH);
-        }
-        table.row().center().padTop(50);
-        table.add(exitToLobbyBtn); table.row().center().padTop(20);
-        table.add(exitToMainMenuBtn);
-        table.background(new TextureRegionDrawable(new TextureRegion(bg)));
 
         stage.addActor(table);
 
     }
 
+    public void setLabelText(String text){
+        label.setText(text);
+    }
+
     public void render(){
         stage.draw();
-/*        font.draw(renderer.sb, "Ha! The worst of you don't deserve \n " +
-                "mentioning because YOU SUCK.",
-                PanicGame.HEIGHT/2, PanicGame.WIDTH/2); /**/
     }
 
     public void dispose(){

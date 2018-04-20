@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -15,13 +16,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.panic.tdt4240.models.Asteroid;
+import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.PlayCardState;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.MapMethods;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by victor on 05.03.2018.
@@ -33,16 +39,18 @@ public class PlayCardView extends AbstractView{
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Table table;
     private TextButton cardInfo;
-    private Skin skin;
+    private Skin skin, dialogSkin;
     private boolean selectTarget = false;
     private ShapeRenderer sr;
     private ArrayList<String[]> vehicleOnAsteroid;
     private TextField timer;
     private Label invalidTarget;
     private BitmapFont font;
-    private TextureAtlas textureAtlas;
-    private ArrayList<Boolean> checked;
+    private TextureAtlas textureAtlas, btnAtlas;
+    private TextButton.TextButtonStyle buttonStyle;
     private float timeLeft;
+    private boolean isLeaving = false;
+    private int currentButton;
 
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
@@ -50,31 +58,44 @@ public class PlayCardView extends AbstractView{
         sr.setColor(1,1,1,0);
         sr.setAutoShapeType(true);
         int amountCards = ((PlayCardState) state).getHandSize();
-        checked = new ArrayList<>();
         cardButtons = new ArrayList<>(amountCards);
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         table = new Table();
 
         table.setWidth(Gdx.graphics.getWidth());
+        table.setHeight(Gdx.graphics.getHeight() / 5);
         table.left().bottom();
         font = new BitmapFont();
         float textScale = GlobalConstants.GET_TEXT_SCALE();
 
         font.getData().scale(textScale);
-        skin = new Skin();
         textureAtlas = new TextureAtlas("cards/card_textures.atlas");
+        skin = new Skin();
         skin.addRegions(textureAtlas);
         buttonStyles = new ArrayList<>();
 
         textureAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin.addRegions(textureAtlas);
 
-        final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = font;
+        currentButton = -1;
+
+        //Setup cardInfo button, it is removed when clicked
+        final TextButton.TextButtonStyle cardInfoStyle = new TextButton.TextButtonStyle();
+        cardInfoStyle.font = font;
+        cardInfoStyle.fontColor = Color.BLACK;
+        cardInfo = new TextButton("", cardInfoStyle);
+        cardInfo.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                cardInfo.remove();
+            }
+        });
+        cardInfo.setPosition(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4);
+        cardInfo.setWidth(Gdx.graphics.getWidth() / 2);
+        cardInfo.setHeight(Gdx.graphics.getHeight() / 2);
 
         //Create a button for each card
         for (int i = 0; i < amountCards; i++) {
-            checked.add(false);
             final TextButton.TextButtonStyle cardButtonStyle = new TextButton.TextButtonStyle();
             cardButtonStyle.font = font;
             //Images the button has in the normal up-position, and when it is pressed down
@@ -87,85 +108,124 @@ public class PlayCardView extends AbstractView{
             TextButton button = new TextButton("", cardButtonStyle);
             cardButtons.add(i, button);
 
+        //TODO Idea: Let every button have value 0 to 2, which keeps track of their state
             final int index = i;
             cardButtons.get(index).addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    if(!selectTarget){
-                        //Sets up cardInfo, the tooltip for the card
-                        if(!(cardInfo == null)){
-                            cardInfo.remove();
-                        }
-                        TextButton.TextButtonStyle cardInfoStyle = new TextButton.TextButtonStyle();
-                        cardInfoStyle.font = font;
-                        cardInfoStyle.fontColor = Color.BLACK;
-                        cardInfoStyle.up = skin.getDrawable(((PlayCardState) state).getCardType(index));
+                    cardInfo.remove();
+                    //Currentbutton == -1, a brand new card can be selected
+                    //Currentbutton == index, the currently selected button should be deselected
+                    //Currentbutton != index or -1, we want to deselect the previous button and select a new one
 
+                    if(currentButton != index) {
+                        //Checks if current button should be deselected
+                        if(currentButton != -1){
+                            state.handleInput(currentButton);
+                        }
+                        currentButton = index;
+
+                        Card card = ((PlayCardState) state).getCard(index);
+                        //Setup for the tooltip
                         String[] words = ((PlayCardState) state).getCardToolTip(index);
-                        String tooltip = ((PlayCardState) state).getCardName(index) + "\n\n";
+                        String tooltip = String.format("%s\n\n", card.getName());
+
                         int length = 0;
-                        for(String string : words){
+                        for (String string : words) {
                             length = length + string.length() + 1;
-                            if(length > 20){
+                            if (length > 20) {
                                 length = 0;
-                                tooltip = tooltip.concat("\n" + string + " ");
-                            }
-                            else{
-                                tooltip = tooltip.concat(string + " ");
+                                tooltip = tooltip.concat(String.format("\n%s ", string));
+                            } else {
+                                tooltip = tooltip.concat(String.format("%s ", string));
                             }
                         }
-                        String allowedTarget = ((PlayCardState)state).getAllowedTarget(index);
-                        String targetType = ((PlayCardState)state).getTargetType(index);
-                        tooltip = tooltip.concat("\n\nCan effect: " + allowedTarget);
-                        tooltip = tooltip.concat("\nCan be aimed at: " + targetType);
-                        if(!checked.get(index)) {
-                            cardInfo = new TextButton(tooltip, cardInfoStyle);
-                            cardInfo.addListener(new ClickListener() {
-                                @Override
-                                public void clicked(InputEvent event, float x, float y) {
-                                    cardInfo.remove();
-                                }
-                            });
-                            cardInfo.setPosition(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4);
-                            cardInfo.setWidth(Gdx.graphics.getWidth() / 2);
-                            cardInfo.setHeight(Gdx.graphics.getHeight() / 2);
+
+                        tooltip = tooltip.concat(String.format("\n\nCan effect: %s", card.getAllowedTarget().name().toLowerCase()));
+                        tooltip = tooltip.concat(String.format("\nCan be aimed at: %s", card.getTargetType().name().toLowerCase()));
+                        tooltip = tooltip.concat(String.format(Locale.ENGLISH,"\nMin range: %d", card.getMinRange()));
+                        tooltip = tooltip.concat(String.format(Locale.ENGLISH,"\nMax range: %d", card.getMaxRange()));
+                        tooltip = tooltip.concat(String.format(Locale.ENGLISH,"\nPriority: %d", card.getPriority()));
+
+                        cardInfo.getStyle().up = skin.getDrawable(((PlayCardState) state).getCardType(index));
+                        cardInfo.setText(tooltip);
+                        if(!((PlayCardState)state).isCardSelected(index)){
                             stage.addActor(cardInfo);
                         }
-                        checked.set(index, !checked.get(index));
-                    }
-                    else{
-                        cardInfo.remove();
-                        checked.set(index, false);
                     }
                     state.handleInput(index);
-                    System.out.println(selectTarget);
                 }
             });
             table.add(cardButtons.get(index)).width(Gdx.graphics.getWidth()/amountCards).height(Gdx.graphics.getHeight()/5);
         }
 
-        table.pack();
+        //table.pack();
         stage.addActor(table);
 
-        //Images the button has in the normal up-position, and when it is pressed down
+        buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+
         buttonStyle.up = skin.getDrawable("button-up");
         buttonStyle.down = skin.getDrawable("button-down");
-
-        TextButton finishedButton = new TextButton("Finish Turn", buttonStyle);
+        final TextButton finishedButton = new TextButton("", buttonStyle);
         finishedButton.setWidth(Gdx.graphics.getWidth()/5);
         finishedButton.setHeight(Gdx.graphics.getWidth()/10);
         finishedButton.setPosition(4*Gdx.graphics.getWidth()/5, table.getHeight());
-        finishedButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if(!((PlayCardState) state).isLockedIn()) { //Only send the cards to the server if you have not already locked in.
-                    //TODO: Show a "Waiting for other players" message
-                    ((PlayCardState) state).finishRound();
-                }
-            }
 
-        });
+        btnAtlas = new TextureAtlas("skins/uiskin.atlas");
+        dialogSkin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
+        if(((PlayCardState)state).getPlayerAlive()){
+            finishedButton.setText("Finish Turn");
+            finishedButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if(!((PlayCardState) state).isLockedIn()) { //Only send the cards to the server if you have not already locked in.
+                        finishedButton.setColor(Color.GRAY);
+                        BitmapFont labelFont = new BitmapFont();
+                        labelFont.getData().scale(1 + GlobalConstants.GET_TEXT_SCALE());
+                        Label waitLabel = new Label("Waiting for other players",new Label.LabelStyle(labelFont, Color.GREEN));
+                        waitLabel.setPosition((Gdx.graphics.getWidth() - waitLabel.getWidth())/2, Gdx.graphics.getHeight()/2 + finishedButton.getHeight());
+                        stage.addActor(waitLabel);
+                        ((PlayCardState) state).finishRound();
+                    }
+                }
+            });
+        }
+        //If player is dead, set next turn automatically, create leave button with confirmation dialog
+        else{
+            ((PlayCardState) state).finishRound();
+            final Dialog dialog = new Dialog("", dialogSkin, "dialog"){
+                @Override
+                protected void result(Object object) {
+                    Boolean bool = (Boolean) object;
+                    if(bool){
+                        isLeaving = true;
+                        ((PlayCardState)state).leaveGame();
+                    }
+                    else{
+                        remove();
+                    }
+                }
+            };
+            Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+            dialog.text("Are you sure you want to leave?", labelStyle);
+            dialog.button("Yes",true, buttonStyle);
+            dialog.button("Cancel", false, buttonStyle);
+            dialog.hide();
+
+            finishedButton.setText("Leave");
+            finishedButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if(!isLeaving){
+                        stage.addActor(dialog);
+                        dialog.show(stage);
+                    }
+                }
+            });
+        }
         stage.addActor(finishedButton);
+
         TextField.TextFieldStyle style = new TextField.TextFieldStyle();
         style.font = font;
         style.fontColor = Color.WHITE;
@@ -179,6 +239,10 @@ public class PlayCardView extends AbstractView{
         stage.addActor(invalidTarget);
         setUpMap();
     }
+    public void resetCurrentButton(){
+        currentButton = -1;
+    }
+
     /**
      * Method for setting up the map with listeners on each asteroid and vehicle
      */
@@ -191,13 +255,8 @@ public class PlayCardView extends AbstractView{
         textureAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
         skin.addRegions(textureAtlas);
         for (int i = 0; i < asteroids.size(); i++) {
-            for(int j = 0; j < asteroids.get(i).getVehicles().size(); j++){
-                String[] onAsteroid = new String[3];
-                onAsteroid[0] = asteroids.get(i).getVehicles().get(j);
-                onAsteroid[1] = asteroids.get(i).getId();
-                onAsteroid[2] = i + "";
-                vehicleOnAsteroid.add(onAsteroid);
-            }
+            vehicleOnAsteroid.addAll(MapMethods.getVehiclesOnAsteroid(asteroids.get(i), i));
+
             Image asteroid = new Image(new Texture("asteroids/" + asteroids.get(i).getTexture() + ".png"));
             asteroid.setSize(Gdx.graphics.getWidth()/5, Gdx.graphics.getWidth()/5);
             asteroidDimensions.add(i, new Vector2(asteroid.getWidth(), asteroid.getHeight()));
@@ -225,42 +284,72 @@ public class PlayCardView extends AbstractView{
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
             int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
             String colorCar = ((PlayCardState) state).getColorCar(vehicleOnAsteroid.get(j)[0]);
+
             Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
-            Image vehicle = new Image(skin.getDrawable(colorCar));
+            final Image vehicle = new Image(skin.getDrawable(colorCar));
             Vector2 position = MapMethods.asteroidPositions(asteroidPos.x, asteroidPos.y,
                     asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
                     colorCar);
             vehicle.setPosition(position.x, position.y);
             vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
+
             final int vIndex = j;
+            final Dialog vehicleInfo = createVehicleInfo(GameInstance.getInstance().getVehicleById(vehicleOnAsteroid.get(j)[0]));
             vehicle.addListener(new ClickListener(){
                 public void clicked(InputEvent event, float x, float y){
                     if(selectTarget){
                         System.out.println("Clicked vehicle:" + vehicleOnAsteroid.get(vIndex)[0]);
                         state.handleInput(vehicleOnAsteroid.get(vIndex)[0].concat(vehicleOnAsteroid.get(vIndex)[1]));
                     }
+                    else{
+                        stage.addActor(vehicleInfo);
+                        vehicleInfo.show(stage);
+                    }
                 }
             });
             stage.addActor(vehicle);
         }
-        Table playerTable = new Table();
-        playerTable.setWidth(Gdx.graphics.getWidth()/10);
-        playerTable.setHeight(Gdx.graphics.getWidth()/20);
+        stage.addActor(setUpPlayerInfoTable());
+    }
+
+    private Table setUpPlayerInfoTable(){
         Vehicle playerVehicle = ((PlayCardState)state).getPlayerVehicle();
-        int health = Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
-        int maxHealth = Math.round(playerVehicle.getStatusHandler().getStatusBaseValue("health"));
+        float health = playerVehicle.getStatusHandler().getStatusResultant("health");
+        float maxHealth = playerVehicle.getStatusHandler().getStatusBaseValue("health");
 
         Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
         player.rotateBy(270);
-        String hp = String.format("HP: %d/%d", health, maxHealth);
+        String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.0f", health, maxHealth);
         Label label = new Label(hp,new Label.LabelStyle(font, Color.RED));
+        float width = label.getWidth();
+
+        Table playerTable = new Table();
+        playerTable.setWidth(width);
+        playerTable.setHeight(Gdx.graphics.getWidth()/20);
         playerTable.add(player).width(Gdx.graphics.getWidth()/20).height(Gdx.graphics.getWidth()/10).row();
         playerTable.add(label).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
         playerTable.pack();
-        playerTable.setPosition(Gdx.graphics.getWidth() - playerTable.getWidth()*2,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
 
-        stage.addActor(playerTable);
+        playerTable.setPosition(Gdx.graphics.getWidth() - width,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
+
+        return playerTable;
+    }
+    private Dialog createVehicleInfo(Vehicle vehicle){
+        HashMap<String, Float> effectsMap =  vehicle.getStatusHandler().getAllResultants();
+        String effects = "";
+        for(String key : effectsMap.keySet()){
+            effects = effects.concat(String.format(Locale.ENGLISH,"%s = %.1f\n",key, effectsMap.get(key)));
+        }
+        final Dialog vehicleInfo = new Dialog("Info", dialogSkin, "dialog");
+        vehicleInfo.getTitleLabel().setFontScale(GlobalConstants.GET_TEXT_SCALE() + 1);
+        BitmapFont infoFont  = new BitmapFont();
+        infoFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*1.5f);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(infoFont, Color.WHITE);
+        vehicleInfo.text(effects, labelStyle);
+
+        vehicleInfo.button("Ok",false, buttonStyle);
+        return vehicleInfo;
     }
 
     /**
@@ -271,6 +360,7 @@ public class PlayCardView extends AbstractView{
         String target = "You cannot target this " + targetType;
         invalidTarget.setText(target);
     }
+
     /**
      * Method to change visuals of the buttons depending on if they're pressed down or not
      * @param button ID of the button/card that has been pressed
@@ -304,10 +394,14 @@ public class PlayCardView extends AbstractView{
 
     public void update(float dt){
         timeLeft -= dt;
-        timer.setText(Math.round(timeLeft) + "");
+        if(timeLeft < 0){
+            timeLeft = 0;
+        }
+        timer.setText(String.format(Locale.ENGLISH,"%.1f", timeLeft));
         invalidTarget.act(dt);
 
     }
+
     /**
      * Renders connections between asteroids, then the stage
      */
@@ -318,13 +412,18 @@ public class PlayCardView extends AbstractView{
             sr.rectLine(points[0], points[1], 5.0f);
         }
         sr.end();
+        stage.act();
         stage.draw();
     }
+
     public void dispose(){
         stage.dispose();
+        sr.dispose();
         font.dispose();
         skin.dispose();
+        dialogSkin.dispose();
         textureAtlas.dispose();
+        btnAtlas.dispose();
     }
 
     private class ToastMessage extends Label{
@@ -351,5 +450,4 @@ public class PlayCardView extends AbstractView{
             }
         }
     }
-
 }

@@ -1,6 +1,8 @@
 package com.panic.tdt4240.states;
 
+import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
+import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.GameResultsView;
@@ -15,28 +17,21 @@ import java.util.ArrayList;
 public class GameResultsState extends State {
 
     GameResultsView view;
-    int originalNumOfPlayers;
-    int numOfPlayers;
 
-    public GameResultsState(GameStateManager gsm, ArrayList<Player> deadPlayers){ // winner = last index
+    public GameResultsState(GameStateManager gsm){ // winner = last index
         super(gsm);
-        view = new GameResultsView(this, deadPlayers);
+        view = new GameResultsView(this);
+        Connection.getInstance().gameOverInfo(GameInstance.getInstance().getID());
+    }
+
+    public void updateInfo(String[] strings){
+        view.setLabelText(strings[1]);
     }
 
     @Override
     public void handleInput(Object o) {
-        String s = (String) o;
-        if (o == (Integer) 0) { // go back to lobby
-            gsm.pop(); // to CardPlayState
-            gsm.pop(); // to GameLobbyState
-            if (originalNumOfPlayers != numOfPlayers) {
-                // TODO : some players left the lobby. Update/replace lobby?
-            }
-            else {
-                gsm.pop(); // to GameLobbyState
-            }
-        }
-    else if ((int) o== -1){ // back to main menu. Reset entirely.
+    if ((Integer) o == -1){ // back to main menu. Reset entirely.
+            Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
             gsm.reset();
         }
     }
@@ -70,7 +65,17 @@ public class GameResultsState extends State {
 
         @Override
         public void onMessage(String message) {
+            final String[] strings = message.split(":");
 
+            switch (strings[0]){
+                case "RECONNECT_GAME":
+                    //TODO: Create a pop up, where you can choose to rejoin a game in progress.
+                    break;
+                case "GAME_OVER_INFO":
+                    updateInfo(strings);
+                    break;
+
+            }
         }
     }
 }

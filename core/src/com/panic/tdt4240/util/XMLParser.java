@@ -5,9 +5,14 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.CardEffect;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
+import com.panic.tdt4240.view.animations.CloudAnimation;
+import com.panic.tdt4240.view.animations.CloudAnimation.AnimationType;
+import com.panic.tdt4240.view.animations.Missile;
+import com.panic.tdt4240.view.animations.Missile.MissileType;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -66,8 +71,7 @@ public class XMLParser {
                         Node effectNode = effects.item(j);
                         if(effectNode.getNodeType() == Node.ELEMENT_NODE){
                             Element effectElement = (Element) effectNode;
-                            myCard.addCardEffect(
-                                    effectElement.getElementsByTagName("target_status").item(0).getTextContent(),
+                            CardEffect cardEffect = new CardEffect(effectElement.getElementsByTagName("target_status").item(0).getTextContent(),
                                     Float.parseFloat(effectElement.getElementsByTagName("value").item(0).getTextContent()),
                                     Integer.parseInt(effectElement.getElementsByTagName("status_duration").item(0).getTextContent()),
                                     Integer.parseInt(effectElement.getElementsByTagName("splash_range").item(0).getTextContent()),
@@ -76,7 +80,32 @@ public class XMLParser {
                                             ? effectElement.getElementsByTagName("requirement_name").item(0).getTextContent() : "none",
                                     (effectElement.getElementsByTagName("requirement_value").getLength()>0)
                                             ? Integer.parseInt(effectElement.getElementsByTagName("requirement_value").item(0).getTextContent()) : 0
-                            );
+                                    );
+                            if(effectElement.getElementsByTagName("missile_type").getLength()>0) {
+                                cardEffect.setMissileType(MissileType.valueOf(effectElement.getElementsByTagName("missile_type").item(0).getTextContent()));
+                            } else {
+                                String cardType = myCard.getCardType().name();
+                                if (cardType.equalsIgnoreCase("ATTACK")) {
+                                    cardEffect.setMissileType(MissileType.RED);
+                                } else if (cardType.equalsIgnoreCase("DEFENCE")) {
+                                    cardEffect.setMissileType(MissileType.NONE);
+                                } else if (cardType.equalsIgnoreCase("EFFECT")) {
+                                    cardEffect.setMissileType(MissileType.NONE);
+                                }
+                            }
+                            if(effectElement.getElementsByTagName("animation_type").getLength()>0) {
+                                cardEffect.setAnimationType(AnimationType.valueOf(effectElement.getElementsByTagName("animation_type").item(0).getTextContent()));
+                            } else {
+                                String cardType = myCard.getCardType().name();
+                                if (cardType.equalsIgnoreCase("ATTACK")) {
+                                    cardEffect.setAnimationType(AnimationType.EXPLOSION);
+                                } else if (cardType.equalsIgnoreCase("DEFENCE")) {
+                                    cardEffect.setAnimationType(AnimationType.SHIELD);
+                                } else if (cardType.equalsIgnoreCase("EFFECT")) {
+                                    cardEffect.setAnimationType(AnimationType.NONE);
+                                }
+                            }
+                            myCard.addCardEffect(cardEffect);
                         }
                     }
                     System.out.println("EffectCount : " + element.getElementsByTagName("card_effects").getLength());
@@ -97,7 +126,7 @@ public class XMLParser {
      * @return Returns an ArrayList of Cards.
      */
     public ArrayList<Card> parseCards(){
-        return parseCards("cards/card_test.xml");
+        return parseCards("cards/cards.xml");
     }
 
     /**
@@ -280,7 +309,7 @@ public class XMLParser {
      * @return Returns a Stack<Card> that is related to the given vehicle (will add all cards from all decks at this point)
      */
     public Stack<Card> parseCardStack(String vehicleType){
-        return parseCardStack("decks/deck_test.xml",vehicleType);
+        return parseCardStack("decks/decks.xml",vehicleType);
     }
 
 }

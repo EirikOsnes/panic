@@ -1,5 +1,6 @@
 package com.panic.tdt4240.states;
 
+import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.models.Card;
@@ -43,10 +44,15 @@ public class MenuState extends State {
             System.out.println("Creating game...");
             //startPlayCard();
         } else if (o == (Integer) 2) {
-            gsm.push(new GameListState(gsm));
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    gsm.push(new GameListState(gsm));
+                }
+            });
             System.out.println("Listing lobbies...");
         } else if (o == (Integer) 3) {
-            gsm.push(new SettingsState(gsm));
+            gsm.push(new GameResultsState(gsm));
             System.out.println("Settings...");
         }
 
@@ -74,7 +80,7 @@ public class MenuState extends State {
         Player p4 = new Player(new Stack<Card>()); dedbodies.add(p4);
         Player p5 = new Player(new Stack<Card>()); dedbodies.add(p5);
         Player p6 = new Player(new Stack<Card>()); dedbodies.add(p6);
-        gsm.set(new GameResultsState(gsm, dedbodies));
+        gsm.set(new GameResultsState(gsm));
         System.out.println("results state created");
     }
 
@@ -89,8 +95,11 @@ public class MenuState extends State {
             Card card = new Card(i + "");
             card.setTooltip("Shoot a laser guided missile. Will only hit if target is marked with laser_pointer, but will always hit if it is the case. Dealing 30 damage");
             card.setName("Glue shot");
-            card.setTargetType(Card.TargetType.VEHICLE);
+            card.setTargetType(Card.TargetType.ASTEROID);
             card.setAllowedTarget(Card.AllowedTarget.ENEMY);
+            card.setMaxRange(4);
+            card.setMinRange(1);
+            card.setPriority(2);
             if(i == 9){
                 card.setCardType(Card.CardType.ATTACK);
             }
@@ -175,7 +184,9 @@ public class MenuState extends State {
                         menuView.isConnecting(false);
                     }
                     break;
-
+                case "RECONNECT_GAME":
+                    //TODO: Create a pop up, where you can choose to rejoin a game in progress.
+                    break;
             }
         }
     }

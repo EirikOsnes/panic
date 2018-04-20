@@ -8,6 +8,7 @@ import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 import com.panic.tdt4240.view.ViewClasses.CreateGameView;
+import java.lang.Thread;
 
 /**
  * Created by magnus on 12.03.2018.
@@ -24,6 +25,7 @@ public class CreateGameState extends State {
     public CreateGameState(GameStateManager gsm){
         super(gsm);
         view = new CreateGameView(this);
+        System.out.println("Thread check 2: " + Thread.currentThread().toString());
     }
 
     /**
@@ -96,18 +98,22 @@ public class CreateGameState extends State {
         public void onMessage(String message) {
             String[] strings = message.split(":");
 
-            switch (strings[0]){
+            // I mean, should probably use {}-clauses rather than
+            // shitty breaks...
+            switch (strings[0]) {
                 case "LOBBY_INFO":
                     parseLobby(strings);
+                    // ENTERS LOBBY STATE
+                    break;
+                case "RECONNECT_GAME":
+                    //TODO: Create a pop up, where you can choose to rejoin a game in progress.
                     break;
             }
-
-
         }
 
         private void parseLobby(String[] strings){
             Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),strings[2],Integer.parseInt(strings[3]),strings[4]);
-            System.out.println("Lobby parsed: " + myLobby.toString());
+            System.out.println("Lobby parsed:: " + myLobby.toString());
             final int ID = myLobby.getLobbyID();
             Gdx.app.postRunnable(new Runnable() {
                 @Override
@@ -117,5 +123,6 @@ public class CreateGameState extends State {
             });
 
         }
+
     }
 }

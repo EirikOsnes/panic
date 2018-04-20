@@ -115,11 +115,18 @@ public class Card {
         cardEffects.add(new CardEffect(targetStatus, value, statusDuration, splashRange, friendlyFire, requirementName, requirementValue));
     }
 
+    public void addCardEffect(CardEffect ce){
+        cardEffects.add(ce);
+    }
+
     public void playCard(String targetID, String instigatorID) {
         if (cardType == CardType.MOVEMENT) {
             EventFactory.postMoveEvent(targetID, instigatorID);
         }
         else if (cardType == CardType.ATTACK) {
+            EventFactory.postEventsFromCard(this, targetID, instigatorID);
+        } else{
+            //FIXME: Should this be specified further?
             EventFactory.postEventsFromCard(this, targetID, instigatorID);
         }
     }

@@ -21,7 +21,6 @@ public class Vehicle implements EventListener,IStatusAble {
 
     public Vehicle(String type){
         statusHandler = new StatusHandler(this);
-        EventBus.getInstance().addListener(this);
         vehicleType = type;
     }
 
@@ -56,6 +55,7 @@ public class Vehicle implements EventListener,IStatusAble {
         }
 
         v.vehicleID = id;
+        EventBus.getInstance().addListener(v);
         return v;
     }
 
@@ -79,8 +79,10 @@ public class Vehicle implements EventListener,IStatusAble {
     }
 
     public void destroy(){
-        isDestroyed = true;
-        EventFactory.postDestroyedEvent(vehicleID,vehicleID);
-        EventBus.getInstance().removeListener(this);
+        if(!isDestroyed) {
+            isDestroyed = true;
+            EventFactory.postDestroyedEvent(vehicleID, vehicleID);
+            EventBus.getInstance().removeListener(this);
+        }
     }
 }

@@ -2,7 +2,6 @@ package com.panic.tdt4240.view.animations;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -11,47 +10,40 @@ import com.badlogic.gdx.utils.Array;
 
 public class Missile extends AnimatedActor {
 
-    public static final String COLOR_RED = "RED";
-    public static final String COLOR_GREEN = "GREEN";
+    public enum MissileType {NONE, RED, GREEN, CYAN, YELLOW}
 
-    private float targetX;
-    private float targetY;
-
-    public Missile(float maxFrameTime, int frameCount, String color){
-        super(maxFrameTime,frameCount);
+    public Missile(float maxFrameTime, MissileType color){
+        super(maxFrameTime);
+        setVisible(false);
         TextureAtlas atlas = new TextureAtlas("animations/missiles.atlas");
         Array<TextureAtlas.AtlasRegion> regions = new Array<>();
-        for(int i=0;i<frameCount;i++){
-            String regionName = color.toLowerCase() + "-" + (i+1);
+        for(int i=0;i<3;i++){
+            String regionName = color.name().toLowerCase() + "-" + (i+1);
             regions.add(atlas.findRegion(regionName));
         }
         setAnimation(regions);
     }
 
     @Override
-    public void startAnimation(float startX, float startY, float endX, float endY){
-        super.startAnimation(startX,startY,endX,endY);
-        //this.addAction(Actions.moveTo(endX, endY, 2));
-        //targetX=endX;
-        //targetY=endY;
+    void setAnimation(Array<TextureAtlas.AtlasRegion> regions) {
+        super.setAnimation(regions);
     }
 
-    public Missile(String color){
-        this(0.1f,3,color);
+    public Missile(MissileType color){
+        this(0.1f, color);
     }
+
     @Override
     public void act(float dt){
         super.act(dt);
-        System.out.printf("Current pos: [%f, %f]\n", getX(), getY());
-        //setPosition(getX()+(targetX-getX())*dt,getY()+(targetY-getY())*dt);
-        currentFrameTime+=dt;
-        currentFrame = getCurrentFrame(dt,true);
-        //TODO
+        currentFrame = getCurrentFrame(dt);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
-        batch.draw(currentFrame,getX(),getY(),getOriginX(),getOriginY(),currentFrame.getRegionWidth(),currentFrame.getRegionHeight(),1,1,getRotation(),true);
+        if (isVisible()) {
+            batch.draw(currentFrame,getX(),getY(),getOriginX(),getOriginY(),currentFrame.getRegionWidth(),currentFrame.getRegionHeight(), 1, 1,getRotation(),true);
+        }
     }
 }

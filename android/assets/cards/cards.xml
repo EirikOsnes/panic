@@ -8,34 +8,29 @@
         <allowed_targets>ALL</allowed_targets>
         <min_range>0</min_range>
         <max_range>1</max_range>
-        <tooltip>Fire a missile dealing 20 damage to all vehicles on the target asteroid. Max range is 1.</tooltip>
+        <tooltip>Fire a missile dealing 30 damage to all vehicles on the target asteroid. Max range is 1.</tooltip>
         <card_effect>
             <target_status>health</target_status>
-            <value>-15</value>
+            <value>-30</value>
             <requirement_name>none</requirement_name>
             <requirement_value>0</requirement_value>
             <status_duration>-1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>true</friendly_fire>
+            <missile_type>RED</missile_type>
+            <animation_type>EXPLOSION</animation_type>
         </card_effect>
     </card>
 
     <card id = "JUMP">
         <name>Jump ship!</name>
         <priority>5</priority>
-        <type_id>MOVE</type_id>
+        <type_id>MOVEMENT</type_id>
         <target_type>ASTEROID</target_type>
         <allowed_targets>ALL</allowed_targets>
         <min_range>1</min_range>
         <max_range>1</max_range>
         <tooltip>Move to another asteroid. Max range 1.</tooltip>
-        <card_effect>
-            <target_status>position</target_status>
-            <value>1</value>
-            <status_duration>-1</status_duration>
-            <splash_range>0</splash_range>
-            <friendly_fire>true</friendly_fire>
-        </card_effect>
     </card>
 
     <card id = "SHIELD">
@@ -53,31 +48,35 @@
             <status_duration>1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>true</friendly_fire>
+            <missile_type>NONE</missile_type>
+            <!--<animation_type></animation_type> -->
         </card_effect>
     </card>
 
     <card id = "REPAIR">
         <name>Repair kit</name>
         <priority>8</priority>
-        <type_id>STATUS</type_id>
+        <type_id>EFFECT</type_id>
         <target_type>VEHICLE</target_type>
         <allowed_targets>PLAYER</allowed_targets>
         <min_range>0</min_range>
         <max_range>0</max_range>
-        <tooltip>Repair your vehicle. Heal by 25 health.</tooltip>
+        <tooltip>Repair your vehicle. Heal by 20 health.</tooltip>
         <card_effect>
             <target_status>health</target_status>
-            <value>25</value>
+            <value>20</value>
             <status_duration>-1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>true</friendly_fire>
+            <missile_type>NONE</missile_type>
+            <animation_type>HEALING</animation_type>
         </card_effect>
     </card>
 
     <card id = "HYPER">
         <name>Engage Hyperdrive</name>
         <priority>8</priority>
-        <type_id>STATUS</type_id>
+        <type_id>EFFECT</type_id>
         <target_type>VEHICLE</target_type>
         <allowed_targets>PLAYER</allowed_targets>
         <min_range>0</min_range>
@@ -100,10 +99,10 @@
         <allowed_targets>ALL</allowed_targets>
         <min_range>0</min_range>
         <max_range>0</max_range>
-        <tooltip>Tell a verse of Vogon poetry, dealing damage to all other players on your asteroid.</tooltip>
+        <tooltip>Tell a verse of Vogon poetry, dealing massive damage to all other players on your asteroid.</tooltip>
         <card_effect>
             <target_status>health</target_status>
-            <value>-40</value>
+            <value>-50</value>
             <status_duration>-1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>false</friendly_fire>
@@ -113,16 +112,16 @@
     <card id = "LASER1">
         <name>Laser pointer</name>
         <priority>6</priority>
-        <type_id>STATUS</type_id>
+        <type_id>EFFECT</type_id>
         <target_type>VEHICLE</target_type>
         <allowed_targets>ENEMY</allowed_targets>
         <min_range>0</min_range>
-        <max_range>1</max_range>
-        <tooltip>Mark an enemy vehicle with a laser pointer, lasting the rest of this turn. </tooltip>
+        <max_range>100</max_range>
+        <tooltip>Mark an enemy vehicle with a laser pointer, lasting until the end of next turn. </tooltip>
         <card_effect>
             <target_status>laser_pointer</target_status>
             <value>1</value>
-            <status_duration>1</status_duration>
+            <status_duration>2</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>false</friendly_fire>
         </card_effect>
@@ -136,10 +135,10 @@
         <allowed_targets>ENEMY</allowed_targets>
         <min_range>0</min_range>
         <max_range>100</max_range>
-        <tooltip>Shoot a laser guided missile. Will only hit if target is marked with laser_pointer, but will always hit if it is the case. Dealing 30 damage.</tooltip>
+        <tooltip>Shoot a laser guided missile. Will only hit if target is marked with laser_pointer, removing it, but will always hit if it is the case. Dealing 35 damage.</tooltip>
         <card_effect>
             <target_status>health</target_status>
-            <value>-30</value>
+            <value>-35</value>
             <requirement_name>laser_pointer</requirement_name>
             <requirement_value>1</requirement_value>
             <status_duration>-1</status_duration>
@@ -158,7 +157,7 @@
     <card id = "GLUE">
         <name>Glue shot</name>
         <priority>4</priority>
-        <type_id>STATUS</type_id>
+        <type_id>EFFECT</type_id>
         <target_type>ASTEROID</target_type>
         <allowed_targets>ALL</allowed_targets>
         <min_range>0</min_range>
@@ -170,6 +169,48 @@
             <status_duration>1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>true</friendly_fire>
+            <missile_type>YELLOW</missile_type>
+            <animation_type>DEBUFF</animation_type>
+        </card_effect>
+    </card>
+
+    <card id = "POISON">
+        <name>Space Goo</name>
+        <priority>1</priority>
+        <type_id>ATTACK</type_id>
+        <target_type>ASTEROID</target_type>
+        <allowed_targets>ALL</allowed_targets>
+        <min_range>0</min_range>
+        <max_range>1</max_range>
+        <tooltip>Cover your enemies in deadly poisonous SPACE GOO!!! Deals 10 damage per turn for 3 turns.</tooltip>
+        <card_effect>
+            <target_status>poison</target_status>
+            <value>10</value>
+            <status_duration>3</status_duration>
+            <splash_range>0</splash_range>
+            <friendly_fire>false</friendly_fire>
+            <missile_type>GREEN</missile_type>
+            <animation_type>GREENCLOUD</animation_type>
+        </card_effect>
+    </card>
+
+    <card id = "HAN">
+        <name>Han Shot First</name>
+        <priority>9</priority>
+        <type_id>ATTACK</type_id>
+        <target_type>VEHICLE</target_type>
+        <allowed_targets>ALL</allowed_targets>
+        <min_range>0</min_range>
+        <max_range>1</max_range>
+        <tooltip>Deals 25 damage. Always goes first. Max range 1.</tooltip>
+        <card_effect>
+            <target_status>health</target_status>
+            <value>-25</value>
+            <status_duration>-1</status_duration>
+            <splash_range>0</splash_range>
+            <friendly_fire>false</friendly_fire>
+            <missile_type>RED</missile_type>
+            <animation_type>EXPLOSION</animation_type>
         </card_effect>
     </card>
 

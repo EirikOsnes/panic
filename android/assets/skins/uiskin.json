@@ -28,7 +28,10 @@
     default: { font: default-font, fontColor: white }
   },
   com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
-    default: { vScroll: default-scroll, hScroll: default-scroll, vScrollKnob: default-round-large }
+    default: { vScroll: default-scroll, hScroll: default-scroll, vScrollKnob: default-round-large,
+      background: default-rect, hScrollKnob: default-round-large}
+    lobby: { vScroll: default-scroll, hScroll: default-scroll, vScrollKnob: default-round-large,
+      hScrollKnob: default-round-large}
   },
   com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
     default: {
@@ -48,7 +51,8 @@
     default: { font: default-font, fontColor: white }
   },
   com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
-    default: { selection: selection, background: textfield, font: default-font, fontColor: white, cursor: cursor }
+    default: { selection: selection, background: textfield, font: default-font, fontColor: white, cursor: cursor}
+    ready: { selection:selection, background:button-ready,font:default-font,fontColor: red, cursor:cursor}
   },
   com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
     default: { checkboxOn: check-on, checkboxOff: check-off, font: default-font, fontColor: white }
@@ -56,6 +60,11 @@
   com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
     default: { fontColorUnselected: white, selection: selection, fontColorSelected: white, font: default-font }
   },
+  com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+    default: { titleFont: default-font, background: default-window, titleFontColor: white },
+    dialog: { titleFont: default-font, background: default-window, titleFontColor: white }
+  },
+
   com.badlogic.gdx.scenes.scene2d.ui.Touchpad$TouchpadStyle: {
     default: { background: default-pane, knob: default-round-large }
   },

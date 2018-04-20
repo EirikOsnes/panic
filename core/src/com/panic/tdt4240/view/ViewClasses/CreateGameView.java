@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.CreateGameState;
@@ -22,6 +23,14 @@ import com.panic.tdt4240.util.GlobalConstants;
 
 /**
  * Created by victor on 12.03.2018.
+ *
+ * 18.04. NOTES: attempts to enter lobby from Create Game gives "Thread check" sequence:
+ *                  output: LWJGL
+ *                  order: 2, 4, 5
+ *               Game List sequence:
+ *                  output: LWJGL
+ *                  order:
+ *
  */
 
 public class CreateGameView extends AbstractView {
@@ -35,8 +44,7 @@ public class CreateGameView extends AbstractView {
     private TextButton createLobbyBtn, exitToMainMenuBtn;
 
     private TextField in_LobbyName;
-    private SelectBox<String> in_mapID;
-    private SelectBox<String> in_maxPlayers;
+    private SelectBox<String> in_mapID, in_maxPlayers;
     private boolean haveSetName;
 
     public CreateGameView(final CreateGameState cgState) {
@@ -142,7 +150,7 @@ public class CreateGameView extends AbstractView {
             @Override
             public void clicked(InputEvent event, float x, float y){
                 if(haveSetName){
-                    System.out.println("shit is going on" + "\n"+x+"; "+y);
+                    System.out.println("Create btn pressed");
     /*                    Connection.getInstance().createLobby(
                                 Integer.valueOf(in_maxPlayers.getSelected()),
                                 in_mapID.getSelected(),

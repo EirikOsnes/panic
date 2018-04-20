@@ -9,26 +9,36 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
-import com.panic.tdt4240.states.State;
 import com.panic.tdt4240.states.RunEffectsState;
+import com.panic.tdt4240.states.State;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.util.MapMethods;
-import com.panic.tdt4240.view.animations.Explosion;
+import com.panic.tdt4240.view.animations.CloudAnimation;
+import com.panic.tdt4240.view.animations.CloudAnimation.AnimationType;
 import com.panic.tdt4240.view.animations.Missile;
+import com.panic.tdt4240.view.animations.Missile.MissileType;
+import com.panic.tdt4240.view.animations.MissileAction;
+import com.panic.tdt4240.view.animations.MoveVehicleAction;
+import com.panic.tdt4240.view.animations.ShieldAnimation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
 
 /**
  * Created by Hermann on 14.04.2018.
@@ -42,11 +52,16 @@ public class RunEffectsView extends AbstractView {
     private HashMap<String, Image> asteroidImages;
     private AnimationAdapter animator;
     private MapConnections mapConnections;
-    private final Explosion explosion;
+    private final CloudAnimation explosion, poison, shield, healing, debuff;
     private BitmapFont font;
-    private Label label;
-    private final Missile missile;
-
+    private Skin skin;
+    private Skin carSkin;
+    private boolean isLeaving = false;
+    private TextureAtlas btnAtlas;
+    private final Missile redMissile, greenMissile, cyanMissile, yellowMissile;
+    private Label hpLabel;
+    private float health;
+    private float maxHealth;
 
     public RunEffectsView(State state) {
         super(state);
@@ -55,17 +70,72 @@ public class RunEffectsView extends AbstractView {
         sr.setAutoShapeType(true);
         gameInstance = GameInstance.getInstance();
         font = new BitmapFont();
-        float textScale = GlobalConstants.GET_TEXT_SCALE();
-        font.getData().scale(textScale);
+        font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
 
-        setUpMap();
         animator = new AnimationAdapter();
-        explosion = new Explosion();
-        missile = new Missile(Missile.COLOR_RED);
-        stage.addActor(explosion);
-        stage.addActor(missile);
-        System.out.println(vehicleImages.keySet().toString());
-        System.out.println(asteroidImages.keySet().toString());
+        poison = new CloudAnimation(AnimationType.GREENCLOUD);
+        explosion = new CloudAnimation(AnimationType.EXPLOSION);
+        redMissile = new Missile(MissileType.RED);
+        greenMissile = new Missile(MissileType.GREEN);
+        cyanMissile = new Missile(MissileType.CYAN);
+        yellowMissile = new Missile(MissileType.YELLOW);
+        shield = new ShieldAnimation();
+        healing = new CloudAnimation(AnimationType.HEALING, 0.05f);
+        debuff = new CloudAnimation(AnimationType.DEBUFF, 0.05f);
+        setUpMap();
+        btnAtlas = new TextureAtlas("skins/uiskin.atlas");
+        skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
+        if(!((RunEffectsState)state).getPlayerAlive()){
+            setUpLeaveButton();
+        }
+    }
+
+    //TODO: Call this method when a player dies to let them leave the game
+    public void setUpLeaveButton(){
+
+        final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+        buttonStyle.up = skin.getDrawable("button-up");
+        buttonStyle.down = skin.getDrawable("button-down");
+        TextButton finishedButton = new TextButton("", buttonStyle);
+        finishedButton.setWidth(Gdx.graphics.getWidth()/5);
+        finishedButton.setHeight(Gdx.graphics.getWidth()/10);
+        finishedButton.setPosition(4*Gdx.graphics.getWidth()/5, Gdx.graphics.getHeight()/5);
+
+        TextButton.TextButtonStyle ButtonStyle = new TextButton.TextButtonStyle();
+        ButtonStyle.font = font;
+        ButtonStyle.up = skin.getDrawable("button-up");
+        ButtonStyle.down = skin.getDrawable("button-down");
+        final Dialog dialog = new Dialog("Leave", skin, "dialog"){
+            @Override
+            protected void result(Object object) {
+                Boolean bool = (Boolean) object;
+                if(bool){
+                    isLeaving = true;
+                    ((RunEffectsState)state).leaveGame();
+                }
+                else{
+                    remove();
+                }
+            }
+        };
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+
+        dialog.text("Are you sure you want to leave?", labelStyle);
+        dialog.button("Yes",true, ButtonStyle);
+        dialog.button("Cancel", false, ButtonStyle);
+
+        finishedButton.setText("Leave");
+        finishedButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(!isLeaving){
+                    stage.addActor(dialog);
+                    dialog.show(stage);
+                }
+            }
+        });
+        stage.addActor(finishedButton);
     }
 
     private void setUpMap() {
@@ -78,20 +148,16 @@ public class RunEffectsView extends AbstractView {
         ArrayList<String[]> vehicleOnAsteroid = new ArrayList<>();
         ArrayList<Vector2> asteroidPositions = new ArrayList<>();
         ArrayList<Vector2> asteroidDimensions = new ArrayList<>();
-        float table = SCREEN_HEIGHT / 5;
+        float table = Gdx.graphics.getHeight() / 5;
         TextureAtlas carsAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
-        Skin skin = new Skin(carsAtlas);
+        carSkin = new Skin(carsAtlas);
         for (int i = 0; i < asteroids.size(); i++) {
-            for (int j = 0; j < asteroids.get(i).getVehicles().size(); j++) {
-                String[] onAsteroid = new String[3];
-                onAsteroid[0] = asteroids.get(i).getVehicles().get(j);
-                onAsteroid[1] = asteroids.get(i).getId();
-                onAsteroid[2] = i + "";
-                vehicleOnAsteroid.add(onAsteroid);
-            }
+            vehicleOnAsteroid.addAll(MapMethods.getVehiclesOnAsteroid(asteroids.get(i), i));
+
             Texture texture = new Texture("asteroids/" + asteroids.get(i).getTexture() + ".png");
             Image asteroid = new Image(texture);
             asteroid.setSize(SCREEN_WIDTH / 5, SCREEN_WIDTH / 5);
+            asteroid.setOrigin(Align.center);
             asteroidDimensions.add(i, new Vector2(asteroid.getWidth(), asteroid.getHeight()));
             asteroid.setPosition(
                     //Image should be rendered inside the window and above the table
@@ -105,40 +171,88 @@ public class RunEffectsView extends AbstractView {
                 mapConnections.addConnection(asteroids.get(i), neighbour, asteroid.getWidth(), asteroid.getHeight(), table);
             }
         }
+        stage.addActor(redMissile);
+        stage.addActor(greenMissile);
+        stage.addActor(yellowMissile);
+        stage.addActor(cyanMissile);
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
             int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
             Vehicle activeVehicle = gameInstance.getVehicleById(vehicleOnAsteroid.get(j)[0]);
             Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
-            Image vehicle = new Image(skin.getDrawable(activeVehicle.getColorCar()));
+            Image vehicle = new Image(carSkin.getDrawable(activeVehicle.getColorCar()));
             Vector2 position = MapMethods.asteroidPositions(asteroidPos.x, asteroidPos.y,
                     asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
                     activeVehicle.getColorCar());
             vehicle.setPosition(position.x, position.y);
-            vehicle.setSize(asteroidDimensions.get(asteroid).x / 3, asteroidDimensions.get(asteroid).y * 2 / 3);
+            vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
             vehicleImages.put(activeVehicle.getVehicleID(), vehicle);
+            vehicle.setOrigin(Align.center);
             stage.addActor(vehicle);
         }
-        Table playerTable = new Table();
-        playerTable.setWidth(Gdx.graphics.getWidth()/10);
-        playerTable.setHeight(Gdx.graphics.getWidth()/20);
+
+        stage.addActor(setUpPlayerInfoTable());
+        stage.addActor(explosion);
+        stage.addActor(poison);
+        stage.addActor(shield);
+        stage.addActor(healing);
+        stage.addActor(debuff);
+    }
+    private Table setUpPlayerInfoTable(){
         Vehicle playerVehicle = ((RunEffectsState)state).getPlayerVehicle();
-        int health = Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
-        int maxHealth = Math.round(playerVehicle.getStatusHandler().getStatusBaseValue("health"));
-
-        Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
+        health = playerVehicle.getStatusHandler().getStatusResultant("health");
+        maxHealth = playerVehicle.getStatusHandler().getStatusBaseValue("health");
+        System.out.println(playerVehicle.getColorCar());
+        Image player = new Image(carSkin.getDrawable(playerVehicle.getColorCar()));
         player.rotateBy(270);
+        String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.0f", health, maxHealth);
+        hpLabel = new Label(hp,new Label.LabelStyle(font, Color.RED));
+        float width = hpLabel.getWidth();
 
-        String hp = String.format("HP: %d/%d", health, maxHealth);
-        label = new Label(hp,new Label.LabelStyle(font, Color.RED));
+        Table playerTable = new Table();
+        playerTable.setWidth(width);
+        playerTable.setHeight(Gdx.graphics.getWidth()/20);
         playerTable.add(player).width(Gdx.graphics.getWidth()/20).height(Gdx.graphics.getWidth()/10).row();
-        playerTable.add(label).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
+        playerTable.add(hpLabel).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
         playerTable.pack();
-        playerTable.setPosition(Gdx.graphics.getWidth() - playerTable.getWidth()*2,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
+        playerTable.setPosition(Gdx.graphics.getWidth() - width,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
+        return playerTable;
+    }
+    private void defeatMessage(){
+        //TODO Call this method when the player is defeated
+        TextureAtlas btnAtlas = new TextureAtlas("skins/uiskin.atlas");
+        Skin dialogSkin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
 
-        stage.addActor(playerTable);
+        buttonStyle.up = skin.getDrawable("button-up");
+        buttonStyle.down = skin.getDrawable("button-down");
+        Dialog defeatDialog = new Dialog("", dialogSkin, "default"){
+            @Override
+            protected void result(Object object) {
+                Boolean bool = (Boolean) object;
+                if(bool){
+                    ((RunEffectsState)state).leaveGame();
+                }
+                else{
+                    remove();
+                }
+            }
+        };
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        defeatDialog.text("You have been defeated!\nDo you want to leave the game, or spectate?", labelStyle);
+        defeatDialog.button("Leave",true, buttonStyle);
+        defeatDialog.button("Spectate", false, buttonStyle);
+        stage.addActor(defeatDialog);
+        defeatDialog.show(stage);
     }
 
+    private void updateHealth(){
+        //TODO Call this method when an animation is finished
+        health = ((RunEffectsState)state).getPlayerVehicle().getStatusHandler().getStatusResultant("health");
+        String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.0f", health, maxHealth);
+        hpLabel.setText(hp);
+    }
 
     @Override
     public void render() {
@@ -148,59 +262,104 @@ public class RunEffectsView extends AbstractView {
             sr.rectLine(points[0], points[1], 5.0f);
         }
         sr.end();
+
         stage.act();
         stage.draw();
     }
-
-    //TODO: All of the following methods should add animation to a stack
 
     public void moveVehicle(String vehicleID, String asteroidID) {
         Actor actor = vehicleImages.get(vehicleID);
         Image asteroid = asteroidImages.get(asteroidID);
         Vector2 vec = MapMethods.asteroidPositions(asteroid.getX(), asteroid.getY(), asteroid.getWidth(),
                 asteroid.getHeight(), gameInstance.getVehicleById(vehicleID).getColorCar());
-        Action action = Actions.moveTo(vec.x, vec.y, 2);
+        Action action = new MoveVehicleAction(vec.x, vec.y);
         animator.addAction(action, actor);
     }
 
-    public void attackVehicle(String vehicleID, String instigatorID) {
-        //TODO: Animate the attacking of a vehicle
+    public void addMissileAnimation(String targetID, String instigatorID, MissileType mt) {
+        final Actor target, instigator;
+        final Missile missile;
 
-        final Image instigator = vehicleImages.get(instigatorID);
-        final Image vehicle = vehicleImages.get(vehicleID);
+        // Find the target Actor
+        target = getActorFromID(targetID);
+
+        // Find the instigator Actor
+        instigator = getActorFromID(instigatorID);
+
+        //find the missile to use
+        if (mt == MissileType.RED) {
+            missile = redMissile;
+        } else if (mt == MissileType.GREEN) {
+            missile = greenMissile;
+        } else if (mt == MissileType.YELLOW) {
+            missile = yellowMissile;
+        } else if (mt == MissileType.CYAN) {
+            missile = cyanMissile;
+        } else {
+            throw new IllegalArgumentException("Invalid MissileType");
+        }
+
         Runnable missileRunnable = new Runnable() {
             @Override
             public void run() {
-                missile.startAnimation(instigator.getX(),instigator.getY(),vehicle.getX(),vehicle.getY());
+                missile.startAnimation(instigator.getX(Align.center),instigator.getY(Align.center), target.getX(Align.center), target.getY(Align.center), Align.center);
             }
         };
+        Action action = Actions.sequence(Actions.run(missileRunnable), new MissileAction(target, instigator));
+        animator.addAction(action, missile);
+    }
+
+    public void addCloudAnimation(String targetID, AnimationType at) {
+        final Actor target;
+        final CloudAnimation cloud;
+
+        target = getActorFromID(targetID);
+
+        if (at == AnimationType.EXPLOSION) {
+            cloud = explosion;
+        } else if (at == AnimationType.GREENCLOUD) {
+            cloud = poison;
+        } else if (at == AnimationType.HEALING) {
+            cloud = healing;
+        } else if (at == AnimationType.SHIELD){
+            cloud = shield;
+        } else if (at == AnimationType.DEBUFF) {
+            cloud = debuff;
+        } else {
+            throw new IllegalArgumentException("Invalid AnimationType");
+        }
+
         Runnable explosionRunnable = new Runnable() {
             @Override
             public void run() {
-                explosion.startAnimation(vehicle.getX(), vehicle.getY());
+                cloud.startAnimation(target.getX(Align.center), target.getY(Align.center), Align.center);
             }
         };
-        Action action1 = Actions.sequence(Actions.run(missileRunnable), Actions.moveTo(vehicle.getX(), vehicle.getY(), 2));
-        animator.addAction(action1, missile);
-        Action action2 = Actions.sequence(Actions.run(explosionRunnable), Actions.delay(explosion.getDuration()));
-        animator.addAction(action2, explosion);
-    }
-
-    public void attackAsteroid(String asteroidID) {
-        //TODO: Animate the attacking of an asteroid
-    }
-
-    public void destroyVehicle(String vehicleID) {
-        //TODO: Animate the destruction of a vehicle
+        Action action = Actions.sequence(Actions.run(explosionRunnable), Actions.delay(cloud.getDuration()));
+        animator.addAction(action, target);
     }
 
     public boolean isDoneAnimating(){
         return animator.isEmpty();
     }
 
+    private Actor getActorFromID(String ID) {
+        if (ID.matches("A-\\d\\d\\d")) {
+            return asteroidImages.get(ID);
+        } else if (ID.matches("V-\\d\\d\\d")) {
+            return vehicleImages.get(ID);
+        } else {
+            throw new IllegalArgumentException("Something is wrong with the target ID");
+        }
+    }
+
     public void dispose(){
         stage.dispose();
         sr.dispose();
+        font.dispose();
+        skin.dispose();
+        carSkin.dispose();
+        btnAtlas.dispose();
     }
 
 
@@ -210,6 +369,7 @@ public class RunEffectsView extends AbstractView {
         private Runnable run = new Runnable() {
             @Override
             public void run() {
+                //updateHealth();
                 if (!empty) {
                     nextAction();
                 }

@@ -36,6 +36,9 @@ public class Player implements EventListener {
     public int getAmountPlayedCards(){
         return MODIFIED_PLAYED_CARDS + GlobalConstants.BASE_PLAY_CARDS;
     }
+    public boolean isAlive(){
+        return alive;
+    }
     //Returns the full deck
     public ArrayList<Card> getCardDeck(){
         return new ArrayList<>(deck.getFullDeck());
@@ -45,15 +48,11 @@ public class Player implements EventListener {
     }
     //Returns the hand
     public ArrayList<Card> playCards(){
-        hand.setCardHand(deck.drawHand(GlobalConstants.BASE_DRAW_CARDS + MODIFIED_DRAWN_CARDS));
+        hand.setCardHand(deck.drawHand(getAmountDrawnCards()));
         return hand.getHand();
     }
     public Vehicle getVehicle(){
         return vehicle;
-    }
-
-    public boolean isAlive() {
-        return alive;
     }
 
     @Override

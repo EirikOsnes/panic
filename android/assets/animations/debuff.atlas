@@ -1,0 +1,179 @@
+debuff.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+debuff-1
+    roatate: false
+    xy: 1,1
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 1
+debuff-2
+    roatate: false
+    xy: 193,1
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 2
+debuff-3
+    roatate: false
+    xy: 385,1
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 3
+debuff-4
+    roatate: false
+    xy: 577,1
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 4
+debuff-5
+    roatate: false
+    xy: 769,1
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 5
+debuff-6
+    roatate: false
+    xy: 1,193
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 6
+debuff-7
+    roatate: false
+    xy: 193,193
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 7
+debuff-8
+    roatate: false
+    xy: 385,193
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 8
+debuff-9
+    roatate: false
+    xy: 577,193
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 9
+debuff-10
+    roatate: false
+    xy: 769,193
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 10
+debuff-11
+    roatate: false
+    xy: 1,385
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 11
+debuff-12
+    roatate: false
+    xy: 193,385
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 12
+debuff-13
+    roatate: false
+    xy: 385,385
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 13
+debuff-14
+    roatate: false
+    xy: 577,385
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 14
+debuff-15
+    roatate: false
+    xy: 769,385
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 15
+debuff-16
+    roatate: false
+    xy: 1,577
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 16
+debuff-17
+    roatate: false
+    xy: 193,577
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 17
+debuff-18
+    roatate: false
+    xy: 385,577
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 18
+debuff-19
+    roatate: false
+    xy: 577,577
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 19
+debuff-20
+    roatate: false
+    xy: 769,577
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 20
+debuff-21
+    roatate: false
+    xy: 1,769
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 21
+debuff-22
+    roatate: false
+    xy: 193,769
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 22
+debuff-23
+    roatate: false
+    xy: 385,769
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 23
+debuff-24
+    roatate: false
+    xy: 577,769
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 24
+debuff-25
+    roatate: false
+    xy: 769,769
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 25

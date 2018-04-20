@@ -1,0 +1,179 @@
+healing.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+healing-1
+    roatate: false
+    xy: 1,1
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 1
+healing-2
+    roatate: false
+    xy: 193,1
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 2
+healing-3
+    roatate: false
+    xy: 385,1
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 3
+healing-4
+    roatate: false
+    xy: 577,1
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 4
+healing-5
+    roatate: false
+    xy: 769,1
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 5
+healing-6
+    roatate: false
+    xy: 1,193
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 6
+healing-7
+    roatate: false
+    xy: 193,193
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 7
+healing-8
+    roatate: false
+    xy: 385,193
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 8
+healing-9
+    roatate: false
+    xy: 577,193
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 9
+healing-10
+    roatate: false
+    xy: 769,193
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 10
+healing-11
+    roatate: false
+    xy: 1,385
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 11
+healing-12
+    roatate: false
+    xy: 193,385
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 12
+healing-13
+    roatate: false
+    xy: 385,385
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 13
+healing-14
+    roatate: false
+    xy: 577,385
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 14
+healing-15
+    roatate: false
+    xy: 769,385
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 15
+healing-16
+    roatate: false
+    xy: 1,577
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 16
+healing-17
+    roatate: false
+    xy: 193,577
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 17
+healing-18
+    roatate: false
+    xy: 385,577
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 18
+healing-19
+    roatate: false
+    xy: 577,577
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 19
+healing-20
+    roatate: false
+    xy: 769,577
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 20
+healing-21
+    roatate: false
+    xy: 1,769
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 21
+healing-22
+    roatate: false
+    xy: 193,769
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 22
+healing-23
+    roatate: false
+    xy: 385,769
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 23
+healing-24
+    roatate: false
+    xy: 577,769
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 24
+healing-25
+    roatate: false
+    xy: 769,769
+    size: 192, 192
+    orig: 192, 192
+    offset: 0, 0
+    index: 25

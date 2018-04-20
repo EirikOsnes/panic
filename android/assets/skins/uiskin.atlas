@@ -2,10 +2,6 @@ button.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-button_alt.png
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
 button-down
   rotate: false
   xy: 1, 1

@@ -3,6 +3,9 @@ package com.panic.tdt4240.states;
 import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
+import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventBus;
+import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
@@ -22,20 +25,21 @@ import java.util.Stack;
  * The state for loading up a new game - or reloading a game.
  */
 
-public class LoadGameState extends State {
+public class LoadGameState extends State implements EventListener {
 
-    private Connection connection;
     private boolean isLoading; //Flag to use for rendering of a loading screen.
     private LoadGameView view;
     private int lobbyID;
+    private boolean resync;
 
-    protected LoadGameState(GameStateManager gsm, int lobbyID) {
+    protected LoadGameState(GameStateManager gsm, int lobbyID, boolean resync) {
         super(gsm);
+        this.resync = resync;
         view = new LoadGameView(this);
-        connection = Connection.getInstance();
         this.lobbyID = lobbyID;
         setUpGameInstance();
         view = new LoadGameView(this);
+        EventBus.getInstance().addListener(this);
     }
 
     /**
@@ -45,7 +49,7 @@ public class LoadGameState extends State {
         GameInstance.getInstance().reset();
         GameInstance.getInstance().setID(lobbyID);
         isLoading = true;
-        connection.getGameInfo(lobbyID);
+        Connection.getInstance().getGameInfo(lobbyID);
     }
 
     private void setGIValues(ArrayList<Vehicle> vehicles, String mapID, String myVehicleID, String seedString){
@@ -91,7 +95,7 @@ public class LoadGameState extends State {
      * Checks to see if the client is reconnecting - i.e. there is a history of cards played, and plays these if that is the case.
      */
     private void checkForHistory() {
-        connection.getLog();
+        Connection.getInstance().getLog();
 
     }
 
@@ -117,6 +121,8 @@ public class LoadGameState extends State {
     @Override
     public void dispose() {
         view.dispose();
+        EventBus.getInstance().removeListener(this);
+        EventBus.getInstance().readyForRemove();
     }
 
     @Override
@@ -127,6 +133,14 @@ public class LoadGameState extends State {
     @Override
     protected void setUpAdapter() {
         callbackAdapter = new LoadGameAdapter();
+    }
+
+    @Override
+    public void handleEvent(Event e) {
+        if (e.getT() == Event.Type.DESTROYED) {
+            Connection.getInstance().sendDestroyed(GameInstance.getInstance().getID(),e.getTargetID());
+            System.out.println("Sending destroy from LoadGameState");
+        }
     }
 
     private class LoadGameAdapter implements ICallbackAdapter {
@@ -164,11 +178,12 @@ public class LoadGameState extends State {
 
             setUpVehiclePositions(vehicles,Long.parseLong(strings[4]));
 
-            if(strings.length>5){
+            if(strings.length>5 && resync){ //We are resyncing
                 GameInstance.getInstance().playTurns(strings[5]);
+                Connection.getInstance().sendResyncFinished(lobbyID);
+            }else {
+                sendToGame();
             }
-
-            sendToGame();
 
         }
     }

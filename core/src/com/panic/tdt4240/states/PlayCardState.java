@@ -67,9 +67,6 @@ public class PlayCardState extends State {
         mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         playView = new PlayCardView(this);
         readyForNewTurn();
-        if(!GameInstance.getInstance().getPlayer().isAlive()){
-            finishRound();
-        }
     }
 
     /**
@@ -364,7 +361,7 @@ public class PlayCardState extends State {
                     });
                     break;
                 case "BEGIN_TURN":
-                    //setTimeLeft(Float.parseFloat(strings[1]));
+                    setTimeLeft(Float.parseFloat(strings[1]));
                     //EventBus.getInstance().readyForRemove();
                     break;
 

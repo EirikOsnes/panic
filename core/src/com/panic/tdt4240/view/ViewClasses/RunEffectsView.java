@@ -218,7 +218,7 @@ public class RunEffectsView extends AbstractView {
         playerTable.setPosition(Gdx.graphics.getWidth() - width,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
         return playerTable;
     }
-    private void defeatMessage(){
+    public void defeatMessage(){
         //TODO Call this method when the player is defeated
         TextureAtlas btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         Skin dialogSkin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
@@ -235,6 +235,7 @@ public class RunEffectsView extends AbstractView {
                     ((RunEffectsState)state).leaveGame();
                 }
                 else{
+                    ((RunEffectsState)state).activateSpectate();
                     remove();
                 }
             }

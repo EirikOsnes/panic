@@ -56,7 +56,7 @@ public class RunEffectsView extends AbstractView {
     private Skin skin;
     private boolean isLeaving = false;
     private TextureAtlas btnAtlas;
-    private final Missile redMissile, greenMissile;
+    private final Missile redMissile, greenMissile, cyanMissile, yellowMissile;
 
     public RunEffectsView(State state) {
         super(state);
@@ -72,6 +72,8 @@ public class RunEffectsView extends AbstractView {
         explosion = new CloudAnimation(AnimationType.EXPLOSION);
         redMissile = new Missile(MissileType.RED);
         greenMissile = new Missile(MissileType.GREEN);
+        cyanMissile = new Missile(MissileType.CYAN);
+        yellowMissile = new Missile(MissileType.YELLOW);
         shield = new ShieldAnimation();
         healing = new CloudAnimation(AnimationType.HEALING);
         debuff = new CloudAnimation(AnimationType.DEBUFF);

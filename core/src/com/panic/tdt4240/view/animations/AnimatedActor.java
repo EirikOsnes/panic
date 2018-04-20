@@ -39,6 +39,7 @@ public class AnimatedActor extends Actor {
             setWidth(regions.get(0).getRegionWidth());
             setHeight(regions.get(0).getRegionHeight());
             animation = new Animation<>(maxFrameTime, regions);
+            animation.setPlayMode(Animation.PlayMode.LOOP);
             setOrigin(regions.get(0).getRegionWidth() / 2, regions.get(0).getRegionHeight() / 2);
             frameCount = regions.size;
         }
@@ -77,7 +78,6 @@ public class AnimatedActor extends Actor {
     /**
      * returns the current frame of the animation
      * @param dt the time since the last time it was drawn
-     * @param looping Whether the animation should repeat itself
      * @return The frame to be drawn
      */
     public TextureRegion getCurrentFrame(float dt){

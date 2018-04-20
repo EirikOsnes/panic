@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -47,7 +49,7 @@ public class GameLobbyView extends AbstractView {
 
     private TextField waitingTxt, lobbyNameField;
     private ArrayList<TextField> playerTxtFields;
-    private TextField.TextFieldStyle txtStyle;
+    private TextField.TextFieldStyle txtStyle, rdyStyle;
 
     private Button exitBtn, readyBtn;
     private TextButton.TextButtonStyle btnStyle;
@@ -63,6 +65,8 @@ public class GameLobbyView extends AbstractView {
      *
      * The constructor is used to set up styling for text, buttons, etc...
      * If changes are made post-release, they should mostly be here.
+     *
+     * // TODO: popup when only one player is present, and hits "Ready".
      * */
     public GameLobbyView(final GameLobbyState lobbyState) {
         super(lobbyState);
@@ -83,6 +87,11 @@ public class GameLobbyView extends AbstractView {
         txtStyle.font = font;
         txtStyle.fontColor = Color.WHITE;
         txtStyle.background = skin.getDrawable("textfield");
+
+        rdyStyle = new TextField.TextFieldStyle();
+        rdyStyle.font = font;
+        rdyStyle.fontColor = Color.BLACK;
+        rdyStyle.background = skin.getDrawable("button-ready");
 
         btnStyle = new TextButton.TextButtonStyle();
         btnStyle.font = font;
@@ -142,7 +151,8 @@ public class GameLobbyView extends AbstractView {
         playerTxtFields = new ArrayList<>();
         usedNames = new ArrayList<>();
 
-        for (Integer playerID : lobbyState.getLobby().getPlayerIDs()){
+        for (int i = 0; i < lobbyState.getLobby().getPlayerIDs().size(); i++){
+            int playerID = lobbyState.getLobby().getPlayerIDs().get(i);
             int seed = playerID * lobbyState.getLobbyID();
             int offset = 0;
             while (true) {
@@ -152,6 +162,12 @@ public class GameLobbyView extends AbstractView {
                 if (! usedNames.contains(name)) {
                     usedNames.add(name);
                     if (playerID == Connection.getInstance().getConnectionID()) name = name + " (me)";
+                        TextField t = new TextField(name, txtStyle);
+
+                    // if player is ready/has selected vehicle
+                    if (lobbyState.getLobby().getVehicleTypes().get(i) != null){
+                        t.setStyle(rdyStyle);
+                    }
                     playerTxtFields.add(new TextField(name, txtStyle));
                     break;
         }}}
@@ -199,21 +215,37 @@ public class GameLobbyView extends AbstractView {
     }
 
     private void prepareMenuButtons(){
+        // Specify consequences in the bottom of this file
+        final LonelyGameDialog dialog = new LonelyGameDialog("", skin, "dialog");
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        dialog.text("Hitting 'Ready' now will start the game. Are you sure?", labelStyle);
+        dialog.button("Yes",true, btnStyle);
+        dialog.button("Cancel", false, btnStyle);
+        dialog.hide();
+
         readyBtn = new TextButton("Ready up", btnStyle);
-        if (lobbyState.isPlayerReady()) readyBtn.setColor(Color.GRAY);
+        if (lobbyState.isPlayerReady()) {
+            readyBtn.setColor(Color.GRAY);
+            int asdf = lobbyState.getLobby().getPlayerIDs().indexOf(Connection.getInstance().getConnectionID());
+            playerTxtFields.get(asdf).setStyle(rdyStyle);
+        }
+
         readyBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-            if (lobbyState.isPlayerReady()) {
-                System.out.println("'Ready' set to " + lobbyState.isPlayerReady());
-                return;
-            }
+                if (lobbyState.isPlayerReady()) {
+                    System.out.println("'Ready' set to " + lobbyState.isPlayerReady());
+                }
             // else
-            generateWaitingText();
-            lobbyState.setPlayerReady(true);
-            readyBtn.setColor(Color.GRAY);
-            lobbyState.handleInput("-2");
-//                Connection.getInstance().chooseVehicleType(carSelectBox.getSelected(), lobbyState.getLobbyID());
+                else if (lobbyState.getLobby().getPlayerIDs().size() <= 1) {
+                    dialog.show(stage);
+                }
+                else { // Player is ready
+                    generateWaitingText();
+                    lobbyState.setPlayerReady(true);
+                    readyBtn.setColor(Color.GRAY);
+                    lobbyState.handleInput("-2");
+                }
             }
         });
 
@@ -245,11 +277,6 @@ public class GameLobbyView extends AbstractView {
         stage.addActor(lobbyNameField);
         if (lobbyState.isPlayerReady()) generateWaitingText();
 
-//        topTable = new Table().center().top();
-//        topTable.add(lobbyNameField).width(SCREEN_WIDTH);
-//        topTable.row();
-//        stage.addActor(topTable);
-
     }
 
     private void generateWaitingText() {
@@ -274,5 +301,21 @@ public class GameLobbyView extends AbstractView {
         return carSelectBox.getSelected();
     }
 
+    private class LonelyGameDialog extends Dialog {
+
+        private LonelyGameDialog(String title, Skin skin, String windowStyleName) {
+            super(title, skin, windowStyleName);
+        }
+
+        @Override
+        protected void result(Object object) {
+            Boolean bool = (Boolean) object;
+            if(bool){
+                state.handleInput("-2");
+            }
+            else{
+            }
+        }
+    }
 
 }

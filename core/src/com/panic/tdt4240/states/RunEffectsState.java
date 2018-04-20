@@ -29,8 +29,8 @@ public class RunEffectsState extends State implements EventListener {
 
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
-        EventBus.getInstance().addListener(this);
         runEffectsView = new RunEffectsView(this);
+        EventBus.getInstance().addListener(this);
         Connection.getInstance().sendRunEffectsState(GameInstance.getInstance().getID());
     }
     public Vehicle getPlayerVehicle(){

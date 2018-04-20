@@ -4,9 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.models.Card;
-import com.panic.tdt4240.models.Lobby;
 import com.panic.tdt4240.models.ModelHolder;
-import com.panic.tdt4240.models.Vehicle;
 
 
 import org.java_websocket.client.WebSocketClient;

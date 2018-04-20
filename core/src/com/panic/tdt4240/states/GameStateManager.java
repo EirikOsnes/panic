@@ -55,6 +55,7 @@ public class GameStateManager {
     }
 
     private void setInputProcessor() {
+
         states.peek().getView().setInputProcessor();
     }
 

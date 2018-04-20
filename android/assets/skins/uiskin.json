@@ -28,7 +28,10 @@
     default: { font: default-font, fontColor: white }
   },
   com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
-    default: { vScroll: default-scroll, hScroll: default-scroll, vScrollKnob: default-round-large }
+    default: { vScroll: default-scroll, hScroll: default-scroll, vScrollKnob: default-round-large,
+      background: default-rect, hScrollKnob: default-round-large}
+    lobby: { vScroll: default-scroll, hScroll: default-scroll, vScrollKnob: default-round-large,
+      hScrollKnob: default-round-large}
   },
   com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
     default: {

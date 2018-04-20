@@ -85,7 +85,8 @@ public class GameListView extends AbstractView {
             lobbyBtnTable.add(button).width(300).pad(5); lobbyBtnTable.row();
         }
         // scrolls child widgets.
-        ScrollPane scroller = new ScrollPane(lobbyBtnTable, skin);
+        ScrollPane.ScrollPaneStyle style = skin.get("lobby", ScrollPane.ScrollPaneStyle.class);
+        ScrollPane scroller = new ScrollPane(lobbyBtnTable, style);
         scroller.setScrollingDisabled(true, false);
         scroller.setOverscroll(false, false);
         scroller.setWidth(SCREEN_WIDTH*0.7f);

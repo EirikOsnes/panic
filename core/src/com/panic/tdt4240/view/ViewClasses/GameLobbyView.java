@@ -49,6 +49,10 @@ public class GameLobbyView extends AbstractView {
     private SelectBox<String> carSelectBox;
     private SelectBox.SelectBoxStyle boxStyle;
 
+<<<<<<< Updated upstream
+=======
+    private Actor backgroundActor;
+>>>>>>> Stashed changes
     private GameLobbyState lobbyState;
 
     /** Lobby is retrieved after some time. Anything that is dependent on information

@@ -36,7 +36,7 @@ public class MenuView extends AbstractView {
         table = new Table();
         font = new BitmapFont();
         float textScale = GlobalConstants.GET_TEXT_SCALE();
-        font.getData().scale(textScale);
+        font.getData().scale(2*textScale);
 
         TextButton.TextButtonStyle style = skin.get("default", TextButton.TextButtonStyle.class);
         style.font=font;

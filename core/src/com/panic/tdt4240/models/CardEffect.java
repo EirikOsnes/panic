@@ -13,8 +13,10 @@ public class CardEffect {
     private boolean friendlyFire;
     private String requirementName = "none";
     private float requirementVal = 0;
+    private String missileType = "red";
+    private String animationType = "EXPLOSION";
 
-    CardEffect(String targetStatus, float value,int statusDuration, int splashRange, boolean friendlyFire) {
+    public CardEffect(String targetStatus, float value,int statusDuration, int splashRange, boolean friendlyFire) {
         this.targetStatus = targetStatus;
         this.value = value;
         this.statusDuration = statusDuration;
@@ -22,7 +24,7 @@ public class CardEffect {
         this.friendlyFire = friendlyFire;
     }
 
-    CardEffect(String targetStatus, float value,int statusDuration, int splashRange, boolean friendlyFire, String requirementName, float requirementVal) {
+    public CardEffect(String targetStatus, float value,int statusDuration, int splashRange, boolean friendlyFire, String requirementName, float requirementVal) {
         this(targetStatus,value,statusDuration,splashRange,friendlyFire);
         this.requirementName = requirementName;
         this.requirementVal = requirementVal;
@@ -54,5 +56,51 @@ public class CardEffect {
 
     public float getRequirementVal() {
         return requirementVal;
+    }
+
+    public String getMissileType() {
+        return missileType;
+    }
+
+    public void setMissileType(String missileType) {
+
+        switch (missileType) {
+            case "ATTACK":
+                this.missileType = "red";
+                break;
+            case "DEFENCE":
+                this.missileType = "none";
+                break;
+            case "EFFECT":
+                this.missileType = "none";
+                break;
+            default:
+                this.missileType = missileType;
+                break;
+        }
+    }
+
+    public String getAnimationType() {
+        return animationType;
+    }
+
+    public void setAnimationType(String animationType) {
+
+        switch (animationType) {
+            case "ATTACK":
+                this.animationType = "EXPLOSION";
+                break;
+            case "DEFENCE":
+                this.animationType = "EXPLOSION";
+                //TODO: Define this default value
+                break;
+            case "EFFECT":
+                this.animationType = "EXPLOSION";
+                //TODO: Define this default value
+                break;
+            default:
+                this.animationType = animationType;
+                break;
+        }
     }
 }

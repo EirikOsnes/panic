@@ -23,8 +23,8 @@ public class GameLobbyState extends State {
 
     public GameLobbyState(GameStateManager gsm, int lobbyID){
         super(gsm);
-        Connection.getInstance().updateLobby(lobbyID);
         view = new GameLobbyView(this);
+        Connection.getInstance().updateLobby(lobbyID);
     }
 
     public Lobby getLobby(){return lobby;}

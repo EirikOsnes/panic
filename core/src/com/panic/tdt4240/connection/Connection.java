@@ -202,6 +202,10 @@ public class Connection extends WebSocketClient{
         this.send("TOGAME//" + gameID + "//END_RUN_EFFECTS_STATE");
     }
 
+    public void sendResyncFinished(int gameID){
+        this.send("TOGAME//" + gameID + "//RESYNC_FINISHED");
+    }
+
     /**
      * The history string needs to be formatted as "CARDID&SENDERID&TARGETID&SEED//" where turns get separated
      * with "ENDTURN//".

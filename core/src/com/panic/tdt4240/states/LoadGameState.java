@@ -3,6 +3,8 @@ package com.panic.tdt4240.states;
 import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
+import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
@@ -22,15 +24,17 @@ import java.util.Stack;
  * The state for loading up a new game - or reloading a game.
  */
 
-public class LoadGameState extends State {
+public class LoadGameState extends State implements EventListener {
 
     private Connection connection;
     private boolean isLoading; //Flag to use for rendering of a loading screen.
     private LoadGameView view;
     private int lobbyID;
+    private boolean resync;
 
-    protected LoadGameState(GameStateManager gsm, int lobbyID) {
+    protected LoadGameState(GameStateManager gsm, int lobbyID, boolean resync) {
         super(gsm);
+        this.resync = resync;
         view = new LoadGameView(this);
         connection = Connection.getInstance();
         this.lobbyID = lobbyID;
@@ -129,6 +133,13 @@ public class LoadGameState extends State {
         callbackAdapter = new LoadGameAdapter();
     }
 
+    @Override
+    public void handleEvent(Event e) {
+        if (e.getT() == Event.Type.DESTROYED) {
+            Connection.getInstance().sendDestroyed(GameInstance.getInstance().getID(),e.getTargetID());
+        }
+    }
+
     private class LoadGameAdapter implements ICallbackAdapter {
 
         @Override
@@ -164,11 +175,12 @@ public class LoadGameState extends State {
 
             setUpVehiclePositions(vehicles,Long.parseLong(strings[4]));
 
-            if(strings.length>5){
+            if(strings.length>5 && resync){ //We are resyncing
                 GameInstance.getInstance().playTurns(strings[5]);
+                Connection.getInstance().sendResyncFinished(lobbyID);
+            }else {
+                sendToGame();
             }
-
-            sendToGame();
 
         }
     }

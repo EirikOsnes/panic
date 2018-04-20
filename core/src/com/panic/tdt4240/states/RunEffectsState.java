@@ -127,7 +127,7 @@ public class RunEffectsState extends State implements EventListener {
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            gsm.set(new LoadGameState(gsm, GameInstance.getInstance().getID()));
+                            gsm.set(new LoadGameState(gsm, GameInstance.getInstance().getID(),true));
                         }
                     });
                     break;

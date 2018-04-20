@@ -15,10 +15,10 @@ public class CloudAnimation extends AnimatedActor {
 
 
     public CloudAnimation(AnimationType cloudType){
-        this(0.1f, cloudType);
+        this(cloudType, 0.1f);
     }
 
-    public CloudAnimation(float maxFrameTime, AnimationType cloudType) {
+    public CloudAnimation(AnimationType cloudType, float maxFrameTime) {
         super(maxFrameTime);
         TextureAtlas atlas = new TextureAtlas("animations/" + cloudType.name().toLowerCase() +".atlas");
         Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();

@@ -14,7 +14,7 @@ public class ShieldAnimation extends CloudAnimation {
     }
 
     public ShieldAnimation(float maxFrameTime) {
-        super(maxFrameTime, AnimationType.SHIELD);
+        super(AnimationType.SHIELD, maxFrameTime);
     }
 
     @Override

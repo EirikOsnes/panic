@@ -73,8 +73,8 @@ public class RunEffectsView extends AbstractView {
         redMissile = new Missile(MissileType.RED);
         greenMissile = new Missile(MissileType.GREEN);
         shield = new ShieldAnimation();
-        healing = new CloudAnimation(AnimationType.HEALING);
-        debuff = new CloudAnimation(AnimationType.DEBUFF);
+        healing = new CloudAnimation(AnimationType.HEALING, 0.05f);
+        debuff = new CloudAnimation(AnimationType.DEBUFF, 0.05f);
         setUpMap();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);

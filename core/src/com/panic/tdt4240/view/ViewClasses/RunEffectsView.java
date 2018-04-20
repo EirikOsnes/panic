@@ -182,6 +182,8 @@ public class RunEffectsView extends AbstractView {
         }
         stage.addActor(redMissile);
         stage.addActor(greenMissile);
+        stage.addActor(yellowMissile);
+        stage.addActor(cyanMissile);
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
             int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
             Vehicle activeVehicle = gameInstance.getVehicleById(vehicleOnAsteroid.get(j)[0]);
@@ -267,8 +269,12 @@ public class RunEffectsView extends AbstractView {
             missile = redMissile;
         } else if (mt == MissileType.GREEN) {
             missile = greenMissile;
+        } else if (mt == MissileType.YELLOW) {
+            missile = yellowMissile;
+        } else if (mt == MissileType.CYAN) {
+            missile = cyanMissile;
         } else {
-            throw new IllegalArgumentException("Only red and green missiles implemented");
+            throw new IllegalArgumentException("Invalid MissileType");
         }
 
         Runnable missileRunnable = new Runnable() {

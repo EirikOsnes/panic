@@ -128,6 +128,9 @@ public class GameInstance {
 
     public void reset(){
         EventBus.getInstance().reset();
+        for (Asteroid a : asteroids) {
+            a.reset();
+        }
         gi = new GameInstance();
     }
 

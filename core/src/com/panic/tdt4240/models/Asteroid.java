@@ -181,6 +181,12 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
         removeVehicle.clear();
     }
 
+    public void reset(){
+        vehicleIDs = new ArrayList<>();
+        removeVehicle = new ArrayList<>();
+        statusHandler = new StatusHandler(this);
+    }
+
     @Override
     public int compareTo(Asteroid asteroid) {
         return this.id.compareTo(asteroid.id);

@@ -50,7 +50,7 @@ public class RunEffectsView extends AbstractView {
     private HashMap<String, Image> asteroidImages;
     private AnimationAdapter animator;
     private MapConnections mapConnections;
-    private final CloudAnimation explosion, poison;
+    private final CloudAnimation explosion, poison, shield, healing;
     private BitmapFont font;
     private Skin skin;
     private boolean isLeaving = false;
@@ -71,6 +71,8 @@ public class RunEffectsView extends AbstractView {
         explosion = new CloudAnimation(AnimationType.EXPLOSION);
         redMissile = new Missile(MissileType.RED);
         greenMissile = new Missile(MissileType.GREEN);
+        shield = new CloudAnimation(AnimationType.SHIELD);
+        healing = new CloudAnimation(AnimationType.HEALING);
         setUpMap();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);

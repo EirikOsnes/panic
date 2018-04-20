@@ -1,5 +1,6 @@
 package com.panic.tdt4240.view.animations;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
@@ -40,7 +41,7 @@ public class Missile extends AnimatedActor {
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
         if (isVisible()) {
-            batch.draw(currentFrame,getX(),getY(),getOriginX(),getOriginY(),currentFrame.getRegionWidth(),currentFrame.getRegionHeight(),1,1,getRotation(),true);
+            batch.draw(currentFrame,getX(),getY(),getOriginX(),getOriginY(),currentFrame.getRegionWidth(),currentFrame.getRegionHeight(), (Gdx.graphics.getWidth()/20)/getWidth(), (Gdx.graphics.getWidth()/20)/getHeight(),getRotation(),true);
         }
     }
 }

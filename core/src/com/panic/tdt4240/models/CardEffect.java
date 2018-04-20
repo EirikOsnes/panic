@@ -31,16 +31,7 @@ public class CardEffect {
         this.friendlyFire = friendlyFire;
         this.requirementName = requirementName;
         this.requirementVal = requirementVal;
-        if (targetStatus.equalsIgnoreCase("ATTACK")) {
-            missileType = MissileType.RED;
-            animationType = AnimationType.EXPLOSION;
-        } else if (targetStatus.equalsIgnoreCase("DEFENCE")) {
-            missileType = MissileType.NONE;
-            animationType = AnimationType.NONE;
-        } else if (targetStatus.equalsIgnoreCase("EFFECT")) {
-            missileType = MissileType.GREEN;
-            animationType = AnimationType.NONE;
-        }
+
     }
 
     public String getTargetStatus() {
@@ -75,15 +66,15 @@ public class CardEffect {
         return missileType;
     }
 
-    public void setMissileType(String missileType) {
-        this.missileType = MissileType.valueOf(missileType);
+    public void setMissileType(MissileType missileType) {
+        this.missileType = missileType;
     }
 
     public AnimationType getAnimationType() {
         return animationType;
     }
 
-    public void setAnimationType(String animationType) {
-        this.animationType = AnimationType.valueOf(animationType);
+    public void setAnimationType(AnimationType animationType) {
+        this.animationType = animationType;
     }
 }

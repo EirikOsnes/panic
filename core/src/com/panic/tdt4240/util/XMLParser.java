@@ -9,6 +9,10 @@ import com.panic.tdt4240.models.CardEffect;
 import com.panic.tdt4240.models.Map;
 import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
+import com.panic.tdt4240.view.animations.CloudAnimation;
+import com.panic.tdt4240.view.animations.CloudAnimation.AnimationType;
+import com.panic.tdt4240.view.animations.Missile;
+import com.panic.tdt4240.view.animations.Missile.MissileType;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -78,10 +82,28 @@ public class XMLParser {
                                             ? Integer.parseInt(effectElement.getElementsByTagName("requirement_value").item(0).getTextContent()) : 0
                                     );
                             if(effectElement.getElementsByTagName("missile_type").getLength()>0) {
-                                cardEffect.setMissileType(effectElement.getElementsByTagName("missile_type").item(0).getTextContent());
+                                cardEffect.setMissileType(MissileType.valueOf(effectElement.getElementsByTagName("missile_type").item(0).getTextContent()));
+                            } else {
+                                String cardType = myCard.getCardType().name();
+                                if (cardType.equalsIgnoreCase("ATTACK")) {
+                                    cardEffect.setMissileType(MissileType.RED);
+                                } else if (cardType.equalsIgnoreCase("DEFENCE")) {
+                                    cardEffect.setMissileType(MissileType.NONE);
+                                } else if (cardType.equalsIgnoreCase("EFFECT")) {
+                                    cardEffect.setMissileType(MissileType.NONE);
+                                }
                             }
                             if(effectElement.getElementsByTagName("animation_type").getLength()>0) {
-                                cardEffect.setAnimationType(effectElement.getElementsByTagName("animation_type").item(0).getTextContent());
+                                cardEffect.setAnimationType(AnimationType.valueOf(effectElement.getElementsByTagName("animation_type").item(0).getTextContent()));
+                            } else {
+                                String cardType = myCard.getCardType().name();
+                                if (cardType.equalsIgnoreCase("ATTACK")) {
+                                    cardEffect.setAnimationType(AnimationType.EXPLOSION);
+                                } else if (cardType.equalsIgnoreCase("DEFENCE")) {
+                                    cardEffect.setAnimationType(AnimationType.SHIELD);
+                                } else if (cardType.equalsIgnoreCase("EFFECT")) {
+                                    cardEffect.setAnimationType(AnimationType.NONE);
+                                }
                             }
                             myCard.addCardEffect(cardEffect);
                         }

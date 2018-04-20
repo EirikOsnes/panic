@@ -51,7 +51,7 @@ public class RunEffectsView extends AbstractView {
     private HashMap<String, Image> asteroidImages;
     private AnimationAdapter animator;
     private MapConnections mapConnections;
-    private final CloudAnimation explosion, poison, shield, healing;
+    private final CloudAnimation explosion, poison, shield, healing, debuff;
     private BitmapFont font;
     private Skin skin;
     private boolean isLeaving = false;
@@ -74,6 +74,7 @@ public class RunEffectsView extends AbstractView {
         greenMissile = new Missile(MissileType.GREEN);
         shield = new ShieldAnimation();
         healing = new CloudAnimation(AnimationType.HEALING);
+        debuff = new CloudAnimation(AnimationType.DEBUFF);
         setUpMap();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
@@ -211,6 +212,8 @@ public class RunEffectsView extends AbstractView {
         stage.addActor(explosion);
         stage.addActor(poison);
         stage.addActor(shield);
+        stage.addActor(healing);
+        stage.addActor(debuff);
     }
 
 
@@ -278,6 +281,8 @@ public class RunEffectsView extends AbstractView {
             cloud = healing;
         } else if (at == AnimationType.SHIELD){
             cloud = shield;
+        } else if (at == AnimationType.DEBUFF) {
+            cloud = debuff;
         } else {
             throw new IllegalArgumentException("Invalid AnimationType");
         }

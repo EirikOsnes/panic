@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class CloudAnimation extends AnimatedActor {
 
-    public enum AnimationType {NONE, EXPLOSION, GREENCLOUD, HEALING, SHIELD}
+    public enum AnimationType {NONE, EXPLOSION, GREENCLOUD, HEALING, SHIELD, DEBUFF}
 
 
     public CloudAnimation(AnimationType cloudType){

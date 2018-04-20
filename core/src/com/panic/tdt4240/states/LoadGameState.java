@@ -11,7 +11,7 @@ import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.XMLParser;
-import com.panic.tdt4240.view.LoadGameView;
+import com.panic.tdt4240.view.ViewClasses.LoadGameView;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 
 import java.util.ArrayList;
@@ -31,7 +31,6 @@ public class LoadGameState extends State {
 
     protected LoadGameState(GameStateManager gsm, int lobbyID) {
         super(gsm);
-        view = new LoadGameView(this);
         connection = Connection.getInstance();
         this.lobbyID = lobbyID;
         setUpGameInstance();

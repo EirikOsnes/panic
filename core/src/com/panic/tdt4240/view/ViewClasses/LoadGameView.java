@@ -1,4 +1,4 @@
-package com.panic.tdt4240.view;
+package com.panic.tdt4240.view.ViewClasses;
 
 import com.panic.tdt4240.states.State;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;

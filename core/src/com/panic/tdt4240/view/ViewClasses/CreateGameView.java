@@ -179,13 +179,13 @@ public class CreateGameView extends AbstractView {
         });
         exitToMainMenuBtn.pack();
 
-        table.add(in_LobbyName).top().padTop(Gdx.graphics.getHeight() / 16f).width(Gdx.graphics.getWidth()/4).height(Gdx.graphics.getHeight()/20).row();
-        table.add(in_mapID).padTop(Gdx.graphics.getHeight() / 16f).width(Gdx.graphics.getWidth()/4).height(Gdx.graphics.getHeight()/20).row();
-        table.add(in_maxPlayers).padTop(Gdx.graphics.getHeight() / 16f).width(Gdx.graphics.getWidth()/8).height(Gdx.graphics.getHeight()/20).row();
+        table.add(in_LobbyName).top().padTop(SCREEN_HEIGHT / 16f).width(SCREEN_WIDTH/4).height(SCREEN_HEIGHT/20).row();
+        table.add(in_mapID).padTop(SCREEN_HEIGHT / 16f).width(SCREEN_WIDTH/4).height(SCREEN_HEIGHT/20).row();
+        table.add(in_maxPlayers).padTop(SCREEN_HEIGHT / 16f).width(SCREEN_WIDTH/8).height(SCREEN_HEIGHT/20).row();
 
         // TODO: a button for text input and direct connection to a game lobby?
-        table.add(createLobbyBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
-        table.add(exitToMainMenuBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
+        table.add(createLobbyBtn).width(SCREEN_WIDTH/2).height(SCREEN_HEIGHT/15).pad(SCREEN_HEIGHT/40).row();
+        table.add(exitToMainMenuBtn).width(SCREEN_WIDTH/2).height(SCREEN_HEIGHT/15).pad(SCREEN_HEIGHT/40).row();
 
         table.pack();
 

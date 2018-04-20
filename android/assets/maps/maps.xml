@@ -9,7 +9,6 @@
             <asteroid id = "A-002" sprite = "meteorBrown_big2">
                 <posX>0.456</posX>
                 <posY>0.076</posY>
-
             </asteroid>
             <asteroid id = "A-003" sprite = "meteorBrown_big3">
                 <posX>0.778</posX>
@@ -68,6 +67,89 @@
             <connection>
                 <vertexID>A-006</vertexID>
                 <vertexID>A-007</vertexID>
+            </connection>
+        </connections>
+    </map>
+
+    <map id = "M-002">
+        <asteroids>
+            <asteroid id = "A-001" sprite = "meteorBrown_big1">
+                <posX>0.5</posX>
+                <posY>0.5</posY>
+            </asteroid>
+            <asteroid id = "A-002" sprite = "meteorBrown_big2">
+                <posX>0.7</posX>
+                <posY>0.8</posY>
+            </asteroid>
+            <asteroid id = "A-003" sprite = "meteorBrown_big3">
+                <posX>1.0</posX>
+                <posY>0.5</posY>
+            </asteroid>
+            <asteroid id = "A-004" sprite = "meteorBrown_big4">
+                <posX>0.7</posX>
+                <posY>0.2</posY>
+            </asteroid>
+            <asteroid id = "A-005">
+                <posX>0.3</posX>
+                <posY>0.2</posY>
+            </asteroid>
+            <asteroid id = "A-006" sprite = "meteorBrown_big2">
+                <posX>0.0</posX>
+                <posY>0.5</posY>
+            </asteroid>
+            <asteroid id = "A-007" sprite = "meteorBrown_big3">
+                <posX>0.3</posX>
+                <posY>0.8</posY>
+            </asteroid>
+        </asteroids>
+        <connections>
+            <connection>
+                <vertexID>A-001</vertexID>
+                <vertexID>A-002</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-001</vertexID>
+                <vertexID>A-003</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-001</vertexID>
+                <vertexID>A-004</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-001</vertexID>
+                <vertexID>A-005</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-001</vertexID>
+                <vertexID>A-006</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-001</vertexID>
+                <vertexID>A-007</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-002</vertexID>
+                <vertexID>A-003</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-003</vertexID>
+                <vertexID>A-004</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-004</vertexID>
+                <vertexID>A-005</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-005</vertexID>
+                <vertexID>A-006</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-006</vertexID>
+                <vertexID>A-007</vertexID>
+            </connection>
+            <connection>
+                <vertexID>A-007</vertexID>
+                <vertexID>A-002</vertexID>
             </connection>
         </connections>
     </map>

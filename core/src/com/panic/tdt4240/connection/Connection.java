@@ -30,7 +30,7 @@ public class Connection extends WebSocketClient{
                 URI uri = new URI("ws://panicserver.herokuapp.com");
                 ourInstance = new Connection(uri);
                 ourInstance.connectBlocking(); //FIXME: This returns a boolean - should it be used?
-                //ourInstance.setConnectionLostTimeout(30);
+                ourInstance.setConnectionLostTimeout(30);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -185,6 +185,7 @@ public class Connection extends WebSocketClient{
     }
 
     public void sendPlayCardState(int gameID){
+        System.out.println("Sending BEGIN_TURN");
         this.send("TOGAME//" + gameID + "//BEGIN_TURN");
     }
 

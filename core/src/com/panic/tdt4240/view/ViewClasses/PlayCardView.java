@@ -16,8 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.models.Asteroid;
+import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.PlayCardState;
@@ -26,6 +26,7 @@ import com.panic.tdt4240.util.MapMethods;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by victor on 05.03.2018.
@@ -46,9 +47,9 @@ public class PlayCardView extends AbstractView{
     private BitmapFont font;
     private TextureAtlas textureAtlas, btnAtlas;
     private TextButton.TextButtonStyle buttonStyle;
-    private ArrayList<Boolean> checked;
     private float timeLeft;
     private boolean isLeaving = false;
+    private int currentButton;
 
     public PlayCardView(PlayCardState playCardState){
         super(playCardState);
@@ -56,7 +57,6 @@ public class PlayCardView extends AbstractView{
         sr.setColor(1,1,1,0);
         sr.setAutoShapeType(true);
         int amountCards = ((PlayCardState) state).getHandSize();
-        checked = new ArrayList<>();
         cardButtons = new ArrayList<>(amountCards);
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         table = new Table();
@@ -76,9 +76,25 @@ public class PlayCardView extends AbstractView{
         textureAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin.addRegions(textureAtlas);
 
+        currentButton = -1;
+
+        //Setup cardInfo button, it is removed when clicked
+        final TextButton.TextButtonStyle cardInfoStyle = new TextButton.TextButtonStyle();
+        cardInfoStyle.font = font;
+        cardInfoStyle.fontColor = Color.BLACK;
+        cardInfo = new TextButton("", cardInfoStyle);
+        cardInfo.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                cardInfo.remove();
+            }
+        });
+        cardInfo.setPosition(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4);
+        cardInfo.setWidth(Gdx.graphics.getWidth() / 2);
+        cardInfo.setHeight(Gdx.graphics.getHeight() / 2);
+
         //Create a button for each card
         for (int i = 0; i < amountCards; i++) {
-            checked.add(false);
             final TextButton.TextButtonStyle cardButtonStyle = new TextButton.TextButtonStyle();
             cardButtonStyle.font = font;
             //Images the button has in the normal up-position, and when it is pressed down
@@ -95,54 +111,47 @@ public class PlayCardView extends AbstractView{
             cardButtons.get(index).addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y){
-                    if(!selectTarget){
-                        //Sets up cardInfo, the tooltip for the card
-                        if(!(cardInfo == null)){
-                            cardInfo.remove();
-                        }
-                        TextButton.TextButtonStyle cardInfoStyle = new TextButton.TextButtonStyle();
-                        cardInfoStyle.font = font;
-                        cardInfoStyle.fontColor = Color.BLACK;
-                        cardInfoStyle.up = skin.getDrawable(((PlayCardState) state).getCardType(index));
+                    cardInfo.remove();
+                    //Currentbutton == -1, a brand new card can be selected
+                    //Currentbutton == index, the currently selected button should be deselected
+                    //Currentbutton != index or -1, we want to deselect the previous button and select a new one
 
+                    if(currentButton != index) {
+                        //Checks if current button should be deselected
+                        if(currentButton != -1){
+                            state.handleInput(currentButton);
+                        }
+                        currentButton = index;
+
+                        Card card = ((PlayCardState) state).getCard(index);
+                        //Setup for the tooltip
                         String[] words = ((PlayCardState) state).getCardToolTip(index);
-                        String tooltip = ((PlayCardState) state).getCardName(index) + "\n\n";
+                        String tooltip = String.format("%s\n\n", card.getName());
+
                         int length = 0;
-                        for(String string : words){
+                        for (String string : words) {
                             length = length + string.length() + 1;
-                            if(length > 20){
+                            if (length > 20) {
                                 length = 0;
-                                tooltip = tooltip.concat("\n" + string + " ");
-                            }
-                            else{
-                                tooltip = tooltip.concat(string + " ");
+                                tooltip = tooltip.concat(String.format("\n%s ", string));
+                            } else {
+                                tooltip = tooltip.concat(String.format("%s ", string));
                             }
                         }
-                        String allowedTarget = ((PlayCardState)state).getAllowedTarget(index);
-                        String targetType = ((PlayCardState)state).getTargetType(index);
-                        tooltip = tooltip.concat("\n\nCan effect: " + allowedTarget);
-                        tooltip = tooltip.concat("\nCan be aimed at: " + targetType);
-                        if(!checked.get(index)) {
-                            cardInfo = new TextButton(tooltip, cardInfoStyle);
-                            cardInfo.addListener(new ClickListener() {
-                                @Override
-                                public void clicked(InputEvent event, float x, float y) {
-                                    cardInfo.remove();
-                                }
-                            });
-                            cardInfo.setPosition(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4);
-                            cardInfo.setWidth(Gdx.graphics.getWidth() / 2);
-                            cardInfo.setHeight(Gdx.graphics.getHeight() / 2);
+
+                        tooltip = tooltip.concat(String.format("\n\nCan effect: %s", card.getAllowedTarget().name().toLowerCase()));
+                        tooltip = tooltip.concat(String.format("\nCan be aimed at: %s", card.getTargetType().name().toLowerCase()));
+                        tooltip = tooltip.concat(String.format(Locale.ENGLISH,"\nMin range: %d", card.getMinRange()));
+                        tooltip = tooltip.concat(String.format(Locale.ENGLISH,"\nMax range: %d", card.getMaxRange()));
+                        tooltip = tooltip.concat(String.format(Locale.ENGLISH,"\nPriority: %d", card.getPriority()));
+
+                        cardInfo.getStyle().up = skin.getDrawable(((PlayCardState) state).getCardType(index));
+                        cardInfo.setText(tooltip);
+                        if(!((PlayCardState)state).isCardSelected(index)){
                             stage.addActor(cardInfo);
                         }
-                        checked.set(index, !checked.get(index));
-                    }
-                    else{
-                        cardInfo.remove();
-                        checked.set(index, false);
                     }
                     state.handleInput(index);
-                    System.out.println(selectTarget);
                 }
             });
             table.add(cardButtons.get(index)).width(Gdx.graphics.getWidth()/amountCards).height(Gdx.graphics.getHeight()/5);
@@ -216,6 +225,10 @@ public class PlayCardView extends AbstractView{
         stage.addActor(invalidTarget);
         setUpMap();
     }
+    public void resetCurrentButton(){
+        currentButton = -1;
+    }
+
     /**
      * Method for setting up the map with listeners on each asteroid and vehicle
      */
@@ -277,14 +290,15 @@ public class PlayCardView extends AbstractView{
             HashMap<String, Float> effectsMap =  vehicleV.getStatusHandler().getAllResultants();
             String effects = "";
             for(String key : effectsMap.keySet()){
-                effects = effects.concat(String.format("%s = %.1f\n",key, effectsMap.get(key)));
+                effects = effects.concat(String.format(Locale.ENGLISH,"%s = %.1f\n",key, effectsMap.get(key)));
             }
-
             final Dialog vehicleInfo = new Dialog("Info", dialogSkin, "dialog");
             vehicleInfo.getTitleLabel().setFontScale(GlobalConstants.GET_TEXT_SCALE() + 1);
-
-            Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+            BitmapFont infoFont  = new BitmapFont();
+            infoFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*1.5f);
+            Label.LabelStyle labelStyle = new Label.LabelStyle(infoFont, Color.WHITE);
             vehicleInfo.text(effects, labelStyle);
+
             vehicleInfo.button("Ok",false, buttonStyle);
 
             vehicle.addListener(new ClickListener(){
@@ -301,21 +315,24 @@ public class PlayCardView extends AbstractView{
             });
             stage.addActor(vehicle);
         }
-        Table playerTable = new Table();
-        playerTable.setWidth(Gdx.graphics.getWidth()/10);
-        playerTable.setHeight(Gdx.graphics.getWidth()/20);
         Vehicle playerVehicle = ((PlayCardState)state).getPlayerVehicle();
-        float health = Math.round(playerVehicle.getStatusHandler().getStatusResultant("health"));
-        float maxHealth = Math.round(playerVehicle.getStatusHandler().getStatusBaseValue("health"));
+        float health = playerVehicle.getStatusHandler().getStatusResultant("health");
+        float maxHealth = playerVehicle.getStatusHandler().getStatusBaseValue("health");
 
         Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
         player.rotateBy(270);
-        String hp = String.format("HP: %.1f/%.1f", health, maxHealth);
+        String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.0f", health, maxHealth);
         Label label = new Label(hp,new Label.LabelStyle(font, Color.RED));
+        float width = label.getWidth();
+
+        Table playerTable = new Table();
+        playerTable.setWidth(width);
+        playerTable.setHeight(Gdx.graphics.getWidth()/20);
         playerTable.add(player).width(Gdx.graphics.getWidth()/20).height(Gdx.graphics.getWidth()/10).row();
         playerTable.add(label).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
         playerTable.pack();
-        playerTable.setPosition(Gdx.graphics.getWidth() - playerTable.getWidth()*2,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
+
+        playerTable.setPosition(Gdx.graphics.getWidth() - width,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
 
         stage.addActor(playerTable);
     }
@@ -361,7 +378,10 @@ public class PlayCardView extends AbstractView{
 
     public void update(float dt){
         timeLeft -= dt;
-        timer.setText(Math.round(timeLeft) + "");
+        if(timeLeft < 0){
+            timeLeft = 0;
+        }
+        timer.setText(String.format(Locale.ENGLISH,"%.1f", timeLeft));
         invalidTarget.act(dt);
 
     }

@@ -35,7 +35,6 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
 
 //TODO Asteroid should contain the string of the asteroid image, not the sprite
     public Asteroid(String path, String id) {
-        EventBus.getInstance().addListener(this);
         this.texture = path;
         this.id = id;
         neighbours = new ArrayList<>();

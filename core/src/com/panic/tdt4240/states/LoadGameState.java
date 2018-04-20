@@ -27,7 +27,6 @@ import java.util.Stack;
 
 public class LoadGameState extends State implements EventListener {
 
-    private Connection connection;
     private boolean isLoading; //Flag to use for rendering of a loading screen.
     private LoadGameView view;
     private int lobbyID;
@@ -37,11 +36,9 @@ public class LoadGameState extends State implements EventListener {
         super(gsm);
         this.resync = resync;
         view = new LoadGameView(this);
-        connection = Connection.getInstance();
         this.lobbyID = lobbyID;
         setUpGameInstance();
         view = new LoadGameView(this);
-        EventBus.getInstance().readyForRemove();
         EventBus.getInstance().addListener(this);
     }
 
@@ -52,7 +49,7 @@ public class LoadGameState extends State implements EventListener {
         GameInstance.getInstance().reset();
         GameInstance.getInstance().setID(lobbyID);
         isLoading = true;
-        connection.getGameInfo(lobbyID);
+        Connection.getInstance().getGameInfo(lobbyID);
     }
 
     private void setGIValues(ArrayList<Vehicle> vehicles, String mapID, String myVehicleID, String seedString){
@@ -98,7 +95,7 @@ public class LoadGameState extends State implements EventListener {
      * Checks to see if the client is reconnecting - i.e. there is a history of cards played, and plays these if that is the case.
      */
     private void checkForHistory() {
-        connection.getLog();
+        Connection.getInstance().getLog();
 
     }
 

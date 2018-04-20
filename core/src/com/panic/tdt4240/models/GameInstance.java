@@ -38,6 +38,10 @@ public class GameInstance {
         this.map = map;
 
         setAsteroids(map.getAsteroids());
+
+        for (Asteroid a : asteroids) {
+            EventBus.getInstance().addListener(a);
+        }
     }
 
     public int getID() {
@@ -123,6 +127,7 @@ public class GameInstance {
     }
 
     public void reset(){
+        EventBus.getInstance().reset();
         gi = new GameInstance();
     }
 

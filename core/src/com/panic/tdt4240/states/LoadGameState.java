@@ -41,6 +41,7 @@ public class LoadGameState extends State implements EventListener {
         this.lobbyID = lobbyID;
         setUpGameInstance();
         view = new LoadGameView(this);
+        EventBus.getInstance().readyForRemove();
         EventBus.getInstance().addListener(this);
     }
 
@@ -141,6 +142,7 @@ public class LoadGameState extends State implements EventListener {
     public void handleEvent(Event e) {
         if (e.getT() == Event.Type.DESTROYED) {
             Connection.getInstance().sendDestroyed(GameInstance.getInstance().getID(),e.getTargetID());
+            System.out.println("Sending destroy from LoadGameState");
         }
     }
 

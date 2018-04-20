@@ -52,6 +52,8 @@ public class MenuView extends AbstractView {
         settingsBtn = new TextButton("Settings", skin);
         Label title = new Label(PanicGame.TITLE,skin);
         Label fullTitle = new Label(PanicGame.FULL_TITLE,skin);
+        title.setFontScale(3.0f);
+        fullTitle.setFontScale(2.0f);
 
         float padding = Gdx.graphics.getHeight()/40;
 

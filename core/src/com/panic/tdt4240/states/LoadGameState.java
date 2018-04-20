@@ -29,8 +29,9 @@ public class LoadGameState extends State {
     private LoadGameView view;
     private int lobbyID;
 
-    protected LoadGameState(GameStateManager gsm, int lobbyID) {
+    protected LoadGameState(GameStateManager gsm, int lobbyID, boolean check) {
         super(gsm);
+        check = false;
         connection = Connection.getInstance();
         this.lobbyID = lobbyID;
         setUpGameInstance();

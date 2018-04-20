@@ -30,7 +30,7 @@ public class GlobalConstants {
         if(Gdx.app.getType() == Application.ApplicationType.Android){
             return Gdx.graphics.getHeight()/Gdx.graphics.getWidth()*1.5f;
         }
-        return 0;
+        return 1;
     }
 
 }

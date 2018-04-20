@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -18,13 +17,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.GameLobbyState;
-import com.panic.tdt4240.states.PlayCardState;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.PlayerNameGenerator;
 import java.util.ArrayList;
@@ -52,7 +49,7 @@ public class GameLobbyView extends AbstractView {
 
     private TextField waitingTxt, lobbyNameField;
     private ArrayList<TextField> playerTxtFields;
-    private TextField.TextFieldStyle txtStyle;
+    private TextField.TextFieldStyle txtStyle, rdyStyle;
 
     private Button exitBtn, readyBtn;
     private TextButton.TextButtonStyle btnStyle;
@@ -90,6 +87,11 @@ public class GameLobbyView extends AbstractView {
         txtStyle.font = font;
         txtStyle.fontColor = Color.WHITE;
         txtStyle.background = skin.getDrawable("textfield");
+
+        rdyStyle = new TextField.TextFieldStyle();
+        rdyStyle.font = font;
+        rdyStyle.fontColor = Color.BLACK;
+        rdyStyle.background = skin.getDrawable("button-ready");
 
         btnStyle = new TextButton.TextButtonStyle();
         btnStyle.font = font;
@@ -164,8 +166,7 @@ public class GameLobbyView extends AbstractView {
 
                     // if player is ready/has selected vehicle
                     if (lobbyState.getLobby().getVehicleTypes().get(i) != null){
-                        // FIXME M@@@@@@@@@@@@@@@@NGUUUUUUUUUUUUUUU$$$
-                        t.getStyle().background = skin.getDrawable("button-ready");
+                        t.setStyle(rdyStyle);
                     }
                     playerTxtFields.add(new TextField(name, txtStyle));
                     break;
@@ -214,7 +215,7 @@ public class GameLobbyView extends AbstractView {
     }
 
     private void prepareMenuButtons(){
-
+        // Specify consequences in the bottom of this file
         final LonelyGameDialog dialog = new LonelyGameDialog("", skin, "dialog");
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
         dialog.text("Hitting 'Ready' now will start the game. Are you sure?", labelStyle);
@@ -222,28 +223,24 @@ public class GameLobbyView extends AbstractView {
         dialog.button("Cancel", false, btnStyle);
         dialog.hide();
 
-/*        finishedButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if(!isLeaving){
-                    stage.addActor(dialog);
-                    dialog.show(stage);
-                }
-            }
-        }); /**/
-
         readyBtn = new TextButton("Ready up", btnStyle);
-        if (lobbyState.isPlayerReady()) readyBtn.setColor(Color.GRAY);
+        if (lobbyState.isPlayerReady()) {
+            readyBtn.setColor(Color.GRAY);
+            int asdf = lobbyState.getLobby().getPlayerIDs().indexOf(Connection.getInstance().getConnectionID());
+            playerTxtFields.get(asdf).setStyle(rdyStyle);
+        }
+
         readyBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (lobbyState.isPlayerReady()) {
                     System.out.println("'Ready' set to " + lobbyState.isPlayerReady());
-                    return;
                 }
             // else
-                else if (lobbyState.getLobby().getPlayerIDs().size() <= 1) dialog.show(stage);
-                else {
+                else if (lobbyState.getLobby().getPlayerIDs().size() <= 1) {
+                    dialog.show(stage);
+                }
+                else { // Player is ready
                     generateWaitingText();
                     lobbyState.setPlayerReady(true);
                     readyBtn.setColor(Color.GRAY);
@@ -314,10 +311,9 @@ public class GameLobbyView extends AbstractView {
         protected void result(Object object) {
             Boolean bool = (Boolean) object;
             if(bool){
-
+                state.handleInput("-2");
             }
             else{
-                ;
             }
         }
     }

@@ -286,10 +286,11 @@ public class PlayCardState extends State {
         }
         return cardsAndTargets;
     }
+
     public void leaveGame(){
-        Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
-        //TODO: Send to GameResultState
-        gsm.reset();
+        //Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
+        gsm.set(new GameResultsState(gsm));
+        //gsm.reset();
     }
 
     @Override
@@ -353,7 +354,22 @@ public class PlayCardState extends State {
                     break;
 
                 case "GAME_OVER": //strings[1] = VICTORY/DEFEAT/DRAW
-                    //TODO: Handle this
+                    if (strings[1].equalsIgnoreCase("DEFEAT")){
+                        //TODO: Do you wish to spectate? For now, you're sent to GameResultState.
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                leaveGame();
+                            }
+                        });
+                    }else{
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                leaveGame();
+                            }
+                        });
+                    }
                     break;
                 case "RECONNECT_GAME":
                     //TODO: Create a pop up, where you can choose to rejoin a game in progress.

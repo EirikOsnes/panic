@@ -56,4 +56,9 @@ public class EventBus {
             sub.handleEvent(e);
         }
     }
+
+    public void reset(){
+        subs = new ArrayList<>();
+        removeList = new ArrayList<>();
+    }
 }

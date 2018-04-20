@@ -229,6 +229,10 @@ public class Connection extends WebSocketClient{
         this.send(returnString);
     }
 
+    public void gameOverInfo(int gameID){
+        this.send("TOGAME//" + gameID + "//GAME_OVER_INFO");
+    }
+
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         Gdx.app.log("", "onOpen");

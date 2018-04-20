@@ -46,7 +46,7 @@ public class MenuState extends State {
             gsm.push(new GameListState(gsm));
             System.out.println("Listing lobbies...");
         } else if (o == (Integer) 3) {
-            gsm.push(new SettingsState(gsm));
+            gsm.push(new GameResultsState(gsm));
             System.out.println("Settings...");
         }
 
@@ -74,7 +74,7 @@ public class MenuState extends State {
         Player p4 = new Player(new Stack<Card>()); dedbodies.add(p4);
         Player p5 = new Player(new Stack<Card>()); dedbodies.add(p5);
         Player p6 = new Player(new Stack<Card>()); dedbodies.add(p6);
-        gsm.set(new GameResultsState(gsm, dedbodies));
+        gsm.set(new GameResultsState(gsm));
         System.out.println("results state created");
     }
 

@@ -47,9 +47,9 @@ public class GameResultsView extends AbstractView {
         font = new BitmapFont();
         Label.LabelStyle style = new Label.LabelStyle();
         labelFont = new BitmapFont();
-        labelFont.getData().scale(2.5f);
+        labelFont.getData().scale(2.0f);
         style.font = labelFont;
-        label = new Label("LABEL",style);
+        label = new Label("LOADING",style);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
 
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),btnAtlas);
@@ -73,7 +73,7 @@ public class GameResultsView extends AbstractView {
         table.add(label).top();
         table.center();
         table.row().center().padTop(50);
-        table.add(exitToMainMenuBtn).bottom();
+        table.add(exitToMainMenuBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).bottom();
         table.background(new TextureRegionDrawable(new TextureRegion(bg)));
 
         exitToMainMenuBtn.addListener(new ChangeListener() {

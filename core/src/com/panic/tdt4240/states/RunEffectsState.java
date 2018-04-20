@@ -101,7 +101,6 @@ public class RunEffectsState extends State implements EventListener {
         else if (e.getT() == Event.Type.DESTROYED) {
             System.out.println("Sending destroy from RunEffectsState");
             Connection.getInstance().sendDestroyed(GameInstance.getInstance().getID(),e.getTargetID());
-            runEffectsView.destroyVehicle(e.getTargetID());
         }
 
         if (e.getMissileType() != MissileType.NONE) {

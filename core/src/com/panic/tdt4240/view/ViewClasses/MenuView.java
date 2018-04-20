@@ -1,20 +1,14 @@
 package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
@@ -28,8 +22,7 @@ import com.panic.tdt4240.util.GlobalConstants;
 public class MenuView extends AbstractView {
 
 
-    private Button createGameBtn, joinGameBtn, settingsBtn;
-    private TextureAtlas buttonAtlas;
+    private TextButton createGameBtn, joinGameBtn, settingsBtn;
     private Skin skin;
     private BitmapFont font;
     private Table table;
@@ -37,27 +30,31 @@ public class MenuView extends AbstractView {
 
     public MenuView(final MenuState menuState) {
         super(menuState);
+        skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         table = new Table();
         font = new BitmapFont();
         float textScale = GlobalConstants.GET_TEXT_SCALE();
-
         font.getData().scale(textScale);
-        buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
-        skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
 
-        createGameBtn = new TextButton("Create New Game", skin);
-        joinGameBtn = new TextButton("Join Game", skin);
-        settingsBtn = new TextButton("Settings", skin);
-        Label title = new Label(PanicGame.TITLE,skin);
-        Label fullTitle = new Label(PanicGame.FULL_TITLE,skin);
+        TextButton.TextButtonStyle style = skin.get("default", TextButton.TextButtonStyle.class);
+        style.font=font;
+        createGameBtn = new TextButton("Create New Game", style);
+        joinGameBtn = new TextButton("Join Game", style);
+        settingsBtn = new TextButton("Settings", style);
+
+        Label.LabelStyle labelStyle = skin.get("default", Label.LabelStyle.class);
+        labelStyle.font=font;
+        Label title = new Label(PanicGame.TITLE,labelStyle);
+        Label fullTitle = new Label(PanicGame.FULL_TITLE,labelStyle);
 
         float padding = Gdx.graphics.getHeight()/40;
 
         table.setFillParent(true);
-        table.add(title).top().padBottom(padding/2);
-        table.row().center(); table.add(fullTitle);
+        table.add(title).top().padBottom(padding);
+        table.row().center();
+        table.add(fullTitle).padBottom(padding);
         table.center();
         table.row();
         table.add(createGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
@@ -115,6 +112,7 @@ public class MenuView extends AbstractView {
     public void dispose(){
         font.dispose();
         stage.dispose();
+        background.dispose();
     }
 
 

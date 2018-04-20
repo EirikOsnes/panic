@@ -79,8 +79,10 @@ public class Vehicle implements EventListener,IStatusAble {
     }
 
     public void destroy(){
-        isDestroyed = true;
-        EventFactory.postDestroyedEvent(vehicleID,vehicleID);
-        EventBus.getInstance().removeListener(this);
+        if(!isDestroyed) {
+            isDestroyed = true;
+            EventFactory.postDestroyedEvent(vehicleID, vehicleID);
+            EventBus.getInstance().removeListener(this);
+        }
     }
 }

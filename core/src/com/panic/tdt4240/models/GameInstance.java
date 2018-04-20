@@ -1,5 +1,6 @@
 package com.panic.tdt4240.models;
 
+import com.panic.tdt4240.events.EventBus;
 import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.util.IStatusAble;
 
@@ -217,6 +218,7 @@ public class GameInstance {
     public void playTurns(String strings){
         for (ArrayList<String[]> s : readTurns(strings)){
             playTurn(s);
+            EventBus.getInstance().readyForRemove();
         }
     }
 

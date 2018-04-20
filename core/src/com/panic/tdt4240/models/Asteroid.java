@@ -170,9 +170,11 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
     }
 
     public void destroy(){
-        isDestroyed = true;
-        EventFactory.postDestroyedEvent(id,id);
-        EventBus.getInstance().removeListener(this);
+        if(!isDestroyed) {
+            isDestroyed = true;
+            EventFactory.postDestroyedEvent(id, id);
+            EventBus.getInstance().removeListener(this);
+        }
     }
 
     public void readyToRemove(){

@@ -174,7 +174,7 @@ public class Connection extends WebSocketClient{
      * @param target
      */
     public void sendDestroyed(int gameID, String target){
-
+        System.out.println("Sent a destroy vehicle call");
         this.send("TOGAME//" + gameID + "//DESTROY//" + target + "//" + connectionID);
 
     }

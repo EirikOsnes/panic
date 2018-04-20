@@ -189,26 +189,31 @@ public class RunEffectsView extends AbstractView {
             vehicle.setOrigin(Align.center);
             stage.addActor(vehicle);
         }
-        Table playerTable = new Table();
-        playerTable.setWidth(Gdx.graphics.getWidth()/10);
-        playerTable.setHeight(Gdx.graphics.getWidth()/20);
+
+        stage.addActor(setUpPlayerInfoTable());
+        stage.addActor(explosion);
+    }
+    private Table setUpPlayerInfoTable(){
         Vehicle playerVehicle = ((RunEffectsState)state).getPlayerVehicle();
         health = playerVehicle.getStatusHandler().getStatusResultant("health");
         maxHealth = playerVehicle.getStatusHandler().getStatusBaseValue("health");
 
         Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
         player.rotateBy(270);
-
         String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.0f", health, maxHealth);
         hpLabel = new Label(hp,new Label.LabelStyle(font, Color.RED));
         float width = hpLabel.getWidth();
+
+        Table playerTable = new Table();
+        playerTable.setWidth(width);
+        playerTable.setHeight(Gdx.graphics.getWidth()/20);
         playerTable.add(player).width(Gdx.graphics.getWidth()/20).height(Gdx.graphics.getWidth()/10).row();
         playerTable.add(hpLabel).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
         playerTable.pack();
+
         playerTable.setPosition(Gdx.graphics.getWidth() - width,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
 
-        stage.addActor(playerTable);
-        stage.addActor(explosion);
+        return playerTable;
     }
 
     private void updateHealth(){
@@ -281,6 +286,7 @@ public class RunEffectsView extends AbstractView {
     public void dispose(){
         stage.dispose();
         sr.dispose();
+        font.dispose();
         skin.dispose();
         btnAtlas.dispose();
     }

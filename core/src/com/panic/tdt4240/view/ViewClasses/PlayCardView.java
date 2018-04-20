@@ -106,6 +106,8 @@ public class PlayCardView extends AbstractView{
 
             TextButton button = new TextButton("", cardButtonStyle);
             cardButtons.add(i, button);
+
+        //TODO Idea: Let every button have value 0 to 2, which keeps track of their state
             final int index = i;
             cardButtons.get(index).addListener(new ClickListener(){
                 @Override
@@ -276,7 +278,6 @@ public class PlayCardView extends AbstractView{
             String colorCar = ((PlayCardState) state).getColorCar(vehicleOnAsteroid.get(j)[0]);
             Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
-
             final Image vehicle = new Image(skin.getDrawable(colorCar));
             Vector2 position = MapMethods.asteroidPositions(asteroidPos.x, asteroidPos.y,
                     asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
@@ -284,22 +285,7 @@ public class PlayCardView extends AbstractView{
             vehicle.setPosition(position.x, position.y);
             vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
             final int vIndex = j;
-
-            Vehicle vehicleV = GameInstance.getInstance().getVehicleById(vehicleOnAsteroid.get(j)[0]);
-            HashMap<String, Float> effectsMap =  vehicleV.getStatusHandler().getAllResultants();
-            String effects = "";
-            for(String key : effectsMap.keySet()){
-                effects = effects.concat(String.format(Locale.ENGLISH,"%s = %.1f\n",key, effectsMap.get(key)));
-            }
-            final Dialog vehicleInfo = new Dialog("Info", dialogSkin, "dialog");
-            vehicleInfo.getTitleLabel().setFontScale(GlobalConstants.GET_TEXT_SCALE() + 1);
-            BitmapFont infoFont  = new BitmapFont();
-            infoFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*1.5f);
-            Label.LabelStyle labelStyle = new Label.LabelStyle(infoFont, Color.WHITE);
-            vehicleInfo.text(effects, labelStyle);
-
-            vehicleInfo.button("Ok",false, buttonStyle);
-
+            final Dialog vehicleInfo = createVehicleInfo(GameInstance.getInstance().getVehicleById(vehicleOnAsteroid.get(j)[0]));
             vehicle.addListener(new ClickListener(){
                 public void clicked(InputEvent event, float x, float y){
                     if(selectTarget){
@@ -314,6 +300,9 @@ public class PlayCardView extends AbstractView{
             });
             stage.addActor(vehicle);
         }
+        stage.addActor(setUpPlayerInfoTable());
+    }
+    private Table setUpPlayerInfoTable(){
         Vehicle playerVehicle = ((PlayCardState)state).getPlayerVehicle();
         float health = playerVehicle.getStatusHandler().getStatusResultant("health");
         float maxHealth = playerVehicle.getStatusHandler().getStatusBaseValue("health");
@@ -333,7 +322,23 @@ public class PlayCardView extends AbstractView{
 
         playerTable.setPosition(Gdx.graphics.getWidth() - width,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
 
-        stage.addActor(playerTable);
+        return playerTable;
+    }
+    private Dialog createVehicleInfo(Vehicle vehicle){
+        HashMap<String, Float> effectsMap =  vehicle.getStatusHandler().getAllResultants();
+        String effects = "";
+        for(String key : effectsMap.keySet()){
+            effects = effects.concat(String.format(Locale.ENGLISH,"%s = %.1f\n",key, effectsMap.get(key)));
+        }
+        final Dialog vehicleInfo = new Dialog("Info", dialogSkin, "dialog");
+        vehicleInfo.getTitleLabel().setFontScale(GlobalConstants.GET_TEXT_SCALE() + 1);
+        BitmapFont infoFont  = new BitmapFont();
+        infoFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*1.5f);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(infoFont, Color.WHITE);
+        vehicleInfo.text(effects, labelStyle);
+
+        vehicleInfo.button("Ok",false, buttonStyle);
+        return vehicleInfo;
     }
 
     /**
@@ -399,9 +404,12 @@ public class PlayCardView extends AbstractView{
     }
     public void dispose(){
         stage.dispose();
+        sr.dispose();
         font.dispose();
         skin.dispose();
+        dialogSkin.dispose();
         textureAtlas.dispose();
+        btnAtlas.dispose();
     }
 
     private class ToastMessage extends Label{

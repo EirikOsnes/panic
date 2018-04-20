@@ -105,8 +105,6 @@ public class GameListView extends AbstractView {
         scroller.setWidth(SCREEN_WIDTH);
         scroller.setHeight(SCREEN_HEIGHT*3/4f);
         scroller.setPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, Align.center);
-        System.out.printf("Scroller pos: [%f, %f]\n", scroller.getX(Align.center), scroller.getY(Align.center));
-        System.out.printf("Screen width: [%d, %d]\n", SCREEN_WIDTH, SCREEN_HEIGHT);
     }
 
 

@@ -31,6 +31,7 @@ public class GameResultsState extends State {
     @Override
     public void handleInput(Object o) {
     if ((Integer) o == -1){ // back to main menu. Reset entirely.
+            Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
             gsm.reset();
         }
     }

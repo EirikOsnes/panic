@@ -41,7 +41,7 @@ public class RunEffectsState extends State implements EventListener {
     }
 
     public void leaveGame(){
-        Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
+        //Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
         gsm.set(new GameResultsState(gsm));
         //gsm.reset();
     }

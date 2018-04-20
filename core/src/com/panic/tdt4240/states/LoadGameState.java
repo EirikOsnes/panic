@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventBus;
 import com.panic.tdt4240.events.EventListener;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
@@ -40,6 +41,7 @@ public class LoadGameState extends State implements EventListener {
         this.lobbyID = lobbyID;
         setUpGameInstance();
         view = new LoadGameView(this);
+        EventBus.getInstance().addListener(this);
     }
 
     /**
@@ -121,6 +123,8 @@ public class LoadGameState extends State implements EventListener {
     @Override
     public void dispose() {
         view.dispose();
+        EventBus.getInstance().removeListener(this);
+        EventBus.getInstance().readyForRemove();
     }
 
     @Override

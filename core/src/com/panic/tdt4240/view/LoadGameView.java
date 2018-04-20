@@ -17,6 +17,7 @@ public class LoadGameView extends AbstractView {
 
     @Override
     public void render() {
+        stage.draw();
 
     }
 

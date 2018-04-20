@@ -9,15 +9,14 @@ import com.badlogic.gdx.utils.Array;
  * Created by magnus on 15.04.2018.
  */
 
-public class Explosion  extends AnimatedActor {
+public class CloudAnimation extends AnimatedActor {
 
-    public static final String EXPLOSION = "explosion";
-    public static final String POISON = "poison";
+    public enum AnimationType {EXPLOSION, GREENCLOUD, REDCLOUD}
 
-    public Explosion(float maxFrameTime, String cloudType) {
+    public CloudAnimation(float maxFrameTime, AnimationType cloudType) {
         //TODO: fix rendering error with poison
         super(maxFrameTime);
-        TextureAtlas atlas = new TextureAtlas("animations/" + cloudType +".atlas");
+        TextureAtlas atlas = new TextureAtlas("animations/" + cloudType.name().toLowerCase() +".atlas");
         Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();
         setAnimation(regions);
     }
@@ -32,6 +31,8 @@ public class Explosion  extends AnimatedActor {
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
-        batch.draw(currentFrame, getX(), getY(),getOriginX(),getOriginY(),getWidth(),getHeight(), (Gdx.graphics.getWidth()/6)/getWidth(),(Gdx.graphics.getWidth()/6)/getWidth(),0);
+        if(currentFrameTime<=getDuration()) {
+            batch.draw(currentFrame, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), (Gdx.graphics.getWidth() / 6) / getWidth(), (Gdx.graphics.getWidth() / 6) / getWidth(), 0);
+        }
     }
 }

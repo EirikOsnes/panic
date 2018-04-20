@@ -27,7 +27,7 @@ import com.panic.tdt4240.states.State;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.util.MapMethods;
-import com.panic.tdt4240.view.animations.Explosion;
+import com.panic.tdt4240.view.animations.CloudAnimation;
 import com.panic.tdt4240.view.animations.Missile;
 import com.panic.tdt4240.view.animations.MissileAction;
 import com.panic.tdt4240.view.animations.MoveVehicleAction;
@@ -48,7 +48,7 @@ public class RunEffectsView extends AbstractView {
     private HashMap<String, Image> asteroidImages;
     private AnimationAdapter animator;
     private MapConnections mapConnections;
-    private final Explosion explosion;
+    private final CloudAnimation cloudAnimation;
     private BitmapFont font;
     private Skin skin;
     private boolean isLeaving = false;
@@ -65,8 +65,8 @@ public class RunEffectsView extends AbstractView {
         font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
 
         animator = new AnimationAdapter();
-        explosion = new Explosion(0.1f, Explosion.POISON);
-        missile = new Missile(Missile.COLOR_RED);
+        cloudAnimation = new CloudAnimation(0.1f, CloudAnimation.AnimationType.GREENCLOUD);
+        missile = new Missile(Missile.MissileType.RED);
         setUpMap();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
@@ -199,7 +199,7 @@ public class RunEffectsView extends AbstractView {
         playerTable.setPosition(Gdx.graphics.getWidth() - playerTable.getWidth()*2,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
 
         stage.addActor(playerTable);
-        stage.addActor(explosion);
+        stage.addActor(cloudAnimation);
     }
 
 
@@ -240,13 +240,13 @@ public class RunEffectsView extends AbstractView {
         Runnable explosionRunnable = new Runnable() {
             @Override
             public void run() {
-                explosion.startAnimation(vehicle.getX(Align.center), vehicle.getY(Align.center), Align.center);
+                cloudAnimation.startAnimation(vehicle.getX(Align.center), vehicle.getY(Align.center), Align.center);
             }
         };
         Action action1 = Actions.sequence(Actions.run(missileRunnable), new MissileAction(vehicle, instigator));
         animator.addAction(action1, missile);
-        Action action2 = Actions.sequence(Actions.run(explosionRunnable), Actions.delay(explosion.getDuration()));
-        animator.addAction(action2, explosion);
+        Action action2 = Actions.sequence(Actions.run(explosionRunnable), Actions.delay(cloudAnimation.getDuration()));
+        animator.addAction(action2, cloudAnimation);
     }
 
     public void attackAsteroid(String asteroidID) {

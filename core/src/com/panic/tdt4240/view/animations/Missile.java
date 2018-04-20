@@ -13,19 +13,21 @@ public class Missile extends AnimatedActor {
     public static final String COLOR_RED = "RED";
     public static final String COLOR_GREEN = "GREEN";
 
-    public Missile(float maxFrameTime, String color){
+    public enum MissileType {RED, GREEN}
+
+    public Missile(float maxFrameTime, MissileType color){
         super(maxFrameTime);
         setVisible(false);
         TextureAtlas atlas = new TextureAtlas("animations/missiles.atlas");
         Array<TextureAtlas.AtlasRegion> regions = new Array<>();
         for(int i=0;i<3;i++){
-            String regionName = color.toLowerCase() + "-" + (i+1);
+            String regionName = color.name().toLowerCase() + "-" + (i+1);
             regions.add(atlas.findRegion(regionName));
         }
         setAnimation(regions);
     }
 
-    public Missile(String color){
+    public Missile(MissileType color){
         this(0.1f, color);
     }
 

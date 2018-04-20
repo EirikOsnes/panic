@@ -40,6 +40,7 @@ public class EventFactory {
             e.setStatus(ce.getTargetStatus());
             e.setRequirementName(ce.getRequirementName());
             e.setRequirementVal(ce.getRequirementVal());
+            e.setSplashRange(ce.getSplashRange());
             eb.postEvent(e);
             events.add(e);
         }

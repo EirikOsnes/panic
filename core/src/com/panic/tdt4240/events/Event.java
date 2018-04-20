@@ -11,6 +11,8 @@ import com.panic.tdt4240.util.StatusHandler;
 public class Event {
 
 
+
+
     /**
      * An enum that defines the type of event that occurred
      */
@@ -22,7 +24,8 @@ public class Event {
     private String status, requirementName;
     private int duration, splashRange;
     private float effectValue, requirementVal;
-    private boolean friendlyFire, splashDamage;
+    private boolean friendlyFire, splashDamage, missileAnimation, explosionAnimation;
+
 
     Event(Type t, String targetID, String instigatorID) {
         this.t = t;

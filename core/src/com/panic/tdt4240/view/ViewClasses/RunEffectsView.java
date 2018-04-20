@@ -33,6 +33,7 @@ import com.panic.tdt4240.view.animations.Missile;
 import com.panic.tdt4240.view.animations.Missile.MissileType;
 import com.panic.tdt4240.view.animations.MissileAction;
 import com.panic.tdt4240.view.animations.MoveVehicleAction;
+import com.panic.tdt4240.view.animations.ShieldAnimation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,7 +72,7 @@ public class RunEffectsView extends AbstractView {
         explosion = new CloudAnimation(AnimationType.EXPLOSION);
         redMissile = new Missile(MissileType.RED);
         greenMissile = new Missile(MissileType.GREEN);
-        shield = new CloudAnimation(AnimationType.SHIELD);
+        shield = new ShieldAnimation();
         healing = new CloudAnimation(AnimationType.HEALING);
         setUpMap();
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
@@ -209,6 +210,7 @@ public class RunEffectsView extends AbstractView {
         stage.addActor(playerTable);
         stage.addActor(explosion);
         stage.addActor(poison);
+        stage.addActor(shield);
     }
 
 

@@ -20,23 +20,21 @@ public class CloudAnimation extends AnimatedActor {
 
     public CloudAnimation(float maxFrameTime, AnimationType cloudType) {
         super(maxFrameTime);
-
         TextureAtlas atlas = new TextureAtlas("animations/" + cloudType.name().toLowerCase() +".atlas");
         Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();
         setAnimation(regions);
     }
 
-
     @Override
     public void act(float dt){
         super.act(dt);
-        currentFrame = getCurrentFrame(dt,false);
+        currentFrame = getCurrentFrame(dt);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha){
         super.draw(batch,parentAlpha);
-        if(currentFrameTime<=getDuration()) {
+        if(currentFrameTime<getDuration()) {
             batch.draw(currentFrame, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), (Gdx.graphics.getWidth() / 6) / getWidth(), (Gdx.graphics.getWidth() / 6) / getWidth(), 0);
         }
     }

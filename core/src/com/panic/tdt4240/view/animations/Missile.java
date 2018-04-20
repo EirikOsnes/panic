@@ -33,7 +33,7 @@ public class Missile extends AnimatedActor {
     public void act(float dt){
         super.act(dt);
         currentFrameTime+=dt;
-        currentFrame = getCurrentFrame(dt,true);
+        currentFrame = getCurrentFrame(dt);
         //TODO
     }
 

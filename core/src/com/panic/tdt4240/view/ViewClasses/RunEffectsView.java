@@ -200,12 +200,13 @@ public class RunEffectsView extends AbstractView {
         Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
         player.rotateBy(270);
 
-        String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.1f", health, maxHealth);
+        String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.0f", health, maxHealth);
         hpLabel = new Label(hp,new Label.LabelStyle(font, Color.RED));
+        float width = hpLabel.getWidth();
         playerTable.add(player).width(Gdx.graphics.getWidth()/20).height(Gdx.graphics.getWidth()/10).row();
         playerTable.add(hpLabel).width(Gdx.graphics.getWidth()/10).height(Gdx.graphics.getWidth()/7).row();
         playerTable.pack();
-        playerTable.setPosition(Gdx.graphics.getWidth() - playerTable.getWidth()*2,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
+        playerTable.setPosition(Gdx.graphics.getWidth() - width,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
 
         stage.addActor(playerTable);
         stage.addActor(explosion);
@@ -214,7 +215,7 @@ public class RunEffectsView extends AbstractView {
     private void updateHealth(){
         //TODO Call this method when an animation is finished
         health = ((RunEffectsState)state).getPlayerVehicle().getStatusHandler().getStatusResultant("health");
-        String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.1f", health, maxHealth);
+        String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.0f", health, maxHealth);
         hpLabel.setText(hp);
     }
 

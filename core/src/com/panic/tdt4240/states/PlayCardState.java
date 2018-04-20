@@ -113,9 +113,17 @@ public class PlayCardState extends State {
                     justClicked = handIndex;
                     playedCardsList.add(handIndex);
                     selectedCards.set(handIndex, true);
-                    playView.clickedButton(handIndex, 1);
                     numPlayedCards++;
-                    playView.setSelectTarget(true);
+
+                    if(hand.get(playedCardsList.get(numPlayedCards-1)).getAllowedTarget().equals(PLAYER)){
+                        playView.clickedButton(handIndex, -1);
+                        playView.setSelectTarget(false);
+                        selectTarget(GameInstance.getInstance().getPlayer().getVehicle().getVehicleID());
+                    }
+                    else{
+                        playView.clickedButton(handIndex, 1);
+                        playView.setSelectTarget(true);
+                    }
                 }
             } else if (o instanceof String) {
                 vehicleTarget = false;

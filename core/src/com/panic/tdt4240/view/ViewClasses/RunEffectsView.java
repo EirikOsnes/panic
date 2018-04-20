@@ -135,7 +135,6 @@ public class RunEffectsView extends AbstractView {
             }
         }
     }
-
     private void setUpMap() {
         mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         asteroidImages = new HashMap<>();
@@ -293,6 +292,7 @@ public class RunEffectsView extends AbstractView {
         private Runnable run = new Runnable() {
             @Override
             public void run() {
+                //updateHealth();
                 if (!empty) {
                     nextAction();
                 }

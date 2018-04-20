@@ -106,7 +106,6 @@ public class PlayCardView extends AbstractView{
 
             TextButton button = new TextButton("", cardButtonStyle);
             cardButtons.add(i, button);
-
             final int index = i;
             cardButtons.get(index).addListener(new ClickListener(){
                 @Override

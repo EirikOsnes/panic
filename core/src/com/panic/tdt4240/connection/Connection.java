@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.ModelHolder;
 
-
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -193,6 +192,7 @@ public class Connection extends WebSocketClient{
      * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
      */
     public void sendRunEffectsState(int gameID){
+        System.out.println("sent runEffectState");
         this.send("TOGAME//" + gameID + "//ENTERED_RUN_EFFECTS_STATE");
     }
 

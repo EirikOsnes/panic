@@ -1,6 +1,10 @@
 package com.panic.tdt4240.events;
 
 import com.panic.tdt4240.util.StatusHandler;
+import com.panic.tdt4240.view.animations.CloudAnimation;
+import com.panic.tdt4240.view.animations.CloudAnimation.AnimationType;
+import com.panic.tdt4240.view.animations.Missile;
+import com.panic.tdt4240.view.animations.Missile.MissileType;
 
 /**
  * This is a class that represents the Events in the game panic
@@ -17,6 +21,8 @@ public class Event {
     public enum Type {ATTACK, DESTROYED, MOVE, TIMING}
 
     private Type t;
+    private MissileType missileType;
+    private AnimationType cloudType;
     private StatusHandler.TimingType tt;
     private String instigatorID, targetID;
     private String status, requirementName;
@@ -24,10 +30,13 @@ public class Event {
     private float effectValue, requirementVal;
     private boolean friendlyFire, splashDamage;
 
+
     Event(Type t, String targetID, String instigatorID) {
         this.t = t;
         this.targetID = targetID;
         this.instigatorID = instigatorID;
+        this.missileType = MissileType.NONE;
+        this.cloudType = AnimationType.NONE;
     }
 
     public String getStatus() {
@@ -76,6 +85,22 @@ public class Event {
 
     public boolean isSplashDamage() {
         return splashDamage;
+    }
+
+    public MissileType getMissileType() {
+        return missileType;
+    }
+
+    public AnimationType getCloudType() {
+        return cloudType;
+    }
+
+    void setMissileType(MissileType missileType) {
+        this.missileType = missileType;
+    }
+
+    void setCloudType(AnimationType cloudType) {
+        this.cloudType = cloudType;
     }
 
     void setSplashDamage(boolean splashDamage) {
@@ -134,6 +159,7 @@ public class Event {
         e.setRequirementVal(this.requirementVal);
         e.setSplashDamage(false);
         e.setSplashRange(0);
+        //e.setCloudType(this.cloudType);
         return e;
     }
 }

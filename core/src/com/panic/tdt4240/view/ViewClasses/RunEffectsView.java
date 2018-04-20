@@ -10,11 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -23,7 +19,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Pool;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
@@ -101,7 +96,19 @@ public class RunEffectsView extends AbstractView {
         ButtonStyle.font = font;
         ButtonStyle.up = skin.getDrawable("button-up");
         ButtonStyle.down = skin.getDrawable("button-down");
-        final FinishDialog dialog = new FinishDialog("Leave", skin, "dialog");
+        final Dialog dialog = new Dialog("Leave", skin, "dialog"){
+            @Override
+            protected void result(Object object) {
+                Boolean bool = (Boolean) object;
+                if(bool){
+                    isLeaving = true;
+                    ((RunEffectsState)state).leaveGame();
+                }
+                else{
+                    remove();
+                }
+            }
+        };
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
 
         dialog.text("Are you sure you want to leave?", labelStyle);
@@ -120,22 +127,7 @@ public class RunEffectsView extends AbstractView {
         });
         stage.addActor(finishedButton);
     }
-    private class FinishDialog extends Dialog {
-        private FinishDialog(String title, Skin skin, String windowStyleName) {
-            super(title, skin, windowStyleName);
-        }
-        @Override
-        protected void result(Object object) {
-            Boolean bool = (Boolean) object;
-            if(bool){
-                isLeaving = true;
-                ((RunEffectsState)state).leaveGame();
-            }
-            else{
-                remove();
-            }
-        }
-    }
+
     private void setUpMap() {
         mapConnections = new MapConnections(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         asteroidImages = new HashMap<>();
@@ -210,6 +202,34 @@ public class RunEffectsView extends AbstractView {
         playerTable.setPosition(Gdx.graphics.getWidth() - width,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
 
         return playerTable;
+    }
+    private void defeatMessage(){
+        //TODO Call this method when the player is defeated
+        TextureAtlas btnAtlas = new TextureAtlas("skins/uiskin.atlas");
+        Skin dialogSkin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+
+        buttonStyle.up = skin.getDrawable("button-up");
+        buttonStyle.down = skin.getDrawable("button-down");
+        Dialog defeatDialog = new Dialog("", dialogSkin, "default"){
+            @Override
+            protected void result(Object object) {
+                Boolean bool = (Boolean) object;
+                if(bool){
+                    ((RunEffectsState)state).leaveGame();
+                }
+                else{
+                    remove();
+                }
+            }
+        };
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        defeatDialog.text("You have been defeated!\nDo you want to leave the game, or spectate?", labelStyle);
+        defeatDialog.button("Leave",true, buttonStyle);
+        defeatDialog.button("Spectate", false, buttonStyle);
+        stage.addActor(defeatDialog);
+        defeatDialog.show(stage);
     }
 
     private void updateHealth(){

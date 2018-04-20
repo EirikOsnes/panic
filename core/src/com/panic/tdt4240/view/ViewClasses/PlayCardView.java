@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
@@ -193,7 +194,19 @@ public class PlayCardView extends AbstractView{
         //If player is dead, set next turn automatically, create leave button with confirmation dialog
         else{
             ((PlayCardState) state).finishRound();
-            final FinishDialog dialog = new FinishDialog("", dialogSkin, "dialog");
+            final Dialog dialog = new Dialog("", dialogSkin, "dialog"){
+                @Override
+                protected void result(Object object) {
+                    Boolean bool = (Boolean) object;
+                    if(bool){
+                        isLeaving = true;
+                        ((PlayCardState)state).leaveGame();
+                    }
+                    else{
+                        remove();
+                    }
+                }
+            };
             Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
             dialog.text("Are you sure you want to leave?", labelStyle);
             dialog.button("Yes",true, buttonStyle);
@@ -271,6 +284,7 @@ public class PlayCardView extends AbstractView{
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
             int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
             String colorCar = ((PlayCardState) state).getColorCar(vehicleOnAsteroid.get(j)[0]);
+
             Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
             final Image vehicle = new Image(skin.getDrawable(colorCar));
@@ -279,6 +293,7 @@ public class PlayCardView extends AbstractView{
                     colorCar);
             vehicle.setPosition(position.x, position.y);
             vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
+
             final int vIndex = j;
             final Dialog vehicleInfo = createVehicleInfo(GameInstance.getInstance().getVehicleById(vehicleOnAsteroid.get(j)[0]));
             vehicle.addListener(new ClickListener(){
@@ -297,6 +312,7 @@ public class PlayCardView extends AbstractView{
         }
         stage.addActor(setUpPlayerInfoTable());
     }
+
     private Table setUpPlayerInfoTable(){
         Vehicle playerVehicle = ((PlayCardState)state).getPlayerVehicle();
         float health = playerVehicle.getStatusHandler().getStatusResultant("health");
@@ -431,21 +447,6 @@ public class PlayCardView extends AbstractView{
             }
         }
     }
-    private class FinishDialog extends Dialog {
-        private FinishDialog(String title, Skin skin, String windowStyleName) {
-            super(title, skin, windowStyleName);
-        }
-        @Override
-        protected void result(Object object) {
-            Boolean bool = (Boolean) object;
-            if(bool){
-                isLeaving = true;
-                ((PlayCardState)state).leaveGame();
-            }
-            else{
-                remove();
-            }
-        }
-    }
+
 
 }

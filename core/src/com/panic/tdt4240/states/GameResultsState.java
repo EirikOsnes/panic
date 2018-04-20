@@ -28,11 +28,6 @@ public class GameResultsState extends State {
         view.setLabelText(strings[1]);
     }
 
-    public void updateInfo(String label){
-        view.setLabelText(label);
-    }
-
-
     @Override
     public void handleInput(Object o) {
     if ((Integer) o == -1){ // back to main menu. Reset entirely.

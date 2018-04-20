@@ -169,7 +169,7 @@
             <status_duration>1</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>true</friendly_fire>
-            <missile_type>GREEN</missile_type>
+            <missile_type>YELLOW</missile_type>
             <animation_type>DEBUFF</animation_type>
         </card_effect>
     </card>

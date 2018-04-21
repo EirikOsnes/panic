@@ -12,9 +12,8 @@ import java.awt.Color;
 public class PanicGame extends ApplicationAdapter {
 
 	public static final String TITLE = "DON'T PANIC";
-
-	//public static final String FULL_TITLE = "Defamatory Outrage of Notoriously Thick-headed \n" +
-	//		"People Assaulting Neighbours on Interstellar Comets";
+	/*public static final String FULL_TITLE = "Defamatory Outrage of Notoriously Thick-headed \n" +
+			"People Assaulting Neighbours on Interstellar Comets";*/
 	public static final String FULL_TITLE = "People Assaulting Neighbours\non Interstellar Comets";
 
 

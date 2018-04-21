@@ -16,7 +16,6 @@ import java.lang.Thread;
 
 public class CreateGameState extends State {
 
-    CreateGameView view;
     int maxPlayerCount;
     String mapID;
     String name;

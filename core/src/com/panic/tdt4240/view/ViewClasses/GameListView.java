@@ -32,8 +32,8 @@ public class GameListView extends AbstractView {
     private BitmapFont font;
     private Texture bg;
 
-    private GameListState listState;
     private Table lobbyBtnTable;
+    private GameListState listState;
 
     public static final String error0 = "Error: full lobby.";
     public static final String error1 = "Error: lobby not found.";
@@ -47,7 +47,7 @@ public class GameListView extends AbstractView {
 
         bg = new Texture("misc/background.png");
         font = new BitmapFont();
-        font.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
+        font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
 
@@ -79,8 +79,7 @@ public class GameListView extends AbstractView {
         if (! listState.getLobbyListData().isEmpty()){
             for (int i = 0; i < listState.getLobbyListData().size(); i++) {
                 final String data[] = listState.getLobbyListData().get(i);
-                TextButton button = new TextButton(data[0], btnStyle);
-                button.setHeight(button.getHeight()*2.2f);
+                TextButton button = new TextButton(data[0], skin);
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -88,12 +87,12 @@ public class GameListView extends AbstractView {
                         state.handleInput(data[1]); // lobbyID
                     }
                 });
-                lobbyBtnTable.add(button).width(GlobalConstants.SCALE_WIDTH*3.0f/2.0f).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
+                lobbyBtnTable.add(button).width(300).pad(5);
                 lobbyBtnTable.row();
             }
-
         }
-        //lobbyBtnTable.row();
+
+        lobbyBtnTable.row();
 
         // scrolls child widgets.
         ScrollPane.ScrollPaneStyle style = skin.get("lobby", ScrollPane.ScrollPaneStyle.class);
@@ -111,7 +110,7 @@ public class GameListView extends AbstractView {
         TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class);
         btnStyle.font = font;
         TextButton exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
-        exitToMainMenuBtn.getLabelCell().pad(exitToMainMenuBtn.getLabelCell().getPadTop(), GlobalConstants.PADDING, exitToMainMenuBtn.getLabelCell().getPadBottom(), GlobalConstants.PADDING);
+        exitToMainMenuBtn.getLabelCell().pad(exitToMainMenuBtn.getLabelCell().getPadTop(), SCREEN_WIDTH/16, exitToMainMenuBtn.getLabelCell().getPadBottom(), SCREEN_WIDTH/16);
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -120,7 +119,7 @@ public class GameListView extends AbstractView {
         });
 
         TextButton refreshBtn = new TextButton("Refresh list", btnStyle);
-        refreshBtn.getLabelCell().pad(refreshBtn.getLabelCell().getPadTop(), GlobalConstants.PADDING, refreshBtn.getLabelCell().getPadBottom(), GlobalConstants.PADDING);
+        refreshBtn.getLabelCell().pad(refreshBtn.getLabelCell().getPadTop(), SCREEN_WIDTH/16, refreshBtn.getLabelCell().getPadBottom(), SCREEN_WIDTH/16);
         refreshBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -131,8 +130,8 @@ public class GameListView extends AbstractView {
         Table exitTable = new Table();
         exitTable.setFillParent(true);
         exitTable.bottom();
-        exitTable.add(refreshBtn).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
-        exitTable.add(exitToMainMenuBtn).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
+        exitTable.add(refreshBtn).height(GlobalConstants.SCALE_HEIGHT).pad(SCREEN_WIDTH/16);
+        exitTable.add(exitToMainMenuBtn).height(GlobalConstants.SCALE_HEIGHT).pad(SCREEN_WIDTH/16);
         exitTable.pack();
         stage.addActor(exitTable);
         //TODO

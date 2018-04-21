@@ -12,8 +12,6 @@ import com.panic.tdt4240.view.ViewClasses.GameResultsView;
 
 public class GameResultsState extends State {
 
-    GameResultsView view;
-
     public GameResultsState(GameStateManager gsm){ // winner = last index
         super(gsm);
         view = new GameResultsView(this);
@@ -21,7 +19,7 @@ public class GameResultsState extends State {
     }
 
     public void updateInfo(String[] strings){
-        view.setLabelText(strings[1]);
+        ((GameResultsView) view).setLabelText(strings[1]);
     }
 
     @Override

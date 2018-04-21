@@ -21,7 +21,6 @@ import com.panic.tdt4240.util.GlobalConstants;
 
 public class MenuView extends AbstractView {
 
-
     private BitmapFont font;
     private Texture background;
 
@@ -32,8 +31,7 @@ public class MenuView extends AbstractView {
         cam.setToOrtho(false,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Table table = new Table();
         font = new BitmapFont();
-        float textScale = GlobalConstants.GET_TEXT_SCALE();
-        font.getData().scale(2*textScale);
+        font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
 
         TextButton.TextButtonStyle style = skin.get("default", TextButton.TextButtonStyle.class);
         style.font=font;
@@ -47,19 +45,18 @@ public class MenuView extends AbstractView {
         Label title = new Label(PanicGame.TITLE,labelStyle);
         Label fullTitle = new Label(PanicGame.FULL_TITLE,labelStyle);
 
+        float padding = Gdx.graphics.getHeight()/40;
         title.setFontScale(1 + GlobalConstants.GET_TEXT_SCALE()*3);
         fullTitle.setFontScale(1 + GlobalConstants.GET_TEXT_SCALE()*1.5f);
 
-
         table.setFillParent(true);
-        table.add(title).top().padBottom(GlobalConstants.PADDING);
-        table.row().center();
-        table.add(fullTitle).padBottom(GlobalConstants.PADDING);
+        table.add(title).top().padBottom(padding/2);
+        table.row().center(); table.add(fullTitle);
         table.center();
         table.row();
-        table.add(createGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
+        table.add(createGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
         table.row();
-        table.add(joinGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
+        table.add(joinGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
         table.row();
 //        table.add(settingsBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
 
@@ -109,8 +106,8 @@ public class MenuView extends AbstractView {
     }
 
     public void dispose(){
-        font.dispose();
         stage.dispose();
+        font.dispose();
         background.dispose();
     }
 

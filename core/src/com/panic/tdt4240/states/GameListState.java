@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class GameListState extends State {
 
-    private GameListView view;
     ArrayList<String[]> lobbyListData;
     private static String err_full_lobby = "Error: full lobby.";
     private static String err_lobby404 = "Error: lobby not found.";
@@ -37,6 +36,9 @@ public class GameListState extends State {
 
     public void updateLobbyList(){
         Connection.getInstance().getAllLobbies();
+        //TODO: Actually visualize this list. Use ScrollPane
+        // import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+        // https://stackoverflow.com/questions/15484077/libgdx-and-scrollpane-with-multiple-widgets
     }
     
     public void connectToLobby(int i){
@@ -57,14 +59,22 @@ public class GameListState extends State {
                     updateLobbyList();
                 }
             });
+/*            if (failedToEnterLobby) {
+                updateLobbyList();
+                System.out.println("Check 2; if this ever triggers then you fucked up bigtime");
+            } else if (triedToEnterLobby) {
+                failedToEnterLobby = true;
+                System.out.println("Check 1");
+                updateLobbyList();
+            } // nothing has gone wrong*/
         }
         try {    // error handling
             if (s.equals("error:Full lobby")) {
-                view.popup(GameListView.error0);
+                ((GameListView)view).popup(GameListView.error0);
             }
             //
             else if (s.equals("error: Missing lobby")) {
-                view.popup(GameListView.error1);
+                ((GameListView)view).popup(GameListView.error1);
             }
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -122,11 +132,11 @@ public class GameListState extends State {
                 case "GET_LOBBIES":
                     if(strings.length>1) {
                         readLobbyData(strings[1]);
-                        view.updateView();
+                        ((GameListView)view).updateView();
                     }
                     else {
                         lobbyListData = new ArrayList<>();
-                        view.updateView();
+                        ((GameListView)view).updateView();
                     }
 
                     break;

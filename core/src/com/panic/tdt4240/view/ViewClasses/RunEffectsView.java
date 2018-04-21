@@ -47,16 +47,16 @@ public class RunEffectsView extends AbstractView {
 
     private GameInstance gameInstance;
     private ShapeRenderer sr;
+    private BitmapFont font;
+    private Skin skin, carSkin;
+    private TextureAtlas btnAtlas;
+
     private HashMap<String, Image> vehicleImages;
     private HashMap<String, Image> asteroidImages;
     private AnimationAdapter animator;
     private MapConnections mapConnections;
     private final CloudAnimation explosion, poison, shield, healing, debuff;
-    private BitmapFont font;
-    private Skin skin;
-    private Skin carSkin;
     private boolean isLeaving = false;
-    private TextureAtlas btnAtlas;
     private final Missile redMissile, greenMissile, cyanMissile, yellowMissile;
     private Label hpLabel;
     private float health;
@@ -92,7 +92,7 @@ public class RunEffectsView extends AbstractView {
     //TODO: Call this method when a player dies to let them leave the game
     public void setUpLeaveButton(){
 
-        final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
         buttonStyle.up = skin.getDrawable("button-up");
         buttonStyle.down = skin.getDrawable("button-down");
@@ -101,10 +101,6 @@ public class RunEffectsView extends AbstractView {
         finishedButton.setHeight(Gdx.graphics.getWidth()/10);
         finishedButton.setPosition(4*Gdx.graphics.getWidth()/5, Gdx.graphics.getHeight()/5);
 
-        TextButton.TextButtonStyle ButtonStyle = new TextButton.TextButtonStyle();
-        ButtonStyle.font = font;
-        ButtonStyle.up = skin.getDrawable("button-up");
-        ButtonStyle.down = skin.getDrawable("button-down");
         final Dialog dialog = new Dialog("Leave", skin, "dialog"){
             @Override
             protected void result(Object object) {
@@ -121,8 +117,8 @@ public class RunEffectsView extends AbstractView {
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
 
         dialog.text("Are you sure you want to leave?", labelStyle);
-        dialog.button("Yes",true, ButtonStyle);
-        dialog.button("Cancel", false, ButtonStyle);
+        dialog.button("Yes",true, buttonStyle);
+        dialog.button("Cancel", false, buttonStyle);
 
         finishedButton.setText("Leave");
         finishedButton.addListener(new ClickListener() {

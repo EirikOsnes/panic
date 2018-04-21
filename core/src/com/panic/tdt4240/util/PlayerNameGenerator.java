@@ -1,6 +1,5 @@
 package com.panic.tdt4240.util;
 
-import com.badlogic.gdx.math.MathUtils;
 
 /**
  * Created by victor on 07.04.2018.
@@ -18,7 +17,8 @@ public class PlayerNameGenerator {
                     "Assaulting Neighbours", "Interstellar Comets",
                     "A... thing", "Oh hi Mark", "It", "Newton's Flaming Laser Sword",
                     "Rubber Ducky", "win32", "Thunder from Down Under",
-                    "Sleepwalker", "Menace from Venice", "Runtime Exception"};
+                    "Sleepwalker", "Menace from Venice", "Runtime Exception",
+                    "The One True King"};
 
     public static int getCount(){return names.length; }
 

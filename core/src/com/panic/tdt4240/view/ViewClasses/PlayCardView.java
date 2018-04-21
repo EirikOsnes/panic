@@ -31,14 +31,15 @@ import java.util.Locale;
 
 /**
  * Created by victor on 05.03.2018.
- * View for selecting cards and targets
+ * View for selecting cards and targets. Sets up the map with asteroids, vehicles and asteroid connections.
+ * Sets up the player hand of cards, sends ids of clicked cards and targets to PlayCardState
  */
 public class PlayCardView extends AbstractView{
 
-    private ShapeRenderer sr;
+    private Skin skin, dialogSkin;
     private BitmapFont font;
     private TextureAtlas textureAtlas, btnAtlas;
-    private Skin skin, dialogSkin;
+    private ShapeRenderer sr;
 
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
@@ -110,6 +111,9 @@ public class PlayCardView extends AbstractView{
             cardButtons.add(i, button);
 
         //TODO Idea: Let every button have value 0 to 2, which keeps track of their state
+            //ClickListener for each card. Sends the card index to PlayCardState, which changes the
+            //visual look of the card to signify selection. The ClickListener sets up the cardInfo
+            //button when it gets clicked
             final int index = i;
             cardButtons.get(index).addListener(new ClickListener(){
                 @Override
@@ -175,6 +179,8 @@ public class PlayCardView extends AbstractView{
 
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         dialogSkin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
+
+        //If the player is alive, the button finishes this turn and sends cards to server
         if(((PlayCardState)state).getPlayerAlive()){
             finishedButton.setText("Finish Turn");
             finishedButton.addListener(new ClickListener() {
@@ -192,9 +198,9 @@ public class PlayCardView extends AbstractView{
                 }
             });
         }
-        //If player is dead, set next turn automatically, create leave button with confirmation dialog
+        //If player is dead, next turn is set automatically and the button allows the player to
+        //leave the game with a confirmation dialog
         else{
-            //((PlayCardState) state).finishRound();
             final Dialog dialog = new Dialog("", dialogSkin, "dialog"){
                 @Override
                 protected void result(Object object) {
@@ -234,18 +240,21 @@ public class PlayCardView extends AbstractView{
         timer.setPosition(0, Gdx.graphics.getHeight() - timer.getHeight());
         stage.addActor(timer);
 
+        //Prepares the short error message the player sees when they target a wrong target
         invalidTarget = new ToastMessage("Default", new Label.LabelStyle(font, Color.RED));
         invalidTarget.setPosition(0, table.getHeight() + invalidTarget.getHeight());
 
         stage.addActor(invalidTarget);
         setUpMap();
     }
+
     public void resetCurrentButton(){
         currentButton = -1;
     }
 
     /**
-     * Method for setting up the map with listeners on each asteroid and vehicle
+     * Method for setting up the map with listeners on each asteroid and vehicle and sets up visual
+     * connections between them
      */
     private void setUpMap(){
         final ArrayList<Asteroid> asteroids = ((PlayCardState) state).getMap().getAsteroids();
@@ -255,6 +264,8 @@ public class PlayCardView extends AbstractView{
 
         textureAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
         skin.addRegions(textureAtlas);
+        //Sets up asteroids with clickListeners and connections between them.
+        //Finds positions of vehicles for when vehicles are setup
         for (int i = 0; i < asteroids.size(); i++) {
             vehicleOnAsteroid.addAll(MapMethods.getVehiclesOnAsteroid(asteroids.get(i), i));
 
@@ -269,6 +280,7 @@ public class PlayCardView extends AbstractView{
 
             stage.addActor(asteroid);
 
+            //When an asteroid is clicked and a target can be selected, sends the id to PlayCardState
             final int index = i;
             asteroid.addListener(new ClickListener(){
                 public void clicked(InputEvent event, float x, float y){
@@ -278,10 +290,12 @@ public class PlayCardView extends AbstractView{
                     }
                 }
             });
+            //Sets up connections between asteroids
             for(Asteroid neighbour: asteroids.get(i).getNeighbours()){
                 ((PlayCardState) state).addConnection(asteroids.get(i), neighbour, asteroid.getWidth(), asteroid.getHeight(), table.getHeight());
             }
         }
+        //Sets up vehicles with clickListeners
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
             int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
             String colorCar = ((PlayCardState) state).getColorCar(vehicleOnAsteroid.get(j)[0]);
@@ -295,6 +309,7 @@ public class PlayCardView extends AbstractView{
             vehicle.setPosition(position.x, position.y);
             vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
 
+            //If we can select a target, sends the id to PlayCardState. If not we show vehicleInfo popup
             final int vIndex = j;
             final Dialog vehicleInfo = createVehicleInfo(GameInstance.getInstance().getVehicleById(vehicleOnAsteroid.get(j)[0]));
             vehicle.addListener(new ClickListener(){
@@ -314,10 +329,6 @@ public class PlayCardView extends AbstractView{
         stage.addActor(setUpPlayerInfoTable());
     }
 
-    /**
-     * Shows the player vehicle and health/maxhealth in the upper right corner
-     * @return table containing vehicle image and health
-     */
     private Table setUpPlayerInfoTable(){
         Vehicle playerVehicle = ((PlayCardState)state).getPlayerVehicle();
         float health = playerVehicle.getStatusHandler().getStatusResultant("health");
@@ -340,12 +351,6 @@ public class PlayCardView extends AbstractView{
 
         return playerTable;
     }
-
-    /**
-     * Creates clickable popup containing various information of a vehicle
-     * @param vehicle which we are to extract info from
-     * @return popup dialog
-     */
     private Dialog createVehicleInfo(Vehicle vehicle){
         HashMap<String, Float> effectsMap =  vehicle.getStatusHandler().getAllResultants();
         String effects = "";
@@ -408,7 +413,7 @@ public class PlayCardView extends AbstractView{
         if(timeLeft < 0){
             timeLeft = 0;
         }
-        timer.setText(String.format(Locale.ENGLISH,"%.0f", timeLeft));
+        timer.setText(String.format(Locale.ENGLISH,"%.1f", timeLeft));
         invalidTarget.act(dt);
 
     }
@@ -437,9 +442,6 @@ public class PlayCardView extends AbstractView{
         btnAtlas.dispose();
     }
 
-    /**
-     * A label that is shown for 2 seconds before disappearing
-     */
     private class ToastMessage extends Label{
         private float duration;
 

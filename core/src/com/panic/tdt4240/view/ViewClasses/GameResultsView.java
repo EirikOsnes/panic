@@ -39,10 +39,6 @@ public class GameResultsView extends AbstractView {
         font = new BitmapFont();
         Label.LabelStyle style = new Label.LabelStyle();
         BitmapFont labelFont = new BitmapFont();
-
-        font.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
-        labelFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
-
         style.font = labelFont;
         label = new Label("LOADING",style);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
@@ -50,6 +46,8 @@ public class GameResultsView extends AbstractView {
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),btnAtlas);
 
         skin.addRegions(btnAtlas);
+        font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
+        labelFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
 
         TextButton.TextButtonStyle btnStyle = new TextButton.TextButtonStyle();
         btnStyle.font = font;
@@ -86,9 +84,10 @@ public class GameResultsView extends AbstractView {
     }
 
     public void dispose(){
-        stage.dispose();
         font.dispose();
+        stage.dispose();
         bg.dispose();
+        font.dispose();
         skin.dispose();
         btnAtlas.dispose();
     }

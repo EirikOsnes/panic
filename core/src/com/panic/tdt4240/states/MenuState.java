@@ -11,19 +11,16 @@ import com.panic.tdt4240.view.ViewClasses.MenuView;
  */
 
 public class MenuState extends State {
-    
-
-    private MenuView menuView;
 
     public MenuState(GameStateManager gsm){
         super(gsm);
-        menuView = new MenuView(this);
-        menuView.isConnecting(true); //Tell the menu view that the connection is loading
+        view = new MenuView(this);
+        ((MenuView) view).isConnecting(true); //Tell the menu view that the connection is loading
         if(Connection.getInstance().getConnectionID()== 0){
             Connection.getInstance().findConnectionID();
         }
         else{
-            menuView.isConnecting(false);
+            ((MenuView) view).isConnecting(false);
         }
     }
 
@@ -47,6 +44,8 @@ public class MenuState extends State {
             System.out.println("Settings...");
         }
 
+        // TESTING: forcibly push a state on the gsm stack
+
     }
 
     @Override
@@ -56,17 +55,17 @@ public class MenuState extends State {
 
     @Override
     public void render() {
-        menuView.render();
+        view.render();
     }
 
     @Override
     public void dispose() {
-        menuView.dispose();
+        view.dispose();
     }
 
     @Override
     public AbstractView getView() {
-        return menuView;
+        return view;
     }
 
     @Override
@@ -85,7 +84,7 @@ public class MenuState extends State {
                     if(Connection.getInstance().getConnectionID()==0){
                         Connection.getInstance().setConnectionID(Integer.parseInt(strings[1]));
                         System.out.println("Received connection ID: "+strings[1]);
-                        menuView.isConnecting(false);
+                        ((MenuView) view).isConnecting(false);
                     }
                     break;
                 case "RECONNECT_GAME":

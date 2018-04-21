@@ -24,7 +24,7 @@ public abstract class AbstractView {
         this.cam = new OrthographicCamera();
         this.stage = new Stage();
         this.state = state;
-        this.cam.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
+        this.cam.setToOrtho(false, PanicGame.WIDTH, PanicGame.HEIGHT);
         // Insert whatever should be used by all the subclasses
     }
 

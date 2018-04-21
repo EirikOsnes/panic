@@ -1,6 +1,5 @@
 package com.panic.tdt4240.view.ViewClasses;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.connection.Connection;
@@ -45,6 +45,7 @@ public class GameLobbyView extends AbstractView {
 
     private String lobbyName;
     private Table topTable;
+
     private ArrayList<Label> playerTxtFields;
     private Label.LabelStyle txtStyle;
     private Label.LabelStyle rdyStyle;
@@ -71,14 +72,13 @@ public class GameLobbyView extends AbstractView {
     public GameLobbyView(final GameLobbyState lobbyState) {
         super(lobbyState);
         lobbyName="";
-        scl = 2f;
+        scl = 2;
         this.lobbyState=lobbyState;
         /** INIT SETUP */
 
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         font = new BitmapFont();
-        font.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
 
         buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), buttonAtlas);
@@ -136,12 +136,10 @@ public class GameLobbyView extends AbstractView {
         boxStyle = new SelectBox.SelectBoxStyle(skin.get(SelectBox.SelectBoxStyle.class));
         boxStyle.font = new BitmapFont();
 
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            boxStyle.font.getData().setScale(GlobalConstants.GET_TEXT_SCALE() * scl);
-            txtStyle.font.getData().setScale(GlobalConstants.GET_TEXT_SCALE() * scl);
-            rdyStyle.font.getData().setScale(GlobalConstants.GET_TEXT_SCALE() * scl);
-            btnStyle.font.getData().setScale(GlobalConstants.GET_TEXT_SCALE() * scl);
-        }
+        boxStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * 1.5f);
+        txtStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * 1.5f);
+        rdyStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * scl);
+        btnStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * scl);
     }
 
     private void preparePlayerListDisplay(){
@@ -167,7 +165,7 @@ public class GameLobbyView extends AbstractView {
                     }
                     playerTxtFields.add(new Label("   " + name, txtStyle));
                     break;
-        }}}
+                }}}
 
         Table playerTxtTable = new Table();
         playerTxtTable.setFillParent(true);
@@ -195,9 +193,9 @@ public class GameLobbyView extends AbstractView {
         carSelectBox.setSize(SCREEN_WIDTH*4/5, SCREEN_HEIGHT/16);
         carSelectBox.setScale(SCREEN_WIDTH*4/5, GlobalConstants.GET_TEXT_SCALE());
 
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            carSelectBox.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE() * 2);
-        }
+
+        carSelectBox.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE() * 2);
+
 //        carSelectBox.getScrollPane().setWidth(SCREEN_WIDTH*4/5);
         carSelectBox.setItems(carTypes);
         carSelectBox.setSelectedIndex(0); // default value
@@ -216,9 +214,18 @@ public class GameLobbyView extends AbstractView {
 
     private void generateBottomItems(){
         // Specify consequences in the bottom of this file
-        final LonelyGameDialog dialog = new LonelyGameDialog("", skin, "dialog");
+        final Dialog dialog = new Dialog("", skin, "dialog"){
+            @Override
+            protected void result(Object object) {
+                Boolean bool = (Boolean) object;
+                if(bool){
+                    state.handleInput("-2");
+                }
+            }
+        };
+
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
-        dialog.text("Hitting 'Ready' now will start the game. Are you sure?", labelStyle);
+        dialog.text("Hitting 'Ready' now will start the game.\nAre you sure?", labelStyle);
         dialog.button("Yes",true, btnStyle);
         dialog.button("Cancel", false, btnStyle);
         dialog.hide();
@@ -237,7 +244,7 @@ public class GameLobbyView extends AbstractView {
                 if (lobbyState.isPlayerReady()) {
                     System.out.println("'Ready' set to " + lobbyState.isPlayerReady());
                 }
-            // else
+                // else
                 else if (lobbyState.getLobby().getPlayerIDs().size() <= 1) {
                     dialog.show(stage);
                 }
@@ -328,28 +335,11 @@ public class GameLobbyView extends AbstractView {
     }
 
     public void dispose(){    // should be used by GameStateManager only
-        font.dispose();
         stage.dispose();
-        bg.dispose();
+        font.dispose();
         skin.dispose();
         buttonAtlas.dispose();
-    }
-
-    private class LonelyGameDialog extends Dialog {
-
-        private LonelyGameDialog(String title, Skin skin, String windowStyleName) {
-            super(title, skin, windowStyleName);
-        }
-
-        @Override
-        protected void result(Object object) {
-            Boolean bool = (Boolean) object;
-            if(bool){
-                state.handleInput("-2");
-            }
-            else{
-            }
-        }
+        bg.dispose();
     }
 
 }

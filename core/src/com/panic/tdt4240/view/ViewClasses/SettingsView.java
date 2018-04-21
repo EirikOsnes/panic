@@ -19,6 +19,7 @@ public class SettingsView extends AbstractView {
     }
 
     public void render(){
+        stage.draw();
     }
 
     public void dispose(){

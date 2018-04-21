@@ -13,6 +13,7 @@ public abstract class State {
     protected Vector2 mouse;
     protected GameStateManager gsm;
     protected ICallbackAdapter callbackAdapter;
+    protected AbstractView view;
 
     protected State(GameStateManager gsm){
         this.gsm = gsm;

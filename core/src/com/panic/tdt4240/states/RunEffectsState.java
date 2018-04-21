@@ -21,7 +21,6 @@ import java.util.ArrayList;
 
 public class RunEffectsState extends State implements EventListener {
 
-    private RunEffectsView runEffectsView;
     private boolean doneParsing = false;
     private boolean serverApproved = false;
     private boolean hasSentEndState = false;
@@ -29,7 +28,7 @@ public class RunEffectsState extends State implements EventListener {
 
     protected RunEffectsState(GameStateManager gsm) {
         super(gsm);
-        runEffectsView = new RunEffectsView(this);
+        view = new RunEffectsView(this);
         EventBus.getInstance().addListener(this);
         Connection.getInstance().sendRunEffectsState(GameInstance.getInstance().getID());
     }
@@ -62,7 +61,7 @@ public class RunEffectsState extends State implements EventListener {
     @Override
     public void update(float dt) {
         if(doneParsing && !defeatedFlag){
-            if (runEffectsView.isDoneAnimating()){
+            if (((RunEffectsView) view).isDoneAnimating()){
                 if(serverApproved){
                     EventBus.getInstance().readyForRemove();
                     gsm.set(new PlayCardState(gsm));
@@ -78,18 +77,18 @@ public class RunEffectsState extends State implements EventListener {
 
     @Override
     public void render() {
-        runEffectsView.render();
+        view.render();
     }
 
     @Override
     public void dispose() {
-        runEffectsView.dispose();
+        view.dispose();
         EventBus.getInstance().removeListener(this);
     }
 
     @Override
     public AbstractView getView() {
-        return runEffectsView;
+        return view;
     }
 
     @Override
@@ -100,7 +99,7 @@ public class RunEffectsState extends State implements EventListener {
     @Override
     public void handleEvent(Event e) {
         if (e.getT() == Event.Type.MOVE) {
-            runEffectsView.moveVehicle(e.getInstigatorID(), e.getTargetID());
+            ((RunEffectsView) view).moveVehicle(e.getInstigatorID(), e.getTargetID());
         }
 
         else if (e.getT() == Event.Type.DESTROYED) {
@@ -111,10 +110,10 @@ public class RunEffectsState extends State implements EventListener {
         }
 
         if (e.getMissileType() != MissileType.NONE) {
-            runEffectsView.addMissileAnimation(e.getTargetID(), e.getInstigatorID(), e.getMissileType());
+            ((RunEffectsView) view).addMissileAnimation(e.getTargetID(), e.getInstigatorID(), e.getMissileType());
         }
         if (e.getCloudType() != AnimationType.NONE) {
-            runEffectsView.addCloudAnimation(e.getTargetID(), e.getCloudType());
+            ((RunEffectsView) view).addCloudAnimation(e.getTargetID(), e.getCloudType());
 
         }
     }
@@ -148,8 +147,8 @@ public class RunEffectsState extends State implements EventListener {
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                runEffectsView.defeatMessage();
-                                runEffectsView.setUpLeaveButton();
+                                ((RunEffectsView) view).defeatMessage();
+                                ((RunEffectsView) view).setUpLeaveButton();
                             }
                         });
                     }else{

@@ -138,7 +138,7 @@ public class LoadGameState extends State implements EventListener {
         if (e.getT() == Event.Type.DESTROYED) {
             if(GameInstance.getInstance().getPlayer().isAlive()) {
                 Connection.getInstance().sendDestroyed(GameInstance.getInstance().getID(), e.getTargetID());
-                System.out.println("Sending destroy from LoadGameState");
+//                System.out.println("Sending destroy from LoadGameState");
             }
         }
     }

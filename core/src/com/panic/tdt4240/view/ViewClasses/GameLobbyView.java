@@ -72,7 +72,7 @@ public class GameLobbyView extends AbstractView {
     public GameLobbyView(final GameLobbyState lobbyState) {
         super(lobbyState);
         lobbyName="";
-        scl = 2f;
+        scl = 2;
         this.lobbyState=lobbyState;
         /** INIT SETUP */
 
@@ -136,10 +136,10 @@ public class GameLobbyView extends AbstractView {
         boxStyle = new SelectBox.SelectBoxStyle(skin.get(SelectBox.SelectBoxStyle.class));
         boxStyle.font = new BitmapFont();
 
-        boxStyle.font.getData().setScale(GlobalConstants.GET_TEXT_SCALE() * scl);
-        txtStyle.font.getData().setScale(GlobalConstants.GET_TEXT_SCALE() * scl);
-        rdyStyle.font.getData().setScale(GlobalConstants.GET_TEXT_SCALE() * scl);
-        btnStyle.font.getData().setScale(GlobalConstants.GET_TEXT_SCALE() * scl);
+        boxStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * 1.5f);
+        txtStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * 1.5f);
+        rdyStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * scl);
+        btnStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * scl);
     }
 
     private void preparePlayerListDisplay(){
@@ -225,7 +225,7 @@ public class GameLobbyView extends AbstractView {
         };
 
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
-        dialog.text("Hitting 'Ready' now will start the game. Are you sure?", labelStyle);
+        dialog.text("Hitting 'Ready' now will start the game.\nAre you sure?", labelStyle);
         dialog.button("Yes",true, btnStyle);
         dialog.button("Cancel", false, btnStyle);
         dialog.hide();

@@ -28,7 +28,6 @@ import java.util.Stack;
 public class LoadGameState extends State implements EventListener {
 
     private boolean isLoading; //Flag to use for rendering of a loading screen.
-    private LoadGameView view;
     private int lobbyID;
     private boolean resync;
 
@@ -38,7 +37,6 @@ public class LoadGameState extends State implements EventListener {
         view = new LoadGameView(this);
         this.lobbyID = lobbyID;
         setUpGameInstance();
-        view = new LoadGameView(this);
         EventBus.getInstance().addListener(this);
     }
 

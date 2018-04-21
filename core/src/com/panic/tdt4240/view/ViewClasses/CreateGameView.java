@@ -38,10 +38,7 @@ public class CreateGameView extends AbstractView {
     private TextureAtlas btnAtlas;
     private Skin skin;
     private BitmapFont font, boxFont;
-    private TextButton.TextButtonStyle btnStyle, btnStyle2;
-    private Table table;
     private Texture bg;
-    private TextButton createLobbyBtn, exitToMainMenuBtn;
 
     private TextField in_LobbyName;
     private SelectBox<String> in_mapID, in_maxPlayers;
@@ -52,7 +49,7 @@ public class CreateGameView extends AbstractView {
 
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH, PanicGame.HEIGHT);
-        table = new Table();
+        Table table = new Table();
         font = new BitmapFont();
         boxFont = new BitmapFont();
         font.setColor(Color.WHITE);
@@ -61,11 +58,11 @@ public class CreateGameView extends AbstractView {
         boxFont.getData().scale(textScale*2);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
-        btnStyle = new TextButton.TextButtonStyle();
+        TextButton.TextButtonStyle btnStyle = new TextButton.TextButtonStyle();
         btnStyle.font = font;
         btnStyle.up = skin.getDrawable("button-up");
         btnStyle.down = skin.getDrawable("button-up");
-        btnStyle2 = new TextButton.TextButtonStyle();
+        TextButton.TextButtonStyle btnStyle2 = new TextButton.TextButtonStyle();
         btnStyle2.font=font;
         btnStyle2.up = skin.getDrawable("button-up");
         btnStyle2.down = skin.getDrawable("button-down");
@@ -145,7 +142,7 @@ public class CreateGameView extends AbstractView {
         cgState.setMaxPlayerCount(Integer.valueOf(max_players[0]));
         in_maxPlayers.pack();
 
-        createLobbyBtn = new TextButton("Create lobby", btnStyle2);
+        TextButton createLobbyBtn = new TextButton("Create lobby", btnStyle2);
         createLobbyBtn.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
@@ -177,7 +174,7 @@ public class CreateGameView extends AbstractView {
         });/**/
         createLobbyBtn.pack();
 
-        exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
+        TextButton exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -218,12 +215,3 @@ public class CreateGameView extends AbstractView {
     }
 }
 
-    class userTextInputListener implements Input.TextInputListener {
-        @Override
-        public void input (String text) {
-
-        }
-        @Override
-        public void canceled () {
-        }
-    }

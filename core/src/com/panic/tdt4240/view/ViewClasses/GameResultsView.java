@@ -31,23 +31,20 @@ import java.util.ArrayList;
 public class GameResultsView extends AbstractView {
 
     private Skin skin;
-    TextButton.TextButtonStyle btnStyle;
     private TextureAtlas btnAtlas;
     private Texture bg;
-    private Table table;
-    private BitmapFont font, labelFont;
-    TextButton exitToMainMenuBtn;
-    Label label;
+    private BitmapFont font;
+
+    private Label label;
     int counter = 0;
 
     public GameResultsView(final GameResultsState resultsState) {
         super(resultsState);
         bg = new Texture("misc/background.png");
-        table = new Table();
+        Table table = new Table();
         font = new BitmapFont();
         Label.LabelStyle style = new Label.LabelStyle();
-        labelFont = new BitmapFont();
-        labelFont.getData().scale(2.0f);
+        BitmapFont labelFont = new BitmapFont();
         style.font = labelFont;
         label = new Label("LOADING",style);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
@@ -55,19 +52,16 @@ public class GameResultsView extends AbstractView {
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),btnAtlas);
 
         skin.addRegions(btnAtlas);
+        font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
+        labelFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
 
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
-            labelFont.getData().scale(GlobalConstants.GET_TEXT_SCALE());
-        }
-
-        btnStyle = new TextButton.TextButtonStyle();
+        TextButton.TextButtonStyle btnStyle = new TextButton.TextButtonStyle();
         btnStyle.font = font;
         btnStyle.up = skin.getDrawable("button-up");
         btnStyle.down = skin.getDrawable("button-down");
 
 
-        exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
+        TextButton exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
 
         table.setFillParent(true);
         table.add(label).top();

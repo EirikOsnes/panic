@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class GameListState extends State {
 
-    GameListView view;
     ArrayList<String[]> lobbyListData;
     private static String err_full_lobby = "Error: full lobby.";
     private static String err_lobby404 = "Error: lobby not found.";
@@ -71,11 +70,11 @@ public class GameListState extends State {
         }
         try {    // error handling
             if (s.equals("error:Full lobby")) {
-                view.popup(GameListView.error0);
+                ((GameListView)view).popup(GameListView.error0);
             }
             //
             else if (s.equals("error: Missing lobby")) {
-                view.popup(GameListView.error1);
+                ((GameListView)view).popup(GameListView.error1);
             }
         } catch (Exception e) { e.printStackTrace(); }
     }
@@ -133,11 +132,11 @@ public class GameListState extends State {
                 case "GET_LOBBIES":
                     if(strings.length>1) {
                         readLobbyData(strings[1]);
-                        view.updateView();
+                        ((GameListView)view).updateView();
                     }
                     else {
                         lobbyListData = new ArrayList<>();
-                        view.updateView();
+                        ((GameListView)view).updateView();
                     }
 
                     break;

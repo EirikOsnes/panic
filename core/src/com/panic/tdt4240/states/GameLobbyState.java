@@ -26,8 +26,6 @@ import java.util.ArrayList;
 
 public class GameLobbyState extends State {
 
-
-    GameLobbyView view;
     private Lobby lobby;
     private int lobbyID;
     private boolean dataLoaded;
@@ -64,7 +62,7 @@ public class GameLobbyState extends State {
             @Override
             public void run() {
                 System.out.println("Attempting to update view from postRunnable");
-                view.updateView();
+                ((GameLobbyView) view).updateView();
             }
         }); /**/
     }
@@ -76,10 +74,10 @@ public class GameLobbyState extends State {
     @Override
     public void handleInput(Object o) {
         String s = (String) o;
-        if ( s.equals("-2")) Connection.getInstance().chooseVehicleType(view.getSelectedVehicle(), lobbyID);
+        if ( s.equals("-2")) Connection.getInstance().chooseVehicleType(((GameLobbyView) view).getSelectedVehicle(), lobbyID);
         else if (s.equals("-1")){
             leaveLobby();
-            view.updateView();
+            ((GameLobbyView) view).updateView();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) gsm.reset();
 
@@ -208,7 +206,7 @@ public class GameLobbyState extends State {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                view.updateView();
+                ((GameLobbyView) view).updateView();
             }
         });
         }

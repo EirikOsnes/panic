@@ -14,7 +14,7 @@ import com.panic.tdt4240.models.ModelHolder;
 import com.panic.tdt4240.models.Player;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.util.XMLParser;
-import com.panic.tdt4240.view.LoadGameView;
+import com.panic.tdt4240.view.ViewClasses.LoadGameView;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
 
 import java.util.ArrayList;
@@ -28,7 +28,6 @@ import java.util.Stack;
 public class LoadGameState extends State implements EventListener {
 
     private boolean isLoading; //Flag to use for rendering of a loading screen.
-    private LoadGameView view;
     private int lobbyID;
     private boolean resync;
 
@@ -38,7 +37,6 @@ public class LoadGameState extends State implements EventListener {
         view = new LoadGameView(this);
         this.lobbyID = lobbyID;
         setUpGameInstance();
-        view = new LoadGameView(this);
         EventBus.getInstance().addListener(this);
     }
 

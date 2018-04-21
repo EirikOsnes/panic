@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class GameListState extends State {
 
-    GameListView view;
+    private GameListView view;
     ArrayList<String[]> lobbyListData;
     private static String err_full_lobby = "Error: full lobby.";
     private static String err_lobby404 = "Error: lobby not found.";

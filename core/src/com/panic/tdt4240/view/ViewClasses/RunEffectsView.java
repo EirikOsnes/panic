@@ -23,7 +23,6 @@ import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.Vehicle;
 import com.panic.tdt4240.states.RunEffectsState;
-import com.panic.tdt4240.states.State;
 import com.panic.tdt4240.util.GlobalConstants;
 import com.panic.tdt4240.util.MapConnections;
 import com.panic.tdt4240.util.MapMethods;
@@ -63,7 +62,7 @@ public class RunEffectsView extends AbstractView {
     private float health;
     private float maxHealth;
 
-    public RunEffectsView(State state) {
+    public RunEffectsView(RunEffectsState state) {
         super(state);
         sr = new ShapeRenderer();
         sr.setColor(1, 1, 1, 0);

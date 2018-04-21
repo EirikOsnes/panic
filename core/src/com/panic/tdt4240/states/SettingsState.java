@@ -2,7 +2,6 @@ package com.panic.tdt4240.states;
 
 import com.panic.tdt4240.connection.ICallbackAdapter;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
-import com.panic.tdt4240.view.ViewClasses.PlayCardView;
 import com.panic.tdt4240.view.ViewClasses.SettingsView;
 
 /**

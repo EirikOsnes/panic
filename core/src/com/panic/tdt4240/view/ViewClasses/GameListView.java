@@ -74,7 +74,7 @@ public class GameListView extends AbstractView {
     private void createLobbyList(){
         lobbyBtnTable = new Table(skin);
         lobbyBtnTable.center();
-TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class);
+        TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class);
         btnStyle.font = font;
         if (! listState.getLobbyListData().isEmpty()){
             for (int i = 0; i < listState.getLobbyListData().size(); i++) {

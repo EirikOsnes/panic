@@ -1,19 +1,15 @@
 package com.panic.tdt4240.models;
 
 
+import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventBus;
 import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.events.EventListener;
-import com.panic.tdt4240.events.EventBus;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.util.IStatusAble;
 import com.panic.tdt4240.util.StatusHandler;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Locale;
 
 
 /**
@@ -33,7 +29,6 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
     private ArrayList<String> removeVehicle;
     private boolean isDestroyed = false;
 
-//TODO Asteroid should contain the string of the asteroid image, not the sprite
     public Asteroid(String path, String id) {
         this.texture = path;
         this.id = id;

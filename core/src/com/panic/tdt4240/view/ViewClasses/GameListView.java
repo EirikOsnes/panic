@@ -1,5 +1,6 @@
 package com.panic.tdt4240.view.ViewClasses;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -55,6 +56,8 @@ public class GameListView extends AbstractView {
 
         // TODO: a button for text input and direct connection to a game lobby?
 
+        adaptToDevice();
+        
     }
 
     public void updateView(){
@@ -74,11 +77,13 @@ public class GameListView extends AbstractView {
     private void createLobbyList(){
         lobbyBtnTable = new Table(skin);
         lobbyBtnTable.center();
-
+   
+        
         if (! listState.getLobbyListData().isEmpty()){
             for (int i = 0; i < listState.getLobbyListData().size(); i++) {
                 final String data[] = listState.getLobbyListData().get(i);
                 TextButton button = new TextButton(data[0], skin);
+                button.setHeight(button.getHeight()*2.2f);
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -89,8 +94,8 @@ public class GameListView extends AbstractView {
                 lobbyBtnTable.add(button).width(300).pad(5);
                 lobbyBtnTable.row();
             }
+            
         }
-
         lobbyBtnTable.row();
 
         // scrolls child widgets.
@@ -129,8 +134,12 @@ public class GameListView extends AbstractView {
         exitTable.add(exitToMainMenuBtn).pad(10);
         exitTable.pack();
         stage.addActor(exitTable);
-
-
+    }
+    
+    private void adaptToDevice(){
+        if (Gdx.app.getType() == Application.ApplicationType.Android){
+            lobbyBtnTable.setHeight(lobbyBtnTable.getHeight()*2.0f);
+        }
     }
 
     // should pop up with the appropriate error message and update lobbylist

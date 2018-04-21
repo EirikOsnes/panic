@@ -169,12 +169,7 @@ public class GameLobbyState extends State {
                     parseLobby(strings);
                     // View update should trigger whenever server sends lobby info
                     // ... and server should send new info whenever a player joins.
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            view.updateView();
-                        }
-                    });
+                    runPostRunnable();
                     //view!=null
                     break;
                 case "GAME_START":
@@ -204,8 +199,6 @@ public class GameLobbyState extends State {
                 //PROPER CODE
                 vehicleTypes.add((vehicleTypestrings[i].equals("NONE")) ? null : vehicleTypestrings[i]);
             }
-            System.out.println(vehicleTypes.toString());
-            // when players come and go, undo "Ready up" button's functions.
             if (currentPlayerCount != playerIDs.size()){
                 setPlayerReady(false);
                 runPostRunnable();
@@ -219,7 +212,7 @@ public class GameLobbyState extends State {
 
         }
 
-        public void runPostRunnable(){
+        private void runPostRunnable(){
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {

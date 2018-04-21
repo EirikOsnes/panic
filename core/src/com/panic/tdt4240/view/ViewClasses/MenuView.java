@@ -1,5 +1,6 @@
 package com.panic.tdt4240.view.ViewClasses;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -52,8 +53,10 @@ public class MenuView extends AbstractView {
         settingsBtn = new TextButton("Settings", skin);
         Label title = new Label(PanicGame.TITLE,skin);
         Label fullTitle = new Label(PanicGame.FULL_TITLE,skin);
-        title.setFontScale(3.0f);
-        fullTitle.setFontScale(2.0f);
+		if (Gdx.app.getType() == Application.ApplicationType.Android) {
+			title.setFontScale(5.0f);
+			fullTitle.setFontScale(2.5f);
+		}
 
         float padding = Gdx.graphics.getHeight()/40;
 

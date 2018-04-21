@@ -3,6 +3,7 @@ package com.panic.tdt4240.states;
 import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.connection.Connection;
 import com.panic.tdt4240.connection.ICallbackAdapter;
+import com.panic.tdt4240.events.Event;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
@@ -128,7 +129,6 @@ public class LoadGameState extends State {
         callbackAdapter = new LoadGameAdapter();
     }
 
-    @Override
     public void handleEvent(Event e) {
         if (e.getT() == Event.Type.DESTROYED) {
             if(GameInstance.getInstance().getPlayer().isAlive()) {

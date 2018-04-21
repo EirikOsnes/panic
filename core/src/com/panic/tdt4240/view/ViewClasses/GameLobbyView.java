@@ -38,13 +38,13 @@ import java.util.ArrayList;
 
 public class GameLobbyView extends AbstractView {
 
-    private Table topTable;
     private TextureAtlas buttonAtlas;
     private Texture bg;
     private Skin skin;
     private BitmapFont font;
-    private String lobbyName;
 
+    private String lobbyName;
+    private Table topTable;
     private ArrayList<Label> playerTxtFields;
     private Label.LabelStyle txtStyle;
     private Label.LabelStyle rdyStyle;
@@ -111,19 +111,6 @@ public class GameLobbyView extends AbstractView {
             System.out.println("Object 'lobby' not created yet ---");
         }
         generateBottomItems();
-    }
-
-    public void render(){
-        stage.act();
-        stage.draw();
-    }
-
-    public void dispose(){    // should be used by GameStateManager only
-        font.dispose();
-        stage.dispose();
-        bg.dispose();
-        skin.dispose();
-        buttonAtlas.dispose();
     }
 
     private void prepareStyles() {
@@ -333,6 +320,19 @@ public class GameLobbyView extends AbstractView {
 
     public String getSelectedVehicle(){
         return carSelectBox.getSelected();
+    }
+
+    public void render(){
+        stage.act();
+        stage.draw();
+    }
+
+    public void dispose(){    // should be used by GameStateManager only
+        font.dispose();
+        stage.dispose();
+        bg.dispose();
+        skin.dispose();
+        buttonAtlas.dispose();
     }
 
     private class LonelyGameDialog extends Dialog {

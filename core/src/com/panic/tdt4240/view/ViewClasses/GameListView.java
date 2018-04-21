@@ -27,11 +27,12 @@ import com.panic.tdt4240.util.GlobalConstants;
 
 public class GameListView extends AbstractView {
 
-    private GameListState listState;
     private TextureAtlas btnAtlas;
     private Skin skin;
     private BitmapFont font;
     private Texture bg;
+
+    private GameListState listState;
     private Table lobbyBtnTable;
 
     public static final String error0 = "Error: full lobby.";

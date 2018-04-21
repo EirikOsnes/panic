@@ -11,17 +11,8 @@ import com.panic.tdt4240.view.ViewClasses.GameLobbyView;
 import java.util.ArrayList;
 
 /**
- *
  * Created by victor on 12.03.2018.
- *
- * NO MORE THREAD PROBLEMS AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH
- *
- * Sequence to implement:
- *      1. Select vehicle   -- done
- *      2. Ready up         -- done
- *      3. Indicate the player is waiting -- done
- *
- *  "Problems": if the lobby creator leaves, shit goes real bad.
+ * 
  **/
 
 public class GameLobbyState extends State {
@@ -53,15 +44,12 @@ public class GameLobbyState extends State {
         });
     }
 
-    /**
-     * Update the lobby - should be called every second maybe?
-     */
     public void updateLobby(){
         // DELEGATE VIEW UPDATE
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Attempting to update view from postRunnable");
+//                System.out.println("Attempting to update view from postRunnable");
                 ((GameLobbyView) view).updateView();
             }
         }); /**/
@@ -173,7 +161,7 @@ public class GameLobbyState extends State {
 
         private void parseLobby(String[] strings){
             Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),Connection.getInstance().parseFromServer(strings[2]),Integer.parseInt(strings[3]),strings[4]);
-            System.out.println(strings);
+//            System.out.println(strings);
             String[] playerIDstrings = strings[5].split("&");
             String[] vehicleTypestrings = strings[6].split("&");    //
             ArrayList<Integer> playerIDs = new ArrayList<>();
@@ -187,7 +175,7 @@ public class GameLobbyState extends State {
                 //PROPER CODE
                 vehicleTypes.add((vehicleTypestrings[i].equals("NONE")) ? null : vehicleTypestrings[i]);
             }
-            System.out.println(vehicleTypes.toString());
+//            System.out.println(vehicleTypes.toString());
             // when players come and go, undo "Ready up" button's functions.
             if (currentPlayerCount != playerIDs.size()){
                 setPlayerReady(false);

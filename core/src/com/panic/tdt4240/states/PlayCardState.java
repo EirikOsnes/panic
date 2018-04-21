@@ -52,7 +52,7 @@ public class PlayCardState extends State {
     public PlayCardState(GameStateManager gsm) {
         super(gsm);
         enableTimer = false;
-        System.out.println("PlayCardState");
+//        System.out.println("PlayCardState");
         player = GameInstance.getInstance().getPlayer();
         map = GameInstance.getInstance().getMap();
 
@@ -81,7 +81,7 @@ public class PlayCardState extends State {
      */
     @Override
     public void handleInput(Object o) {
-        System.out.println(o.toString());
+//        System.out.println(o.toString());
         if(!isLockedIn){
             if (o instanceof Integer) {
                 Integer handIndex = (Integer) o;
@@ -125,7 +125,7 @@ public class PlayCardState extends State {
                 vehicleTarget = false;
                 selectTarget((String) o);
             }
-            System.out.println(playedCardsList);
+//            System.out.println(playedCardsList);
         }
     }
 
@@ -182,7 +182,7 @@ public class PlayCardState extends State {
      * @return whether the target is a valid target
      */
     private boolean validTarget(String targetID) {
-        System.out.println(targetID);
+//        System.out.println(targetID);
         if(targetID.length() > 0){
             return validAsteroidTarget(targetID, numPlayedCards - 1) || validVehicleTarget(targetID, numPlayedCards - 1);
         }

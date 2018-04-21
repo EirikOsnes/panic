@@ -21,10 +21,20 @@ import com.panic.tdt4240.util.GlobalConstants;
 /**
  * Created by victor on 12.03.2018.
  *
- * Should:  1. display a list of lobbies, perhaps nearby games
- *          2. allow direct connection by entering lobby id
+ * Shows a list of lobbies available to join, at the time of receiving
+ * the data. Full lobbies are shown as well.
+ *
+ * Leaving a lobby while being the only player, terminates the lobby.
+ *
+ * Users must click 'Refresh' to get an updated list.
+ *
+ * Attempting to click on lobbies that actually do not exist, refreshes the list instead.
+ *
+ * Lobbies are shown in a window that scrolls when it gets full, (i.e. many lobbies online)
+ * with the format:
+ * [Lobby name]   Slots : [players in lobby / max players]
+ *
  */
-
 public class GameListView extends AbstractView {
 
     private TextureAtlas btnAtlas;
@@ -83,7 +93,7 @@ public class GameListView extends AbstractView {
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        System.out.println("Lobby clicked; attempting to enter");
+//                        System.out.println("Lobby clicked; attempting to enter");
                         state.handleInput(data[1]); // lobbyID
                     }
                 });

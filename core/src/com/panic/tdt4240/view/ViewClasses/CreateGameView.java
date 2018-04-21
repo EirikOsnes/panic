@@ -218,12 +218,3 @@ public class CreateGameView extends AbstractView {
     }
 }
 
-    class userTextInputListener implements Input.TextInputListener {
-        @Override
-        public void input (String text) {
-
-        }
-        @Override
-        public void canceled () {
-        }
-    }

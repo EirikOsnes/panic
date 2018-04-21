@@ -55,11 +55,8 @@ public class GameResultsView extends AbstractView {
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"),btnAtlas);
 
         skin.addRegions(btnAtlas);
-
-        if (Gdx.app.getType() == Application.ApplicationType.Android) {
-            font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
-            labelFont.getData().scale(GlobalConstants.GET_TEXT_SCALE());
-        }
+        font.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
+        labelFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
 
         btnStyle = new TextButton.TextButtonStyle();
         btnStyle.font = font;

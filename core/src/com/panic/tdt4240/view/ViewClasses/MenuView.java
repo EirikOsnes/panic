@@ -32,8 +32,7 @@ public class MenuView extends AbstractView {
         cam.setToOrtho(false,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Table table = new Table();
         font = new BitmapFont();
-        float textScale = GlobalConstants.GET_TEXT_SCALE();
-        font.getData().scale(2*textScale);
+        font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
 
         TextButton.TextButtonStyle style = skin.get("default", TextButton.TextButtonStyle.class);
         style.font=font;

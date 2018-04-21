@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.badlogic.gdx.Gdx;
 import com.panic.tdt4240.models.Card;
+import com.panic.tdt4240.models.GameInstance;
 import com.panic.tdt4240.models.ModelHolder;
 
 
@@ -30,7 +31,7 @@ public class Connection extends WebSocketClient{
                 URI uri = new URI("ws://panicserver.herokuapp.com");
                 ourInstance = new Connection(uri);
                 ourInstance.connectBlocking(); //FIXME: This returns a boolean - should it be used?
-                ourInstance.setConnectionLostTimeout(30);
+                //ourInstance.setConnectionLostTimeout(30);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -172,7 +173,8 @@ public class Connection extends WebSocketClient{
      * @param target
      */
     public void sendDestroyed(int gameID, String target){
-        this.send("TOGAME//" + gameID + "//DESTROY//" + target + "//" + connectionID);
+        if(GameInstance.getInstance().getPlayer().isAlive())
+            this.send("TOGAME//" + gameID + "//DESTROY//" + target + "//" + connectionID);
 
     }
 
@@ -184,24 +186,32 @@ public class Connection extends WebSocketClient{
     }
 
     public void sendPlayCardState(int gameID){
-        System.out.println("Sending BEGIN_TURN");
-        this.send("TOGAME//" + gameID + "//BEGIN_TURN");
+        if(GameInstance.getInstance().getPlayer().isAlive()) {
+            System.out.println("Sending BEGIN_TURN");
+            this.send("TOGAME//" + gameID + "//BEGIN_TURN");
+        }
     }
 
     /**
      * Tell the server that you have changed to the RunEffectsState, and thus are ready to receive cards.
      */
     public void sendRunEffectsState(int gameID){
-        System.out.println("sent runEffectState");
-        this.send("TOGAME//" + gameID + "//ENTERED_RUN_EFFECTS_STATE");
+        if(GameInstance.getInstance().getPlayer().isAlive()) {
+            System.out.println("sent runEffectState");
+            this.send("TOGAME//" + gameID + "//ENTERED_RUN_EFFECTS_STATE");
+        }
     }
 
     public void sendEndRunEffectsState(int gameID){
-        this.send("TOGAME//" + gameID + "//END_RUN_EFFECTS_STATE");
+        if(GameInstance.getInstance().getPlayer().isAlive()) {
+            this.send("TOGAME//" + gameID + "//END_RUN_EFFECTS_STATE");
+        }
     }
 
     public void sendResyncFinished(int gameID){
-        this.send("TOGAME//" + gameID + "//RESYNC_FINISHED");
+        if(GameInstance.getInstance().getPlayer().isAlive()) {
+            this.send("TOGAME//" + gameID + "//RESYNC_FINISHED");
+        }
     }
 
     /**
@@ -228,7 +238,9 @@ public class Connection extends WebSocketClient{
             String priority = Integer.toString(card.getPriority());
             returnString = returnString + move[0] + "&" + move[2] + "&" + move[1] + "&" + priority + "//";
         }
-        this.send(returnString);
+        if(GameInstance.getInstance().getPlayer().isAlive()) {
+            this.send(returnString);
+        }
     }
 
     public void gameOverInfo(int gameID){

@@ -156,7 +156,7 @@
 
     <card id = "GLUE">
         <name>Glue shot</name>
-        <priority>4</priority>
+        <priority>5</priority>
         <type_id>EFFECT</type_id>
         <target_type>ASTEROID</target_type>
         <allowed_targets>ALL</allowed_targets>
@@ -182,10 +182,10 @@
         <allowed_targets>ALL</allowed_targets>
         <min_range>0</min_range>
         <max_range>1</max_range>
-        <tooltip>Cover your enemies in deadly poisonous SPACE GOO!!! Deals 10 damage per turn for 3 turns.</tooltip>
+        <tooltip>Cover your enemies in deadly poisonous SPACE GOO!!! Deals 15 damage per turn for 3 turns.</tooltip>
         <card_effect>
             <target_status>poison</target_status>
-            <value>10</value>
+            <value>15</value>
             <status_duration>3</status_duration>
             <splash_range>0</splash_range>
             <friendly_fire>false</friendly_fire>
@@ -199,7 +199,7 @@
         <priority>9</priority>
         <type_id>ATTACK</type_id>
         <target_type>VEHICLE</target_type>
-        <allowed_targets>ALL</allowed_targets>
+        <allowed_targets>ENEMY</allowed_targets>
         <min_range>0</min_range>
         <max_range>1</max_range>
         <tooltip>Deals 25 damage. Always goes first. Max range 1.</tooltip>

@@ -24,8 +24,14 @@ import java.util.ArrayList;
 /**
  * Created by victor on 12.03.2018.
  *
- * TLDR description: shitty copy of MenuView's functionality.
- *
+ * This view shows only the player's outcome in the game:
+ * Victory, draw or defeat. This may take a bit of time to load.
+ * 
+ * An exit button (to main menu) is also present.
+ * 
+ * Since this was not specified in any document, this view was
+ * ultimately to be decided during development phase.
+ * 
  */
 
 public class GameResultsView extends AbstractView {

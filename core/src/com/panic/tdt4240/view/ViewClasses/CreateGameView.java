@@ -23,14 +23,13 @@ import com.panic.tdt4240.util.GlobalConstants;
 
 /**
  * Created by victor on 12.03.2018.
- *
- * 18.04. NOTES: attempts to enter lobby from Create Game gives "Thread check" sequence:
- *                  output: LWJGL
- *                  order: 2, 4, 5
- *               Game List sequence:
- *                  output: LWJGL
- *                  order:
- *
+ * 
+ * Here, users set the lobby name, which map to play on, and the max
+ * number of players for the lobby.
+ * 
+ * Lobby names do not have to be unique.
+ * 
+ * Users are not allowed to create a lobby without entering a name.
  */
 
 public class CreateGameView extends AbstractView {
@@ -86,13 +85,13 @@ public class CreateGameView extends AbstractView {
                            if(text.length() > 0){
                                in_LobbyName.setText(text);
                                cgState.setName(text);
-                               System.out.println(text);
+//                               System.out.println(text);
                                haveSetName = true;
                            }
                        }
                        @Override
                        public void canceled(){
-                           System.out.println("Cancelled.");
+//                           System.out.println("Cancelled.");
                        }
                    },
                         "Set lobby name", "", "Set lobby name");
@@ -147,7 +146,7 @@ public class CreateGameView extends AbstractView {
             @Override
             public void clicked(InputEvent event, float x, float y){
                 if(haveSetName){
-                    System.out.println("Create btn pressed");
+//                    System.out.println("Create btn pressed");
     /*                    Connection.getInstance().createLobby(
                                 Integer.valueOf(in_maxPlayers.getSelected()),
                                 in_mapID.getSelected(),

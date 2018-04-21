@@ -48,16 +48,16 @@ public class RunEffectsView extends AbstractView {
 
     private GameInstance gameInstance;
     private ShapeRenderer sr;
+    private BitmapFont font;
+    private Skin skin, carSkin;
+    private TextureAtlas btnAtlas;
+
     private HashMap<String, Image> vehicleImages;
     private HashMap<String, Image> asteroidImages;
     private AnimationAdapter animator;
     private MapConnections mapConnections;
     private final CloudAnimation explosion, poison, shield, healing, debuff;
-    private BitmapFont font;
-    private Skin skin;
-    private Skin carSkin;
     private boolean isLeaving = false;
-    private TextureAtlas btnAtlas;
     private final Missile redMissile, greenMissile, cyanMissile, yellowMissile;
     private Label hpLabel;
     private float health;

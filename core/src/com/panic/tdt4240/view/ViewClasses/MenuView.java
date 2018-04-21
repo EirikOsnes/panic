@@ -21,7 +21,6 @@ import com.panic.tdt4240.util.GlobalConstants;
 
 public class MenuView extends AbstractView {
 
-
     private BitmapFont font;
     private Texture background;
 
@@ -107,8 +106,8 @@ public class MenuView extends AbstractView {
     }
 
     public void dispose(){
-        font.dispose();
         stage.dispose();
+        font.dispose();
         background.dispose();
     }
 

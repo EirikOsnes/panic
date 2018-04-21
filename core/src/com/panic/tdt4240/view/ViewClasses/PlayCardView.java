@@ -36,18 +36,19 @@ import java.util.Locale;
  */
 public class PlayCardView extends AbstractView{
 
+    private Skin skin, dialogSkin;
+    private BitmapFont font;
+    private TextureAtlas textureAtlas, btnAtlas;
+    private ShapeRenderer sr;
+
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Table table;
     private TextButton cardInfo;
-    private Skin skin, dialogSkin;
     private boolean selectTarget = false;
-    private ShapeRenderer sr;
     private ArrayList<String[]> vehicleOnAsteroid;
     private TextField timer;
     private Label invalidTarget;
-    private BitmapFont font;
-    private TextureAtlas textureAtlas, btnAtlas;
     private TextButton.TextButtonStyle buttonStyle;
     private float timeLeft;
     private boolean isLeaving = false;

@@ -24,7 +24,7 @@ public class CreateGameState extends State {
     public CreateGameState(GameStateManager gsm){
         super(gsm);
         view = new CreateGameView(this);
-        System.out.println("Thread check 2: " + Thread.currentThread().toString());
+//        System.out.println("Thread check 2: " + Thread.currentThread().toString());
     }
 
     /**
@@ -112,7 +112,7 @@ public class CreateGameState extends State {
 
         private void parseLobby(String[] strings){
             Lobby myLobby = new Lobby(Integer.parseInt(strings[1]),strings[2],Integer.parseInt(strings[3]),strings[4]);
-            System.out.println("Lobby parsed:: " + myLobby.toString());
+//            System.out.println("Lobby parsed:: " + myLobby.toString());
             final int ID = myLobby.getLobbyID();
             Gdx.app.postRunnable(new Runnable() {
                 @Override

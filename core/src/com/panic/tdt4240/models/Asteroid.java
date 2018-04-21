@@ -33,7 +33,6 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
     private ArrayList<String> removeVehicle;
     private boolean isDestroyed = false;
 
-//TODO Asteroid should contain the string of the asteroid image, not the sprite
     public Asteroid(String path, String id) {
         this.texture = path;
         this.id = id;

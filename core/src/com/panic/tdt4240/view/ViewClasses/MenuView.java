@@ -17,6 +17,12 @@ import com.panic.tdt4240.util.GlobalConstants;
 
 /**
  * Created by victor on 05.03.2018.
+ *
+ * Used by MenuState. From here, players can hit 'Create game' to make a new game lobby,
+ * or 'Join game' to join an existing lobby.
+ *
+ * The settings menu has been hidden because it is left unimplemented.
+ *
  */
 
 public class MenuView extends AbstractView {
@@ -89,17 +95,17 @@ public class MenuView extends AbstractView {
 
     /**
      * A method to be called from MenuState to tell the view that it's waiting for a connection.
+     * Deemed low priority and thus not finished.
      * @param isConnecting
      */
     public void isConnecting(boolean isConnecting){
         if(isConnecting){
-            //TODO: Set a "Connecting to server" message or spinner or something
+            //TODO: Set a "Connecting to server" message or spinner or something. Something like LoadGameView
         }else{
             //TODO: Unset the message.
         }
     }
 
-    // TODO: legge inn input
     public void render() {
         stage.act();
         stage.draw();

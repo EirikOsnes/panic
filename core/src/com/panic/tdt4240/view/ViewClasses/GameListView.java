@@ -32,7 +32,6 @@ public class GameListView extends AbstractView {
     private Skin skin;
     private BitmapFont font;
     private Texture bg;
-    private TextButton exitToMainMenuBtn, refreshBtn;
     private Table lobbyBtnTable;
 
     public static final String error0 = "Error: full lobby.";
@@ -47,8 +46,7 @@ public class GameListView extends AbstractView {
 
         bg = new Texture("misc/background.png");
         font = new BitmapFont();
-        float textScale = GlobalConstants.GET_TEXT_SCALE();
-        font.getData().scale(textScale);
+        font.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
 
@@ -111,7 +109,7 @@ TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class)
     private void generateMenuBtns(){
         TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class);
         btnStyle.font = font;
-        exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
+        TextButton exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
         exitToMainMenuBtn.getLabelCell().pad(exitToMainMenuBtn.getLabelCell().getPadTop(), GlobalConstants.PADDING, exitToMainMenuBtn.getLabelCell().getPadBottom(), GlobalConstants.PADDING);
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
@@ -120,7 +118,7 @@ TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class)
             }
         });
 
-        refreshBtn = new TextButton(    "Refresh list", btnStyle);
+        TextButton refreshBtn = new TextButton("Refresh list", btnStyle);
         refreshBtn.getLabelCell().pad(refreshBtn.getLabelCell().getPadTop(), GlobalConstants.PADDING, refreshBtn.getLabelCell().getPadBottom(), GlobalConstants.PADDING);
         refreshBtn.addListener(new ChangeListener() {
             @Override

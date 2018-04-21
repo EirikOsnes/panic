@@ -38,20 +38,18 @@ import java.util.ArrayList;
 
 public class GameLobbyView extends AbstractView {
 
-    private Table playerTxtTable, bottomTable, topTable;
+    private Table topTable;
     private TextureAtlas buttonAtlas;
     private Texture bg;
     private Skin skin;
     private BitmapFont font;
     private String lobbyName;
 
-    private ArrayList<String> usedNames;
-
-    private Label waitingTxt, lobbyField, lobbyNameField;
     private ArrayList<Label> playerTxtFields;
-    private Label.LabelStyle txtStyle, rdyStyle, waitStyle;
+    private Label.LabelStyle txtStyle;
+    private Label.LabelStyle rdyStyle;
 
-    private Button exitBtn, readyBtn;
+    private Button readyBtn;
     private TextButton.TextButtonStyle btnStyle;
 
     private SelectBox<String> carSelectBox;
@@ -162,7 +160,7 @@ public class GameLobbyView extends AbstractView {
     private void preparePlayerListDisplay(){
         String name;
         playerTxtFields = new ArrayList<>();
-        usedNames = new ArrayList<>();
+        ArrayList<String> usedNames = new ArrayList<>();
 
         for (int i = 0; i < lobbyState.getLobby().getPlayerIDs().size(); i++){
             int playerID = lobbyState.getLobby().getPlayerIDs().get(i);
@@ -184,7 +182,7 @@ public class GameLobbyView extends AbstractView {
                     break;
         }}}
 
-        playerTxtTable = new Table();
+        Table playerTxtTable = new Table();
         playerTxtTable.setFillParent(true);
 
         // positioning
@@ -265,7 +263,7 @@ public class GameLobbyView extends AbstractView {
             }
         });
 
-        exitBtn = new TextButton("Exit lobby", btnStyle);
+        Button exitBtn = new TextButton("Exit lobby", btnStyle);
         exitBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -274,7 +272,7 @@ public class GameLobbyView extends AbstractView {
         });
         exitBtn.pack();
 
-        bottomTable = new Table();
+        Table bottomTable = new Table();
         bottomTable.center();
         bottomTable.add(readyBtn).width(SCREEN_WIDTH/3).height(SCREEN_HEIGHT*0.08f).pad(20);
         bottomTable.add(exitBtn).width(SCREEN_WIDTH/3).height(SCREEN_HEIGHT*0.08f).pad(20);
@@ -288,11 +286,11 @@ public class GameLobbyView extends AbstractView {
         topTable = new Table();
         topTable.center().top().row().setActorWidth(SCREEN_WIDTH*2/3);
 
-        lobbyField = new Label("Lobby name: ", txtStyle);
+        Label lobbyField = new Label("Lobby name: ", txtStyle);
         lobbyField.scaleBy(GlobalConstants.GET_TEXT_SCALE());
         lobbyField.pack();
 
-        lobbyNameField = new Label(lobbyName, txtStyle);
+        Label lobbyNameField = new Label(lobbyName, txtStyle);
         lobbyNameField.scaleBy(GlobalConstants.GET_TEXT_SCALE());
 
         lobbyField.setPosition(SCREEN_WIDTH/2 - lobbyField.getWidth()/2, SCREEN_HEIGHT*0.88f);
@@ -309,9 +307,9 @@ public class GameLobbyView extends AbstractView {
     }
 
     private void generateWaitingText() {
-        waitStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+        Label.LabelStyle waitStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
         waitStyle.background = skin.getDrawable("textfield");
-        waitingTxt =  new Label("Waiting for other players...", waitStyle);
+        Label waitingTxt = new Label("Waiting for other players...", waitStyle);
         waitingTxt.getStyle().font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
         waitingTxt.setWidth(SCREEN_WIDTH/2);
 //        waitingTxt.setPosition(SCREEN_WIDTH /2 - waitingTxt.getWidth()/2, SCREEN_HEIGHT*7.5f/10f);

@@ -37,10 +37,7 @@ public class CreateGameView extends AbstractView {
     private TextureAtlas btnAtlas;
     private Skin skin;
     private BitmapFont font;
-    private TextButton.TextButtonStyle btnStyle, btnStyle2;
-    private Table table;
     private Texture bg;
-    private TextButton createLobbyBtn, exitToMainMenuBtn;
 
     private TextField lobbyNameTxtField;
     private SelectBox<String> mapSelectBox, maxPlayersSelectBox;
@@ -51,14 +48,13 @@ public class CreateGameView extends AbstractView {
 
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH, PanicGame.HEIGHT);
-        table = new Table();
+        Table table = new Table();
         font = new BitmapFont();
         font.setColor(Color.WHITE);
-        float textScale = GlobalConstants.GET_TEXT_SCALE();
-        font.getData().scale(textScale*2);
+        font.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
-        btnStyle = new TextButton.TextButtonStyle();
+        TextButton.TextButtonStyle btnStyle = new TextButton.TextButtonStyle();
         btnStyle.font=font;
         btnStyle.up = skin.getDrawable("button-up");
         btnStyle.down = skin.getDrawable("button-down");
@@ -109,7 +105,7 @@ public class CreateGameView extends AbstractView {
         mapSelectBox.setStyle(boxStyle);
         mapSelectBox.setName("Select map");
         mapSelectBox.setItems(mapIDs);
-        mapSelectBox.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE());
+        mapSelectBox.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE()*2);
 
         mapSelectBox.addListener(new ChangeListener() {
             @Override
@@ -126,7 +122,7 @@ public class CreateGameView extends AbstractView {
         maxPlayersSelectBox.setStyle(boxStyle);
         maxPlayersSelectBox.setName("Max number of players");
         maxPlayersSelectBox.setItems(max_players);
-        maxPlayersSelectBox.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE());
+        maxPlayersSelectBox.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE()*2);
 
         maxPlayersSelectBox.addListener(new ChangeListener() {
             @Override
@@ -138,7 +134,7 @@ public class CreateGameView extends AbstractView {
         cgState.setMaxPlayerCount(Integer.valueOf(max_players[0]));
         maxPlayersSelectBox.pack();
 
-        createLobbyBtn = new TextButton("Create lobby", btnStyle);
+        TextButton createLobbyBtn = new TextButton("Create lobby", btnStyle);
         createLobbyBtn.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
@@ -154,7 +150,7 @@ public class CreateGameView extends AbstractView {
 
         createLobbyBtn.pack();
 
-        exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
+        TextButton exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -164,12 +160,9 @@ public class CreateGameView extends AbstractView {
         });
         exitToMainMenuBtn.pack();
 
-        table.add(lobbyNameTxtField).top().padTop(SCREEN_HEIGHT / 16f)
-				.width(SCREEN_WIDTH/4).height(SCREEN_HEIGHT/20).row();
-        table.add(mapSelectBox).padTop(SCREEN_HEIGHT / 16f)
-				.width(SCREEN_WIDTH/4).height(SCREEN_HEIGHT/20).row();
-        table.add(maxPlayersSelectBox).padTop(SCREEN_HEIGHT / 16f)
-				.width(SCREEN_WIDTH/8).height(SCREEN_HEIGHT/20).row();
+        table.add(lobbyNameTxtField).top().width(SCREEN_WIDTH/4).height(SCREEN_HEIGHT/20).pad(SCREEN_HEIGHT / 16f).row();
+        table.add(mapSelectBox).width(SCREEN_WIDTH/4).height(SCREEN_HEIGHT/20).pad(SCREEN_HEIGHT / 16f).row();
+        table.add(maxPlayersSelectBox).width(SCREEN_WIDTH/8).height(SCREEN_HEIGHT/20).pad(SCREEN_HEIGHT / 16f).row();
 
         // TODO: a button for text input and direct connection to a game lobby?
         table.add(createLobbyBtn).width(SCREEN_WIDTH/2)

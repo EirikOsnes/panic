@@ -6,8 +6,9 @@ import com.panic.tdt4240.states.State;
 /**
  * Created by victor on 12.03.2018.
  *
+ * This would be among the last features to implement. Due to time constraints,
+ * this is unfinished and therefore hidden from users.
  */
-
 
 public class SettingsView extends AbstractView {
 

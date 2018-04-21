@@ -3,7 +3,6 @@ package com.panic.tdt4240.view.animations;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.utils.Align;
-import com.panic.tdt4240.view.animations.Missile.MissileType;
 
 /**
  * Created by Choffa for panic on 19-Apr-18.

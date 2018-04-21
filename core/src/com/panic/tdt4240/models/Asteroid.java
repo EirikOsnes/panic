@@ -1,19 +1,15 @@
 package com.panic.tdt4240.models;
 
 
+import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.events.Event;
+import com.panic.tdt4240.events.EventBus;
 import com.panic.tdt4240.events.EventFactory;
 import com.panic.tdt4240.events.EventListener;
-import com.panic.tdt4240.events.EventBus;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.panic.tdt4240.util.IStatusAble;
 import com.panic.tdt4240.util.StatusHandler;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Locale;
 
 
 /**

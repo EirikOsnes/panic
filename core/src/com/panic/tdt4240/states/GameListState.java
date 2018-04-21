@@ -55,7 +55,7 @@ public class GameListState extends State {
                 @Override
                 public void run() {
                     connectToLobby(Integer.parseInt(s)); // ACTUAL CODE... i think.
-                    System.out.println("New lobby state SHOULD BE made");
+//                    System.out.println("New lobby state SHOULD BE made");
                     updateLobbyList();
                 }
             });
@@ -142,14 +142,14 @@ public class GameListState extends State {
                     break;
                     // CLICKED ON A LOBBY, RECEIVING LOBBY DATA SOON
                 case "LOBBY_SUCCESSFUL":
-                    System.out.println("Thread check 1: " + Thread.activeCount());
+//                    System.out.println("Thread check 1: " + Thread.activeCount());
                     final String s = strings[1];
 /*                    gsm.push(new GameLobbyState(gsm,Integer.parseInt(s))); /**/
 
                     Gdx.app.postRunnable(new Runnable() {
                         @Override
                         public void run() {
-                            System.out.println("Thread check postRunnable in listState onMessage: " +
+//                            System.out.println("Thread check postRunnable in listState onMessage: " +
                                 Thread.currentThread().toString());
                             gsm.push(new GameLobbyState(gsm,Integer.parseInt(s))); /**/
                         }

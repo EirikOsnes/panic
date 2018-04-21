@@ -1,4 +1,4 @@
-package com.panic.tdt4240.view.ViewClasses;
+package com.panic.tdt4240.view;
 
 import com.panic.tdt4240.states.State;
 import com.panic.tdt4240.view.ViewClasses.AbstractView;
@@ -17,7 +17,6 @@ public class LoadGameView extends AbstractView {
 
     @Override
     public void render() {
-        stage.draw();
 
     }
 

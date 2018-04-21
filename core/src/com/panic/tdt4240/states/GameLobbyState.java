@@ -189,6 +189,8 @@ public class GameLobbyState extends State {
                 //PROPER CODE
                 vehicleTypes.add((vehicleTypestrings[i].equals("NONE")) ? null : vehicleTypestrings[i]);
             }
+            System.out.println(vehicleTypes.toString());
+            // when players come and go, undo "Ready up" button's functions.
             if (currentPlayerCount != playerIDs.size()){
                 setPlayerReady(false);
                 runPostRunnable();
@@ -202,7 +204,7 @@ public class GameLobbyState extends State {
 
         }
 
-        private void runPostRunnable(){
+        public void runPostRunnable(){
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {

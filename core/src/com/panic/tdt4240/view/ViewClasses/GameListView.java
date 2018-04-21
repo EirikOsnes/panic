@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.GameListState;
 import com.panic.tdt4240.util.GlobalConstants;
@@ -27,12 +26,12 @@ import com.panic.tdt4240.util.GlobalConstants;
 
 public class GameListView extends AbstractView {
 
+    private GameListState listState;
     private TextureAtlas btnAtlas;
     private Skin skin;
     private BitmapFont font;
     private Texture bg;
-
-    private GameListState listState;
+    private TextButton exitToMainMenuBtn, refreshBtn;
     private Table lobbyBtnTable;
 
     public static final String error0 = "Error: full lobby.";
@@ -47,7 +46,8 @@ public class GameListView extends AbstractView {
 
         bg = new Texture("misc/background.png");
         font = new BitmapFont();
-        font.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
+        float textScale = GlobalConstants.GET_TEXT_SCALE();
+        font.getData().scale(textScale);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
 
@@ -74,13 +74,11 @@ public class GameListView extends AbstractView {
     private void createLobbyList(){
         lobbyBtnTable = new Table(skin);
         lobbyBtnTable.center();
-TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class);
-        btnStyle.font = font;
+
         if (! listState.getLobbyListData().isEmpty()){
             for (int i = 0; i < listState.getLobbyListData().size(); i++) {
                 final String data[] = listState.getLobbyListData().get(i);
-                TextButton button = new TextButton(data[0], btnStyle);
-                button.setHeight(button.getHeight()*2.2f);
+                TextButton button = new TextButton(data[0], skin);
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -88,30 +86,27 @@ TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class)
                         state.handleInput(data[1]); // lobbyID
                     }
                 });
-                lobbyBtnTable.add(button).width(GlobalConstants.SCALE_WIDTH*3.0f/2.0f).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
+                lobbyBtnTable.add(button).width(300).pad(5);
                 lobbyBtnTable.row();
             }
-
         }
-        //lobbyBtnTable.row();
+
+        lobbyBtnTable.row();
 
         // scrolls child widgets.
         ScrollPane.ScrollPaneStyle style = skin.get("lobby", ScrollPane.ScrollPaneStyle.class);
         ScrollPane scroller = new ScrollPane(lobbyBtnTable, style);
-        stage.addActor(scroller);
         scroller.setScrollingDisabled(true, false);
         scroller.setOverscroll(false, false);
-        scroller.setWidth(SCREEN_WIDTH);
+        scroller.setWidth(SCREEN_WIDTH*0.7f);
         scroller.setHeight(SCREEN_HEIGHT*3/4f);
-        scroller.setPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, Align.center);
+        scroller.setPosition(SCREEN_HEIGHT/10f, SCREEN_WIDTH/10f*3f);
+        stage.addActor(scroller);
     }
 
 
     private void generateMenuBtns(){
-        TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class);
-        btnStyle.font = font;
-        TextButton exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
-        exitToMainMenuBtn.getLabelCell().pad(exitToMainMenuBtn.getLabelCell().getPadTop(), GlobalConstants.PADDING, exitToMainMenuBtn.getLabelCell().getPadBottom(), GlobalConstants.PADDING);
+        exitToMainMenuBtn = new TextButton("Exit to main menu", skin);
         exitToMainMenuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -119,8 +114,7 @@ TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class)
             }
         });
 
-        TextButton refreshBtn = new TextButton("Refresh list", btnStyle);
-        refreshBtn.getLabelCell().pad(refreshBtn.getLabelCell().getPadTop(), GlobalConstants.PADDING, refreshBtn.getLabelCell().getPadBottom(), GlobalConstants.PADDING);
+        refreshBtn = new TextButton(    "Refresh list", skin);
         refreshBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -131,12 +125,11 @@ TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class)
         Table exitTable = new Table();
         exitTable.setFillParent(true);
         exitTable.bottom();
-        exitTable.add(refreshBtn).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
-        exitTable.add(exitToMainMenuBtn).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
+        exitTable.add(refreshBtn).pad(10);
+        exitTable.add(exitToMainMenuBtn).pad(10);
         exitTable.pack();
         stage.addActor(exitTable);
-        //TODO
-        lobbyBtnTable.setHeight(lobbyBtnTable.getHeight()*2.0f);
+
 
     }
 

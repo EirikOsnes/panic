@@ -1,7 +1,6 @@
 package com.panic.tdt4240.states;
 
 import com.panic.tdt4240.connection.Connection;
-import com.panic.tdt4240.events.EventBus;
 
 import java.util.Stack;
 
@@ -14,6 +13,7 @@ public class GameStateManager {
 
     public GameStateManager(){
         states = new Stack<>();
+
     }
 
     public void push(State state){

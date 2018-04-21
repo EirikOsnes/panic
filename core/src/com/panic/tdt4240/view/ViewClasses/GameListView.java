@@ -75,13 +75,13 @@ public class GameListView extends AbstractView {
     private void createLobbyList(){
         lobbyBtnTable = new Table(skin);
         lobbyBtnTable.center();
-        TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class);
+TextButton.TextButtonStyle btnStyle = skin.get(TextButton.TextButtonStyle.class);
         btnStyle.font = font;
-
         if (! listState.getLobbyListData().isEmpty()){
             for (int i = 0; i < listState.getLobbyListData().size(); i++) {
                 final String data[] = listState.getLobbyListData().get(i);
                 TextButton button = new TextButton(data[0], btnStyle);
+                button.setHeight(button.getHeight()*2.2f);
                 button.addListener(new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
@@ -92,8 +92,8 @@ public class GameListView extends AbstractView {
                 lobbyBtnTable.add(button).width(GlobalConstants.SCALE_WIDTH*3.0f/2.0f).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
                 lobbyBtnTable.row();
             }
-        }
 
+        }
         //lobbyBtnTable.row();
 
         // scrolls child widgets.
@@ -136,7 +136,8 @@ public class GameListView extends AbstractView {
         exitTable.add(exitToMainMenuBtn).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
         exitTable.pack();
         stage.addActor(exitTable);
-
+        //TODO
+        lobbyBtnTable.setHeight(lobbyBtnTable.getHeight()*2.0f);
 
     }
 

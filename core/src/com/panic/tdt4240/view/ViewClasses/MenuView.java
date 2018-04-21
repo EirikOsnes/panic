@@ -49,6 +49,11 @@ public class MenuView extends AbstractView {
         Label title = new Label(PanicGame.TITLE,labelStyle);
         Label fullTitle = new Label(PanicGame.FULL_TITLE,labelStyle);
 
+        title.setFontScale(5.0f);
+        fullTitle.setFontScale(2.5f);
+
+
+
 
         table.setFillParent(true);
         table.add(title).top().padBottom(GlobalConstants.PADDING);

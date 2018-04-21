@@ -169,12 +169,7 @@ public class GameLobbyState extends State {
                     parseLobby(strings);
                     // View update should trigger whenever server sends lobby info
                     // ... and server should send new info whenever a player joins.
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            view.updateView();
-                        }
-                    });
+                    runPostRunnable();
                     //view!=null
                     break;
                 case "GAME_START":
@@ -196,18 +191,14 @@ public class GameLobbyState extends State {
             ArrayList<Integer> playerIDs = new ArrayList<>();
             ArrayList<String> vehicleTypes = new ArrayList<>();
             for (int i = 0; i < playerIDstrings.length; i++) { //Assuming proper set up here - the same amount of values.
-/*                System.out.println("Parsing slot: " + i);
-                System.out.println(playerIDstrings[i]);
-                System.out.println(vehicleTypestrings[i]);/**/
                 playerIDs.add(Integer.parseInt(playerIDstrings[i]));
 
-                // TEST CODE
-                vehicleTypes.add("EDDISON");
+/*                // TEST CODE
+                vehicleTypes.add("EDDISON"); /**/
 
                 //PROPER CODE
                 vehicleTypes.add((vehicleTypestrings[i].equals("NONE")) ? null : vehicleTypestrings[i]);
             }
-            // when players come and go, undo "Ready up" button's functions.
             if (currentPlayerCount != playerIDs.size()){
                 setPlayerReady(false);
                 runPostRunnable();
@@ -221,7 +212,7 @@ public class GameLobbyState extends State {
 
         }
 
-        public void runPostRunnable(){
+        private void runPostRunnable(){
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {

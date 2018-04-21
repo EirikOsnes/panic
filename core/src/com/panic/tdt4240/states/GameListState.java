@@ -37,9 +37,6 @@ public class GameListState extends State {
 
     public void updateLobbyList(){
         Connection.getInstance().getAllLobbies();
-        //TODO: Actually visualize this list. Use ScrollPane
-        // import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-        // https://stackoverflow.com/questions/15484077/libgdx-and-scrollpane-with-multiple-widgets
     }
     
     public void connectToLobby(int i){
@@ -60,14 +57,6 @@ public class GameListState extends State {
                     updateLobbyList();
                 }
             });
-/*            if (failedToEnterLobby) {
-                updateLobbyList();
-                System.out.println("Check 2; if this ever triggers then you fucked up bigtime");
-            } else if (triedToEnterLobby) {
-                failedToEnterLobby = true;
-                System.out.println("Check 1");
-                updateLobbyList();
-            } // nothing has gone wrong*/
         }
         try {    // error handling
             if (s.equals("error:Full lobby")) {

@@ -15,7 +15,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
 import com.panic.tdt4240.states.CreateGameState;
@@ -43,8 +42,8 @@ public class CreateGameView extends AbstractView {
     private Texture bg;
     private TextButton createLobbyBtn, exitToMainMenuBtn;
 
-    private TextField in_LobbyName;
-    private SelectBox<String> in_mapID, in_maxPlayers;
+    private TextField lobbyNameTxtField;
+    private SelectBox<String> mapSelectBox, maxPlayersSelectBox;
     private boolean haveSetName;
 
     public CreateGameView(final CreateGameState cgState) {
@@ -60,13 +59,9 @@ public class CreateGameView extends AbstractView {
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         btnStyle = new TextButton.TextButtonStyle();
-        btnStyle.font = font;
+        btnStyle.font=font;
         btnStyle.up = skin.getDrawable("button-up");
-        btnStyle.down = skin.getDrawable("button-up");
-        btnStyle2 = new TextButton.TextButtonStyle();
-        btnStyle2.font=font;
-        btnStyle2.up = skin.getDrawable("button-up");
-        btnStyle2.down = skin.getDrawable("button-down");
+        btnStyle.down = skin.getDrawable("button-down");
         haveSetName = false;
 
         table.setFillParent(true);
@@ -77,7 +72,7 @@ public class CreateGameView extends AbstractView {
         textStyle.background = skin.getDrawable("textfield");
 
         textStyle.fontColor = skin.getColor("white");
-        in_LobbyName = new TextField("Set lobby name", textStyle);
+        lobbyNameTxtField = new TextField("Set lobby name", textStyle);
         final TextField.OnscreenKeyboard keyboard = new TextField.OnscreenKeyboard() {
             @Override
             public void show(boolean visible) {
@@ -85,7 +80,7 @@ public class CreateGameView extends AbstractView {
                        @Override
                        public void input(String text){
                            if(text.length() > 0){
-                               in_LobbyName.setText(text);
+                               lobbyNameTxtField.setText(text);
                                cgState.setName(text);
                                System.out.println(text);
                                haveSetName = true;
@@ -99,60 +94,56 @@ public class CreateGameView extends AbstractView {
                         "Set lobby name", "", "Set lobby name");
             }
         };
-        in_LobbyName = new TextField("Set lobby name", textStyle);
-        in_LobbyName.setOnscreenKeyboard(keyboard);
+        lobbyNameTxtField = new TextField("Set lobby name", textStyle);
+        lobbyNameTxtField.setOnscreenKeyboard(keyboard);
         keyboard.show(true);
 
-        table.add(in_LobbyName).center().top().pad(30);
+        table.add(lobbyNameTxtField).center().top().pad(30);
         table.row();
 
         String[] mapIDs = ((CreateGameState)state).getMapIDs();
         SelectBox.SelectBoxStyle boxStyle = new SelectBox.SelectBoxStyle(skin.get(SelectBox.SelectBoxStyle.class));
         boxStyle.font = font;
 
-        in_mapID = new SelectBox<>(skin);
-        in_mapID.setStyle(boxStyle);
-        in_mapID.setName("Select map");
-        in_mapID.setItems(mapIDs);
-        in_mapID.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE()*2);
+        mapSelectBox = new SelectBox<>(skin);
+        mapSelectBox.setStyle(boxStyle);
+        mapSelectBox.setName("Select map");
+        mapSelectBox.setItems(mapIDs);
+        mapSelectBox.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE());
 
-        in_mapID.addListener(new ChangeListener() {
+        mapSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                cgState.setMapID(in_mapID.getSelected());
+                cgState.setMapID(mapSelectBox.getSelected());
             }
         });
         //First map in the array is the default value
         cgState.setMapID(mapIDs[0]);
-        in_mapID.pack();
+        mapSelectBox.pack();
 
         String[] max_players = ((CreateGameState)state).getMaxPlayers();
-        in_maxPlayers = new SelectBox<>(skin);
-        in_maxPlayers.setStyle(boxStyle);
-        in_maxPlayers.setName("Max number of players");
-        in_maxPlayers.setItems(max_players);
-        in_maxPlayers.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE()*2);
+        maxPlayersSelectBox = new SelectBox<>(skin);
+        maxPlayersSelectBox.setStyle(boxStyle);
+        maxPlayersSelectBox.setName("Max number of players");
+        maxPlayersSelectBox.setItems(max_players);
+        maxPlayersSelectBox.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE());
 
-        in_maxPlayers.addListener(new ChangeListener() {
+        maxPlayersSelectBox.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                cgState.setMaxPlayerCount(Integer.valueOf(in_maxPlayers.getSelected()));
+                cgState.setMaxPlayerCount(Integer.valueOf(maxPlayersSelectBox.getSelected()));
             }
         });
         //First value in the array is the default value
         cgState.setMaxPlayerCount(Integer.valueOf(max_players[0]));
-        in_maxPlayers.pack();
+        maxPlayersSelectBox.pack();
 
-        createLobbyBtn = new TextButton("Create lobby", btnStyle2);
+        createLobbyBtn = new TextButton("Create lobby", btnStyle);
         createLobbyBtn.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
                 if(haveSetName){
                     System.out.println("Create btn pressed");
-    /*                    Connection.getInstance().createLobby(
-                                Integer.valueOf(in_maxPlayers.getSelected()),
-                                in_mapID.getSelected(),
-                                in_LobbyName.getText()); /**/
                     cgState.createButtonClick();
                 }
                 else {
@@ -160,19 +151,7 @@ public class CreateGameView extends AbstractView {
                 }
             }
         });
-/*
-        createLobbyBtn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (!lobbyCreated) {
-                    lobbyCreated=true;
-                    Connection.getInstance().createLobby(
-                            Integer.valueOf(in_maxPlayers.getSelected()),
-                            in_mapID.getSelected(),
-                            in_LobbyName.getText());
-                }
-            }
-        });/**/
+
         createLobbyBtn.pack();
 
         exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
@@ -185,17 +164,18 @@ public class CreateGameView extends AbstractView {
         });
         exitToMainMenuBtn.pack();
 
-        table.add(in_LobbyName).width(Gdx.graphics.getWidth()/4).height(Gdx.graphics.getHeight()/20).pad(SCREEN_HEIGHT / 16).row();
-
-        in_maxPlayers.getScrollPane().setFillParent(false);
-        in_mapID.getScrollPane().setFillParent(false);
-
-        table.add(in_mapID).width(Gdx.graphics.getWidth()/4).height(Gdx.graphics.getHeight()/20).pad(SCREEN_HEIGHT/16).row();
-        table.add(in_maxPlayers).width(Gdx.graphics.getWidth()/8).height(Gdx.graphics.getHeight()/20).pad(SCREEN_HEIGHT/16).row();
+        table.add(lobbyNameTxtField).top().padTop(SCREEN_HEIGHT / 16f)
+				.width(SCREEN_WIDTH/4).height(SCREEN_HEIGHT/20).row();
+        table.add(mapSelectBox).padTop(SCREEN_HEIGHT / 16f)
+				.width(SCREEN_WIDTH/4).height(SCREEN_HEIGHT/20).row();
+        table.add(maxPlayersSelectBox).padTop(SCREEN_HEIGHT / 16f)
+				.width(SCREEN_WIDTH/8).height(SCREEN_HEIGHT/20).row();
 
         // TODO: a button for text input and direct connection to a game lobby?
-        table.add(createLobbyBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
-        table.add(exitToMainMenuBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
+        table.add(createLobbyBtn).width(SCREEN_WIDTH/2)
+				.height(SCREEN_HEIGHT/15).pad(SCREEN_HEIGHT/40).row();
+        table.add(exitToMainMenuBtn).width(SCREEN_WIDTH/2)
+				.height(SCREEN_HEIGHT/15).pad(SCREEN_HEIGHT/40).row();
 
         table.pack();
 

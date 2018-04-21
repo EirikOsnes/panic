@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
@@ -107,6 +108,7 @@ public class PlayCardView extends AbstractView{
             TextButton button = new TextButton("", cardButtonStyle);
             cardButtons.add(i, button);
 
+        //TODO Idea: Let every button have value 0 to 2, which keeps track of their state
             final int index = i;
             cardButtons.get(index).addListener(new ClickListener(){
                 @Override
@@ -192,7 +194,19 @@ public class PlayCardView extends AbstractView{
         //If player is dead, set next turn automatically, create leave button with confirmation dialog
         else{
             ((PlayCardState) state).finishRound();
-            final FinishDialog dialog = new FinishDialog("", dialogSkin, "dialog");
+            final Dialog dialog = new Dialog("", dialogSkin, "dialog"){
+                @Override
+                protected void result(Object object) {
+                    Boolean bool = (Boolean) object;
+                    if(bool){
+                        isLeaving = true;
+                        ((PlayCardState)state).leaveGame();
+                    }
+                    else{
+                        remove();
+                    }
+                }
+            };
             Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
             dialog.text("Are you sure you want to leave?", labelStyle);
             dialog.button("Yes",true, buttonStyle);
@@ -241,13 +255,8 @@ public class PlayCardView extends AbstractView{
         textureAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
         skin.addRegions(textureAtlas);
         for (int i = 0; i < asteroids.size(); i++) {
-            for(int j = 0; j < asteroids.get(i).getVehicles().size(); j++){
-                String[] onAsteroid = new String[3];
-                onAsteroid[0] = asteroids.get(i).getVehicles().get(j);
-                onAsteroid[1] = asteroids.get(i).getId();
-                onAsteroid[2] = i + "";
-                vehicleOnAsteroid.add(onAsteroid);
-            }
+            vehicleOnAsteroid.addAll(MapMethods.getVehiclesOnAsteroid(asteroids.get(i), i));
+
             Image asteroid = new Image(new Texture("asteroids/" + asteroids.get(i).getTexture() + ".png"));
             asteroid.setSize(Gdx.graphics.getWidth()/5, Gdx.graphics.getWidth()/5);
             asteroidDimensions.add(i, new Vector2(asteroid.getWidth(), asteroid.getHeight()));
@@ -275,8 +284,8 @@ public class PlayCardView extends AbstractView{
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
             int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
             String colorCar = ((PlayCardState) state).getColorCar(vehicleOnAsteroid.get(j)[0]);
-            Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
+            Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
             final Image vehicle = new Image(skin.getDrawable(colorCar));
             Vector2 position = MapMethods.asteroidPositions(asteroidPos.x, asteroidPos.y,
@@ -284,23 +293,9 @@ public class PlayCardView extends AbstractView{
                     colorCar);
             vehicle.setPosition(position.x, position.y);
             vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
+
             final int vIndex = j;
-
-            Vehicle vehicleV = GameInstance.getInstance().getVehicleById(vehicleOnAsteroid.get(j)[0]);
-            HashMap<String, Float> effectsMap =  vehicleV.getStatusHandler().getAllResultants();
-            String effects = "";
-            for(String key : effectsMap.keySet()){
-                effects = effects.concat(String.format(Locale.ENGLISH,"%s = %.1f\n",key, effectsMap.get(key)));
-            }
-            final Dialog vehicleInfo = new Dialog("Info", dialogSkin, "dialog");
-            vehicleInfo.getTitleLabel().setFontScale(GlobalConstants.GET_TEXT_SCALE() + 1);
-            BitmapFont infoFont  = new BitmapFont();
-            infoFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*1.5f);
-            Label.LabelStyle labelStyle = new Label.LabelStyle(infoFont, Color.WHITE);
-            vehicleInfo.text(effects, labelStyle);
-
-            vehicleInfo.button("Ok",false, buttonStyle);
-
+            final Dialog vehicleInfo = createVehicleInfo(GameInstance.getInstance().getVehicleById(vehicleOnAsteroid.get(j)[0]));
             vehicle.addListener(new ClickListener(){
                 public void clicked(InputEvent event, float x, float y){
                     if(selectTarget){
@@ -315,6 +310,10 @@ public class PlayCardView extends AbstractView{
             });
             stage.addActor(vehicle);
         }
+        stage.addActor(setUpPlayerInfoTable());
+    }
+
+    private Table setUpPlayerInfoTable(){
         Vehicle playerVehicle = ((PlayCardState)state).getPlayerVehicle();
         float health = playerVehicle.getStatusHandler().getStatusResultant("health");
         float maxHealth = playerVehicle.getStatusHandler().getStatusBaseValue("health");
@@ -334,7 +333,23 @@ public class PlayCardView extends AbstractView{
 
         playerTable.setPosition(Gdx.graphics.getWidth() - width,Gdx.graphics.getHeight() - playerTable.getHeight()*2/3);
 
-        stage.addActor(playerTable);
+        return playerTable;
+    }
+    private Dialog createVehicleInfo(Vehicle vehicle){
+        HashMap<String, Float> effectsMap =  vehicle.getStatusHandler().getAllResultants();
+        String effects = "";
+        for(String key : effectsMap.keySet()){
+            effects = effects.concat(String.format(Locale.ENGLISH,"%s = %.1f\n",key, effectsMap.get(key)));
+        }
+        final Dialog vehicleInfo = new Dialog("Info", dialogSkin, "dialog");
+        vehicleInfo.getTitleLabel().setFontScale(GlobalConstants.GET_TEXT_SCALE() + 1);
+        BitmapFont infoFont  = new BitmapFont();
+        infoFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*1.5f);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(infoFont, Color.WHITE);
+        vehicleInfo.text(effects, labelStyle);
+
+        vehicleInfo.button("Ok",false, buttonStyle);
+        return vehicleInfo;
     }
 
     /**
@@ -403,9 +418,12 @@ public class PlayCardView extends AbstractView{
 
     public void dispose(){
         stage.dispose();
+        sr.dispose();
         font.dispose();
         skin.dispose();
+        dialogSkin.dispose();
         textureAtlas.dispose();
+        btnAtlas.dispose();
     }
 
     private class ToastMessage extends Label{
@@ -432,22 +450,4 @@ public class PlayCardView extends AbstractView{
             }
         }
     }
-
-    private class FinishDialog extends Dialog {
-        private FinishDialog(String title, Skin skin, String windowStyleName) {
-            super(title, skin, windowStyleName);
-        }
-        @Override
-        protected void result(Object object) {
-            Boolean bool = (Boolean) object;
-            if(bool){
-                isLeaving = true;
-                ((PlayCardState)state).leaveGame();
-            }
-            else{
-                remove();
-            }
-        }
-    }
-
 }

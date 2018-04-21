@@ -122,7 +122,7 @@ public class GameLobbyView extends AbstractView {
             lobbyName=lobbyState.getLobby().getLobbyname();
         }
         else {
-            System.out.println("Object 'lobby' not created yet ---");
+//            System.out.println("Object 'lobby' not created yet ---");
         }
         generateBottomItems();
     }
@@ -132,7 +132,7 @@ public class GameLobbyView extends AbstractView {
         // skin.getDrawable("textfield") generates the usual label background.
         txtStyle = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
         txtStyle.background = skin.getDrawable("textfield");
-        System.out.println(GlobalConstants.GET_TEXT_SCALE());
+//        System.out.println(GlobalConstants.GET_TEXT_SCALE());
 
         rdyStyle = new Label.LabelStyle(font, Color.BLACK);
         rdyStyle.background = skin.getDrawable("button-ready");
@@ -261,7 +261,7 @@ public class GameLobbyView extends AbstractView {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 if (lobbyState.isPlayerReady()) {
-                    System.out.println("'Ready' set to " + lobbyState.isPlayerReady());
+//                    System.out.println("'Ready' set to " + lobbyState.isPlayerReady());
                 }
                 // else
                 else if (lobbyState.getLobby().getPlayerIDs().size() <= 1) {

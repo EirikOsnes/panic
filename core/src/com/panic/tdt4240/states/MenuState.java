@@ -38,7 +38,7 @@ public class MenuState extends State {
 
         if (o == (Integer) 1) {
             gsm.push(new CreateGameState(gsm));
-            System.out.println("Creating game...");
+//            System.out.println("Creating game...");
             //startPlayCard();
         } else if (o == (Integer) 2) {
             Gdx.app.postRunnable(new Runnable() {
@@ -47,10 +47,10 @@ public class MenuState extends State {
                     gsm.push(new GameListState(gsm));
                 }
             });
-            System.out.println("Listing lobbies...");
+//            System.out.println("Listing lobbies...");
         } else if (o == (Integer) 3) {
             gsm.push(new GameResultsState(gsm));
-            System.out.println("Settings...");
+//            System.out.println("Settings...");
         }
 
         // TESTING: forcibly push a state on the gsm stack
@@ -92,7 +92,7 @@ public class MenuState extends State {
                 case "CONNECTION_ID":
                     if(Connection.getInstance().getConnectionID()==0){
                         Connection.getInstance().setConnectionID(Integer.parseInt(strings[1]));
-                        System.out.println("Received connection ID: "+strings[1]);
+//                        system.out.println("Received connection ID: "+strings[1]);
                         ((MenuView) view).isConnecting(false);
                     }
                     break;

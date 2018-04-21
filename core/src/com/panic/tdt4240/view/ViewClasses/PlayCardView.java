@@ -36,19 +36,18 @@ import java.util.Locale;
  */
 public class PlayCardView extends AbstractView{
 
-    private ShapeRenderer sr;
-    private BitmapFont font;
-    private TextureAtlas textureAtlas, btnAtlas;
-    private Skin skin, dialogSkin;
-
     private ArrayList<TextButton> cardButtons;
     private ArrayList<TextButton.TextButtonStyle> buttonStyles;
     private Table table;
     private TextButton cardInfo;
+    private Skin skin, dialogSkin;
     private boolean selectTarget = false;
+    private ShapeRenderer sr;
     private ArrayList<String[]> vehicleOnAsteroid;
     private TextField timer;
     private Label invalidTarget;
+    private BitmapFont font;
+    private TextureAtlas textureAtlas, btnAtlas;
     private TextButton.TextButtonStyle buttonStyle;
     private float timeLeft;
     private boolean isLeaving = false;
@@ -329,10 +328,6 @@ public class PlayCardView extends AbstractView{
         stage.addActor(setUpPlayerInfoTable());
     }
 
-    /**
-     * Shows the player vehicle and health/maxhealth in the upper right corner
-     * @return table containing vehicle image and health
-     */
     private Table setUpPlayerInfoTable(){
         Vehicle playerVehicle = ((PlayCardState)state).getPlayerVehicle();
         float health = playerVehicle.getStatusHandler().getStatusResultant("health");
@@ -355,12 +350,6 @@ public class PlayCardView extends AbstractView{
 
         return playerTable;
     }
-
-    /**
-     * Creates clickable popup containing various information of a vehicle
-     * @param vehicle which we are to extract info from
-     * @return popup dialog
-     */
     private Dialog createVehicleInfo(Vehicle vehicle){
         HashMap<String, Float> effectsMap =  vehicle.getStatusHandler().getAllResultants();
         String effects = "";
@@ -423,7 +412,7 @@ public class PlayCardView extends AbstractView{
         if(timeLeft < 0){
             timeLeft = 0;
         }
-        timer.setText(String.format(Locale.ENGLISH,"%.0f", timeLeft));
+        timer.setText(String.format(Locale.ENGLISH,"%.1f", timeLeft));
         invalidTarget.act(dt);
 
     }
@@ -452,9 +441,6 @@ public class PlayCardView extends AbstractView{
         btnAtlas.dispose();
     }
 
-    /**
-     * A label that is shown for 2 seconds before disappearing
-     */
     private class ToastMessage extends Label{
         private float duration;
 

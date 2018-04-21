@@ -31,24 +31,23 @@ import java.util.ArrayList;
 public class GameResultsView extends AbstractView {
 
     private Skin skin;
+    TextButton.TextButtonStyle btnStyle;
     private TextureAtlas btnAtlas;
     private Texture bg;
-    private BitmapFont font;
-
-    private Label label;
+    private Table table;
+    private BitmapFont font, labelFont;
+    TextButton exitToMainMenuBtn;
+    Label label;
     int counter = 0;
 
     public GameResultsView(final GameResultsState resultsState) {
         super(resultsState);
         bg = new Texture("misc/background.png");
-        Table table = new Table();
+        table = new Table();
         font = new BitmapFont();
         Label.LabelStyle style = new Label.LabelStyle();
-        BitmapFont labelFont = new BitmapFont();
-
-        font.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
-        labelFont.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
-
+        labelFont = new BitmapFont();
+        labelFont.getData().scale(2.0f);
         style.font = labelFont;
         label = new Label("LOADING",style);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
@@ -57,13 +56,18 @@ public class GameResultsView extends AbstractView {
 
         skin.addRegions(btnAtlas);
 
-        TextButton.TextButtonStyle btnStyle = new TextButton.TextButtonStyle();
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            font.getData().scale(GlobalConstants.GET_TEXT_SCALE());
+            labelFont.getData().scale(GlobalConstants.GET_TEXT_SCALE());
+        }
+
+        btnStyle = new TextButton.TextButtonStyle();
         btnStyle.font = font;
         btnStyle.up = skin.getDrawable("button-up");
         btnStyle.down = skin.getDrawable("button-down");
 
 
-        TextButton exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
+        exitToMainMenuBtn = new TextButton("Exit to main menu", btnStyle);
 
         table.setFillParent(true);
         table.add(label).top();
@@ -92,9 +96,10 @@ public class GameResultsView extends AbstractView {
     }
 
     public void dispose(){
-        stage.dispose();
         font.dispose();
+        stage.dispose();
         bg.dispose();
+        font.dispose();
         skin.dispose();
         btnAtlas.dispose();
     }

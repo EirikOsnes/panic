@@ -73,6 +73,7 @@ public class GameLobbyView extends AbstractView {
         bg = new Texture("misc/background.png");
         cam.setToOrtho(false, PanicGame.WIDTH,PanicGame.HEIGHT);
         font = new BitmapFont();
+        font.getData().scale(GlobalConstants.GET_TEXT_SCALE()*2);
 
         buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), buttonAtlas);

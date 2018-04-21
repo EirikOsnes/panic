@@ -37,7 +37,7 @@ public class CreateGameView extends AbstractView {
 
     private TextureAtlas btnAtlas;
     private Skin skin;
-    private BitmapFont font, boxFont;
+    private BitmapFont font;
     private TextButton.TextButtonStyle btnStyle, btnStyle2;
     private Table table;
     private Texture bg;
@@ -54,11 +54,9 @@ public class CreateGameView extends AbstractView {
         cam.setToOrtho(false, PanicGame.WIDTH, PanicGame.HEIGHT);
         table = new Table();
         font = new BitmapFont();
-        boxFont = new BitmapFont();
         font.setColor(Color.WHITE);
         float textScale = GlobalConstants.GET_TEXT_SCALE();
-        font.getData().scale(textScale);
-        boxFont.getData().scale(textScale*2);
+        font.getData().scale(textScale*2);
         btnAtlas = new TextureAtlas("skins/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"), btnAtlas);
         btnStyle = new TextButton.TextButtonStyle();
@@ -75,7 +73,7 @@ public class CreateGameView extends AbstractView {
         table.background(new TextureRegionDrawable(new TextureRegion(bg)));
 
         TextField.TextFieldStyle textStyle = new TextField.TextFieldStyle();
-        textStyle.font = boxFont;
+        textStyle.font = font;
         textStyle.background = skin.getDrawable("textfield");
 
         textStyle.fontColor = skin.getColor("white");
@@ -110,7 +108,7 @@ public class CreateGameView extends AbstractView {
 
         String[] mapIDs = ((CreateGameState)state).getMapIDs();
         SelectBox.SelectBoxStyle boxStyle = new SelectBox.SelectBoxStyle(skin.get(SelectBox.SelectBoxStyle.class));
-        boxStyle.font = boxFont;
+        boxStyle.font = font;
 
         in_mapID = new SelectBox<>(skin);
         in_mapID.setStyle(boxStyle);
@@ -187,9 +185,13 @@ public class CreateGameView extends AbstractView {
         });
         exitToMainMenuBtn.pack();
 
-        table.add(in_LobbyName).top().padTop(Gdx.graphics.getHeight() / 16f).width(Gdx.graphics.getWidth()/4).height(Gdx.graphics.getHeight()/20).row();
-        table.add(in_mapID).padTop(Gdx.graphics.getHeight() / 16f).width(Gdx.graphics.getWidth()/4).height(Gdx.graphics.getHeight()/20).row();
-        table.add(in_maxPlayers).padTop(Gdx.graphics.getHeight() / 16f).width(Gdx.graphics.getWidth()/8).height(Gdx.graphics.getHeight()/20).row();
+        table.add(in_LobbyName).width(Gdx.graphics.getWidth()/4).height(Gdx.graphics.getHeight()/20).pad(SCREEN_HEIGHT / 16).row();
+
+        in_maxPlayers.getScrollPane().setFillParent(false);
+        in_mapID.getScrollPane().setFillParent(false);
+
+        table.add(in_mapID).width(Gdx.graphics.getWidth()/4).height(Gdx.graphics.getHeight()/20).pad(SCREEN_HEIGHT/16).row();
+        table.add(in_maxPlayers).width(Gdx.graphics.getWidth()/8).height(Gdx.graphics.getHeight()/20).pad(SCREEN_HEIGHT/16).row();
 
         // TODO: a button for text input and direct connection to a game lobby?
         table.add(createLobbyBtn).width(Gdx.graphics.getWidth()/2).height(Gdx.graphics.getHeight()/15).pad(Gdx.graphics.getHeight()/40).row();
@@ -212,18 +214,8 @@ public class CreateGameView extends AbstractView {
         stage.dispose();
         bg.dispose();
         font.dispose();
-        boxFont.dispose();
         skin.dispose();
         btnAtlas.dispose();
     }
 }
 
-    class userTextInputListener implements Input.TextInputListener {
-        @Override
-        public void input (String text) {
-
-        }
-        @Override
-        public void canceled () {
-        }
-    }

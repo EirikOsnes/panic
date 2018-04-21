@@ -29,12 +29,29 @@ import java.util.ArrayList;
 /**
  * Created by victor on 12.03.2018.
  *
- * SEQUENCE OF EVENTS MUST BE:
- *      1. CREATE STATE, VIEW, BUT LET VIEW DO NOTHING
- *      2. ENSURE ADAPTER IS CONNECTED;  onMessage() MUST RUN
- *      3. UPDATE DATA FOUND IN STATE
- *      4. UPDATE VIEW WITH DATA
- *      */
+ * Used by GameLobbyState.
+ *
+ * The actual lobby object cannot be immediately used because
+ * the server has the information necessary to parse information
+ * and create said object. Anything that is dependent on information
+ * from the lobby object, is only generated in updateView().
+ *
+ * This view may be empty for some time if the internet connection is slow.
+ *
+ * The constructor is used to set up styling for text, buttons, etc...
+ * If changes are made post-release, they should mostly be here.
+ *
+ * When a player hits the 'Ready up' button alone, a popup will appear
+ * to prevent accidental starts of the lobby, asking if the player is
+ * sure about starting the game alone.
+ *
+ * When all players have pressed 'Ready up', the game will automatically start.
+ * E.g. one can start a lobby with 2 players that has a limit of 4 players.
+ *
+ * Missing features: players are not notified when other players
+ * hit the 'Ready up' button. Not implemented due to time constraint.
+ *
+ * */
 
 public class GameLobbyView extends AbstractView {
 
@@ -62,12 +79,9 @@ public class GameLobbyView extends AbstractView {
     private float scl;
 
     /** Lobby is retrieved after some time. Anything that is dependent on information
-     * from the lobby object, must be generated in updateView().
-     *
-     * The constructor is used to set up styling for text, buttons, etc...
-     * If changes are made post-release, they should mostly be here.
-     *
-     * // TODO: popup when only one player is present, and hits "Ready".
+     *  from the lobby object, must be generated in updateView().
+     *  The constructor is used to set up styling for text, buttons, etc...
+     *  If changes are made post-release, they should mostly be here.
      * */
     public GameLobbyView(final GameLobbyState lobbyState) {
         super(lobbyState);
@@ -141,7 +155,11 @@ public class GameLobbyView extends AbstractView {
         rdyStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * scl);
         btnStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * scl);
     }
-
+    /**
+     * This creates the list of players present, and is supposed to mark all
+     * ready players with a green background. Presently, each player can only
+     * see if the player him/herself is ready.
+     * */
     private void preparePlayerListDisplay(){
         String name;
         playerTxtFields = new ArrayList<>();
@@ -181,7 +199,9 @@ public class GameLobbyView extends AbstractView {
         stage.addActor(playerTxtTable);
 
     }
-
+    /**
+     * Prepares the dropdown list for vehicles. Tested and working.
+     * */
     private void prepareSelectVehicleDisplay(){
 //        String[] carTypes = {"HURR", "DURR", "HERP", "DERP"}; // USED FOR TESTING
         String[] carTypes = getVehicleNames();
@@ -213,7 +233,6 @@ public class GameLobbyView extends AbstractView {
     }
 
     private void generateBottomItems(){
-        // Specify consequences in the bottom of this file
         final Dialog dialog = new Dialog("", skin, "dialog"){
             @Override
             protected void result(Object object) {
@@ -294,10 +313,6 @@ public class GameLobbyView extends AbstractView {
         stage.addActor(lobbyNameField);
 
         if (lobbyState.isPlayerReady()) generateWaitingText();
-
-//        topTable.add(lobbyField).row();
-//        topTable.add(lobbyNameField).row();
-//        stage.addActor(topTable);
     }
 
     private void generateWaitingText() {
@@ -310,9 +325,6 @@ public class GameLobbyView extends AbstractView {
 
         topTable.add(waitingTxt).width(SCREEN_WIDTH*3/4);
 
-// move elsewhere
-//        topTable.center().top().padTop(SCREEN_HEIGHT * (0.8f));
-//        stage.addActor(topTable);
 
     }
 

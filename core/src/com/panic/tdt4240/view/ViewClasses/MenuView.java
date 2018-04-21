@@ -1,20 +1,14 @@
 package com.panic.tdt4240.view.ViewClasses;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.panic.tdt4240.PanicGame;
@@ -28,41 +22,44 @@ import com.panic.tdt4240.util.GlobalConstants;
 public class MenuView extends AbstractView {
 
 
-    private Button createGameBtn, joinGameBtn, settingsBtn;
-    private TextureAtlas buttonAtlas;
-    private Skin skin;
     private BitmapFont font;
-    private Table table;
     private Texture background;
 
     public MenuView(final MenuState menuState) {
         super(menuState);
+        Skin skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
         background = new Texture("misc/background.png");
         cam.setToOrtho(false,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        table = new Table();
+        Table table = new Table();
         font = new BitmapFont();
         float textScale = GlobalConstants.GET_TEXT_SCALE();
+        font.getData().scale(2*textScale);
 
-        font.getData().scale(textScale);
-        buttonAtlas = new TextureAtlas("skins/uiskin.atlas");
-        skin = new Skin(Gdx.files.internal("skins/uiskin.json"),buttonAtlas);
+        TextButton.TextButtonStyle style = skin.get("default", TextButton.TextButtonStyle.class);
+        style.font=font;
+        TextButton createGameBtn = new TextButton("Create New Game", style);
+        TextButton joinGameBtn = new TextButton("Join Game", style);
+        TextButton settingsBtn = new TextButton("Settings", style);
 
-        createGameBtn = new TextButton("Create New Game", skin);
-        joinGameBtn = new TextButton("Join Game", skin);
-        settingsBtn = new TextButton("Settings", skin);
-        Label title = new Label(PanicGame.TITLE,skin);
-        Label fullTitle = new Label(PanicGame.FULL_TITLE,skin);
+        Label.LabelStyle labelStyle = skin.get("default", Label.LabelStyle.class);
+        labelStyle.background = null;
+        labelStyle.font=font;
+        Label title = new Label(PanicGame.TITLE,labelStyle);
+        Label fullTitle = new Label(PanicGame.FULL_TITLE,labelStyle);
 
-        float padding = Gdx.graphics.getHeight()/40;
+        title.setFontScale(1 + GlobalConstants.GET_TEXT_SCALE()*3);
+        fullTitle.setFontScale(1 + GlobalConstants.GET_TEXT_SCALE()*1.5f);
+
 
         table.setFillParent(true);
-        table.add(title).top().padBottom(padding/2);
-        table.row().center(); table.add(fullTitle);
+        table.add(title).top().padBottom(GlobalConstants.PADDING);
+        table.row().center();
+        table.add(fullTitle).padBottom(GlobalConstants.PADDING);
         table.center();
         table.row();
-        table.add(createGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
+        table.add(createGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
         table.row();
-        table.add(joinGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
+        table.add(joinGameBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(GlobalConstants.PADDING);
         table.row();
 //        table.add(settingsBtn).width(GlobalConstants.SCALE_WIDTH).height(GlobalConstants.SCALE_HEIGHT).pad(padding);
 
@@ -111,12 +108,10 @@ public class MenuView extends AbstractView {
         stage.draw();
     }
 
-
     public void dispose(){
         font.dispose();
         stage.dispose();
+        background.dispose();
     }
-
-
 
 }

@@ -13,6 +13,7 @@ public class GameStateManager {
 
     public GameStateManager(){
         states = new Stack<>();
+
     }
 
     public void push(State state){

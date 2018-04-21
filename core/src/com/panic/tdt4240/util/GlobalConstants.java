@@ -22,6 +22,8 @@ public class GlobalConstants {
     //Vertical scale factor for buttons
     public static final float SCALE_HEIGHT = Gdx.graphics.getHeight()/15;
 
+    public static final float PADDING = Gdx.graphics.getHeight()/40f;
+
     /**
      * Text scale factor for android devices
      * @return scale factor
@@ -30,7 +32,7 @@ public class GlobalConstants {
         if(Gdx.app.getType() == Application.ApplicationType.Android){
             return Gdx.graphics.getHeight()/Gdx.graphics.getWidth()*1.5f;
         }
-        return 0;
+        return 1;
     }
 
 }

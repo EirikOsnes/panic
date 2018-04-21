@@ -36,13 +36,10 @@ public class GameLobbyState extends State {
 
     public GameLobbyState(GameStateManager gsm, int lobbyID){
         super(gsm);
-        Connection.getInstance().updateLobby(lobbyID);
         view = new GameLobbyView(this);
         dataLoaded =false;
-//        view = new GameLobbyView(this);
         this.lobbyID=lobbyID;
-//        Connection.getInstance().updateLobby(lobbyID);
-        // updateLobby() cannot run because data has not yet arrived
+        Connection.getInstance().updateLobby(lobbyID);
         updateLobby();
     }
 
@@ -62,10 +59,6 @@ public class GameLobbyState extends State {
      * Update the lobby - should be called every second maybe?
      */
     public void updateLobby(){
-        Connection.getInstance().updateLobby(this.lobbyID);
-        System.out.println("---Messaged received---\n" +
-                "Thread check 3: " + Thread.currentThread().toString());
-
         // DELEGATE VIEW UPDATE
         Gdx.app.postRunnable(new Runnable() {
             @Override
@@ -167,15 +160,7 @@ public class GameLobbyState extends State {
             switch (strings[0]){
                 case "LOBBY_INFO":
                     parseLobby(strings);
-                    // View update should trigger whenever server sends lobby info
-                    // ... and server should send new info whenever a player joins.
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            view.updateView();
-                        }
-                    });
-                    //view!=null
+                    updateLobby();
                     break;
                 case "GAME_START":
                     launchGame();

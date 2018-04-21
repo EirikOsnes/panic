@@ -138,8 +138,10 @@ public class LoadGameState extends State implements EventListener {
     @Override
     public void handleEvent(Event e) {
         if (e.getT() == Event.Type.DESTROYED) {
-            Connection.getInstance().sendDestroyed(GameInstance.getInstance().getID(),e.getTargetID());
-            System.out.println("Sending destroy from LoadGameState");
+            if(GameInstance.getInstance().getPlayer().isAlive()) {
+                Connection.getInstance().sendDestroyed(GameInstance.getInstance().getID(), e.getTargetID());
+                System.out.println("Sending destroy from LoadGameState");
+            }
         }
     }
 
@@ -159,7 +161,28 @@ public class LoadGameState extends State implements EventListener {
                 case "RECONNECT_GAME":
                     //TODO: Create a pop up, where you can choose to rejoin a game in progress.
                     break;
-
+                case "VALID_STATE":
+                    sendToGame();
+                    break;
+                case "GAME_OVER": //strings[1] = VICTORY/DEFEAT/DRAW
+                    if (strings[1].equalsIgnoreCase("DEFEAT")){
+                        GameInstance.getInstance().getPlayer().setAlive(false);
+                        //TODO: Do you wish to spectate? For now, you're sent to GameResultState.
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                gsm.set(new GameResultsState(gsm));
+                            }
+                        });
+                    }else{
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                gsm.set(new GameResultsState(gsm));
+                            }
+                        });
+                    }
+                    break;
             }
 
         }

@@ -12,7 +12,7 @@ import java.util.Stack;
  * Created by Hermann on 09.03.2018.
  */
 
-public class Player implements EventListener {
+public class Player {
 
     private Deck deck;
     private Hand hand;
@@ -28,7 +28,6 @@ public class Player implements EventListener {
         deck = new Deck(cards);
         hand = new Hand();
         //vehicle = new Vehicle();
-        EventBus.getInstance().addListener(this);
     }
     public int getAmountDrawnCards(){
         return MODIFIED_DRAWN_CARDS + GlobalConstants.BASE_DRAW_CARDS;
@@ -39,6 +38,11 @@ public class Player implements EventListener {
     public boolean isAlive(){
         return alive;
     }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
     //Returns the full deck
     public ArrayList<Card> getCardDeck(){
         return new ArrayList<>(deck.getFullDeck());
@@ -53,14 +57,6 @@ public class Player implements EventListener {
     }
     public Vehicle getVehicle(){
         return vehicle;
-    }
-
-    @Override
-    public void handleEvent(Event e) {
-        if (e.getT() == Event.Type.DESTROYED && e.getInstigatorID().equals(vehicle.getVehicleID())) {
-            alive = false;
-            EventBus.getInstance().removeListener(this);
-        }
     }
 
     public void setVehicle(Vehicle vehicle) {

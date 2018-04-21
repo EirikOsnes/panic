@@ -193,7 +193,7 @@ public class PlayCardView extends AbstractView{
         }
         //If player is dead, set next turn automatically, create leave button with confirmation dialog
         else{
-            ((PlayCardState) state).finishRound();
+            //((PlayCardState) state).finishRound();
             final Dialog dialog = new Dialog("", dialogSkin, "dialog"){
                 @Override
                 protected void result(Object object) {

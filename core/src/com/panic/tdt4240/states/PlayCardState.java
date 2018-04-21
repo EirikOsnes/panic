@@ -23,7 +23,8 @@ import static com.panic.tdt4240.models.Card.TargetType.VEHICLE;
 
 /**
  * Created by Hermann on 12.03.2018.
- * State for keeping track of played cards and targets
+ * State for keeping track of played cards and targets. Respects the order cards are selected
+ * and deselected, and only sends complete pairs of cards and corresponding targets to server
  */
 
 public class PlayCardState extends State {
@@ -130,8 +131,7 @@ public class PlayCardState extends State {
     }
 
     /**
-     * Saves the target of a card, if a target is waiting to be selected
-     *
+     * Saves the target of a card, if a target can be selected and the target is valid
      * @param s ID of target that has been clicked
      *          if we have selected a card:
      *          add the target as the target of the most recently selected card
@@ -142,26 +142,29 @@ public class PlayCardState extends State {
         String potentialTarget;
         int targetID = s.indexOf("A");
         if (targetID > 0) {
-            //Targets vehicle, but can potentially target asteroid instead
+            //Targets a vehicle, but could potentially target the asteroid underneath instead
             firstTarget = s.substring(0, targetID);
             potentialTarget = s.substring(targetID);
         } else {
-            //Targets asteroid
+            //String contains only one possible target
             firstTarget = s;
             potentialTarget = "";
         }
         //If the first target is valid
         if (justClicked > -1 && validTarget(firstTarget)) {
+            //Adds the target to the target list, shows the card as selected in the view
+            //Resets card selection so we can select the next card
             targets.add(firstTarget);
             playView.clickedButton(justClicked, -1);
             justClicked = -1;
             playView.resetCurrentButton();
             playView.setSelectTarget(false);
         } else {
-            //Checks whether we can target the asteroid instead
+            //Checks whether we can target the asteroid the vehicle stands on instead
             if (potentialTarget.length() > 0) {
                 selectTarget(potentialTarget);
             } else {
+                //Displays an error message to the player depending on the target type
                 if (vehicleTarget) {
                     playView.showInvalidTarget("vehicle");
                 } else {
@@ -175,27 +178,41 @@ public class PlayCardState extends State {
     }
 
     /**
-     * Method for determining validity of target
-     *
+     * Determines if the most recent card can target the targetID
      * @param targetID asteroid or vehicle id of the target
      * @return whether the target is a valid target
      */
     private boolean validTarget(String targetID) {
         System.out.println(targetID);
-        //If the target is an asteroid
         if(targetID.length() > 0){
             return validAsteroidTarget(targetID, numPlayedCards - 1) || validVehicleTarget(targetID, numPlayedCards - 1);
         }
         return false;
     }
+
+    /**
+     * Checks if the target is an asteroid, and if the card can target it
+     * @param targetID string id of target
+     * @param index which card we are checking
+     * @return if targetID can be targeted by the card
+     */
     private boolean validAsteroidTarget(String targetID, int index){
         if(targetID.substring(0, 1).equals("A")){
             return hand.get(playedCardsList.get(index)).getTargetType().equals(ASTEROID);
         }
         return false;
     }
+
+    /**
+     * Checks if the target is an vehicle, checks what the target type of the card is and if this
+     * is allowed to be targeted
+     * @param targetID string id of target
+     * @param index which card we are checking
+     * @return if targetID can be targeted by the card
+     */
     private boolean validVehicleTarget(String targetID, int index){
         if(targetID.substring(0, 1).equals("V")){
+            //For checking if a possible error message should refer to vehicle or asteroid
             vehicleTarget = true;
             if (hand.get(playedCardsList.get(index)).getTargetType().equals(VEHICLE)) {
                 //If the player targets themselves
@@ -231,10 +248,9 @@ public class PlayCardState extends State {
     }
 
     /**
-     * Should be called when the card selection is done
+     * Stops selection of new cards and sends the currently selected cards to the server
      */
     public void finishRound() {
-
         isLockedIn = true;
         ArrayList<String[]> result = getCardsAndTargets();
         Connection.getInstance().sendTurn(result,GameInstance.getInstance().getID());
@@ -285,6 +301,7 @@ public class PlayCardState extends State {
   
     /**
      * Converts the list of cards and targets to a list of actions by the player
+     * If a card is saved but has no target it is ignored
      * @return ArrayList with card, target id and id of vehicle that played the card
      */
     private ArrayList<String[]> getCardsAndTargets(){
@@ -299,6 +316,9 @@ public class PlayCardState extends State {
         return cardsAndTargets;
     }
 
+    /**
+     * Leaves the game and goes back the menu
+     */
     public void leaveGame(){
         //Connection.getInstance().leaveGame(GameInstance.getInstance().getID());
         gsm.set(new GameResultsState(gsm));

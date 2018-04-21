@@ -50,7 +50,6 @@ public class MenuView extends AbstractView {
         title.setFontScale(1 + GlobalConstants.GET_TEXT_SCALE()*3);
         fullTitle.setFontScale(1 + GlobalConstants.GET_TEXT_SCALE()*1.5f);
 
-
         table.setFillParent(true);
         table.add(title).top().padBottom(GlobalConstants.PADDING);
         table.row().center();

@@ -283,8 +283,8 @@ public class PlayCardState extends State {
     public Map getMap(){
         return map;
     }
-    public String getColorCar(String id){
-        return GameInstance.getInstance().getVehicleById(id).getColorCar();
+    public String getVehicleSpriteName(String id){
+        return GameInstance.getInstance().getVehicleById(id).getSpriteName();
     }
     public Card getCard(int index){
         return GameInstance.getInstance().getPlayer().getHand().get(index);

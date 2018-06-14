@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.panic.tdt4240.models.Asteroid;
 import com.panic.tdt4240.models.Card;
 import com.panic.tdt4240.models.GameInstance;
@@ -262,7 +261,7 @@ public class PlayCardView extends AbstractView{
         ArrayList<Vector2> asteroidPositions = new ArrayList<>();
         ArrayList<Vector2> asteroidDimensions = new ArrayList<>();
 
-        textureAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
+        textureAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.pack"));
         skin.addRegions(textureAtlas);
         //Sets up asteroids with clickListeners and connections between them.
         //Finds positions of vehicles for when vehicles are setup
@@ -298,14 +297,14 @@ public class PlayCardView extends AbstractView{
         //Sets up vehicles with clickListeners
         for (int j = 0; j < vehicleOnAsteroid.size(); j++) {
             int asteroid = Integer.valueOf(vehicleOnAsteroid.get(j)[2]);
-            String colorCar = ((PlayCardState) state).getColorCar(vehicleOnAsteroid.get(j)[0]);
+            String vehicleSpriteName = ((PlayCardState) state).getVehicleSpriteName(vehicleOnAsteroid.get(j)[0]);
 
             Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
-            final Image vehicle = new Image(skin.getDrawable(colorCar));
+            final Image vehicle = new Image(skin.getDrawable(vehicleSpriteName));
             Vector2 position = MapMethods.asteroidPositions(asteroidPos.x, asteroidPos.y,
                     asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
-                    colorCar);
+                    vehicleSpriteName.split("_")[1]);
             vehicle.setPosition(position.x, position.y);
             vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
 
@@ -334,7 +333,7 @@ public class PlayCardView extends AbstractView{
         float health = playerVehicle.getStatusHandler().getStatusResultant("health");
         float maxHealth = playerVehicle.getStatusHandler().getStatusBaseValue("health");
 
-        Image player = new Image(skin.getDrawable(playerVehicle.getColorCar()));
+        Image player = new Image(skin.getDrawable(playerVehicle.getSpriteName()));
         player.rotateBy(270);
         String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.0f", health, maxHealth);
         Label label = new Label(hp,new Label.LabelStyle(font, Color.RED));

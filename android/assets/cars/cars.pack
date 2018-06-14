@@ -1,0 +1,61 @@
+
+cars.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+eddison_blue
+  rotate: false
+  xy: 1, 445
+  size: 221, 442
+  orig: 221, 442
+  offset: 0, 0
+  index: -1
+eddison_green
+  rotate: false
+  xy: 1, 1
+  size: 221, 442
+  orig: 221, 442
+  offset: 0, 0
+  index: -1
+eddison_red
+  rotate: false
+  xy: 224, 445
+  size: 220, 442
+  orig: 220, 442
+  offset: 0, 0
+  index: -1
+eddison_yellow
+  rotate: false
+  xy: 224, 1
+  size: 220, 442
+  orig: 220, 442
+  offset: 0, 0
+  index: -1
+mini_green
+  rotate: false
+  xy: 446, 548
+  size: 200, 339
+  orig: 200, 339
+  offset: 0, 0
+  index: -1
+mini_red
+  rotate: false
+  xy: 446, 207
+  size: 200, 339
+  orig: 200, 339
+  offset: 0, 0
+  index: -1
+mini_blue
+  rotate: false
+  xy: 648, 548
+  size: 199, 339
+  orig: 199, 339
+  offset: 0, 0
+  index: -1
+mini_yellow
+  rotate: false
+  xy: 648, 207
+  size: 199, 339
+  orig: 199, 339
+  offset: 0, 0
+  index: -1

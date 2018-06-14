@@ -144,7 +144,7 @@ public class RunEffectsView extends AbstractView {
         ArrayList<Vector2> asteroidPositions = new ArrayList<>();
         ArrayList<Vector2> asteroidDimensions = new ArrayList<>();
         float table = Gdx.graphics.getHeight() / 5;
-        TextureAtlas carsAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.atlas"));
+        TextureAtlas carsAtlas = new TextureAtlas(Gdx.files.internal("cars/cars.pack"));
         carSkin = new Skin(carsAtlas);
         for (int i = 0; i < asteroids.size(); i++) {
             vehicleOnAsteroid.addAll(MapMethods.getVehiclesOnAsteroid(asteroids.get(i), i));
@@ -175,10 +175,10 @@ public class RunEffectsView extends AbstractView {
             Vehicle activeVehicle = gameInstance.getVehicleById(vehicleOnAsteroid.get(j)[0]);
             Vector2 asteroidPos = asteroidPositions.get(asteroid);
 
-            Image vehicle = new Image(carSkin.getDrawable(activeVehicle.getColorCar()));
+            Image vehicle = new Image(carSkin.getDrawable(activeVehicle.getSpriteName()));
             Vector2 position = MapMethods.asteroidPositions(asteroidPos.x, asteroidPos.y,
                     asteroidDimensions.get(asteroid).x, asteroidDimensions.get(asteroid).y,
-                    activeVehicle.getColorCar());
+                    activeVehicle.getCarColor());
             vehicle.setPosition(position.x, position.y);
             vehicle.setSize(asteroidDimensions.get(asteroid).x/3, asteroidDimensions.get(asteroid).y/2);
             vehicleImages.put(activeVehicle.getVehicleID(), vehicle);
@@ -197,8 +197,8 @@ public class RunEffectsView extends AbstractView {
         Vehicle playerVehicle = ((RunEffectsState)state).getPlayerVehicle();
         health = playerVehicle.getStatusHandler().getStatusResultant("health");
         maxHealth = playerVehicle.getStatusHandler().getStatusBaseValue("health");
-        System.out.println(playerVehicle.getColorCar());
-        Image player = new Image(carSkin.getDrawable(playerVehicle.getColorCar()));
+        System.out.println(playerVehicle.getCarColor());
+        Image player = new Image(carSkin.getDrawable(playerVehicle.getSpriteName()));
         player.rotateBy(270);
         String hp = String.format(Locale.ENGLISH,"HP: %.1f/%.0f", health, maxHealth);
         hpLabel = new Label(hp,new Label.LabelStyle(font, Color.RED));
@@ -267,7 +267,7 @@ public class RunEffectsView extends AbstractView {
         Actor actor = vehicleImages.get(vehicleID);
         Image asteroid = asteroidImages.get(asteroidID);
         Vector2 vec = MapMethods.asteroidPositions(asteroid.getX(), asteroid.getY(), asteroid.getWidth(),
-                asteroid.getHeight(), gameInstance.getVehicleById(vehicleID).getColorCar());
+                asteroid.getHeight(), gameInstance.getVehicleById(vehicleID).getCarColor());
         Action action = new MoveVehicleAction(vec.x, vec.y);
         animator.addAction(action, actor);
     }

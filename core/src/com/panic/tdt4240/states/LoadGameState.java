@@ -191,7 +191,7 @@ public class LoadGameState extends State implements EventListener {
             for (String vehicleString : vehicleStrings) {
                 String[] vehicleInfo = vehicleString.split(",");
                 Vehicle myVehicle = ModelHolder.getInstance().getVehicleByName(vehicleInfo[0]).cloneVehicleWithId(vehicleInfo[1]);
-                myVehicle.setColorCar(vehicleInfo[2].toLowerCase()+"_car");
+                myVehicle.setCarColor(vehicleInfo[2].toLowerCase());
                 vehicles.add(myVehicle);
             }
 

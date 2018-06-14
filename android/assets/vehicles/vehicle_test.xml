@@ -7,4 +7,7 @@
         <status name="movement_modifier" base = "1"/>
         <status name="max_damage" base = "1000"/>
     </vehicle>
+
+    <vehicle type = "MINI">
+    </vehicle>
 </vehicles>

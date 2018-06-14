@@ -22,4 +22,14 @@
             <card>GLUE</card>
         </cards>
     </deck>
+
+    <deck vehicle_type = "MINI">
+        <cards>
+            <card>JUMP</card>
+            <card>JUMP</card>
+            <card>JUMP</card>
+            <card>JUMP</card>
+            <card>JUMP</card>
+        </cards>
+    </deck>
 </decks>

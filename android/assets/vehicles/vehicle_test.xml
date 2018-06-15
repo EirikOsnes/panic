@@ -10,4 +10,7 @@
 
     <vehicle type = "MINI">
     </vehicle>
+
+    <vehicle type = "EVENTBUS">
+    </vehicle>
 </vehicles>

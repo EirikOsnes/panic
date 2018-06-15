@@ -32,4 +32,14 @@
             <card>JUMP</card>
         </cards>
     </deck>
+
+    <deck vehicle_type = "EVENTBUS">
+        <cards>
+            <card>JUMP</card>
+            <card>JUMP</card>
+            <card>JUMP</card>
+            <card>JUMP</card>
+            <card>JUMP</card>
+        </cards>
+    </deck>
 </decks>

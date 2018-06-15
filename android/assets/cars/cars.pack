@@ -5,57 +5,85 @@ filter: Nearest,Nearest
 repeat: none
 eddison_blue
   rotate: false
-  xy: 1, 445
+  xy: 1, 480
   size: 221, 442
   orig: 221, 442
   offset: 0, 0
   index: -1
 eddison_green
   rotate: false
-  xy: 1, 1
+  xy: 1, 36
   size: 221, 442
   orig: 221, 442
   offset: 0, 0
   index: -1
 eddison_red
   rotate: false
-  xy: 224, 445
+  xy: 224, 480
   size: 220, 442
   orig: 220, 442
   offset: 0, 0
   index: -1
 eddison_yellow
   rotate: false
-  xy: 224, 1
+  xy: 224, 36
   size: 220, 442
   orig: 220, 442
   offset: 0, 0
   index: -1
 mini_green
   rotate: false
-  xy: 446, 548
+  xy: 446, 583
   size: 200, 339
   orig: 200, 339
   offset: 0, 0
   index: -1
 mini_red
   rotate: false
-  xy: 446, 207
+  xy: 446, 242
   size: 200, 339
   orig: 200, 339
   offset: 0, 0
   index: -1
 mini_blue
   rotate: false
-  xy: 648, 548
+  xy: 648, 583
   size: 199, 339
   orig: 199, 339
   offset: 0, 0
   index: -1
 mini_yellow
   rotate: false
-  xy: 648, 207
+  xy: 648, 242
   size: 199, 339
   orig: 199, 339
+  offset: 0, 0
+  index: -1
+eventbus_blue
+  rotate: false
+  xy: 849, 683
+  size: 121, 239
+  orig: 121, 239
+  offset: 0, 0
+  index: -1
+eventbus_green
+  rotate: false
+  xy: 849, 442
+  size: 121, 239
+  orig: 121, 239
+  offset: 0, 0
+  index: -1
+eventbus_red
+  rotate: false
+  xy: 446, 1
+  size: 121, 239
+  orig: 121, 239
+  offset: 0, 0
+  index: -1
+eventbus_yellow
+  rotate: false
+  xy: 569, 1
+  size: 121, 239
+  orig: 121, 239
   offset: 0, 0
   index: -1

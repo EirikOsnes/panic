@@ -141,7 +141,7 @@ public class Asteroid implements EventListener,IStatusAble,Comparable<Asteroid> 
                     EventFactory.postClonedEvent(e, vid);
                 }
                 if (e.isSplashDamage()) {
-                    Map map = GameModelHolder.getInstance().getMap();
+                    Map map = GameInstance.getInstance().getMap();
                     map.generateAdjacencyMatrix();
                     int[][] adjacency = map.getAdjacency();
                     int index = Integer.parseInt(id.substring(2)) - 1;

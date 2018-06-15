@@ -68,7 +68,6 @@ public class GameLobbyView extends AbstractView {
      * The constructor is used to set up styling for text, buttons, etc...
      * If changes are made post-release, they should mostly be here.
      *
-     * // TODO: popup when only one player is present, and hits "Ready".
      * */
     public GameLobbyView(final GameLobbyState lobbyState) {
         super(lobbyState);
@@ -131,7 +130,6 @@ public class GameLobbyView extends AbstractView {
         backgroundActor = new Image(new TextureRegion(bg));
         backgroundActor.setZIndex(0);
         backgroundActor.setSize(stage.getWidth(), stage.getHeight());
-        backgroundActor.addListener(new BackGroundClickListener().setField("Background"));
         stage.addActor(backgroundActor);
 
         boxStyle = new SelectBox.SelectBoxStyle(skin.get(SelectBox.SelectBoxStyle.class));
@@ -141,22 +139,6 @@ public class GameLobbyView extends AbstractView {
         txtStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * 1.5f);
         rdyStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * scl);
         btnStyle.font.getData().scale(GlobalConstants.GET_TEXT_SCALE() * scl);
-    }
-
-    private class BackGroundClickListener extends ClickListener{
-
-        private String field;
-
-        public BackGroundClickListener setField(String field) {
-            this.field = field;
-            return this;
-        }
-
-        @Override
-        public void clicked(InputEvent event, float x, float y) {
-            System.out.println(field + " clicked");
-            super.clicked(event, x, y);
-        }
     }
 
     private void preparePlayerListDisplay(){
@@ -203,7 +185,7 @@ public class GameLobbyView extends AbstractView {
 
         if(carSelectBox==null) { //Only need to create the box once - this way we preserve choices on updates
             String[] carTypes = getVehicleNames();
-            carSelectBox = new SelectBox<String>(skin);
+            carSelectBox = new SelectBox<>(skin);
             carSelectBox.setStyle(boxStyle);
             carSelectBox.setItems(carTypes);
             carSelectBox.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE());

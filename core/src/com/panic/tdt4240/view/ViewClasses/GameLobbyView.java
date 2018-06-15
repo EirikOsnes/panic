@@ -199,23 +199,23 @@ public class GameLobbyView extends AbstractView {
 
     }
 
-    private SelectBox<String> createVehicleSelector(){
+    private void createVehicleSelector(){
 
-        String[] carTypes = getVehicleNames();
-        final SelectBox<String> selector = new SelectBox<String>(skin);
-        selector.setStyle(boxStyle);
-        selector.setItems(carTypes);
-        selector.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE());
-        selector.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Changing vehicle type to " + selector.getSelected());
-            }
-        });
-        selector.setSelectedIndex(0);
-        selector.pack();
-
-        return selector;
+        if(carSelectBox==null) { //Only need to create the box once - this way we preserve choices on updates
+            String[] carTypes = getVehicleNames();
+            carSelectBox = new SelectBox<String>(skin);
+            carSelectBox.setStyle(boxStyle);
+            carSelectBox.setItems(carTypes);
+            carSelectBox.getScrollPane().scaleBy(GlobalConstants.GET_TEXT_SCALE());
+            carSelectBox.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    System.out.println("Changing vehicle type to " + carSelectBox.getSelected());
+                }
+            });
+            carSelectBox.setSelectedIndex(0);
+            carSelectBox.pack();
+        }
     }
 
     private void generateBottomItems(){
@@ -275,7 +275,7 @@ public class GameLobbyView extends AbstractView {
         Table bottomTable = new Table();
         //bottomTable.setDebug(true,true);
         bottomTable.center();
-        carSelectBox = createVehicleSelector();
+        createVehicleSelector();
         bottomTable.add(carSelectBox).pad(20).width(SCREEN_WIDTH/2);
         bottomTable.row();
         Table bottomButtonTable = new Table();
